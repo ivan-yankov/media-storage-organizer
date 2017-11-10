@@ -1,0 +1,10 @@
+<hibernate-configuration>
+    <session-factory>
+
+        <property name="hibernate.connection.driver_class">org.apache.derby.jdbc.ClientDriver</property>
+        <property name="hibernate.connection.url">jdbc:derby://localhost:1527/MediaStorageOrganizer</property>
+        <property name="hibernate.connection.username">admin</property>
+        <property name="hibernate.connection.password">admin</property>
+
+    </session-factory>
+</hibernate-configuration>
