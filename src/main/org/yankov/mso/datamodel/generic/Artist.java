@@ -1,33 +1,34 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "ARTIST")
 public class Artist {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
-    private ArtistType type;
+
+    @Column(name = "name")
     private String name;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Instrument instrument;
+
+    @Column(name = "note")
     private String note;
 
-    public Artist(Integer id, ArtistType type, String name) {
-        this.id = id;
-        this.type = type;
+    public Artist() {
+    }
+
+    public Artist(String name) {
         this.name = name;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public ArtistType getType() {
-        return type;
-    }
-
-    public void setType(ArtistType type) {
-        this.type = type;
     }
 
     public String getName() {
@@ -56,7 +57,7 @@ public class Artist {
 
     @Override
     public int hashCode() {
-        return id;
+        return name.toLowerCase().trim().hashCode();
     }
 
     @Override
@@ -65,7 +66,7 @@ public class Artist {
             return false;
         }
         Artist other = (Artist) obj;
-        return this.id == other.id;
+        return this.name.toLowerCase().trim().equals(other.name.toLowerCase().trim());
     }
 
 }

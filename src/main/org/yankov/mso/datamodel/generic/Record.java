@@ -1,29 +1,44 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "RECORD")
 public class Record {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
-    private Byte[] bytes;
 
-    public Record(Integer id, Byte[] bytes) {
-        this.id = id;
-        this.bytes = bytes;
+    @Lob
+    @Column(name = "data")
+    private byte[] bytes;
+
+    @Column(name="data_format")
+    private String dataFormat;
+
+    public Record() {
     }
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Byte[] getBytes() {
+    public byte[] getBytes() {
         return bytes;
     }
 
-    public void setBytes(Byte[] bytes) {
+    public void setBytes(byte[] bytes) {
         this.bytes = bytes;
+    }
+
+    public String getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
     }
 
     @Override

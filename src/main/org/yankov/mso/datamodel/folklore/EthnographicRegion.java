@@ -1,25 +1,50 @@
 package org.yankov.mso.datamodel.folklore;
 
-public enum EthnographicRegion {
+import javax.persistence.*;
 
-    TRAKIA(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("trakia-region")),
-    STRANDZHA(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("strandzha-region")),
-    RODOPI(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("rodopi-region")),
-    PIRIN(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("pirin-region")),
-    SHOPSKI(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("shopski-region")),
-    MIZIA(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("mizia-region")),
-    DOBRUDZHA(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("dobrudzha-region")),
-    VARDARSKA_MAKEDONIA(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("vardarska-makedonia-region")),
-    AUTHORITY(ResourceBundles.FOLKLORE_RESOURCES_BG.getString("authority-region"));
+@Entity
+@Table(name = "ETHNOGRAPHIC_REGION")
+public class EthnographicRegion {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "name")
     private String name;
 
-    EthnographicRegion(String name) {
+    public EthnographicRegion() {
+    }
+
+    public EthnographicRegion(String name) {
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.toLowerCase().trim().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EthnographicRegion)) {
+            return false;
+        }
+        EthnographicRegion other = (EthnographicRegion) obj;
+        return this.name.toLowerCase().trim().equals(other.name.toLowerCase().trim());
     }
 
 }

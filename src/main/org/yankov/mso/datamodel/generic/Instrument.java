@@ -1,22 +1,28 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "INSTRUMENT")
 public class Instrument {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
-    private String name;
-    private String note;
 
-    public Instrument(Integer id, String name) {
-        this.id = id;
+    @Column(name = "name")
+    private String name;
+
+    public Instrument() {
+    }
+
+    public Instrument(String name) {
         this.name = name;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -27,17 +33,9 @@ public class Instrument {
         this.name = name;
     }
 
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
     @Override
     public int hashCode() {
-        return id;
+        return name.toLowerCase().trim().hashCode();
     }
 
     @Override
@@ -46,7 +44,7 @@ public class Instrument {
             return false;
         }
         Instrument other = (Instrument) obj;
-        return this.id == other.id;
+        return this.name.toLowerCase().trim().equals(other.name.toLowerCase().trim());
     }
 
 }

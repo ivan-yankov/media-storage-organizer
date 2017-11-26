@@ -1,22 +1,31 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "SOURCE")
 public class Source {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private SourceType type;
+
+    @Column(name = "signature")
     private String signature;
 
-    public Source(Integer id, SourceType type) {
-        this.id = id;
+    public Source() {
+    }
+
+    public Source(SourceType type) {
         this.type = type;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public SourceType getType() {

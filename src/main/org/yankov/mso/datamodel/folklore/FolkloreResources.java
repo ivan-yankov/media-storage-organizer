@@ -4,28 +4,54 @@ import java.util.ListResourceBundle;
 
 public class FolkloreResources extends ListResourceBundle {
 
-    public static final String TRAKIA_REGION = "trakia-region";
-    public static final String STRANDZHA_REGION = "strandzha-region";
-    public static final String RODOPI_REGION = "rodopi-region";
-    public static final String PIRIN_REGION = "pirin-region";
-    public static final String SHOPSKI_REGION = "shopski-region";
-    public static final String MIZIA_REGION = "mizia-region";
-    public static final String DOBRUDZHA_REGION = "dobrudzha-region";
-    public static final String VARDARSKA_MAKEDONIA_REGION = "vardarska-makedonia-region";
-    public static final String AUTHORITY_REGION = "authority-region";
+    public static final String REGION_TRAKIA = "region-trakia";
+    public static final String REGION_STRANDZHA = "region-strandzha";
+    public static final String REGION_RODOPI = "region-rodopi";
+    public static final String REGION_PIRIN = "region-pirin";
+    public static final String REGION_SHOPSKI = "region-shopski";
+    public static final String REGION_MIZIA = "region-mizia";
+    public static final String REGION_DOBRUDZHA = "region-dobrudzha";
+    public static final String REGION_MACEDONIA = "region-vardarska-makedonia";
+    public static final String REGION_AUTHORITY = "region-authority";
+
+    public static final String INSTRUMENT_KAVAL = "instrument-kaval";
+    public static final String INSTRUMENT_GAIDA = "instrument-gaida";
+    public static final String INSTRUMENT_GADULKA = "instrument-gadulka";
+    public static final String INSTRUMENT_TAMBURA = "instrument-tambura";
+    public static final String INSTRUMENT_TAPAN = "instrument-tapan";
+
+    public static final String SOURCE_TYPE_TAPE = "source-type-tape";
+    public static final String SOURCE_TYPE_CARTRIDGE = "source-type-cartridge";
+    public static final String SOURCE_TYPE_GRAMOPHONE_PLATE = "source-type-gramophone-plate";
+    public static final String SOURCE_TYPE_CD = "source-type-cd";
+    public static final String SOURCE_TYPE_VIDEO = "source-type-video";
+    public static final String SOURCE_TYPE_INTERNET = "source-type-internet";
 
     @Override
     protected Object[][] getContents() {
         return new Object[][] {
-                {FolkloreResources.TRAKIA_REGION, ""},
-                {FolkloreResources.STRANDZHA_REGION, ""},
-                {FolkloreResources.RODOPI_REGION, ""},
-                {FolkloreResources.PIRIN_REGION, ""},
-                {FolkloreResources.SHOPSKI_REGION, ""},
-                {FolkloreResources.MIZIA_REGION, ""},
-                {FolkloreResources.DOBRUDZHA_REGION, ""},
-                {FolkloreResources.VARDARSKA_MAKEDONIA_REGION, ""},
-                {FolkloreResources.AUTHORITY_REGION, ""}
+                { FolkloreResources.REGION_TRAKIA, "" },
+                { FolkloreResources.REGION_STRANDZHA, "" },
+                { FolkloreResources.REGION_RODOPI, "" },
+                { FolkloreResources.REGION_PIRIN, "" },
+                { FolkloreResources.REGION_SHOPSKI, "" },
+                { FolkloreResources.REGION_MIZIA, "" },
+                { FolkloreResources.REGION_DOBRUDZHA, "" },
+                { FolkloreResources.REGION_MACEDONIA, "" },
+                { FolkloreResources.REGION_AUTHORITY, "" },
+
+                { FolkloreResources.INSTRUMENT_KAVAL, "" },
+                { FolkloreResources.INSTRUMENT_GAIDA, "" },
+                { FolkloreResources.INSTRUMENT_GADULKA, "" },
+                { FolkloreResources.INSTRUMENT_TAMBURA, "" },
+                { FolkloreResources.INSTRUMENT_TAPAN, "" },
+
+                { FolkloreResources.SOURCE_TYPE_TAPE, "" },
+                { FolkloreResources.SOURCE_TYPE_CARTRIDGE, "" },
+                { FolkloreResources.SOURCE_TYPE_GRAMOPHONE_PLATE, "" },
+                { FolkloreResources.SOURCE_TYPE_CD, "" },
+                { FolkloreResources.SOURCE_TYPE_VIDEO, "" },
+                { FolkloreResources.SOURCE_TYPE_INTERNET, "" },
         };
     }
 

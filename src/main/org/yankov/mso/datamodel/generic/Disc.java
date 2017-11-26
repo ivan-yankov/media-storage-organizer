@@ -1,26 +1,41 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
 import java.time.Duration;
 
+@Entity
+@Table(name = "DISC")
 public class Disc {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "title")
     private String title;
+
+    @Convert(converter = DurationConverter.class)
     private Duration duration;
-    private String signature;
+
+    @Column(name = "production_signature")
+    private String productionSignature;
+
+    @Column(name = "collection_signature")
+    private String collectionSignature;
+
+    @Column(name = "note")
     private String note;
 
-    public Disc(Integer id, String title) {
-        this.id = id;
-        this.title = title;
+    public Disc() {
+    }
+
+    public Disc(String collectionSignature) {
+        this.collectionSignature = collectionSignature;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -39,12 +54,20 @@ public class Disc {
         this.duration = duration;
     }
 
-    public String getSignature() {
-        return signature;
+    public String getProductionSignature() {
+        return productionSignature;
     }
 
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public void setProductionSignature(String productionSignature) {
+        this.productionSignature = productionSignature;
+    }
+
+    public String getCollectionSignature() {
+        return collectionSignature;
+    }
+
+    public void setCollectionSignature(String collectionSignature) {
+        this.collectionSignature = collectionSignature;
     }
 
     public String getNote() {
@@ -57,7 +80,7 @@ public class Disc {
 
     @Override
     public int hashCode() {
-        return id;
+        return collectionSignature.toLowerCase().trim().hashCode();
     }
 
     @Override
@@ -66,7 +89,7 @@ public class Disc {
             return false;
         }
         Disc other = (Disc) obj;
-        return this.id == other.id;
+        return this.collectionSignature.toLowerCase().trim().equals(other.collectionSignature.toLowerCase().trim());
     }
 
 }

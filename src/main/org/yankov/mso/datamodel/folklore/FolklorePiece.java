@@ -2,12 +2,16 @@ package org.yankov.mso.datamodel.folklore;
 
 import org.yankov.mso.datamodel.generic.Piece;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "FOLKLORE_PIECE")
 public class FolklorePiece extends Piece {
 
+    @ManyToOne(cascade = CascadeType.ALL)
     private EthnographicRegion ethnographicRegion;
 
-    public FolklorePiece(Integer id) {
-        super(id);
+    public FolklorePiece() {
     }
 
     public EthnographicRegion getEthnographicRegion() {

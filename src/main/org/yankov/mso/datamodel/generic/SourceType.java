@@ -1,21 +1,28 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "SOURCE_TYPE")
 public class SourceType {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "name")
     private String name;
 
-    public SourceType(Integer id, String name) {
-        this.id = id;
+    public SourceType() {
+    }
+
+    public SourceType(String name) {
         this.name = name;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -28,7 +35,7 @@ public class SourceType {
 
     @Override
     public int hashCode() {
-        return id;
+        return name.toLowerCase().trim().hashCode();
     }
 
     @Override
@@ -37,7 +44,7 @@ public class SourceType {
             return false;
         }
         SourceType other = (SourceType) obj;
-        return this.id == other.id;
+        return this.name.toLowerCase().trim().equals(other.name.toLowerCase().trim());
     }
 
 }

@@ -1,37 +1,60 @@
 package org.yankov.mso.datamodel.generic;
 
+import javax.persistence.*;
 import java.time.Duration;
 
+@MappedSuperclass
 public class Piece {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
+    @ManyToOne(cascade = CascadeType.ALL)
     private Disc disc;
-    private Short cdTrackOrder;
 
+    @Column(name = "cd_track_order")
+    private Integer cdTrackOrder;
+
+    @Column(name = "title")
     private String title;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Artist performer;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Artist accompanimentPerformer;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Artist author;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Artist arrangementAuthor;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Artist conductor;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Artist soloist;
+
+    @Convert(converter = DurationConverter.class)
     private Duration duration;
+
+    @Column(name = "note")
     private String note;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Source source;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Record record;
 
-    public Piece(Integer id) {
-        this.id = id;
+    public Piece() {
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Disc getDisc() {
@@ -42,11 +65,11 @@ public class Piece {
         this.disc = disc;
     }
 
-    public Short getCdTrackOrder() {
+    public Integer getCdTrackOrder() {
         return cdTrackOrder;
     }
 
-    public void setCdTrackOrder(Short cdTrackOrder) {
+    public void setCdTrackOrder(Integer cdTrackOrder) {
         this.cdTrackOrder = cdTrackOrder;
     }
 
