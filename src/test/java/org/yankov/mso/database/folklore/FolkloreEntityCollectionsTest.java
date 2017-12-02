@@ -7,6 +7,7 @@ import org.yankov.mso.datamodel.folklore.FolklorePiece;
 import org.yankov.mso.datamodel.generic.Disc;
 import org.yankov.mso.datamodel.generic.Record;
 import org.yankov.mso.datamodel.generic.Source;
+import org.yankov.mso.datamodel.generic.SourceType;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,25 +41,27 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private static final String RECORD_FILE = "./src/test/resources/record.flac";
 
-    private final FolkloreEntityCollections entityCollections;
-
-    private final FolklorePiece piece;
-
     public FolkloreEntityCollectionsTest() {
-        this.entityCollections = new FolkloreEntityCollections();
-        this.piece = new FolklorePiece();
     }
 
     @Test
     public void testInitializeEntityCollections() {
-        entityCollections.initializeEntityCollections();
-        assertInitializedEntities();
+        FolkloreEntityCollections actualEntityCollections = new FolkloreEntityCollections();
+        actualEntityCollections.initializeEntityCollections();
+        assertInitializedEntities(actualEntityCollections);
 
-        addEntities(entityCollections);
-        entityCollections.saveEntityCollections();
-        entityCollections.initializeEntityCollections();
+        modifyEntityCollections(actualEntityCollections, true, 1);
+        actualEntityCollections.saveEntityCollections();
+        actualEntityCollections.initializeEntityCollections();
 
-        assertStoredEntities();
+        FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections();
+        expectedEntityCollections.getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
+        expectedEntityCollections.getInstruments().addAll(FolkloreEntityCollectionFactory.createInstruments());
+        expectedEntityCollections.getEthnographicRegions().addAll(
+                FolkloreEntityCollectionFactory.createEthnographicRegions());
+        modifyEntityCollections(expectedEntityCollections, true, 1);
+
+        assertStoredEntities(expectedEntityCollections, actualEntityCollections);
     }
 
     @Test
@@ -125,27 +128,20 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertFalse(collections.getEthnographicRegion("Северняшка").isPresent());
     }
 
-    private void assertStoredEntities() {
-        FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections();
-        expectedEntityCollections.getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
-        expectedEntityCollections.getInstruments().addAll(FolkloreEntityCollectionFactory.createInstruments());
-        expectedEntityCollections.getEthnographicRegions().addAll(
-                FolkloreEntityCollectionFactory.createEthnographicRegions());
-        addEntities(expectedEntityCollections);
-
-        assertSetsEquals(expectedEntityCollections.getSourceTypes(), entityCollections.getSourceTypes());
-        assertSetsEquals(expectedEntityCollections.getInstruments(), entityCollections.getInstruments());
-        assertSetsEquals(expectedEntityCollections.getArtists(), entityCollections.getArtists());
-        assertSetsEquals(expectedEntityCollections.getDiscs(), entityCollections.getDiscs());
+    private void assertStoredEntities(FolkloreEntityCollections expectedEntityCollections,
+                                      FolkloreEntityCollections actualEntityCollections) {
+        assertSetsEquals(expectedEntityCollections.getSourceTypes(), actualEntityCollections.getSourceTypes());
+        assertSetsEquals(expectedEntityCollections.getInstruments(), actualEntityCollections.getInstruments());
+        assertSetsEquals(expectedEntityCollections.getArtists(), actualEntityCollections.getArtists());
+        assertSetsEquals(expectedEntityCollections.getDiscs(), actualEntityCollections.getDiscs());
         assertSetsEquals(expectedEntityCollections.getEthnographicRegions(),
-                entityCollections.getEthnographicRegions());
-        Assert.assertArrayEquals(expectedEntityCollections.getPieces().toArray(new FolklorePiece[0]),
-                entityCollections.getPieces().toArray(new FolklorePiece[0]));
+                actualEntityCollections.getEthnographicRegions());
 
-        Assert.assertTrue(entityCollections.getArtist(KOSTA_KOLEV).isPresent());
-        Assert.assertEquals(ACCORDEON, entityCollections.getArtist(KOSTA_KOLEV).get().getInstrument().getName());
+        Assert.assertTrue(actualEntityCollections.getArtist(KOSTA_KOLEV).isPresent());
+        Assert.assertEquals(ACCORDEON, actualEntityCollections.getArtist(KOSTA_KOLEV).get().getInstrument().getName());
 
-        assertPiece(piece, entityCollections.getPieces().get(0));
+        Assert.assertEquals(expectedEntityCollections.getPieces().size(), actualEntityCollections.getPieces().size());
+        assertPiece(expectedEntityCollections.getPieces().get(0), actualEntityCollections.getPieces().get(0));
     }
 
     private void assertPiece(FolklorePiece expected, FolklorePiece actual) {
@@ -171,7 +167,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertEquals(RECORD_DATA_FORMAT, actual.getRecord().getDataFormat());
     }
 
-    private void assertInitializedEntities() {
+    private void assertInitializedEntities(FolkloreEntityCollections entityCollections) {
         Assert.assertTrue(entityCollections.getArtists().isEmpty());
         Assert.assertTrue(entityCollections.getDiscs().isEmpty());
         Assert.assertTrue(entityCollections.getPieces().isEmpty());
@@ -191,7 +187,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         }
     }
 
-    private void addEntities(FolkloreEntityCollections entityCollections) {
+    public static void modifyEntityCollections(FolkloreEntityCollections entityCollections,
+                                               boolean addMediaRecord, int numberPieceTableRecords) {
         entityCollections.addInstrument(ACCORDEON);
 
         entityCollections.addArtist(KOSTA_KOLEV);
@@ -203,20 +200,37 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         entityCollections.addArtist(NO_AUTHOR);
         entityCollections.addArtist(TRIO);
 
+        entityCollections.getDiscs().add(createDisc());
+
+        for (int i = 0; i < numberPieceTableRecords; i++) {
+            entityCollections.getPieces().add(createPiece(entityCollections, addMediaRecord));
+        }
+    }
+
+    private static Disc createDisc() {
         Disc disc = new Disc(DISC_COLLECTION_SIGNATURE);
         disc.setDuration(Duration.ofMinutes(70));
         disc.setTitle(DISC_TITLE);
         disc.setProductionSignature(DISC_PRODUCTION_SIGNATURE);
         disc.setNote(DISC_NOTE);
-        entityCollections.getDiscs().add(disc);
+        return disc;
+    }
 
-        Source source = new Source(entityCollections.getSourceType(SOURCE_TYPE).get());
+    private static Source createSource(SourceType sourceType) {
+        Source source = new Source(sourceType);
         source.setSignature(SOURCE_SIGNATURE);
+        return source;
+    }
 
+    private static Record createRecord() {
         Record record = new Record();
         record.setBytes(readRecordBytes());
         record.setDataFormat(RECORD_DATA_FORMAT);
+        return record;
+    }
 
+    private static FolklorePiece createPiece(FolkloreEntityCollections entityCollections, boolean addMediaRecord) {
+        FolklorePiece piece = new FolklorePiece();
         piece.setEthnographicRegion(entityCollections.getEthnographicRegion(ETHNOGRAPHIC_REGION).get());
         piece.setAccompanimentPerformer(entityCollections.getArtist(ENS_FILIP_KUTEV).get());
         piece.setArrangementAuthor(entityCollections.getArtist(FILIP_KUTEV).get());
@@ -229,12 +243,14 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         piece.setPerformer(entityCollections.getArtist(TRIO).get());
         piece.setSoloist(entityCollections.getArtist(VERKA_SIDEROVA).get());
         piece.setTitle(PIECE_TITLE);
-        piece.setSource(source);
-        piece.setRecord(record);
-        entityCollections.getPieces().add(piece);
+        piece.setSource(createSource(entityCollections.getSourceType(SOURCE_TYPE).get()));
+        if (addMediaRecord) {
+            piece.setRecord(createRecord());
+        }
+        return piece;
     }
 
-    private byte[] readRecordBytes() {
+    private static byte[] readRecordBytes() {
         try (FileInputStream in = new FileInputStream(Paths.get(RECORD_FILE).toRealPath().toFile())) {
             return in.readAllBytes();
         } catch (IOException e) {
