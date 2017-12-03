@@ -4,10 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.database.generic.DatabaseTest;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
-import org.yankov.mso.datamodel.generic.Disc;
-import org.yankov.mso.datamodel.generic.Record;
-import org.yankov.mso.datamodel.generic.Source;
-import org.yankov.mso.datamodel.generic.SourceType;
+import org.yankov.mso.datamodel.generic.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,13 +18,14 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private static final String ACCORDEON = "Акордеон";
     private static final String KOSTA_KOLEV = "Коста Колев";
+    private static final String KOSTA_KOLEV_NOTE = "Знакова фигура";
     private static final String FILIP_KUTEV = "Филип Кутев";
     private static final String ENS_FILIP_KUTEV = "Ансамбъл 'Филип Кутев'";
     private static final String VERKA_SIDEROVA = "Верка Сидерова";
-    private static final String DISC_COLLECTION_SIGNATURE = "F1";
-    private static final String DISC_TITLE = "Българска народна музика";
-    private static final String DISC_PRODUCTION_SIGNATURE = "ВНА-001";
-    private static final String DISC_NOTE = "Тестов диск";
+    private static final String ALBUM_COLLECTION_SIGNATURE = "F1";
+    private static final String ALBUM_TITLE = "Българска народна музика";
+    private static final String ALBUM_PRODUCTION_SIGNATURE = "ВНА-001";
+    private static final String ALBUM_NOTE = "Тестов диск";
     private static final String ETHNOGRAPHIC_REGION = "Добруджанска";
     private static final String NO_AUTHOR = "Народна";
     private static final String PIECE_NOTE = "Забележка";
@@ -38,6 +36,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     private static final String RECORD_DATA_FORMAT = "FLAC";
     private static final Integer TRACK_ORDER = 5;
     private static final Duration PIECE_DURATION = Duration.ofMinutes(3);
+    private static final Duration ALBUM_DURATION = Duration.ofMinutes(70);
 
     private static final String RECORD_FILE = "./src/test/resources/record.flac";
 
@@ -107,12 +106,12 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetDisc() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addDisc("F1"));
-        Assert.assertFalse(collections.addDisc(" f1 "));
-        Assert.assertTrue(collections.addDisc("F2"));
+        Assert.assertTrue(collections.addAlbum("F1"));
+        Assert.assertFalse(collections.addAlbum(" f1 "));
+        Assert.assertTrue(collections.addAlbum("F2"));
 
-        Assert.assertTrue(collections.getDisc("f1 ").isPresent());
-        Assert.assertFalse(collections.getDisc("F3").isPresent());
+        Assert.assertTrue(collections.getAlbum("f1 ").isPresent());
+        Assert.assertFalse(collections.getAlbum("F3").isPresent());
     }
 
     @Test
@@ -130,15 +129,26 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private void assertStoredEntities(FolkloreEntityCollections expectedEntityCollections,
                                       FolkloreEntityCollections actualEntityCollections) {
-        assertSetsEquals(expectedEntityCollections.getSourceTypes(), actualEntityCollections.getSourceTypes());
-        assertSetsEquals(expectedEntityCollections.getInstruments(), actualEntityCollections.getInstruments());
-        assertSetsEquals(expectedEntityCollections.getArtists(), actualEntityCollections.getArtists());
-        assertSetsEquals(expectedEntityCollections.getDiscs(), actualEntityCollections.getDiscs());
-        assertSetsEquals(expectedEntityCollections.getEthnographicRegions(),
+        assertSetsEqual(expectedEntityCollections.getSourceTypes(), actualEntityCollections.getSourceTypes());
+        assertSetsEqual(expectedEntityCollections.getInstruments(), actualEntityCollections.getInstruments());
+        assertSetsEqual(expectedEntityCollections.getArtists(), actualEntityCollections.getArtists());
+        assertSetsEqual(expectedEntityCollections.getAlbums(), actualEntityCollections.getAlbums());
+        assertSetsEqual(expectedEntityCollections.getEthnographicRegions(),
                 actualEntityCollections.getEthnographicRegions());
+
+        Assert.assertTrue(actualEntityCollections.getAlbum(ALBUM_COLLECTION_SIGNATURE).isPresent());
+        Album actualAlbum = actualEntityCollections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get();
+        Assert.assertEquals(ALBUM_NOTE, actualAlbum.getNote());
+        Assert.assertEquals(ALBUM_PRODUCTION_SIGNATURE, actualAlbum.getProductionSignature());
+        Assert.assertEquals(ALBUM_TITLE, actualAlbum.getTitle());
+        Assert.assertEquals(ALBUM_DURATION, actualAlbum.getDuration());
 
         Assert.assertTrue(actualEntityCollections.getArtist(KOSTA_KOLEV).isPresent());
         Assert.assertEquals(ACCORDEON, actualEntityCollections.getArtist(KOSTA_KOLEV).get().getInstrument().getName());
+        Assert.assertEquals(KOSTA_KOLEV_NOTE, actualEntityCollections.getArtist(KOSTA_KOLEV).get().getNote());
+        Assert.assertTrue(actualEntityCollections.getArtist(FILIP_KUTEV).get().getMissions().isEmpty());
+        assertSetsEqual(expectedEntityCollections.getArtist(KOSTA_KOLEV).get().getMissions(),
+                actualEntityCollections.getArtist(KOSTA_KOLEV).get().getMissions());
 
         Assert.assertEquals(expectedEntityCollections.getPieces().size(), actualEntityCollections.getPieces().size());
         assertPiece(expectedEntityCollections.getPieces().get(0), actualEntityCollections.getPieces().get(0));
@@ -151,7 +161,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertEquals(expected.getAuthor(), actual.getAuthor());
         Assert.assertEquals(expected.getCdTrackOrder(), actual.getCdTrackOrder());
         Assert.assertEquals(expected.getConductor(), actual.getConductor());
-        Assert.assertEquals(expected.getDisc(), actual.getDisc());
+        Assert.assertEquals(expected.getAlbum(), actual.getAlbum());
         Assert.assertEquals(expected.getDuration(), actual.getDuration());
         Assert.assertEquals(expected.getNote(), actual.getNote());
         Assert.assertEquals(expected.getPerformer(), actual.getPerformer());
@@ -169,16 +179,16 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private void assertInitializedEntities(FolkloreEntityCollections entityCollections) {
         Assert.assertTrue(entityCollections.getArtists().isEmpty());
-        Assert.assertTrue(entityCollections.getDiscs().isEmpty());
+        Assert.assertTrue(entityCollections.getAlbums().isEmpty());
         Assert.assertTrue(entityCollections.getPieces().isEmpty());
 
-        assertSetsEquals(FolkloreEntityCollectionFactory.createInstruments(), entityCollections.getInstruments());
-        assertSetsEquals(FolkloreEntityCollectionFactory.createSourceTypes(), entityCollections.getSourceTypes());
-        assertSetsEquals(FolkloreEntityCollectionFactory.createEthnographicRegions(),
+        assertSetsEqual(FolkloreEntityCollectionFactory.createInstruments(), entityCollections.getInstruments());
+        assertSetsEqual(FolkloreEntityCollectionFactory.createSourceTypes(), entityCollections.getSourceTypes());
+        assertSetsEqual(FolkloreEntityCollectionFactory.createEthnographicRegions(),
                 entityCollections.getEthnographicRegions());
     }
 
-    private <T> void assertSetsEquals(Set<T> expected, Set<T> actual) {
+    private <T> void assertSetsEqual(Set<T> expected, Set<T> actual) {
         Assert.assertTrue(actual.size() == expected.size());
         Queue<T> actualQueue = new ArrayDeque<>();
         actualQueue.addAll(actual);
@@ -192,28 +202,33 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         entityCollections.addInstrument(ACCORDEON);
 
         entityCollections.addArtist(KOSTA_KOLEV);
-        entityCollections.getArtist(KOSTA_KOLEV).ifPresent(
-                artist -> artist.setInstrument(entityCollections.getInstrument(ACCORDEON).get()));
+        entityCollections.getArtist(KOSTA_KOLEV).ifPresent(artist -> {
+            artist.setInstrument(entityCollections.getInstrument(ACCORDEON).get());
+            artist.setNote(KOSTA_KOLEV_NOTE);
+            artist.addMission(ArtistMission.INSTRUMENT_PLAYER);
+            artist.addMission(ArtistMission.COMPOSER);
+            artist.addMission(ArtistMission.CONDUCTOR);
+        });
         entityCollections.addArtist(FILIP_KUTEV);
         entityCollections.addArtist(ENS_FILIP_KUTEV);
         entityCollections.addArtist(VERKA_SIDEROVA);
         entityCollections.addArtist(NO_AUTHOR);
         entityCollections.addArtist(TRIO);
 
-        entityCollections.getDiscs().add(createDisc());
+        entityCollections.getAlbums().add(createAlbum());
 
         for (int i = 0; i < numberPieceTableRecords; i++) {
-            entityCollections.getPieces().add(createPiece(entityCollections, addMediaRecord));
+            entityCollections.addPiece(createPiece(entityCollections, addMediaRecord));
         }
     }
 
-    private static Disc createDisc() {
-        Disc disc = new Disc(DISC_COLLECTION_SIGNATURE);
-        disc.setDuration(Duration.ofMinutes(70));
-        disc.setTitle(DISC_TITLE);
-        disc.setProductionSignature(DISC_PRODUCTION_SIGNATURE);
-        disc.setNote(DISC_NOTE);
-        return disc;
+    private static Album createAlbum() {
+        Album album = new Album(ALBUM_COLLECTION_SIGNATURE);
+        album.setDuration(ALBUM_DURATION);
+        album.setTitle(ALBUM_TITLE);
+        album.setProductionSignature(ALBUM_PRODUCTION_SIGNATURE);
+        album.setNote(ALBUM_NOTE);
+        return album;
     }
 
     private static Source createSource(SourceType sourceType) {
@@ -237,7 +252,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         piece.setAuthor(entityCollections.getArtist(NO_AUTHOR).get());
         piece.setCdTrackOrder(TRACK_ORDER);
         piece.setConductor(entityCollections.getArtist(KOSTA_KOLEV).get());
-        piece.setDisc(entityCollections.getDisc(DISC_COLLECTION_SIGNATURE).get());
+        piece.setAlbum(entityCollections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get());
         piece.setDuration(PIECE_DURATION);
         piece.setNote(PIECE_NOTE);
         piece.setPerformer(entityCollections.getArtist(TRIO).get());

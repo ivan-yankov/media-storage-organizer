@@ -9,6 +9,7 @@ public class PerformanceTest extends DatabaseTest {
     private static final int NUMBER_OF_RECORDS = 10000;
     private static final int MAX_TIME_WRITING_SEC = 60;
     private static final int MAX_TIME_READING_SEC = 5;
+    private static final double MILLISECONDS_IN_SECOND = 1000.0;
 
     @Test
     public void testPerformance() {
@@ -19,13 +20,13 @@ public class PerformanceTest extends DatabaseTest {
         long start = System.currentTimeMillis();
         collections.saveEntityCollections();
         long end = System.currentTimeMillis();
-        double executionTime = (end - start) / 1000.0;
+        double executionTime = (end - start) / MILLISECONDS_IN_SECOND;
         Assert.assertTrue(executionTime < MAX_TIME_WRITING_SEC);
 
         start = System.currentTimeMillis();
         collections.initializeEntityCollections();
         end = System.currentTimeMillis();
-        executionTime = (end - start) / 1000.0;
+        executionTime = (end - start) / MILLISECONDS_IN_SECOND;
         Assert.assertTrue(executionTime < MAX_TIME_READING_SEC);
 
         Assert.assertEquals(NUMBER_OF_RECORDS, collections.getPieces().size());

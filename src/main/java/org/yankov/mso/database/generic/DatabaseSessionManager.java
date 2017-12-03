@@ -30,7 +30,7 @@ public class DatabaseSessionManager {
         annotatedClasses.add(Record.class);
         annotatedClasses.add(Piece.class);
         annotatedClasses.add(Instrument.class);
-        annotatedClasses.add(Disc.class);
+        annotatedClasses.add(Album.class);
         annotatedClasses.add(Artist.class);
         annotatedClasses.add(FolklorePiece.class);
         annotatedClasses.add(EthnographicRegion.class);

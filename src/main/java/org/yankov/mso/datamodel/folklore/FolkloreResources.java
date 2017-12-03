@@ -1,8 +1,15 @@
 package org.yankov.mso.datamodel.folklore;
 
 import java.util.ListResourceBundle;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class FolkloreResources extends ListResourceBundle {
+
+    private static final Locale BULGARIAN = new Locale("bg");
+
+    public static final ResourceBundle FOLKLORE_RESOURCES_BG =
+            ResourceBundle.getBundle(FolkloreResources_bg.class.getName(), BULGARIAN);
 
     public static final String REGION_TRAKIA = "region-trakia";
     public static final String REGION_STRANDZHA = "region-strandzha";

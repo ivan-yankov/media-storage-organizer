@@ -1,13 +1,11 @@
 package org.yankov.mso.database.generic;
 
 import org.hibernate.query.Query;
-import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
 import org.yankov.mso.datamodel.generic.Artist;
-import org.yankov.mso.datamodel.generic.Disc;
+import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Instrument;
 import org.yankov.mso.datamodel.generic.SourceType;
 
-import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -26,13 +24,13 @@ public abstract class EntityCollections {
     private Set<SourceType> sourceTypes;
     private Set<Instrument> instruments;
     private Set<Artist> artists;
-    private Set<Disc> discs;
+    private Set<Album> albums;
 
     public EntityCollections() {
         this.sourceTypes = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
-        this.discs = new HashSet<>();
+        this.albums = new HashSet<>();
     }
 
     public Set<SourceType> getSourceTypes() {
@@ -47,8 +45,8 @@ public abstract class EntityCollections {
         return artists;
     }
 
-    public Set<Disc> getDiscs() {
-        return discs;
+    public Set<Album> getAlbums() {
+        return albums;
     }
 
     public Optional<SourceType> getSourceType(String name) {
@@ -78,14 +76,14 @@ public abstract class EntityCollections {
         return artists.add(new Artist(name));
     }
 
-    public Optional<Disc> getDisc(String collectionSignature) {
-        return discs.stream().filter(
+    public Optional<Album> getAlbum(String collectionSignature) {
+        return albums.stream().filter(
                 entity -> entity.getCollectionSignature().toLowerCase().trim()
                         .equals(collectionSignature.toLowerCase().trim())).findFirst();
     }
 
-    public boolean addDisc(String collectionSignature) {
-        return discs.add(new Disc(collectionSignature));
+    public boolean addAlbum(String collectionSignature) {
+        return albums.add(new Album(collectionSignature));
     }
 
     protected final <T> void initializeEntityCollection(Class entityClass, Collection<T> collection,

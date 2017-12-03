@@ -12,7 +12,7 @@ public class Piece {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Disc disc;
+    private Album album;
 
     @Column(name = "cd_track_order")
     private Integer cdTrackOrder;
@@ -57,12 +57,12 @@ public class Piece {
         return id;
     }
 
-    public Disc getDisc() {
-        return disc;
+    public Album getAlbum() {
+        return album;
     }
 
-    public void setDisc(Disc disc) {
-        this.disc = disc;
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 
     public Integer getCdTrackOrder() {

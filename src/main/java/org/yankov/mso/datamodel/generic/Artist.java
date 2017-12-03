@@ -1,6 +1,8 @@
 package org.yankov.mso.datamodel.generic;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "ARTIST")
@@ -20,10 +22,17 @@ public class Artist {
     @Column(name = "note")
     private String note;
 
+    @ElementCollection(targetClass = ArtistMission.class)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "missions")
+    private Set<ArtistMission> missions;
+
     public Artist() {
+        this.missions = new HashSet<>();
     }
 
     public Artist(String name) {
+        this();
         this.name = name;
     }
 
@@ -53,6 +62,14 @@ public class Artist {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public void addMission(ArtistMission mission) {
+        missions.add(mission);
+    }
+
+    public Set<ArtistMission> getMissions() {
+        return missions;
     }
 
     @Override

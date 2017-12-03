@@ -2,7 +2,6 @@ package org.yankov.mso.database.folklore;
 
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.folklore.FolkloreResources;
-import org.yankov.mso.datamodel.folklore.ResourceBundles;
 import org.yankov.mso.datamodel.generic.Instrument;
 import org.yankov.mso.datamodel.generic.SourceType;
 
@@ -12,7 +11,7 @@ import java.util.Set;
 
 public class FolkloreEntityCollectionFactory {
 
-    private static ResourceBundle resourceBundle = ResourceBundles.FOLKLORE_RESOURCES_BG;
+    private static ResourceBundle resourceBundle = FolkloreResources.FOLKLORE_RESOURCES_BG;
 
     public static Set<SourceType> createSourceTypes() {
         Set<SourceType> sourceTypes = new HashSet<>();

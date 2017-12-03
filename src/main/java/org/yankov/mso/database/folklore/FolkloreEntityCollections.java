@@ -4,7 +4,7 @@ import org.yankov.mso.database.generic.EntityCollections;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
 import org.yankov.mso.datamodel.generic.Artist;
-import org.yankov.mso.datamodel.generic.Disc;
+import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Instrument;
 import org.yankov.mso.datamodel.generic.SourceType;
 
@@ -52,7 +52,7 @@ public class FolkloreEntityCollections extends EntityCollections {
 
         initializeEntityCollection(Artist.class, getArtists(), Collections.emptySet());
 
-        initializeEntityCollection(Disc.class, getDiscs(), Collections.emptySet());
+        initializeEntityCollection(Album.class, getAlbums(), Collections.emptySet());
 
         initializeEntityCollection(EthnographicRegion.class, getEthnographicRegions(),
                 FolkloreEntityCollectionFactory.createEthnographicRegions());
@@ -65,7 +65,7 @@ public class FolkloreEntityCollections extends EntityCollections {
         saveCollectionToDatabase(getSourceTypes());
         saveCollectionToDatabase(getInstruments());
         saveCollectionToDatabase(getArtists());
-        saveCollectionToDatabase(getDiscs());
+        saveCollectionToDatabase(getAlbums());
         saveCollectionToDatabase(getEthnographicRegions());
         saveCollectionToDatabase(getPieces());
     }
