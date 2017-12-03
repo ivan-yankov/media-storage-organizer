@@ -46,7 +46,7 @@ public class DatabaseSessionManager {
     }
 
     public void openSession(String configurationFile) {
-        if (session  == null || !session.isOpen()) {
+        if (session == null || !session.isOpen()) {
             session = createSessionFactory(configurationFile).openSession();
         }
     }

@@ -15,7 +15,7 @@ public class Record {
     @Column(name = "data")
     private byte[] bytes;
 
-    @Column(name="data_format")
+    @Column(name = "data_format")
     private String dataFormat;
 
     public Record() {

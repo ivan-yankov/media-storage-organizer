@@ -2,7 +2,10 @@ package org.yankov.mso.datamodel.folklore;
 
 import org.yankov.mso.datamodel.generic.Piece;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "FOLKLORE_PIECE")

@@ -14,11 +14,13 @@ public class DatabaseSessionManagerTest extends DatabaseTest {
     public void testInstrumentWrite() {
         Instrument originalInstrument = new Instrument(instrumentName);
 
-        databaseSessionManager.executeOperation(
-                session -> { session.saveOrUpdate(originalInstrument); return null; }, Assert::fail);
+        databaseSessionManager.executeOperation(session -> {
+            session.saveOrUpdate(originalInstrument);
+            return null;
+        }, Assert::fail);
 
-        Optional<Object> instrumentObj = databaseSessionManager.executeOperation(
-                session -> session.get(Instrument.class, originalInstrument.getId()), Assert::fail);
+        Optional<Object> instrumentObj = databaseSessionManager
+                .executeOperation(session -> session.get(Instrument.class, originalInstrument.getId()), Assert::fail);
 
         Assert.assertTrue(instrumentObj.isPresent());
         Instrument instrument = (Instrument) instrumentObj.get();

@@ -15,8 +15,8 @@ public class DurationConverter implements AttributeConverter<Duration, String> {
 
     @Override
     public String convertToDatabaseColumn(Duration duration) {
-        return String.format(FORMAT_TEMPLATE,
-                duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+        return String
+                .format(FORMAT_TEMPLATE, duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
     }
 
     @Override

@@ -4,7 +4,8 @@ public enum ArtistMission {
 
     SINGER,
     INSTRUMENT_PLAYER,
-    COMPOSER, CONDUCTOR,
+    COMPOSER,
+    CONDUCTOR,
     ORCHESTRA,
     CHOIR,
     ENSEMBLE,

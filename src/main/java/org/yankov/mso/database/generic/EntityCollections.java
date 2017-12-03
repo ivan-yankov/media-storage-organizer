@@ -1,8 +1,8 @@
 package org.yankov.mso.database.generic;
 
 import org.hibernate.query.Query;
-import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Album;
+import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Instrument;
 import org.yankov.mso.datamodel.generic.SourceType;
 
@@ -15,23 +15,21 @@ import java.util.logging.Logger;
 
 public abstract class EntityCollections {
 
-    public abstract void initializeEntityCollections();
-
-    public abstract void saveEntityCollections();
-
     private static final Logger LOGGER = Logger.getLogger(EntityCollections.class.getName());
-
     private Set<SourceType> sourceTypes;
     private Set<Instrument> instruments;
     private Set<Artist> artists;
     private Set<Album> albums;
-
     public EntityCollections() {
         this.sourceTypes = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
         this.albums = new HashSet<>();
     }
+
+    public abstract void initializeEntityCollections();
+
+    public abstract void saveEntityCollections();
 
     public Set<SourceType> getSourceTypes() {
         return sourceTypes;
@@ -50,8 +48,9 @@ public abstract class EntityCollections {
     }
 
     public Optional<SourceType> getSourceType(String name) {
-        return sourceTypes.stream().filter(entity -> entity.getName().toLowerCase().trim()
-                .equals(name.toLowerCase().trim())).findFirst();
+        return sourceTypes.stream()
+                          .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
+                          .findFirst();
     }
 
     public boolean addSourceType(String name) {
@@ -59,8 +58,9 @@ public abstract class EntityCollections {
     }
 
     public Optional<Instrument> getInstrument(String name) {
-        return instruments.stream().filter(entity -> entity.getName().toLowerCase().trim()
-                .equals(name.toLowerCase().trim())).findFirst();
+        return instruments.stream()
+                          .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
+                          .findFirst();
     }
 
     public boolean addInstrument(String name) {
@@ -68,8 +68,9 @@ public abstract class EntityCollections {
     }
 
     public Optional<Artist> getArtist(String name) {
-        return artists.stream().filter(entity -> entity.getName().toLowerCase().trim()
-                .equals(name.toLowerCase().trim())).findFirst();
+        return artists.stream()
+                      .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
+                      .findFirst();
     }
 
     public boolean addArtist(String name) {
@@ -77,9 +78,8 @@ public abstract class EntityCollections {
     }
 
     public Optional<Album> getAlbum(String collectionSignature) {
-        return albums.stream().filter(
-                entity -> entity.getCollectionSignature().toLowerCase().trim()
-                        .equals(collectionSignature.toLowerCase().trim())).findFirst();
+        return albums.stream().filter(entity -> entity.getCollectionSignature().toLowerCase().trim()
+                                                      .equals(collectionSignature.toLowerCase().trim())).findFirst();
     }
 
     public boolean addAlbum(String collectionSignature) {
@@ -87,7 +87,7 @@ public abstract class EntityCollections {
     }
 
     protected final <T> void initializeEntityCollection(Class entityClass, Collection<T> collection,
-                                                Collection<T> defaultCollection) {
+                                                        Collection<T> defaultCollection) {
         collection.clear();
 
         List<T> dbCollection = loadCollectionFromDatabase(entityClass);
