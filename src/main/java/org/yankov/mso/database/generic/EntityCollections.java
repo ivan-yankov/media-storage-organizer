@@ -1,10 +1,7 @@
 package org.yankov.mso.database.generic;
 
 import org.hibernate.query.Query;
-import org.yankov.mso.datamodel.generic.Album;
-import org.yankov.mso.datamodel.generic.Artist;
-import org.yankov.mso.datamodel.generic.Instrument;
-import org.yankov.mso.datamodel.generic.SourceType;
+import org.yankov.mso.datamodel.generic.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,23 +10,26 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class EntityCollections {
+public abstract class EntityCollections<T extends Piece> {
+
+    public abstract void initializeEntityCollections();
+
+    public abstract void saveEntityCollections();
 
     private static final Logger LOGGER = Logger.getLogger(EntityCollections.class.getName());
     private Set<SourceType> sourceTypes;
     private Set<Instrument> instruments;
     private Set<Artist> artists;
     private Set<Album> albums;
+    private List<T> pieces;
+
     public EntityCollections() {
         this.sourceTypes = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
         this.albums = new HashSet<>();
+        this.pieces = new ArrayList<>();
     }
-
-    public abstract void initializeEntityCollections();
-
-    public abstract void saveEntityCollections();
 
     public Set<SourceType> getSourceTypes() {
         return sourceTypes;
@@ -45,6 +45,10 @@ public abstract class EntityCollections {
 
     public Set<Album> getAlbums() {
         return albums;
+    }
+
+    public List<T> getPieces() {
+        return pieces;
     }
 
     public Optional<SourceType> getSourceType(String name) {
@@ -86,11 +90,24 @@ public abstract class EntityCollections {
         return albums.add(new Album(collectionSignature));
     }
 
-    protected final <T> void initializeEntityCollection(Class entityClass, Collection<T> collection,
-                                                        Collection<T> defaultCollection) {
+    public Optional<T> getPiece(int index) {
+        if (index < 0 || index >= pieces.size()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(pieces.get(index));
+        }
+    }
+
+    public boolean addPiece(T piece) {
+        return pieces.add(piece);
+    }
+
+    protected final <CollectionType> void initializeEntityCollection(Class entityClass,
+                                                                     Collection<CollectionType> collection,
+                                                                     Collection<CollectionType> defaultCollection) {
         collection.clear();
 
-        List<T> dbCollection = loadCollectionFromDatabase(entityClass);
+        List<CollectionType> dbCollection = loadCollectionFromDatabase(entityClass);
         if (!dbCollection.isEmpty()) {
             collection.addAll(dbCollection);
         } else {
@@ -105,13 +122,13 @@ public abstract class EntityCollections {
         }, message -> LOGGER.log(Level.SEVERE, message));
     }
 
-    private <T> List<T> loadCollectionFromDatabase(Class entityClass) {
+    private <CollectionType> List<CollectionType> loadCollectionFromDatabase(Class entityClass) {
         Optional optResult = DatabaseSessionManager.getInstance().executeOperation(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-            Root<T> root = criteriaQuery.from(entityClass);
+            CriteriaQuery<CollectionType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            Root<CollectionType> root = criteriaQuery.from(entityClass);
             criteriaQuery.select(root);
-            Query<T> query = session.createQuery(criteriaQuery);
+            Query<CollectionType> query = session.createQuery(criteriaQuery);
             return query.getResultList();
         }, message -> LOGGER.log(Level.SEVERE, message));
 
@@ -119,7 +136,7 @@ public abstract class EntityCollections {
             return Collections.emptyList();
         }
 
-        return (List<T>) optResult.get();
+        return (List<CollectionType>) optResult.get();
     }
 
 }

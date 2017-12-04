@@ -43,83 +43,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public FolkloreEntityCollectionsTest() {
     }
 
-    public static void modifyEntityCollections(FolkloreEntityCollections entityCollections, boolean addMediaRecord,
-                                               int numberPieceTableRecords) {
-        entityCollections.addInstrument(ACCORDEON);
-
-        entityCollections.addArtist(KOSTA_KOLEV);
-        entityCollections.getArtist(KOSTA_KOLEV).ifPresent(artist -> {
-            artist.setInstrument(entityCollections.getInstrument(ACCORDEON).get());
-            artist.setNote(KOSTA_KOLEV_NOTE);
-            artist.addMission(ArtistMission.INSTRUMENT_PLAYER);
-            artist.addMission(ArtistMission.COMPOSER);
-            artist.addMission(ArtistMission.CONDUCTOR);
-        });
-        entityCollections.addArtist(FILIP_KUTEV);
-        entityCollections.addArtist(ENS_FILIP_KUTEV);
-        entityCollections.addArtist(VERKA_SIDEROVA);
-        entityCollections.addArtist(NO_AUTHOR);
-        entityCollections.addArtist(TRIO);
-
-        entityCollections.getAlbums().add(createAlbum());
-
-        for (int i = 0; i < numberPieceTableRecords; i++) {
-            entityCollections.addPiece(createPiece(entityCollections, addMediaRecord));
-        }
-    }
-
-    private static Album createAlbum() {
-        Album album = new Album(ALBUM_COLLECTION_SIGNATURE);
-        album.setDuration(ALBUM_DURATION);
-        album.setTitle(ALBUM_TITLE);
-        album.setProductionSignature(ALBUM_PRODUCTION_SIGNATURE);
-        album.setNote(ALBUM_NOTE);
-        return album;
-    }
-
-    private static Source createSource(SourceType sourceType) {
-        Source source = new Source(sourceType);
-        source.setSignature(SOURCE_SIGNATURE);
-        return source;
-    }
-
-    private static Record createRecord() {
-        Record record = new Record();
-        record.setBytes(readRecordBytes());
-        record.setDataFormat(RECORD_DATA_FORMAT);
-        return record;
-    }
-
-    private static FolklorePiece createPiece(FolkloreEntityCollections entityCollections, boolean addMediaRecord) {
-        FolklorePiece piece = new FolklorePiece();
-        piece.setEthnographicRegion(entityCollections.getEthnographicRegion(ETHNOGRAPHIC_REGION).get());
-        piece.setAccompanimentPerformer(entityCollections.getArtist(ENS_FILIP_KUTEV).get());
-        piece.setArrangementAuthor(entityCollections.getArtist(FILIP_KUTEV).get());
-        piece.setAuthor(entityCollections.getArtist(NO_AUTHOR).get());
-        piece.setCdTrackOrder(TRACK_ORDER);
-        piece.setConductor(entityCollections.getArtist(KOSTA_KOLEV).get());
-        piece.setAlbum(entityCollections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get());
-        piece.setDuration(PIECE_DURATION);
-        piece.setNote(PIECE_NOTE);
-        piece.setPerformer(entityCollections.getArtist(TRIO).get());
-        piece.setSoloist(entityCollections.getArtist(VERKA_SIDEROVA).get());
-        piece.setTitle(PIECE_TITLE);
-        piece.setSource(createSource(entityCollections.getSourceType(SOURCE_TYPE).get()));
-        if (addMediaRecord) {
-            piece.setRecord(createRecord());
-        }
-        return piece;
-    }
-
-    private static byte[] readRecordBytes() {
-        try (FileInputStream in = new FileInputStream(Paths.get(RECORD_FILE).toRealPath().toFile())) {
-            return in.readAllBytes();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new byte[0];
-        }
-    }
-
     @Test
     public void testInitializeEntityCollections() {
         FolkloreEntityCollections actualEntityCollections = new FolkloreEntityCollections();
@@ -228,7 +151,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
                         actualEntityCollections.getArtist(KOSTA_KOLEV).get().getMissions());
 
         Assert.assertEquals(expectedEntityCollections.getPieces().size(), actualEntityCollections.getPieces().size());
-        assertPiece(expectedEntityCollections.getPieces().get(0), actualEntityCollections.getPieces().get(0));
+        assertPiece(expectedEntityCollections.getPiece(0).get(), actualEntityCollections.getPiece(0).get());
     }
 
     private void assertPiece(FolklorePiece expected, FolklorePiece actual) {
@@ -271,6 +194,83 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         actualQueue.addAll(actual);
         while (actualQueue.peek() != null) {
             Assert.assertTrue(expected.contains(actualQueue.poll()));
+        }
+    }
+
+    public static void modifyEntityCollections(FolkloreEntityCollections entityCollections, boolean addMediaRecord,
+                                               int numberPieceTableRecords) {
+        entityCollections.addInstrument(ACCORDEON);
+
+        entityCollections.addArtist(KOSTA_KOLEV);
+        entityCollections.getArtist(KOSTA_KOLEV).ifPresent(artist -> {
+            artist.setInstrument(entityCollections.getInstrument(ACCORDEON).get());
+            artist.setNote(KOSTA_KOLEV_NOTE);
+            artist.addMission(ArtistMission.INSTRUMENT_PLAYER);
+            artist.addMission(ArtistMission.COMPOSER);
+            artist.addMission(ArtistMission.CONDUCTOR);
+        });
+        entityCollections.addArtist(FILIP_KUTEV);
+        entityCollections.addArtist(ENS_FILIP_KUTEV);
+        entityCollections.addArtist(VERKA_SIDEROVA);
+        entityCollections.addArtist(NO_AUTHOR);
+        entityCollections.addArtist(TRIO);
+
+        entityCollections.getAlbums().add(createAlbum());
+
+        for (int i = 0; i < numberPieceTableRecords; i++) {
+            entityCollections.addPiece(createPiece(entityCollections, addMediaRecord));
+        }
+    }
+
+    private static Album createAlbum() {
+        Album album = new Album(ALBUM_COLLECTION_SIGNATURE);
+        album.setDuration(ALBUM_DURATION);
+        album.setTitle(ALBUM_TITLE);
+        album.setProductionSignature(ALBUM_PRODUCTION_SIGNATURE);
+        album.setNote(ALBUM_NOTE);
+        return album;
+    }
+
+    private static Source createSource(SourceType sourceType) {
+        Source source = new Source(sourceType);
+        source.setSignature(SOURCE_SIGNATURE);
+        return source;
+    }
+
+    private static Record createRecord() {
+        Record record = new Record();
+        record.setBytes(readRecordBytes());
+        record.setDataFormat(RECORD_DATA_FORMAT);
+        return record;
+    }
+
+    private static FolklorePiece createPiece(FolkloreEntityCollections entityCollections, boolean addMediaRecord) {
+        FolklorePiece piece = new FolklorePiece();
+        piece.setEthnographicRegion(entityCollections.getEthnographicRegion(ETHNOGRAPHIC_REGION).get());
+        piece.setAccompanimentPerformer(entityCollections.getArtist(ENS_FILIP_KUTEV).get());
+        piece.setArrangementAuthor(entityCollections.getArtist(FILIP_KUTEV).get());
+        piece.setAuthor(entityCollections.getArtist(NO_AUTHOR).get());
+        piece.setCdTrackOrder(TRACK_ORDER);
+        piece.setConductor(entityCollections.getArtist(KOSTA_KOLEV).get());
+        piece.setAlbum(entityCollections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get());
+        piece.setDuration(PIECE_DURATION);
+        piece.setNote(PIECE_NOTE);
+        piece.setPerformer(entityCollections.getArtist(TRIO).get());
+        piece.setSoloist(entityCollections.getArtist(VERKA_SIDEROVA).get());
+        piece.setTitle(PIECE_TITLE);
+        piece.setSource(createSource(entityCollections.getSourceType(SOURCE_TYPE).get()));
+        if (addMediaRecord) {
+            piece.setRecord(createRecord());
+        }
+        return piece;
+    }
+
+    private static byte[] readRecordBytes() {
+        try (FileInputStream in = new FileInputStream(Paths.get(RECORD_FILE).toRealPath().toFile())) {
+            return in.readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new byte[0];
         }
     }
 

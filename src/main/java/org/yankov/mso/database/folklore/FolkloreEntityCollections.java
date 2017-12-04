@@ -10,27 +10,17 @@ import org.yankov.mso.datamodel.generic.SourceType;
 
 import java.util.*;
 
-public class FolkloreEntityCollections extends EntityCollections {
+public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> {
 
     private Set<EthnographicRegion> ethnographicRegions;
-    private List<FolklorePiece> pieces;
 
     public FolkloreEntityCollections() {
         super();
         this.ethnographicRegions = new HashSet<>();
-        this.pieces = new ArrayList<>();
     }
 
     public Set<EthnographicRegion> getEthnographicRegions() {
         return ethnographicRegions;
-    }
-
-    public List<FolklorePiece> getPieces() {
-        return pieces;
-    }
-
-    public void addPiece(FolklorePiece piece) {
-        pieces.add(piece);
     }
 
     public Optional<EthnographicRegion> getEthnographicRegion(String name) {
