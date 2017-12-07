@@ -17,7 +17,7 @@ public class FolkloreEntityCollectionFactory {
         Set<SourceType> sourceTypes = new HashSet<>();
         sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_TAPE)));
         sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_CARTRIDGE)));
-        sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_GRAMOPHONE_PLATE)));
+        sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_GRAMOPHONE_RECORD)));
         sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_CD)));
         sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_VIDEO)));
         sourceTypes.add(new SourceType(resourceBundle.getString(FolkloreResources.SOURCE_TYPE_INTERNET)));

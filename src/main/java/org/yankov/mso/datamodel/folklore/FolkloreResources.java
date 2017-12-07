@@ -29,7 +29,7 @@ public class FolkloreResources extends ListResourceBundle {
 
     public static final String SOURCE_TYPE_TAPE = "source-type-tape";
     public static final String SOURCE_TYPE_CARTRIDGE = "source-type-cartridge";
-    public static final String SOURCE_TYPE_GRAMOPHONE_PLATE = "source-type-gramophone-plate";
+    public static final String SOURCE_TYPE_GRAMOPHONE_RECORD = "source-type-gramophone-record";
     public static final String SOURCE_TYPE_CD = "source-type-cd";
     public static final String SOURCE_TYPE_VIDEO = "source-type-video";
     public static final String SOURCE_TYPE_INTERNET = "source-type-internet";
@@ -55,7 +55,7 @@ public class FolkloreResources extends ListResourceBundle {
 
                 { FolkloreResources.SOURCE_TYPE_TAPE, "" },
                 { FolkloreResources.SOURCE_TYPE_CARTRIDGE, "" },
-                { FolkloreResources.SOURCE_TYPE_GRAMOPHONE_PLATE, "" },
+                {FolkloreResources.SOURCE_TYPE_GRAMOPHONE_RECORD, "" },
                 { FolkloreResources.SOURCE_TYPE_CD, "" },
                 { FolkloreResources.SOURCE_TYPE_VIDEO, "" },
                 { FolkloreResources.SOURCE_TYPE_INTERNET, "" },
