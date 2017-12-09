@@ -1,8 +1,11 @@
-package org.yankov.mso.application;
+package org.yankov.mso.application.folklore;
 
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
+import org.yankov.mso.application.generic.ApplicationContext;
+import org.yankov.mso.application.generic.ApplicationSettings;
+import org.yankov.mso.datamodel.folklore.FolkloreResources;
 
 import java.util.Optional;
 
@@ -23,7 +26,8 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
 
     @Override
     public Optional<String> getTitle() {
-        return Optional.of("Folklore Media Storage Organizer");
+        return Optional.of(ApplicationContext.getInstance().getFolkloreResourceBundle()
+                                             .getString(FolkloreResources.UI_STAGE_TITLE));
     }
 
     @Override
@@ -48,7 +52,9 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
 
     @Override
     public Scene getScene() {
-        return null;
+        FolkloreUserInterfaceControls uiControls = new FolkloreUserInterfaceControls();
+        uiControls.layout();
+        return uiControls.getScene();
     }
 
 }

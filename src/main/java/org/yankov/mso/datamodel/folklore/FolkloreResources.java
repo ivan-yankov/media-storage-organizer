@@ -1,15 +1,8 @@
 package org.yankov.mso.datamodel.folklore;
 
 import java.util.ListResourceBundle;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class FolkloreResources extends ListResourceBundle {
-
-    private static final Locale BULGARIAN = new Locale("bg");
-
-    public static final ResourceBundle FOLKLORE_RESOURCES_BG =
-            ResourceBundle.getBundle(FolkloreResources_bg.class.getName(), BULGARIAN);
 
     public static final String REGION_TRAKIA = "region-trakia";
     public static final String REGION_STRANDZHA = "region-strandzha";
@@ -34,32 +27,40 @@ public class FolkloreResources extends ListResourceBundle {
     public static final String SOURCE_TYPE_VIDEO = "source-type-video";
     public static final String SOURCE_TYPE_INTERNET = "source-type-internet";
 
+    public static final String UI_STAGE_TITLE = "ui-stage-title";
+    public static final String UI_TAB_TEXT_INPUT = "ui-tab-text-input";
+    public static final String UI_TAB_TEXT_OUTPUT = "ui-tab-text-output";
+
     @Override
     protected Object[][] getContents() {
         return new Object[][] {
-                { FolkloreResources.REGION_TRAKIA, "" },
-                { FolkloreResources.REGION_STRANDZHA, "" },
-                { FolkloreResources.REGION_RODOPI, "" },
-                { FolkloreResources.REGION_PIRIN, "" },
-                { FolkloreResources.REGION_SHOPSKI, "" },
-                { FolkloreResources.REGION_MIZIA, "" },
-                { FolkloreResources.REGION_DOBRUDZHA, "" },
-                { FolkloreResources.REGION_MACEDONIA, "" },
-                { FolkloreResources.REGION_AUTHORITY, "" },
+                { FolkloreResources.REGION_TRAKIA, ""},
+                { FolkloreResources.REGION_STRANDZHA, ""},
+                { FolkloreResources.REGION_RODOPI, ""},
+                { FolkloreResources.REGION_PIRIN, ""},
+                { FolkloreResources.REGION_SHOPSKI, ""},
+                { FolkloreResources.REGION_MIZIA, ""},
+                { FolkloreResources.REGION_DOBRUDZHA, ""},
+                { FolkloreResources.REGION_MACEDONIA, ""},
+                { FolkloreResources.REGION_AUTHORITY, ""},
 
-                { FolkloreResources.INSTRUMENT_KAVAL, "" },
-                { FolkloreResources.INSTRUMENT_GAIDA, "" },
-                { FolkloreResources.INSTRUMENT_GADULKA, "" },
-                { FolkloreResources.INSTRUMENT_TAMBURA, "" },
-                { FolkloreResources.INSTRUMENT_TAPAN, "" },
+                { FolkloreResources.INSTRUMENT_KAVAL, ""},
+                { FolkloreResources.INSTRUMENT_GAIDA, ""},
+                { FolkloreResources.INSTRUMENT_GADULKA, ""},
+                { FolkloreResources.INSTRUMENT_TAMBURA, ""},
+                { FolkloreResources.INSTRUMENT_TAPAN, ""},
 
-                { FolkloreResources.SOURCE_TYPE_TAPE, "" },
-                { FolkloreResources.SOURCE_TYPE_CARTRIDGE, "" },
-                {FolkloreResources.SOURCE_TYPE_GRAMOPHONE_RECORD, "" },
-                { FolkloreResources.SOURCE_TYPE_CD, "" },
-                { FolkloreResources.SOURCE_TYPE_VIDEO, "" },
-                { FolkloreResources.SOURCE_TYPE_INTERNET, "" },
-        };
+                { FolkloreResources.SOURCE_TYPE_TAPE, ""},
+                { FolkloreResources.SOURCE_TYPE_CARTRIDGE, ""},
+                { FolkloreResources.SOURCE_TYPE_GRAMOPHONE_RECORD, ""},
+                { FolkloreResources.SOURCE_TYPE_CD, ""},
+                { FolkloreResources.SOURCE_TYPE_VIDEO, ""},
+                { FolkloreResources.SOURCE_TYPE_INTERNET, ""},
+
+                { FolkloreResources.UI_STAGE_TITLE, ""},
+                { FolkloreResources.UI_TAB_TEXT_INPUT, ""},
+                { FolkloreResources.UI_TAB_TEXT_OUTPUT, ""},
+                };
     }
 
 }

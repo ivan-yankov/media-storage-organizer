@@ -2,6 +2,8 @@ package org.yankov.mso.database.generic;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.yankov.mso.application.generic.ApplicationArguments;
+import org.yankov.mso.application.generic.ApplicationContext;
 
 public class DatabaseTest {
 
@@ -16,6 +18,7 @@ public class DatabaseTest {
     @BeforeClass
     public static void beforeClass() {
         DatabaseSessionManager.getInstance().openSession(CONFIGURATION_FILE);
+        ApplicationContext.getInstance().initialize(new ApplicationArguments(null));
     }
 
     @AfterClass

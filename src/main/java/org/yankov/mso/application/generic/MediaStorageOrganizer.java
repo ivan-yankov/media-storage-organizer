@@ -1,17 +1,19 @@
-package org.yankov.mso.application;
+package org.yankov.mso.application.generic;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class MediaStorageOrganizer extends Application {
+import java.util.Locale;
 
-    private static ApplicationSettings applicationSettings;
+public class MediaStorageOrganizer extends Application {
 
     public MediaStorageOrganizer() {
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        ApplicationSettings applicationSettings = ApplicationContext.getInstance().getApplicationSettings();
+
         primaryStage.setMaximized(applicationSettings.isMaximized());
 
         applicationSettings.getWindowWidth().ifPresent(primaryStage::setWidth);
@@ -27,14 +29,10 @@ public class MediaStorageOrganizer extends Application {
     }
 
     public static void main(String[] args) {
-        String settingsType = argsPresented(args) ? args[0] : "";
-        applicationSettings = ApplicationSettingsFactory.createApplicationSettings(settingsType);
+        ApplicationArguments applicationArguments = new ApplicationArguments(args);
+        ApplicationContext.getInstance().initialize(applicationArguments);
 
         launch(args);
-    }
-
-    private static boolean argsPresented(String[] args) {
-        return args != null && args.length > 0;
     }
 
 }
