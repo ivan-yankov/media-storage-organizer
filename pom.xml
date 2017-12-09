@@ -6,14 +6,14 @@
 
     <groupId>groupId</groupId>
     <artifactId>MediaStorageOrganizer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.9</maven.compiler.source>
         <maven.compiler.target>1.9</maven.compiler.target>
-        <jvm.options>--add-modules java.xml.bind</jvm.options>
-        <jvm.options.test>--add-modules java.xml.bind -Djavax.persistence.schema-generation.database.action=drop-and-create</jvm.options.test>
+        <jvm.test.argLine>--add-modules java.xml.bind -Djavax.persistence.schema-generation.database.action=drop-and-create</jvm.test.argLine>
     </properties>
 
     <build>
@@ -23,7 +23,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <argLine>${jvm.options}</argLine>
+                    <compilerArgs>
+                        <arg>--add-modules</arg>
+                        <arg>java.xml.bind</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -32,7 +35,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <argLine>${jvm.options.test}</argLine>
+                    <argLine>${jvm.test.argLine}</argLine>
                 </configuration>
             </plugin>
         </plugins>
