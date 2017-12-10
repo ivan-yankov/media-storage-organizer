@@ -3,15 +3,19 @@ package org.yankov.mso.application.folklore;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.generic.ApplicationContext;
 import org.yankov.mso.application.generic.UserInterfaceControls;
+import org.yankov.mso.datamodel.folklore.FolklorePiece;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
@@ -66,38 +70,56 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     }
 
     private Node createTable() {
+        TableView<FolklorePiece> table = new TableView<>();
+        table.setEditable(false);
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        table.getColumns().addAll(createTableColumns());
+
+        StackPane container = new StackPane();
+        container.getChildren().add(table);
+
+        return container;
+    }
+
+    private List<TableColumn<FolklorePiece, String>> createTableColumns() {
         ResourceBundle bundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-        TableColumn colAlbum = new TableColumn(bundle.getString(COL_ALBUM));
-        TableColumn colAlbumTrackOrder = new TableColumn(bundle.getString(COL_ALBUM_TRACK_ORDER));
-        TableColumn colTitle = new TableColumn(bundle.getString(COL_TITLE));
-        TableColumn colPerformer = new TableColumn(bundle.getString(COL_PERFORMER));
-        TableColumn colAccompanimentPerformer = new TableColumn(bundle.getString(COL_ACCOMPANIMENT_PERFORMER));
-        TableColumn colAuthor = new TableColumn(bundle.getString(COL_AUTHOR));
-        TableColumn colArrangementAuthor = new TableColumn(bundle.getString(COL_ARRANGEMENT_AUTHOR));
-        TableColumn colConductor = new TableColumn(bundle.getString(COL_CONDUCTOR));
-        TableColumn colSoloist = new TableColumn(bundle.getString(COL_SOLOIST));
-        TableColumn colDuration = new TableColumn(bundle.getString(COL_DURATION));
-        TableColumn colSource = new TableColumn(bundle.getString(COL_SOURCE));
-        TableColumn colEthnographicRegion = new TableColumn(bundle.getString(COL_ETHNOGRAPHIC_REGION));
-        TableColumn colRecord = new TableColumn(bundle.getString(COL_FILE));
-        TableColumn colNote = new TableColumn(bundle.getString(COL_NOTE));
+        TableColumn<FolklorePiece, String> colAlbum = new TableColumn<>(bundle.getString(COL_ALBUM));
+        TableColumn<FolklorePiece, String> colAlbumTrackOrder = new TableColumn<>(
+                bundle.getString(COL_ALBUM_TRACK_ORDER));
+        TableColumn<FolklorePiece, String> colTitle = new TableColumn<>(bundle.getString(COL_TITLE));
+        TableColumn<FolklorePiece, String> colPerformer = new TableColumn<>(bundle.getString(COL_PERFORMER));
+        TableColumn<FolklorePiece, String> colAccompanimentPerformer = new TableColumn<>(
+                bundle.getString(COL_ACCOMPANIMENT_PERFORMER));
+        TableColumn<FolklorePiece, String> colAuthor = new TableColumn<>(bundle.getString(COL_AUTHOR));
+        TableColumn<FolklorePiece, String> colArrangementAuthor = new TableColumn<>(
+                bundle.getString(COL_ARRANGEMENT_AUTHOR));
+        TableColumn<FolklorePiece, String> colConductor = new TableColumn<>(bundle.getString(COL_CONDUCTOR));
+        TableColumn<FolklorePiece, String> colSoloist = new TableColumn<>(bundle.getString(COL_SOLOIST));
+        TableColumn<FolklorePiece, String> colDuration = new TableColumn<>(bundle.getString(COL_DURATION));
+        TableColumn<FolklorePiece, String> colSource = new TableColumn<>(bundle.getString(COL_SOURCE));
+        TableColumn<FolklorePiece, String> colEthnographicRegion = new TableColumn<>(
+                bundle.getString(COL_ETHNOGRAPHIC_REGION));
+        TableColumn<FolklorePiece, String> colFile = new TableColumn<>(bundle.getString(COL_FILE));
+        TableColumn<FolklorePiece, String> colNote = new TableColumn<>(bundle.getString(COL_NOTE));
 
-        TableView table = new TableView();
-        table.setEditable(false);
-        table.getColumns()
-             .addAll(colAlbum, colAlbumTrackOrder, colTitle, colPerformer, colAccompanimentPerformer, colAuthor,
-                     colArrangementAuthor, colConductor, colSoloist, colDuration, colSource, colEthnographicRegion,
-                     colRecord, colNote);
+        List<TableColumn<FolklorePiece, String>> columns = new ArrayList<>();
+        columns.add(colAlbum);
+        columns.add(colAlbumTrackOrder);
+        columns.add(colTitle);
+        columns.add(colPerformer);
+        columns.add(colAccompanimentPerformer);
+        columns.add(colAuthor);
+        columns.add(colArrangementAuthor);
+        columns.add(colConductor);
+        columns.add(colSoloist);
+        columns.add(colDuration);
+        columns.add(colSource);
+        columns.add(colEthnographicRegion);
+        columns.add(colFile);
+        columns.add(colNote);
 
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(table);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-        return scrollPane;
+        return columns;
     }
 
     private Node createActionButtons() {
