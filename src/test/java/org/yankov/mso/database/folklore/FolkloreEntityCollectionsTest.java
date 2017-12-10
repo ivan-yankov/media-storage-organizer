@@ -38,7 +38,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     private static final Duration PIECE_DURATION = Duration.ofMinutes(3);
     private static final Duration ALBUM_DURATION = Duration.ofMinutes(70);
 
-    private static final String RECORD_FILE = "./src/test/resources/record.flac";
+    private static final String RECORD_FILE = "/record.flac";
 
     public FolkloreEntityCollectionsTest() {
     }
@@ -266,7 +266,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     }
 
     private static byte[] readRecordBytes() {
-        try (FileInputStream in = new FileInputStream(Paths.get(RECORD_FILE).toRealPath().toFile())) {
+        String path = FolkloreEntityCollectionsTest.class.getResource(RECORD_FILE).getPath();
+        try (FileInputStream in = new FileInputStream(path)) {
             return in.readAllBytes();
         } catch (IOException e) {
             e.printStackTrace();

@@ -6,6 +6,7 @@ import javafx.stage.Screen;
 import org.yankov.mso.application.generic.ApplicationContext;
 import org.yankov.mso.application.generic.ApplicationSettings;
 
+import java.net.URL;
 import java.util.Optional;
 
 public class FolkloreApplicationSettings implements ApplicationSettings {
@@ -24,7 +25,9 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
 
     @Override
     public Optional<Image> getIcon() {
-        return Optional.of(new Image("file:./src/main/resources/application-icon.png"));
+        URL url = getClass().getResource("/application-icon.png");
+        Image image = new Image(url.toString());
+        return Optional.of(image);
     }
 
     @Override
