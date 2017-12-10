@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.generic.ApplicationContext;
 import org.yankov.mso.application.generic.UserInterfaceControls;
 
@@ -15,11 +16,11 @@ public class FolkloreScene implements UserInterfaceControls<Scene> {
     public static final String TAB_INPUT = CLASS_NAME + "-tab-input";
     public static final String TAB_OUTPUT = CLASS_NAME + "-tab-output";
 
-    private ScrollPane root;
+    private StackPane root;
     private Scene scene;
 
     public FolkloreScene() {
-        this.root = new ScrollPane();
+        this.root = new StackPane();
         this.scene = new Scene(root);
     }
 
@@ -40,9 +41,7 @@ public class FolkloreScene implements UserInterfaceControls<Scene> {
         tabPane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                       .getString(TAB_OUTPUT), false, null));
 
-        root.setContent(tabPane);
-        root.setFitToWidth(true);
-        root.setFitToHeight(true);
+        root.getChildren().add(tabPane);
     }
 
     private Tab createTab(String id, String text, boolean closable, Node content) {
