@@ -14,6 +14,7 @@
         <maven.compiler.source>1.9</maven.compiler.source>
         <maven.compiler.target>1.9</maven.compiler.target>
         <jvm.test.argLine>--add-modules java.xml.bind -Djavax.persistence.schema-generation.database.action=drop-and-create</jvm.test.argLine>
+        <main.class>org.yankov.mso.application.generic.MediaStorageOrganizer</main.class>
     </properties>
 
     <build>
@@ -38,7 +39,37 @@
                     <argLine>${jvm.test.argLine}</argLine>
                 </configuration>
             </plugin>
-        </plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}-lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>${project.build.finalName}-lib/</classpathPrefix>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>        </plugins>
     </build>
 
     <dependencies>
@@ -68,5 +99,4 @@
             <version>10.10.1.1</version>
         </dependency>
     </dependencies>
-
 </project>
