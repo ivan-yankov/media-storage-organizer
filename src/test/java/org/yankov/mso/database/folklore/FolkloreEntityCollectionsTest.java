@@ -159,7 +159,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertEquals(expected.getAccompanimentPerformer(), actual.getAccompanimentPerformer());
         Assert.assertEquals(expected.getArrangementAuthor(), actual.getArrangementAuthor());
         Assert.assertEquals(expected.getAuthor(), actual.getAuthor());
-        Assert.assertEquals(expected.getCdTrackOrder(), actual.getCdTrackOrder());
+        Assert.assertEquals(expected.getAlbumTrackOrder(), actual.getAlbumTrackOrder());
         Assert.assertEquals(expected.getConductor(), actual.getConductor());
         Assert.assertEquals(expected.getAlbum(), actual.getAlbum());
         Assert.assertEquals(expected.getDuration(), actual.getDuration());
@@ -250,7 +250,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         piece.setAccompanimentPerformer(entityCollections.getArtist(ENS_FILIP_KUTEV).get());
         piece.setArrangementAuthor(entityCollections.getArtist(FILIP_KUTEV).get());
         piece.setAuthor(entityCollections.getArtist(NO_AUTHOR).get());
-        piece.setCdTrackOrder(TRACK_ORDER);
+        piece.setAlbumTrackOrder(TRACK_ORDER);
         piece.setConductor(entityCollections.getArtist(KOSTA_KOLEV).get());
         piece.setAlbum(entityCollections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get());
         piece.setDuration(PIECE_DURATION);

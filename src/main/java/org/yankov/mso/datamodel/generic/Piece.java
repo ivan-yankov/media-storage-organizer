@@ -14,8 +14,8 @@ public class Piece {
     @ManyToOne(cascade = CascadeType.ALL)
     private Album album;
 
-    @Column(name = "cd_track_order")
-    private Integer cdTrackOrder;
+    @Column(name = "album_track_order")
+    private Integer albumTrackOrder;
 
     @Column(name = "title")
     private String title;
@@ -65,12 +65,12 @@ public class Piece {
         this.album = album;
     }
 
-    public Integer getCdTrackOrder() {
-        return cdTrackOrder;
+    public Integer getAlbumTrackOrder() {
+        return albumTrackOrder;
     }
 
-    public void setCdTrackOrder(Integer cdTrackOrder) {
-        this.cdTrackOrder = cdTrackOrder;
+    public void setAlbumTrackOrder(Integer albumTrackOrder) {
+        this.albumTrackOrder = albumTrackOrder;
     }
 
     public String getTitle() {
