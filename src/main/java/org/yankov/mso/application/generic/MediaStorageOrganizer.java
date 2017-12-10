@@ -1,9 +1,11 @@
 package org.yankov.mso.application.generic;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-
-import java.util.Locale;
 
 public class MediaStorageOrganizer extends Application {
 

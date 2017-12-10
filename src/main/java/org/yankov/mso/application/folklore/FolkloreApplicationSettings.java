@@ -5,18 +5,21 @@ import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import org.yankov.mso.application.generic.ApplicationContext;
 import org.yankov.mso.application.generic.ApplicationSettings;
-import org.yankov.mso.datamodel.folklore.FolkloreResources;
 
 import java.util.Optional;
 
 public class FolkloreApplicationSettings implements ApplicationSettings {
+
+    private static final String CLASS_NAME = FolkloreApplicationSettings.class.getName();
+
+    public static final String STAGE_TITLE = CLASS_NAME + "-stage-title";
 
     public FolkloreApplicationSettings() {
     }
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     @Override
@@ -26,8 +29,7 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
 
     @Override
     public Optional<String> getTitle() {
-        return Optional.of(ApplicationContext.getInstance().getFolkloreResourceBundle()
-                                             .getString(FolkloreResources.UI_STAGE_TITLE));
+        return Optional.of(ApplicationContext.getInstance().getFolkloreResourceBundle().getString(STAGE_TITLE));
     }
 
     @Override
@@ -52,9 +54,9 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
 
     @Override
     public Scene getScene() {
-        FolkloreUserInterfaceControls uiControls = new FolkloreUserInterfaceControls();
-        uiControls.layout();
-        return uiControls.getScene();
+        FolkloreScene folkloreScene = new FolkloreScene();
+        folkloreScene.layout();
+        return folkloreScene.getContent();
     }
 
 }

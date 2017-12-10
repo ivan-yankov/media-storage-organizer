@@ -1,5 +1,9 @@
 package org.yankov.mso.datamodel.folklore;
 
+import org.yankov.mso.application.folklore.FolkloreApplicationSettings;
+import org.yankov.mso.application.folklore.FolkloreInputTabControls;
+import org.yankov.mso.application.folklore.FolkloreScene;
+
 import java.util.ListResourceBundle;
 
 public class FolkloreResources_bg extends ListResourceBundle {
@@ -30,9 +34,31 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 { FolkloreResources.SOURCE_TYPE_VIDEO, "Видео" },
                 { FolkloreResources.SOURCE_TYPE_INTERNET, "Internet" },
 
-                { FolkloreResources.UI_STAGE_TITLE, "Съхранение и управление на записи с българска народна музика" },
-                { FolkloreResources.UI_TAB_TEXT_INPUT, "Въвеждане" },
-                { FolkloreResources.UI_TAB_TEXT_OUTPUT, "Справка" },
+                { FolkloreApplicationSettings.STAGE_TITLE, "Управление на база данни с българска народна музика" },
+
+                { FolkloreScene.TAB_INPUT, "Въвеждане" },
+                { FolkloreScene.TAB_OUTPUT, "Справка" },
+
+                { FolkloreInputTabControls.COL_ALBUM, "Албум" },
+                { FolkloreInputTabControls.COL_ALBUM_TRACK_ORDER, "Номер в албума" },
+                { FolkloreInputTabControls.COL_TITLE, "Заглавие" },
+                { FolkloreInputTabControls.COL_PERFORMER, "Изпълнител" },
+                { FolkloreInputTabControls.COL_ACCOMPANIMENT_PERFORMER, "Съпровод" },
+                { FolkloreInputTabControls.COL_AUTHOR, "Автор" },
+                { FolkloreInputTabControls.COL_ARRANGEMENT_AUTHOR, "Обработка" },
+                { FolkloreInputTabControls.COL_CONDUCTOR, "Диригент" },
+                { FolkloreInputTabControls.COL_SOLOIST, "Солист" },
+                { FolkloreInputTabControls.COL_DURATION, "Времетраене" },
+                { FolkloreInputTabControls.COL_SOURCE, "Източник" },
+                { FolkloreInputTabControls.COL_ETHNOGRAPHIC_REGION, "Област" },
+                { FolkloreInputTabControls.COL_FILE, "Файл" },
+                { FolkloreInputTabControls.COL_NOTE, "Забележка" },
+
+                { FolkloreInputTabControls.BTN_ADD, "Добавяне" },
+                { FolkloreInputTabControls.BTN_REMOVE, "Премахване" },
+                { FolkloreInputTabControls.BTN_COPY, "Копиране" },
+                { FolkloreInputTabControls.BTN_CLEAR, "Изчистване" },
+                { FolkloreInputTabControls.BTN_LOAD_ALBUM_TRACKS, "Зареждане на файлове" },
                 };
     }
 
