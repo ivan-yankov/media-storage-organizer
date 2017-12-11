@@ -1,6 +1,7 @@
 package org.yankov.mso.database.generic;
 
 import org.hibernate.query.Query;
+import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.generic.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,7 +17,6 @@ public abstract class EntityCollections<T extends Piece> {
 
     public abstract void saveEntityCollections();
 
-    private static final Logger LOGGER = Logger.getLogger(EntityCollections.class.getName());
     private Set<SourceType> sourceTypes;
     private Set<Instrument> instruments;
     private Set<Artist> artists;
@@ -119,7 +119,7 @@ public abstract class EntityCollections<T extends Piece> {
         DatabaseSessionManager.getInstance().executeOperation(session -> {
             collection.forEach(session::saveOrUpdate);
             return null;
-        }, message -> LOGGER.log(Level.SEVERE, message));
+        }, message -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
     }
 
     private <CollectionType> List<CollectionType> loadCollectionFromDatabase(Class entityClass) {
@@ -130,7 +130,7 @@ public abstract class EntityCollections<T extends Piece> {
             criteriaQuery.select(root);
             Query<CollectionType> query = session.createQuery(criteriaQuery);
             return query.getResultList();
-        }, message -> LOGGER.log(Level.SEVERE, message));
+        }, message -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
 
         if (!optResult.isPresent()) {
             return Collections.emptyList();

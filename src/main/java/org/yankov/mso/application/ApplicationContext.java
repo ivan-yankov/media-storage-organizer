@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class ApplicationContext {
 
@@ -20,6 +21,7 @@ public class ApplicationContext {
     private Locale locale;
     private ApplicationSettings applicationSettings;
     private ResourceBundle folkloreResourceBundle;
+    private Logger logger;
 
     private ApplicationContext() {
     }
@@ -38,6 +40,7 @@ public class ApplicationContext {
                 applicationArguments.getArgument(ARG_KEY_SETTINGS, DEFAULT_SETTINGS));
         this.folkloreResourceBundle = ResourceBundle
                 .getBundle(FolkloreResources.class.getName(), getLocale());
+        this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     }
 
     public Locale getLocale() {
@@ -50,6 +53,10 @@ public class ApplicationContext {
 
     public ResourceBundle getFolkloreResourceBundle() {
         return folkloreResourceBundle;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     private ApplicationSettings createApplicationSettings(String type) {
