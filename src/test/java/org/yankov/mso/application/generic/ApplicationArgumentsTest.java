@@ -2,6 +2,7 @@ package org.yankov.mso.application.generic;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.yankov.mso.application.ApplicationArguments;
 
 public class ApplicationArgumentsTest {
 

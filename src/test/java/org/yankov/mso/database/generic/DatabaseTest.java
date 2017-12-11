@@ -2,8 +2,8 @@ package org.yankov.mso.database.generic;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.yankov.mso.application.generic.ApplicationArguments;
-import org.yankov.mso.application.generic.ApplicationContext;
+import org.yankov.mso.application.ApplicationArguments;
+import org.yankov.mso.application.ApplicationContext;
 
 public class DatabaseTest {
 

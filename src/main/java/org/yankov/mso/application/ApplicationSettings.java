@@ -1,4 +1,4 @@
-package org.yankov.mso.application.generic;
+package org.yankov.mso.application;
 
 import javafx.scene.Scene;
 import javafx.scene.image.Image;

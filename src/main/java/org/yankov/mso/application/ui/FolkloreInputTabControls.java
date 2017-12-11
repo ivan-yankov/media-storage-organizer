@@ -1,4 +1,4 @@
-package org.yankov.mso.application.folklore;
+package org.yankov.mso.application.ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -10,8 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.yankov.mso.application.generic.ApplicationContext;
-import org.yankov.mso.application.generic.UserInterfaceControls;
+import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
 
 import java.util.ArrayList;

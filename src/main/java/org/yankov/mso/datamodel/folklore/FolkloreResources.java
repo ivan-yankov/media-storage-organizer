@@ -1,8 +1,8 @@
 package org.yankov.mso.datamodel.folklore;
 
-import org.yankov.mso.application.folklore.FolkloreApplicationSettings;
-import org.yankov.mso.application.folklore.FolkloreInputTabControls;
-import org.yankov.mso.application.folklore.FolkloreScene;
+import org.yankov.mso.application.FolkloreApplicationSettings;
+import org.yankov.mso.application.ui.FolkloreInputTabControls;
+import org.yankov.mso.application.ui.FolkloreScene;
 import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
 
 import java.util.ListResourceBundle;

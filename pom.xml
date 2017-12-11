@@ -14,7 +14,7 @@
         <maven.compiler.source>1.9</maven.compiler.source>
         <maven.compiler.target>1.9</maven.compiler.target>
         <jvm.test.argLine>--add-modules java.xml.bind -Djavax.persistence.schema-generation.database.action=drop-and-create</jvm.test.argLine>
-        <main.class>org.yankov.mso.application.generic.MediaStorageOrganizer</main.class>
+        <main.class>org.yankov.mso.application.MediaStorageOrganizer</main.class>
     </properties>
 
     <build>

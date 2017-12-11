@@ -1,6 +1,6 @@
 package org.yankov.mso.database.folklore;
 
-import org.yankov.mso.application.generic.ApplicationContext;
+import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.generic.Instrument;
 import org.yankov.mso.datamodel.generic.SourceType;

@@ -1,4 +1,4 @@
-package org.yankov.mso.application.generic;
+package org.yankov.mso.application.ui;
 
 public interface UserInterfaceControls<ContentType> {
 

@@ -1,9 +1,10 @@
-package org.yankov.mso.application.generic;
+package org.yankov.mso.application;
 
-import org.yankov.mso.application.folklore.FolkloreApplicationSettings;
 import org.yankov.mso.datamodel.folklore.FolkloreResources;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ApplicationContext {
@@ -19,6 +20,7 @@ public class ApplicationContext {
     private Locale locale;
     private ApplicationSettings applicationSettings;
     private ResourceBundle folkloreResourceBundle;
+    private Map<String, Object> objects;
 
     private ApplicationContext() {
     }
@@ -37,6 +39,7 @@ public class ApplicationContext {
                 applicationArguments.getArgument(ARG_KEY_SETTINGS, DEFAULT_SETTINGS));
         this.folkloreResourceBundle = ResourceBundle
                 .getBundle(FolkloreResources.class.getName(), getLocale());
+        this.objects = new HashMap<>();
     }
 
     public Locale getLocale() {
@@ -49,6 +52,14 @@ public class ApplicationContext {
 
     public ResourceBundle getFolkloreResourceBundle() {
         return folkloreResourceBundle;
+    }
+
+    public Object getObject(String key) {
+        return objects.get(key);
+    }
+
+    public void setObject(String key, Object object) {
+        this.objects.put(key, object);
     }
 
     private ApplicationSettings createApplicationSettings(String type) {
