@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class FolklorePieceProperties extends PieceProperties {
 
+    public static final String PROPERTY_ETHNOGRAPHIC_REGION = "ethnographicRegion";
+
     private final SimpleStringProperty ethnographicRegion;
 
     public FolklorePieceProperties() {

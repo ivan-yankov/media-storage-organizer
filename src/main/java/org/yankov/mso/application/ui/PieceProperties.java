@@ -1,11 +1,26 @@
 package org.yankov.mso.application.ui;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class PieceProperties {
 
+    public static final String PROPERTY_ALBUM = "album";
+    public static final String PROPERTY_ALBUM_TRACK_ORDER = "albumTrackOrder";
+    public static final String PROPERTY_TITLE = "title";
+    public static final String PROPERTY_PERFORMER = "performer";
+    public static final String PROPERTY_ACCOMPANIMENT_PERFORMER = "accompanimentPerformer";
+    public static final String PROPERTY_AUTHOR = "author";
+    public static final String PROPERTY_ARRANGEMENT_AUTHOR = "arrangementAuthor";
+    public static final String PROPERTY_CONDUCTOR = "conductor";
+    public static final String PROPERTY_SOLOIST = "soloist";
+    public static final String PROPERTY_DURATION = "duration";
+    public static final String PROPERTY_NOTE = "note";
+    public static final String PROPERTY_SOURCE = "source";
+    public static final String PROPERTY_FILE_NAME = "fileName";
+
     private final SimpleStringProperty album;
-    private final SimpleStringProperty albumTrackOrder;
+    private final SimpleIntegerProperty albumTrackOrder;
     private final SimpleStringProperty title;
     private final SimpleStringProperty performer;
     private final SimpleStringProperty accompanimentPerformer;
@@ -20,7 +35,7 @@ public class PieceProperties {
 
     public PieceProperties() {
         this.album = new SimpleStringProperty();
-        this.albumTrackOrder = new SimpleStringProperty();
+        this.albumTrackOrder = new SimpleIntegerProperty();
         this.title = new SimpleStringProperty();
         this.performer = new SimpleStringProperty();
         this.accompanimentPerformer = new SimpleStringProperty();
@@ -46,15 +61,15 @@ public class PieceProperties {
         this.album.set(album);
     }
 
-    public String getAlbumTrackOrder() {
+    public Integer getAlbumTrackOrder() {
         return albumTrackOrder.get();
     }
 
-    public SimpleStringProperty albumTrackOrderProperty() {
+    public SimpleIntegerProperty albumTrackOrderProperty() {
         return albumTrackOrder;
     }
 
-    public void setAlbumTrackOrder(String albumTrackOrder) {
+    public void setAlbumTrackOrder(Integer albumTrackOrder) {
         this.albumTrackOrder.set(albumTrackOrder);
     }
 
