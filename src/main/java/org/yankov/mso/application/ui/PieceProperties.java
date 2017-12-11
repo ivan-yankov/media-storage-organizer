@@ -3,6 +3,8 @@ package org.yankov.mso.application.ui;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.io.File;
+
 public class PieceProperties {
 
     public static final String PROPERTY_ALBUM = "album";
@@ -223,6 +225,11 @@ public class PieceProperties {
         newPiece.setFileName(getFileName());
 
         return newPiece;
+    }
+
+    public void setFromFile(File file) {
+        setAlbum(file.getParentFile().getName());
+        setFileName(file.getAbsolutePath());
     }
 
 }

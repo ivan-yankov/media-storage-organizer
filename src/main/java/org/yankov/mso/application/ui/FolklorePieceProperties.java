@@ -2,6 +2,8 @@ package org.yankov.mso.application.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 
+import java.io.File;
+
 public class FolklorePieceProperties extends PieceProperties {
 
     public static final String PROPERTY_ETHNOGRAPHIC_REGION = "ethnographicRegion";

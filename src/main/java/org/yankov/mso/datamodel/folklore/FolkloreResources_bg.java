@@ -60,6 +60,9 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 { FolkloreInputTabControls.BTN_COPY, "Копиране" },
                 { FolkloreInputTabControls.BTN_CLEAR, "Изчистване" },
                 { FolkloreInputTabControls.BTN_LOAD_ALBUM_TRACKS, "Зареждане на файлове" },
+                { FolkloreInputTabControls.SELECT_AUDIO_FILES, "Избор на файлове" },
+                { FolkloreInputTabControls.FLAC_FILTER_NAME, "FLAC файлове" },
+                { FolkloreInputTabControls.FLAC_FILTER_EXT, "*.flac" },
                 };
     }
 

@@ -60,6 +60,9 @@ public class FolkloreResources extends ListResourceBundle {
                 { FolkloreInputTabControls.BTN_COPY, "" },
                 { FolkloreInputTabControls.BTN_CLEAR, "" },
                 { FolkloreInputTabControls.BTN_LOAD_ALBUM_TRACKS, "" },
+                { FolkloreInputTabControls.SELECT_AUDIO_FILES, "" },
+                { FolkloreInputTabControls.FLAC_FILTER_NAME, "" },
+                { FolkloreInputTabControls.FLAC_FILTER_EXT, "" },
                 };
     }
 

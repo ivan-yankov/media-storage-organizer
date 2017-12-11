@@ -13,10 +13,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
@@ -44,6 +47,12 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
     public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
 
+    public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
+    public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
+    public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
+
+    private ResourceBundle resourceBundle;
+
     private static final Double BUTTONS_SPACE = 25.0;
     private static final Insets BUTTONS_INSETS = new Insets(25.0);
 
@@ -53,6 +62,7 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     public FolkloreInputTabControls() {
         this.content = new VBox();
         this.table = new TableView<>();
+        this.resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
     }
 
     @Override
@@ -157,30 +167,28 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     }
 
     private List<Button> createActionButtons() {
-        ResourceBundle bundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
-
         Button btnAdd = new Button();
-        btnAdd.setText(bundle.getString(BTN_ADD));
+        btnAdd.setText(resourceBundle.getString(BTN_ADD));
         btnAdd.setMaxWidth(Double.MAX_VALUE);
         btnAdd.setOnAction(this::handleBtnAddAction);
 
         Button btnRemove = new Button();
-        btnRemove.setText(bundle.getString(BTN_REMOVE));
+        btnRemove.setText(resourceBundle.getString(BTN_REMOVE));
         btnRemove.setMaxWidth(Double.MAX_VALUE);
         btnRemove.setOnAction(this::handleBtnRemoveAction);
 
         Button btnCopy = new Button();
-        btnCopy.setText(bundle.getString(BTN_COPY));
+        btnCopy.setText(resourceBundle.getString(BTN_COPY));
         btnCopy.setMaxWidth(Double.MAX_VALUE);
         btnCopy.setOnAction(this::handleBtnCopyAction);
 
         Button btnClear = new Button();
-        btnClear.setText(bundle.getString(BTN_CLEAR));
+        btnClear.setText(resourceBundle.getString(BTN_CLEAR));
         btnClear.setMaxWidth(Double.MAX_VALUE);
         btnClear.setOnAction(this::handleBtnClearAction);
 
         Button btnLoadAlbumTracks = new Button();
-        btnLoadAlbumTracks.setText(bundle.getString(BTN_LOAD_ALBUM_TRACKS));
+        btnLoadAlbumTracks.setText(resourceBundle.getString(BTN_LOAD_ALBUM_TRACKS));
         btnLoadAlbumTracks.setMaxWidth(Double.MAX_VALUE);
         btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracksAction);
 
@@ -227,6 +235,26 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     }
 
     private void handleBtnLoadAlbumTracksAction(ActionEvent event) {
+        Optional<List<File>> files = selectFiles();
+        if (files.isPresent()) {
+            for (File file : files.get()) {
+                FolklorePieceProperties piece = new FolklorePieceProperties();
+                piece.setFromFile(file);
+                table.getItems().add(piece);
+            }
+            refreshPieceOrder();
+        }
+    }
+
+    private Optional<List<File>> selectFiles() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(resourceBundle.getString(SELECT_AUDIO_FILES));
+        FileChooser.ExtensionFilter flacFilter = new FileChooser.ExtensionFilter(
+                resourceBundle.getString(FLAC_FILTER_NAME), resourceBundle.getString(FLAC_FILTER_EXT));
+        fileChooser.getExtensionFilters().add(flacFilter);
+        List<File> files = fileChooser.showOpenMultipleDialog(
+                ApplicationContext.getInstance().getApplicationSettings().getScene().getWindow());
+        return files != null ? Optional.of(files) : Optional.empty();
     }
 
 }

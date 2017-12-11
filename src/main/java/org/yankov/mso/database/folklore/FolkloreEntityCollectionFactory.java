@@ -36,40 +36,40 @@ public class FolkloreEntityCollectionFactory {
     public static final String SOURCE_TYPE_VIDEO = CLASS_NAME + "-source-type-video";
     public static final String SOURCE_TYPE_INTERNET = CLASS_NAME + "-source-type-internet";
 
-    private static final ResourceBundle BUNDLE = ApplicationContext.getInstance().getFolkloreResourceBundle();
+    private static final ResourceBundle RESOURCE_BUNDLE = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     public static Set<SourceType> createSourceTypes() {
         Set<SourceType> sourceTypes = new HashSet<>();
-        sourceTypes.add(new SourceType(BUNDLE.getString(SOURCE_TYPE_TAPE)));
-        sourceTypes.add(new SourceType(BUNDLE.getString(SOURCE_TYPE_CARTRIDGE)));
-        sourceTypes.add(new SourceType(BUNDLE.getString(SOURCE_TYPE_GRAMOPHONE_RECORD)));
-        sourceTypes.add(new SourceType(BUNDLE.getString(SOURCE_TYPE_CD)));
-        sourceTypes.add(new SourceType(BUNDLE.getString(SOURCE_TYPE_VIDEO)));
-        sourceTypes.add(new SourceType(BUNDLE.getString(SOURCE_TYPE_INTERNET)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_TAPE)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CARTRIDGE)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_GRAMOPHONE_RECORD)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CD)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_VIDEO)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_INTERNET)));
         return sourceTypes;
     }
 
     public static Set<Instrument> createInstruments() {
         Set<Instrument> instruments = new HashSet<>();
-        instruments.add(new Instrument(BUNDLE.getString(INSTRUMENT_KAVAL)));
-        instruments.add(new Instrument(BUNDLE.getString(INSTRUMENT_GAIDA)));
-        instruments.add(new Instrument(BUNDLE.getString(INSTRUMENT_GADULKA)));
-        instruments.add(new Instrument(BUNDLE.getString(INSTRUMENT_TAMBURA)));
-        instruments.add(new Instrument(BUNDLE.getString(INSTRUMENT_TAPAN)));
+        instruments.add(new Instrument(RESOURCE_BUNDLE.getString(INSTRUMENT_KAVAL)));
+        instruments.add(new Instrument(RESOURCE_BUNDLE.getString(INSTRUMENT_GAIDA)));
+        instruments.add(new Instrument(RESOURCE_BUNDLE.getString(INSTRUMENT_GADULKA)));
+        instruments.add(new Instrument(RESOURCE_BUNDLE.getString(INSTRUMENT_TAMBURA)));
+        instruments.add(new Instrument(RESOURCE_BUNDLE.getString(INSTRUMENT_TAPAN)));
         return instruments;
     }
 
     public static Set<EthnographicRegion> createEthnographicRegions() {
         Set<EthnographicRegion> ethnographicRegions = new HashSet<>();
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_TRAKIA)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_STRANDZHA)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_RODOPI)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_PIRIN)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_SHOPSKI)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_MIZIA)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_DOBRUDZHA)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_MACEDONIA)));
-        ethnographicRegions.add(new EthnographicRegion(BUNDLE.getString(REGION_AUTHORITY)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_TRAKIA)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_STRANDZHA)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_RODOPI)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_PIRIN)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_SHOPSKI)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_MIZIA)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_DOBRUDZHA)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_MACEDONIA)));
+        ethnographicRegions.add(new EthnographicRegion(RESOURCE_BUNDLE.getString(REGION_AUTHORITY)));
         return ethnographicRegions;
     }
 
