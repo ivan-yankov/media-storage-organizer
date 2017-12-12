@@ -101,7 +101,7 @@
 
         <dependency>
             <groupId>jaudiotagger</groupId>
-            <artifactId>jaudiotagger-2.2.6</artifactId>
+            <artifactId>jaudiotagger</artifactId>
             <version>2.2.6</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/jaudiotagger-2.2.6.jar</systemPath>
