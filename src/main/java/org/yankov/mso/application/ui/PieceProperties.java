@@ -3,6 +3,7 @@ package org.yankov.mso.application.ui;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.yankov.mso.application.utils.FileUtils;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Source;
 
@@ -168,6 +169,7 @@ public class PieceProperties {
     public void setFromFile(File file) {
         setAlbum(file.getParentFile().getName());
         setFile(file);
+        FileUtils.detectAudioFileDuration(file).ifPresent(this::setDuration);
     }
 
 }

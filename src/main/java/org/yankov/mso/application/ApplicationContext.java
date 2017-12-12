@@ -1,10 +1,6 @@
 package org.yankov.mso.application;
 
-import org.yankov.mso.datamodel.folklore.FolkloreResources;
-
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
