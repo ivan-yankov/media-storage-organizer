@@ -8,7 +8,7 @@ import java.time.Duration;
 public class DurationConverter implements AttributeConverter<Duration, String> {
 
     private static final String SEPARATOR = ":";
-    private static final String FORMAT_TEMPLATE = "%02d:%02d:%02d";
+    private static final String FORMAT_TEMPLATE = "%02d" + SEPARATOR + "%02d" + SEPARATOR + "%02d";
 
     private static final int SECONDS_IN_MINUTE = 60;
     private static int SECONDS_IN_HOUR = 60 * SECONDS_IN_MINUTE;

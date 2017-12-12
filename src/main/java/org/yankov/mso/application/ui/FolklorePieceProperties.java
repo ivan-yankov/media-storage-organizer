@@ -1,29 +1,22 @@
 package org.yankov.mso.application.ui;
 
-import javafx.beans.property.SimpleStringProperty;
-
-import java.io.File;
+import javafx.beans.property.SimpleObjectProperty;
+import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 
 public class FolklorePieceProperties extends PieceProperties {
 
-    public static final String PROPERTY_ETHNOGRAPHIC_REGION = "ethnographicRegion";
-
-    private final SimpleStringProperty ethnographicRegion;
+    private final SimpleObjectProperty<EthnographicRegion> ethnographicRegion;
 
     public FolklorePieceProperties() {
         super();
-        this.ethnographicRegion = new SimpleStringProperty();
+        this.ethnographicRegion = new SimpleObjectProperty<>();
     }
 
-    public String getEthnographicRegion() {
+    public EthnographicRegion getEthnographicRegion() {
         return ethnographicRegion.get();
     }
 
-    public SimpleStringProperty ethnographicRegionProperty() {
-        return ethnographicRegion;
-    }
-
-    public void setEthnographicRegion(String ethnographicRegion) {
+    public void setEthnographicRegion(EthnographicRegion ethnographicRegion) {
         this.ethnographicRegion.set(ethnographicRegion);
     }
 
@@ -42,7 +35,7 @@ public class FolklorePieceProperties extends PieceProperties {
         newPiece.setDuration(getDuration());
         newPiece.setNote(getNote());
         newPiece.setSource(getSource());
-        newPiece.setFileName(getFileName());
+        newPiece.setFile(getFile());
         newPiece.setEthnographicRegion(getEthnographicRegion());
 
         return newPiece;

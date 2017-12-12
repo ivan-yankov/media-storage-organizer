@@ -1,77 +1,59 @@
 package org.yankov.mso.application.ui;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.yankov.mso.datamodel.generic.Artist;
+import org.yankov.mso.datamodel.generic.Source;
 
 import java.io.File;
+import java.time.Duration;
 
 public class PieceProperties {
-
-    public static final String PROPERTY_ALBUM = "album";
-    public static final String PROPERTY_ALBUM_TRACK_ORDER = "albumTrackOrder";
-    public static final String PROPERTY_TITLE = "title";
-    public static final String PROPERTY_PERFORMER = "performer";
-    public static final String PROPERTY_ACCOMPANIMENT_PERFORMER = "accompanimentPerformer";
-    public static final String PROPERTY_AUTHOR = "author";
-    public static final String PROPERTY_ARRANGEMENT_AUTHOR = "arrangementAuthor";
-    public static final String PROPERTY_CONDUCTOR = "conductor";
-    public static final String PROPERTY_SOLOIST = "soloist";
-    public static final String PROPERTY_DURATION = "duration";
-    public static final String PROPERTY_NOTE = "note";
-    public static final String PROPERTY_SOURCE = "source";
-    public static final String PROPERTY_FILE_NAME = "fileName";
 
     private final SimpleStringProperty album;
     private final SimpleIntegerProperty albumTrackOrder;
     private final SimpleStringProperty title;
-    private final SimpleStringProperty performer;
-    private final SimpleStringProperty accompanimentPerformer;
-    private final SimpleStringProperty author;
-    private final SimpleStringProperty arrangementAuthor;
-    private final SimpleStringProperty conductor;
-    private final SimpleStringProperty soloist;
-    private final SimpleStringProperty duration;
+    private final SimpleObjectProperty<Artist> performer;
+    private final SimpleObjectProperty<Artist> accompanimentPerformer;
+    private final SimpleObjectProperty<Artist> author;
+    private final SimpleObjectProperty<Artist> arrangementAuthor;
+    private final SimpleObjectProperty<Artist> conductor;
+    private final SimpleObjectProperty<Artist> soloist;
+    private final SimpleObjectProperty<Duration> duration;
     private final SimpleStringProperty note;
-    private final SimpleStringProperty source;
-    private final SimpleStringProperty fileName;
+    private final SimpleObjectProperty<Source> source;
+    private final SimpleObjectProperty<File> file;
 
     public PieceProperties() {
         this.album = new SimpleStringProperty();
         this.albumTrackOrder = new SimpleIntegerProperty();
         this.title = new SimpleStringProperty();
-        this.performer = new SimpleStringProperty();
-        this.accompanimentPerformer = new SimpleStringProperty();
-        this.author = new SimpleStringProperty();
-        this.arrangementAuthor = new SimpleStringProperty();
-        this.conductor = new SimpleStringProperty();
-        this.soloist = new SimpleStringProperty();
-        this.duration = new SimpleStringProperty();
+        this.performer = new SimpleObjectProperty<>();
+        this.accompanimentPerformer = new SimpleObjectProperty<>();
+        this.author = new SimpleObjectProperty<>();
+        this.arrangementAuthor = new SimpleObjectProperty<>();
+        this.conductor = new SimpleObjectProperty<>();
+        this.soloist = new SimpleObjectProperty<>();
+        this.duration = new SimpleObjectProperty<>();
         this.note = new SimpleStringProperty();
-        this.source = new SimpleStringProperty();
-        this.fileName = new SimpleStringProperty();
+        this.source = new SimpleObjectProperty<>();
+        this.file = new SimpleObjectProperty<>();
     }
 
     public String getAlbum() {
         return album.get();
     }
 
-    public SimpleStringProperty albumProperty() {
-        return album;
-    }
-
     public void setAlbum(String album) {
         this.album.set(album);
     }
 
-    public Integer getAlbumTrackOrder() {
+    public int getAlbumTrackOrder() {
         return albumTrackOrder.get();
     }
 
-    public SimpleIntegerProperty albumTrackOrderProperty() {
-        return albumTrackOrder;
-    }
-
-    public void setAlbumTrackOrder(Integer albumTrackOrder) {
+    public void setAlbumTrackOrder(int albumTrackOrder) {
         this.albumTrackOrder.set(albumTrackOrder);
     }
 
@@ -79,95 +61,63 @@ public class PieceProperties {
         return title.get();
     }
 
-    public SimpleStringProperty titleProperty() {
-        return title;
-    }
-
     public void setTitle(String title) {
         this.title.set(title);
     }
 
-    public String getPerformer() {
+    public Artist getPerformer() {
         return performer.get();
     }
 
-    public SimpleStringProperty performerProperty() {
-        return performer;
-    }
-
-    public void setPerformer(String performer) {
+    public void setPerformer(Artist performer) {
         this.performer.set(performer);
     }
 
-    public String getAccompanimentPerformer() {
+    public Artist getAccompanimentPerformer() {
         return accompanimentPerformer.get();
     }
 
-    public SimpleStringProperty accompanimentPerformerProperty() {
-        return accompanimentPerformer;
-    }
-
-    public void setAccompanimentPerformer(String accompanimentPerformer) {
+    public void setAccompanimentPerformer(Artist accompanimentPerformer) {
         this.accompanimentPerformer.set(accompanimentPerformer);
     }
 
-    public String getAuthor() {
+    public Artist getAuthor() {
         return author.get();
     }
 
-    public SimpleStringProperty authorProperty() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
+    public void setAuthor(Artist author) {
         this.author.set(author);
     }
 
-    public String getArrangementAuthor() {
+    public Artist getArrangementAuthor() {
         return arrangementAuthor.get();
     }
 
-    public SimpleStringProperty arrangementAuthorProperty() {
-        return arrangementAuthor;
-    }
-
-    public void setArrangementAuthor(String arrangementAuthor) {
+    public void setArrangementAuthor(Artist arrangementAuthor) {
         this.arrangementAuthor.set(arrangementAuthor);
     }
 
-    public String getConductor() {
+    public Artist getConductor() {
         return conductor.get();
     }
 
-    public SimpleStringProperty conductorProperty() {
-        return conductor;
-    }
-
-    public void setConductor(String conductor) {
+    public void setConductor(Artist conductor) {
         this.conductor.set(conductor);
     }
 
-    public String getSoloist() {
+    public Artist getSoloist() {
         return soloist.get();
     }
 
-    public SimpleStringProperty soloistProperty() {
-        return soloist;
-    }
-
-    public void setSoloist(String soloist) {
+    public void setSoloist(Artist soloist) {
         this.soloist.set(soloist);
     }
 
-    public String getDuration() {
+    public Duration getDuration() {
         return duration.get();
     }
 
-    public SimpleStringProperty durationProperty() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
+    public void setDuration(Duration duration) {
         this.duration.set(duration);
     }
 
@@ -175,36 +125,24 @@ public class PieceProperties {
         return note.get();
     }
 
-    public SimpleStringProperty noteProperty() {
-        return note;
-    }
-
     public void setNote(String note) {
         this.note.set(note);
     }
 
-    public String getSource() {
+    public Source getSource() {
         return source.get();
     }
 
-    public SimpleStringProperty sourceProperty() {
-        return source;
-    }
-
-    public void setSource(String source) {
+    public void setSource(Source source) {
         this.source.set(source);
     }
 
-    public String getFileName() {
-        return fileName.get();
+    public File getFile() {
+        return file.get();
     }
 
-    public SimpleStringProperty fileNameProperty() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName.set(fileName);
+    public void setFile(File file) {
+        this.file.set(file);
     }
 
     public PieceProperties clone() {
@@ -222,14 +160,14 @@ public class PieceProperties {
         newPiece.setDuration(getDuration());
         newPiece.setNote(getNote());
         newPiece.setSource(getSource());
-        newPiece.setFileName(getFileName());
+        newPiece.setFile(getFile());
 
         return newPiece;
     }
 
     public void setFromFile(File file) {
         setAlbum(file.getParentFile().getName());
-        setFileName(file.getAbsolutePath());
+        setFile(file);
     }
 
 }

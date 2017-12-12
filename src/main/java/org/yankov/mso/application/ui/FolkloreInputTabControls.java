@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -8,15 +9,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.datamodel.folklore.EthnographicRegion;
+import org.yankov.mso.datamodel.generic.Artist;
+import org.yankov.mso.datamodel.generic.Source;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,10 +55,12 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
     public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
 
-    private ResourceBundle resourceBundle;
+    private static final String DURATION_FORMAT = "%02d:%02d";
 
     private static final Double BUTTONS_SPACE = 25.0;
     private static final Insets BUTTONS_INSETS = new Insets(25.0);
+
+    private ResourceBundle resourceBundle;
 
     private VBox content;
     private TableView<FolklorePieceProperties> table;
@@ -94,59 +100,97 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         table.setItems(FXCollections.observableArrayList());
     }
 
-    private List<TableColumn<FolklorePieceProperties, ?>> createTableColumns() {
+    private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
         ResourceBundle bundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(bundle.getString(COL_ALBUM));
-        colAlbum.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_ALBUM));
+        colAlbum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbum()));
 
-        TableColumn<FolklorePieceProperties, Integer> colAlbumTrackOrder = new TableColumn<>(
+        TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
                 bundle.getString(COL_ALBUM_TRACK_ORDER));
-        colAlbumTrackOrder.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_ALBUM_TRACK_ORDER));
+        colAlbumTrackOrder.setCellValueFactory(
+                param -> new SimpleStringProperty(Integer.toString(param.getValue().getAlbumTrackOrder())));
 
         TableColumn<FolklorePieceProperties, String> colTitle = new TableColumn<>(bundle.getString(COL_TITLE));
-        colTitle.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_TITLE));
+        colTitle.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getTitle()));
 
         TableColumn<FolklorePieceProperties, String> colPerformer = new TableColumn<>(bundle.getString(COL_PERFORMER));
-        colPerformer.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_PERFORMER));
+        colPerformer.setCellValueFactory(param -> {
+            Artist performer = param.getValue().getPerformer();
+            String s = performer != null ? performer.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colAccompanimentPerformer = new TableColumn<>(
                 bundle.getString(COL_ACCOMPANIMENT_PERFORMER));
-        colAccompanimentPerformer
-                .setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_ACCOMPANIMENT_PERFORMER));
+        colAccompanimentPerformer.setCellValueFactory(param -> {
+            Artist accompanimentPerformer = param.getValue().getAccompanimentPerformer();
+            String s = accompanimentPerformer != null ? accompanimentPerformer.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colAuthor = new TableColumn<>(bundle.getString(COL_AUTHOR));
-        colAuthor.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_AUTHOR));
+        colAuthor.setCellValueFactory(param -> {
+            Artist author = param.getValue().getAuthor();
+            String s = author != null ? author.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colArrangementAuthor = new TableColumn<>(
                 bundle.getString(COL_ARRANGEMENT_AUTHOR));
-        colArrangementAuthor
-                .setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_ARRANGEMENT_AUTHOR));
+        colArrangementAuthor.setCellValueFactory(param -> {
+            Artist arrangementAuthor = param.getValue().getArrangementAuthor();
+            String s = arrangementAuthor != null ? arrangementAuthor.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colConductor = new TableColumn<>(bundle.getString(COL_CONDUCTOR));
-        colConductor.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_CONDUCTOR));
+        colConductor.setCellValueFactory(param -> {
+            Artist conductor = param.getValue().getConductor();
+            String s = conductor != null ? conductor.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colSoloist = new TableColumn<>(bundle.getString(COL_SOLOIST));
-        colSoloist.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_SOLOIST));
+        colSoloist.setCellValueFactory(param -> {
+            Artist soloist = param.getValue().getSoloist();
+            String s = soloist != null ? soloist.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colDuration = new TableColumn<>(bundle.getString(COL_DURATION));
-        colDuration.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_DURATION));
+        colDuration.setCellValueFactory(param -> {
+            Duration d = param.getValue().getDuration();
+            String s = d != null ? String.format(DURATION_FORMAT, d.toMinutesPart(), d.toSecondsPart()) : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colSource = new TableColumn<>(bundle.getString(COL_SOURCE));
-        colSoloist.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_SOURCE));
+        colSoloist.setCellValueFactory(param -> {
+            Source source = param.getValue().getSource();
+            String s = source != null ? source.getType() + "/" + source.getSignature() : null;
+            return new SimpleStringProperty(s);
+        });
 
-        TableColumn<FolklorePieceProperties, String> colFileName = new TableColumn<>(bundle.getString(COL_FILE));
-        colFileName.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_FILE_NAME));
-
-        TableColumn<FolklorePieceProperties, String> colNote = new TableColumn<>(bundle.getString(COL_NOTE));
-        colNote.setCellValueFactory(new PropertyValueFactory<>(PieceProperties.PROPERTY_NOTE));
+        TableColumn<FolklorePieceProperties, String> colFile = new TableColumn<>(bundle.getString(COL_FILE));
+        colFile.setCellValueFactory(param -> {
+            File file = param.getValue().getFile();
+            String s = file != null ? file.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
         TableColumn<FolklorePieceProperties, String> colEthnographicRegion = new TableColumn<>(
                 bundle.getString(COL_ETHNOGRAPHIC_REGION));
-        colEthnographicRegion
-                .setCellValueFactory(new PropertyValueFactory<>(FolklorePieceProperties.PROPERTY_ETHNOGRAPHIC_REGION));
+        colEthnographicRegion.setCellValueFactory(param -> {
+            EthnographicRegion ethnographicRegion = param.getValue().getEthnographicRegion();
+            String s = ethnographicRegion != null ? ethnographicRegion.getName() : null;
+            return new SimpleStringProperty(s);
+        });
 
-        List<TableColumn<FolklorePieceProperties, ?>> columns = new ArrayList<>();
+        TableColumn<FolklorePieceProperties, String> colNote = new TableColumn<>(bundle.getString(COL_NOTE));
+        colNote.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getNote()));
+
+        List<TableColumn<FolklorePieceProperties, String>> columns = new ArrayList<>();
 
         columns.add(colAlbum);
         columns.add(colAlbumTrackOrder);
@@ -159,9 +203,9 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         columns.add(colSoloist);
         columns.add(colDuration);
         columns.add(colSource);
-        columns.add(colFileName);
-        columns.add(colNote);
+        columns.add(colFile);
         columns.add(colEthnographicRegion);
+        columns.add(colNote);
 
         return columns;
     }
