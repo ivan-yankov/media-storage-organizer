@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="media-storage-organizer" />
         <module name="MediaStorageOrganizer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="media-storage-organizer" target="1.9" />
       <module name="MediaStorageOrganizer" target="1.9" />
     </bytecodeTargetLevel>
   </component>
