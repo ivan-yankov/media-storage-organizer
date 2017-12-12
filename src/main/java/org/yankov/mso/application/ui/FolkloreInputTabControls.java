@@ -113,7 +113,7 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         table.getColumns().forEach(column -> column.setStyle(TABLE_FONT.toCssRepresentation()));
 
         ObservableList<FolklorePieceProperties> items = FXCollections.observableArrayList();
-        items.addListener(this::resizeColumnsToFit);
+        items.addListener(this::handleTableChange);
         table.setItems(items);
     }
 
@@ -264,13 +264,18 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         return buttons;
     }
 
+    private void handleTableChange(ListChangeListener.Change<? extends FolklorePieceProperties> change) {
+        refreshPieceOrder();
+        resizeColumnsToFit();
+    }
+
     private void refreshPieceOrder() {
         for (int i = 0; i < table.getItems().size(); i++) {
             table.getItems().get(i).setAlbumTrackOrder(i + 1);
         }
     }
 
-    private void resizeColumnsToFit(ListChangeListener.Change<? extends FolklorePieceProperties> change) {
+    private void resizeColumnsToFit() {
         table.getColumns().forEach(column -> {
             double width = FxUtils.calculateTextWidth(column.getText(), TABLE_FONT);
             for (int i = 0; i < table.getItems().size(); i++) {
@@ -286,14 +291,12 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
 
     private void handleBtnAddAction(ActionEvent event) {
         table.getItems().add(new FolklorePieceProperties());
-        refreshPieceOrder();
     }
 
     private void handleBtnRemoveAction(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             table.getItems().remove(selectedIndex);
-            refreshPieceOrder();
         }
     }
 
@@ -301,7 +304,6 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             table.getItems().add(table.getItems().get(selectedIndex).clone());
-            refreshPieceOrder();
         }
     }
 
@@ -317,7 +319,6 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
                 piece.setFromFile(file);
                 table.getItems().add(piece);
             }
-            refreshPieceOrder();
         }
     }
 
