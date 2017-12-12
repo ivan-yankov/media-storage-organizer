@@ -1,5 +1,10 @@
 package org.yankov.mso.application;
 
+import org.yankov.mso.application.ui.ApplicationConsole;
+import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
+import org.yankov.mso.application.ui.ConsoleService;
+import org.yankov.mso.application.ui.ConsoleServiceAdapter;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -10,6 +15,8 @@ public class ApplicationContext {
     private static final String DEFAULT_SETTINGS = "folklore";
     private static final String ARG_KEY_LANGUAGE = "-language";
     private static final String DEFAULT_LANGUAGE = "bg";
+    private static final String ARG_KEY_MODE = "-mode";
+    private static final String DEFAULT_MODE = "run";
 
     private static ApplicationContext instance;
 
@@ -34,9 +41,14 @@ public class ApplicationContext {
         this.locale = new Locale(applicationArguments.getArgument(ARG_KEY_LANGUAGE, DEFAULT_LANGUAGE));
         this.applicationSettings = createApplicationSettings(
                 applicationArguments.getArgument(ARG_KEY_SETTINGS, DEFAULT_SETTINGS));
-        this.folkloreResourceBundle = ResourceBundle
-                .getBundle(FolkloreResources.class.getName(), getLocale());
+        this.folkloreResourceBundle = ResourceBundle.getBundle(FolkloreResources.class.getName(), getLocale());
         this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        this.logger.addHandler(new ApplicationConsoleLogHandler(
+                createConsoleService(applicationArguments.getArgument(ARG_KEY_MODE, DEFAULT_MODE))));
+    }
+
+    public ApplicationArguments getApplicationArguments() {
+        return applicationArguments;
     }
 
     public Locale getLocale() {
@@ -61,6 +73,17 @@ public class ApplicationContext {
                 return new FolkloreApplicationSettings();
             default:
                 return null;
+        }
+    }
+
+    private ConsoleService createConsoleService(String mode) {
+        switch (mode) {
+            case "run":
+                return ApplicationConsole.getInstance();
+            case "test":
+                return new ConsoleServiceAdapter();
+            default:
+                return new ConsoleServiceAdapter();
         }
     }
 

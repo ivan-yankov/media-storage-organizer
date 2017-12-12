@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class ApplicationArguments {
 
-    private String ARGUMENT_VALUE_SEPARATOR = "=";
+    private static final String ARGUMENT_VALUE_SEPARATOR = "=";
 
     private Map<String, String> arguments;
 

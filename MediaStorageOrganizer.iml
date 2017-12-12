@@ -28,7 +28,7 @@
     <orderEntry type="library" name="Maven: org.hibernate.common:hibernate-commons-annotations:5.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.apache.derby:derbyclient:10.10.1.1" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: jaudiotagger:jaudiotagger-2.2.6:2.2.6">
+      <library name="Maven: jaudiotagger:jaudiotagger:2.2.6">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/src/main/resources/jaudiotagger-2.2.6.jar!/" />
         </CLASSES>

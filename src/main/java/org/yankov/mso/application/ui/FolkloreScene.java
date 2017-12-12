@@ -4,6 +4,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.ApplicationContext;
 
@@ -29,6 +31,19 @@ public class FolkloreScene implements UserInterfaceControls<Scene> {
 
     @Override
     public void layout() {
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(createTabPane());
+        borderPane.setBottom(createConsole());
+
+        root.getChildren().add(borderPane);
+    }
+
+    private Node createConsole() {
+        ApplicationConsole.getInstance().layout();
+        return ApplicationConsole.getInstance().getContent();
+    }
+
+    private Node createTabPane() {
         FolkloreInputTabControls inputTabControls = new FolkloreInputTabControls();
         inputTabControls.layout();
 
@@ -39,7 +54,7 @@ public class FolkloreScene implements UserInterfaceControls<Scene> {
         tabPane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                       .getString(TAB_OUTPUT), false, null));
 
-        root.getChildren().add(tabPane);
+        return tabPane;
     }
 
     private Tab createTab(String id, String text, boolean closable, Node content) {

@@ -18,7 +18,7 @@ public class DatabaseTest {
     @BeforeClass
     public static void beforeClass() {
         DatabaseSessionManager.getInstance().openSession(CONFIGURATION_FILE);
-        ApplicationContext.getInstance().initialize(new ApplicationArguments(null));
+        ApplicationContext.getInstance().initialize(new ApplicationArguments(new String[] {"-mode=test"}));
     }
 
     @AfterClass

@@ -1,6 +1,7 @@
 package org.yankov.mso.application;
 
 import org.yankov.mso.application.FolkloreApplicationSettings;
+import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreInputTabControls;
 import org.yankov.mso.application.ui.FolkloreScene;
 import org.yankov.mso.application.utils.FileUtils;
@@ -68,6 +69,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 { FileUtils.FILE_NOT_FOUND, "Не е намерен файл" },
                 { FileUtils.CANNOT_DETECT_AUDIO_FILE_DURATION, "Не може да бъде определена продължителността" +
                         "на файл с аудио запис" },
+
+                { ApplicationConsoleLogHandler.ERROR, "Грешка" },
+                { ApplicationConsoleLogHandler.WARNING, "Внимание" },
+                { ApplicationConsoleLogHandler.INFO, "Съобщение" },
                 };
     }
 
