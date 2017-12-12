@@ -1,7 +1,10 @@
 package org.yankov.mso.application.ui;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -15,6 +18,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.ui.font.CustomFont;
+import org.yankov.mso.application.ui.font.FontFamily;
+import org.yankov.mso.application.ui.font.FontStyle;
+import org.yankov.mso.application.ui.font.FontWeight;
+import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Source;
@@ -25,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
 
@@ -60,6 +67,9 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
 
     private static final Double BUTTONS_SPACE = 25.0;
     private static final Insets BUTTONS_INSETS = new Insets(25.0);
+    private static final Double BUTTONS_MIN_WIDTH = 250.0;
+    private static final CustomFont TABLE_FONT = new CustomFont(FontFamily.SANS_SERIF, FontWeight.NORMAL,
+                                                                FontStyle.NORMAL, 12);
 
     private ResourceBundle resourceBundle;
 
@@ -82,12 +92,14 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         HBox container = new HBox();
 
         initializeTable();
-        container.getChildren().add(new StackPane(table));
-        HBox.setHgrow(table, Priority.ALWAYS);
+        StackPane tableContainer = new StackPane(table);
+        HBox.setHgrow(tableContainer, Priority.ALWAYS);
+        container.getChildren().add(tableContainer);
 
         VBox buttonsContainer = new VBox();
         buttonsContainer.setPadding(BUTTONS_INSETS);
         buttonsContainer.setSpacing(BUTTONS_SPACE);
+        buttonsContainer.setMinWidth(BUTTONS_MIN_WIDTH);
         buttonsContainer.getChildren().addAll(createActionButtons());
         container.getChildren().add(buttonsContainer);
 
@@ -98,7 +110,11 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         table.setEditable(false);
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         table.getColumns().addAll(createTableColumns());
-        table.setItems(FXCollections.observableArrayList());
+        table.getColumns().forEach(column -> column.setStyle(TABLE_FONT.toCssRepresentation()));
+
+        ObservableList<FolklorePieceProperties> items = FXCollections.observableArrayList();
+        items.addListener(this::resizeColumnsToFit);
+        table.setItems(items);
     }
 
     private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
@@ -252,6 +268,20 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         for (int i = 0; i < table.getItems().size(); i++) {
             table.getItems().get(i).setAlbumTrackOrder(i + 1);
         }
+    }
+
+    private void resizeColumnsToFit(ListChangeListener.Change<? extends FolklorePieceProperties> change) {
+        table.getColumns().forEach(column -> {
+            double width = FxUtils.calculateTextWidth(column.getText(), TABLE_FONT);
+            for (int i = 0; i < table.getItems().size(); i++) {
+                ObservableValue observableValue = column.getCellObservableValue(i);
+                if (observableValue != null) {
+                    String columnValue = (String) observableValue.getValue();
+                    width = Math.max(width, FxUtils.calculateTextWidth(columnValue, TABLE_FONT));
+                }
+            }
+            column.setPrefWidth(width);
+        });
     }
 
     private void handleBtnAddAction(ActionEvent event) {
