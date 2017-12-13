@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -86,11 +87,13 @@ public class FolkloreInputTable implements UserInterfaceControls {
     private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
         colAlbum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbum()));
+        colAlbum.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
                 resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
         colAlbumTrackOrder.setCellValueFactory(
                 param -> new SimpleStringProperty(Integer.toString(param.getValue().getAlbumTrackOrder())));
+        colAlbumTrackOrder.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colTitle = new TableColumn<>(resourceBundle.getString(COL_TITLE));
         colTitle.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getTitle()));
@@ -150,6 +153,7 @@ public class FolkloreInputTable implements UserInterfaceControls {
             String s = d != null ? String.format(DURATION_FORMAT, d.toMinutesPart(), d.toSecondsPart()) : null;
             return new SimpleStringProperty(s);
         });
+        colDuration.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colSource = new TableColumn<>(
                 resourceBundle.getString(COL_SOURCE));
