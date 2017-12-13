@@ -1,9 +1,11 @@
 package org.yankov.mso.application.ui;
 
-public interface UserInterfaceControls<ContentType> {
+import javafx.scene.layout.Pane;
+
+public interface UserInterfaceControls {
 
     void layout();
 
-    ContentType getContent();
+    Pane getContainer();
 
 }

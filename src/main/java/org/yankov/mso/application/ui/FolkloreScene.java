@@ -4,12 +4,13 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.ui.input.FolkloreInputTab;
 
-public class FolkloreScene implements UserInterfaceControls<Scene> {
+public class FolkloreScene {
 
     private static final String CLASS_NAME = FolkloreScene.class.getName();
 
@@ -24,12 +25,6 @@ public class FolkloreScene implements UserInterfaceControls<Scene> {
         this.scene = new Scene(root);
     }
 
-    @Override
-    public Scene getContent() {
-        return scene;
-    }
-
-    @Override
     public void layout() {
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(createTabPane());
@@ -38,19 +33,23 @@ public class FolkloreScene implements UserInterfaceControls<Scene> {
         root.getChildren().add(borderPane);
     }
 
-    private Node createConsole() {
+    public Scene getScene() {
+        return scene;
+    }
+
+    private Pane createConsole() {
         ApplicationConsole.getInstance().layout();
-        return ApplicationConsole.getInstance().getContent();
+        return ApplicationConsole.getInstance().getContainer();
     }
 
     private Node createTabPane() {
-        FolkloreInputTabControls inputTabControls = new FolkloreInputTabControls();
-        inputTabControls.layout();
+        UserInterfaceControls inputTab = new FolkloreInputTab();
+        inputTab.layout();
 
         TabPane tabPane = new TabPane();
         tabPane.getTabs().add(createTab(TAB_INPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                      .getString(TAB_INPUT), false,
-                                        inputTabControls.getContent()));
+                                        inputTab.getContainer()));
         tabPane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                       .getString(TAB_OUTPUT), false, null));
 

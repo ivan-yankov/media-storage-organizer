@@ -1,23 +1,18 @@
-package org.yankov.mso.application.ui;
+package org.yankov.mso.application.ui.input;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.ui.FolklorePieceProperties;
+import org.yankov.mso.application.ui.UserInterfaceControls;
 import org.yankov.mso.application.ui.font.CustomFont;
 import org.yankov.mso.application.ui.font.FontFamily;
 import org.yankov.mso.application.ui.font.FontStyle;
@@ -31,12 +26,11 @@ import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
+public class FolkloreInputTable implements UserInterfaceControls {
 
-    private static final String CLASS_NAME = FolkloreInputTabControls.class.getName();
+    private static final String CLASS_NAME = FolkloreInputTable.class.getName();
 
     public static final String COL_ALBUM = CLASS_NAME + "-col-album";
     public static final String COL_ALBUM_TRACK_ORDER = CLASS_NAME + "-col-album-track-order";
@@ -53,60 +47,27 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
     public static final String COL_FILE = CLASS_NAME + "-col-record";
     public static final String COL_NOTE = CLASS_NAME + "-col-note";
 
-    public static final String BTN_ADD = CLASS_NAME + "-btn-add";
-    public static final String BTN_REMOVE = CLASS_NAME + "-btn-remove";
-    public static final String BTN_COPY = CLASS_NAME + "-btn-copy";
-    public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
-    public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
-
-    public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
-    public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
-    public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
-
     private static final String DURATION_FORMAT = "%02d:%02d";
 
-    private static final Double BUTTONS_SPACE = 25.0;
-    private static final Insets BUTTONS_INSETS = new Insets(25.0);
-    private static final Double BUTTONS_MIN_WIDTH = 250.0;
     private static final CustomFont TABLE_FONT = new CustomFont(FontFamily.SANS_SERIF, FontWeight.NORMAL,
                                                                 FontStyle.NORMAL, 12);
 
-    private ResourceBundle resourceBundle;
+    private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    private VBox content;
     private TableView<FolklorePieceProperties> table;
+    private StackPane container;
 
-    public FolkloreInputTabControls() {
-        this.content = new VBox();
+    public FolkloreInputTable() {
         this.table = new TableView<>();
-        this.resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
+        this.container = new StackPane(table);
     }
 
-    @Override
-    public Node getContent() {
-        return content;
+    public TableView<FolklorePieceProperties> getTableView() {
+        return table;
     }
 
     @Override
     public void layout() {
-        HBox container = new HBox();
-
-        initializeTable();
-        StackPane tableContainer = new StackPane(table);
-        HBox.setHgrow(tableContainer, Priority.ALWAYS);
-        container.getChildren().add(tableContainer);
-
-        VBox buttonsContainer = new VBox();
-        buttonsContainer.setPadding(BUTTONS_INSETS);
-        buttonsContainer.setSpacing(BUTTONS_SPACE);
-        buttonsContainer.setMinWidth(BUTTONS_MIN_WIDTH);
-        buttonsContainer.getChildren().addAll(createActionButtons());
-        container.getChildren().add(buttonsContainer);
-
-        content.getChildren().add(container);
-    }
-
-    private void initializeTable() {
         table.setEditable(false);
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         table.getColumns().addAll(createTableColumns());
@@ -117,21 +78,25 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         table.setItems(items);
     }
 
-    private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
-        ResourceBundle bundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
+    @Override
+    public Pane getContainer() {
+        return container;
+    }
 
-        TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(bundle.getString(COL_ALBUM));
+    private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
+        TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
         colAlbum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbum()));
 
         TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
-                bundle.getString(COL_ALBUM_TRACK_ORDER));
+                resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
         colAlbumTrackOrder.setCellValueFactory(
                 param -> new SimpleStringProperty(Integer.toString(param.getValue().getAlbumTrackOrder())));
 
-        TableColumn<FolklorePieceProperties, String> colTitle = new TableColumn<>(bundle.getString(COL_TITLE));
+        TableColumn<FolklorePieceProperties, String> colTitle = new TableColumn<>(resourceBundle.getString(COL_TITLE));
         colTitle.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getTitle()));
 
-        TableColumn<FolklorePieceProperties, String> colPerformer = new TableColumn<>(bundle.getString(COL_PERFORMER));
+        TableColumn<FolklorePieceProperties, String> colPerformer = new TableColumn<>(
+                resourceBundle.getString(COL_PERFORMER));
         colPerformer.setCellValueFactory(param -> {
             Artist performer = param.getValue().getPerformer();
             String s = performer != null ? performer.getName() : null;
@@ -139,14 +104,15 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         });
 
         TableColumn<FolklorePieceProperties, String> colAccompanimentPerformer = new TableColumn<>(
-                bundle.getString(COL_ACCOMPANIMENT_PERFORMER));
+                resourceBundle.getString(COL_ACCOMPANIMENT_PERFORMER));
         colAccompanimentPerformer.setCellValueFactory(param -> {
             Artist accompanimentPerformer = param.getValue().getAccompanimentPerformer();
             String s = accompanimentPerformer != null ? accompanimentPerformer.getName() : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colAuthor = new TableColumn<>(bundle.getString(COL_AUTHOR));
+        TableColumn<FolklorePieceProperties, String> colAuthor = new TableColumn<>(
+                resourceBundle.getString(COL_AUTHOR));
         colAuthor.setCellValueFactory(param -> {
             Artist author = param.getValue().getAuthor();
             String s = author != null ? author.getName() : null;
@@ -154,42 +120,46 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         });
 
         TableColumn<FolklorePieceProperties, String> colArrangementAuthor = new TableColumn<>(
-                bundle.getString(COL_ARRANGEMENT_AUTHOR));
+                resourceBundle.getString(COL_ARRANGEMENT_AUTHOR));
         colArrangementAuthor.setCellValueFactory(param -> {
             Artist arrangementAuthor = param.getValue().getArrangementAuthor();
             String s = arrangementAuthor != null ? arrangementAuthor.getName() : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colConductor = new TableColumn<>(bundle.getString(COL_CONDUCTOR));
+        TableColumn<FolklorePieceProperties, String> colConductor = new TableColumn<>(
+                resourceBundle.getString(COL_CONDUCTOR));
         colConductor.setCellValueFactory(param -> {
             Artist conductor = param.getValue().getConductor();
             String s = conductor != null ? conductor.getName() : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colSoloist = new TableColumn<>(bundle.getString(COL_SOLOIST));
+        TableColumn<FolklorePieceProperties, String> colSoloist = new TableColumn<>(
+                resourceBundle.getString(COL_SOLOIST));
         colSoloist.setCellValueFactory(param -> {
             Artist soloist = param.getValue().getSoloist();
             String s = soloist != null ? soloist.getName() : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colDuration = new TableColumn<>(bundle.getString(COL_DURATION));
+        TableColumn<FolklorePieceProperties, String> colDuration = new TableColumn<>(
+                resourceBundle.getString(COL_DURATION));
         colDuration.setCellValueFactory(param -> {
             Duration d = param.getValue().getDuration();
             String s = d != null ? String.format(DURATION_FORMAT, d.toMinutesPart(), d.toSecondsPart()) : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colSource = new TableColumn<>(bundle.getString(COL_SOURCE));
+        TableColumn<FolklorePieceProperties, String> colSource = new TableColumn<>(
+                resourceBundle.getString(COL_SOURCE));
         colSoloist.setCellValueFactory(param -> {
             Source source = param.getValue().getSource();
             String s = source != null ? source.getType() + "/" + source.getSignature() : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colFile = new TableColumn<>(bundle.getString(COL_FILE));
+        TableColumn<FolklorePieceProperties, String> colFile = new TableColumn<>(resourceBundle.getString(COL_FILE));
         colFile.setCellValueFactory(param -> {
             File file = param.getValue().getFile();
             String s = file != null ? file.getName() : null;
@@ -197,14 +167,14 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         });
 
         TableColumn<FolklorePieceProperties, String> colEthnographicRegion = new TableColumn<>(
-                bundle.getString(COL_ETHNOGRAPHIC_REGION));
+                resourceBundle.getString(COL_ETHNOGRAPHIC_REGION));
         colEthnographicRegion.setCellValueFactory(param -> {
             EthnographicRegion ethnographicRegion = param.getValue().getEthnographicRegion();
             String s = ethnographicRegion != null ? ethnographicRegion.getName() : null;
             return new SimpleStringProperty(s);
         });
 
-        TableColumn<FolklorePieceProperties, String> colNote = new TableColumn<>(bundle.getString(COL_NOTE));
+        TableColumn<FolklorePieceProperties, String> colNote = new TableColumn<>(resourceBundle.getString(COL_NOTE));
         colNote.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getNote()));
 
         List<TableColumn<FolklorePieceProperties, String>> columns = new ArrayList<>();
@@ -225,43 +195,6 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
         columns.add(colNote);
 
         return columns;
-    }
-
-    private List<Button> createActionButtons() {
-        Button btnAdd = new Button();
-        btnAdd.setText(resourceBundle.getString(BTN_ADD));
-        btnAdd.setMaxWidth(Double.MAX_VALUE);
-        btnAdd.setOnAction(this::handleBtnAddAction);
-
-        Button btnRemove = new Button();
-        btnRemove.setText(resourceBundle.getString(BTN_REMOVE));
-        btnRemove.setMaxWidth(Double.MAX_VALUE);
-        btnRemove.setOnAction(this::handleBtnRemoveAction);
-
-        Button btnCopy = new Button();
-        btnCopy.setText(resourceBundle.getString(BTN_COPY));
-        btnCopy.setMaxWidth(Double.MAX_VALUE);
-        btnCopy.setOnAction(this::handleBtnCopyAction);
-
-        Button btnClear = new Button();
-        btnClear.setText(resourceBundle.getString(BTN_CLEAR));
-        btnClear.setMaxWidth(Double.MAX_VALUE);
-        btnClear.setOnAction(this::handleBtnClearAction);
-
-        Button btnLoadAlbumTracks = new Button();
-        btnLoadAlbumTracks.setText(resourceBundle.getString(BTN_LOAD_ALBUM_TRACKS));
-        btnLoadAlbumTracks.setMaxWidth(Double.MAX_VALUE);
-        btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracksAction);
-
-        List<Button> buttons = new ArrayList<>();
-
-        buttons.add(btnAdd);
-        buttons.add(btnRemove);
-        buttons.add(btnCopy);
-        buttons.add(btnClear);
-        buttons.add(btnLoadAlbumTracks);
-
-        return buttons;
     }
 
     private void handleTableChange(ListChangeListener.Change<? extends FolklorePieceProperties> change) {
@@ -287,50 +220,6 @@ public class FolkloreInputTabControls implements UserInterfaceControls<Node> {
             }
             column.setPrefWidth(width);
         });
-    }
-
-    private void handleBtnAddAction(ActionEvent event) {
-        table.getItems().add(new FolklorePieceProperties());
-    }
-
-    private void handleBtnRemoveAction(ActionEvent event) {
-        int selectedIndex = table.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            table.getItems().remove(selectedIndex);
-        }
-    }
-
-    private void handleBtnCopyAction(ActionEvent event) {
-        int selectedIndex = table.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            table.getItems().add(table.getItems().get(selectedIndex).clone());
-        }
-    }
-
-    private void handleBtnClearAction(ActionEvent event) {
-        table.getItems().clear();
-    }
-
-    private void handleBtnLoadAlbumTracksAction(ActionEvent event) {
-        Optional<List<File>> files = selectFiles();
-        if (files.isPresent()) {
-            for (File file : files.get()) {
-                FolklorePieceProperties piece = new FolklorePieceProperties();
-                piece.setFromFile(file);
-                table.getItems().add(piece);
-            }
-        }
-    }
-
-    private Optional<List<File>> selectFiles() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(resourceBundle.getString(SELECT_AUDIO_FILES));
-        FileChooser.ExtensionFilter flacFilter = new FileChooser.ExtensionFilter(
-                resourceBundle.getString(FLAC_FILTER_NAME), resourceBundle.getString(FLAC_FILTER_EXT));
-        fileChooser.getExtensionFilters().add(flacFilter);
-        List<File> files = fileChooser.showOpenMultipleDialog(
-                ApplicationContext.getInstance().getApplicationSettings().getScene().getWindow());
-        return files != null ? Optional.of(files) : Optional.empty();
     }
 
 }

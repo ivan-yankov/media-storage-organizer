@@ -58,7 +58,7 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
     public Scene getScene() {
         FolkloreScene folkloreScene = new FolkloreScene();
         folkloreScene.layout();
-        return folkloreScene.getContent();
+        return folkloreScene.getScene();
     }
 
 }

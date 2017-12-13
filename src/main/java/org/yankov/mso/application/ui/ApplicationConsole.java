@@ -1,11 +1,12 @@
 package org.yankov.mso.application.ui;
 
-import javafx.scene.Node;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 import java.time.LocalDateTime;
 
-public class ApplicationConsole implements UserInterfaceControls<Node>, ConsoleService {
+public class ApplicationConsole implements UserInterfaceControls, ConsoleService {
 
     private static ApplicationConsole instance;
 
@@ -31,8 +32,8 @@ public class ApplicationConsole implements UserInterfaceControls<Node>, ConsoleS
     }
 
     @Override
-    public Node getContent() {
-        return textArea;
+    public Pane getContainer() {
+        return new StackPane(textArea);
     }
 
     @Override
