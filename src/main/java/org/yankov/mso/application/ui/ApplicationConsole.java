@@ -29,6 +29,7 @@ public class ApplicationConsole implements UserInterfaceControls, ConsoleService
     @Override
     public void layout() {
         textArea.setPrefRowCount(PREF_ROW_COUNT);
+        textArea.setEditable(false);
     }
 
     @Override
