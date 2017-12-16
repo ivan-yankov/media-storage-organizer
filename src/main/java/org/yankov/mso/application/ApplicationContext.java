@@ -1,11 +1,14 @@
 package org.yankov.mso.application;
 
 import javafx.stage.Stage;
+import org.yankov.mso.application.command.Commands;
+import org.yankov.mso.application.command.InvalidCommandArgumentsException;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApplicationContext {
@@ -24,7 +27,8 @@ public class ApplicationContext {
     private ApplicationSettings applicationSettings;
     private ResourceBundle folkloreResourceBundle;
     private Logger logger;
-    private Stage prmaryStage;
+    private Stage primaryStage;
+    private Commands commands;
 
     private ApplicationContext() {
     }
@@ -38,13 +42,20 @@ public class ApplicationContext {
 
     public void initialize(ApplicationArguments applicationArguments) {
         this.applicationArguments = applicationArguments;
+
         this.locale = new Locale(applicationArguments.getArgument(ARG_KEY_LANGUAGE, DEFAULT_LANGUAGE));
+
         this.applicationSettings = createApplicationSettings(
                 applicationArguments.getArgument(ARG_KEY_SETTINGS, DEFAULT_SETTINGS));
+
         this.folkloreResourceBundle = ResourceBundle.getBundle(FolkloreResources.class.getName(), getLocale());
+
         this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         this.logger.addHandler(new ApplicationConsoleLogHandler(
                 createConsoleService(applicationArguments.getArgument(ARG_KEY_MODE, DEFAULT_MODE))));
+
+        this.commands = new Commands();
+        this.commands.initialize();
     }
 
     public ApplicationArguments getApplicationArguments() {
@@ -67,12 +78,22 @@ public class ApplicationContext {
         return logger;
     }
 
-    public Stage getPrmaryStage() {
-        return prmaryStage;
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
 
-    public void setPrmaryStage(Stage prmaryStage) {
-        this.prmaryStage = prmaryStage;
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    public void executeCommand(String command, Object... commandArgs) {
+        commands.getCommand(command).ifPresentOrElse(cmd -> {
+            try {
+                cmd.execute(commandArgs);
+            } catch (InvalidCommandArgumentsException e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }, () -> logger.log(Level.SEVERE, "No such command " + command));
     }
 
     private ApplicationSettings createApplicationSettings(String type) {

@@ -8,8 +8,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.command.Commands;
+import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,14 +27,15 @@ public class FolkloreInputButtons implements UserInterfaceControls {
     public static final String BTN_COPY = CLASS_NAME + "-btn-copy";
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
     public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
+    public static final String BTN_EDIT = CLASS_NAME + "-btn-edit";
 
     public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
     public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
     public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
 
-    private static final Double BUTTONS_SPACE = 25.0;
-    private static final Insets BUTTONS_INSETS = new Insets(25.0);
-    private static final Double BUTTONS_MIN_WIDTH = 250.0;
+    private static final Double SPACE = 25.0;
+    private static final Insets INSETS = new Insets(25.0);
+    private static final Double MIN_WIDTH = 250.0;
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -47,9 +49,9 @@ public class FolkloreInputButtons implements UserInterfaceControls {
 
     @Override
     public void layout() {
-        container.setPadding(BUTTONS_INSETS);
-        container.setSpacing(BUTTONS_SPACE);
-        container.setMinWidth(BUTTONS_MIN_WIDTH);
+        container.setPadding(INSETS);
+        container.setSpacing(SPACE);
+        container.setMinWidth(MIN_WIDTH);
         container.getChildren().addAll(createActionButtons());
     }
 
@@ -84,6 +86,12 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         btnLoadAlbumTracks.setMaxWidth(Double.MAX_VALUE);
         btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracksAction);
 
+        Button btnEdit = new Button();
+        btnEdit.setText(resourceBundle.getString(BTN_EDIT));
+        btnEdit.setMaxWidth(Double.MAX_VALUE);
+        btnEdit.setOnAction(
+                event -> ApplicationContext.getInstance().executeCommand(Commands.OPEN_FOLKLORE_PIECE_EDITOR, table));
+
         List<Button> buttons = new ArrayList<>();
 
         buttons.add(btnAdd);
@@ -91,6 +99,7 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         buttons.add(btnCopy);
         buttons.add(btnClear);
         buttons.add(btnLoadAlbumTracks);
+        buttons.add(btnEdit);
 
         return buttons;
     }
@@ -134,8 +143,8 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         FileChooser.ExtensionFilter flacFilter = new FileChooser.ExtensionFilter(
                 resourceBundle.getString(FLAC_FILTER_NAME), resourceBundle.getString(FLAC_FILTER_EXT));
         fileChooser.getExtensionFilters().add(flacFilter);
-        List<File> files = fileChooser.showOpenMultipleDialog(
-                ApplicationContext.getInstance().getPrmaryStage().getScene().getWindow());
+        List<File> files = fileChooser
+                .showOpenMultipleDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
         return files != null ? Optional.of(files) : Optional.empty();
     }
 

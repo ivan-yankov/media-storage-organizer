@@ -13,7 +13,7 @@ public class MediaStorageOrganizer extends Application {
     public void start(Stage primaryStage) throws Exception {
         ApplicationSettings applicationSettings = ApplicationContext.getInstance().getApplicationSettings();
 
-        ApplicationContext.getInstance().setPrmaryStage(primaryStage);
+        ApplicationContext.getInstance().setPrimaryStage(primaryStage);
 
         primaryStage.setMaximized(applicationSettings.isMaximized());
 

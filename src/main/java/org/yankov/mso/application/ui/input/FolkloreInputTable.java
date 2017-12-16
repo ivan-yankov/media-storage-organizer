@@ -8,10 +8,12 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.font.CustomFont;
@@ -77,6 +79,16 @@ public class FolkloreInputTable implements UserInterfaceControls {
         ObservableList<FolklorePieceProperties> items = FXCollections.observableArrayList();
         items.addListener(this::handleTableChange);
         table.setItems(items);
+
+        table.setRowFactory(param -> {
+            TableRow<FolklorePieceProperties> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    ApplicationContext.getInstance().executeCommand(Commands.OPEN_FOLKLORE_PIECE_EDITOR, table);
+                }
+            });
+            return row;
+        });
     }
 
     @Override
