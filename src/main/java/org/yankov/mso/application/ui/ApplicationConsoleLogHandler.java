@@ -1,6 +1,7 @@
 package org.yankov.mso.application.ui;
 
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.ConsoleService;
 
 import java.util.ResourceBundle;
 import java.util.logging.Handler;

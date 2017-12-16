@@ -21,6 +21,4 @@ public interface ApplicationSettings {
 
     Optional<Double> getY();
 
-    Scene getScene();
-
 }

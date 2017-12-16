@@ -8,8 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.ui.FolklorePieceProperties;
-import org.yankov.mso.application.ui.UserInterfaceControls;
+import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
+import org.yankov.mso.application.UserInterfaceControls;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class FolkloreInputButtons implements UserInterfaceControls {
                 resourceBundle.getString(FLAC_FILTER_NAME), resourceBundle.getString(FLAC_FILTER_EXT));
         fileChooser.getExtensionFilters().add(flacFilter);
         List<File> files = fileChooser.showOpenMultipleDialog(
-                ApplicationContext.getInstance().getApplicationSettings().getScene().getWindow());
+                ApplicationContext.getInstance().getPrmaryStage().getScene().getWindow());
         return files != null ? Optional.of(files) : Optional.empty();
     }
 

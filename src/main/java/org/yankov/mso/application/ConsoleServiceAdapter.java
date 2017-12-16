@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui;
+package org.yankov.mso.application;
 
 public class ConsoleServiceAdapter implements ConsoleService {
 

@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui;
+package org.yankov.mso.application;
 
 import javafx.scene.layout.Pane;
 

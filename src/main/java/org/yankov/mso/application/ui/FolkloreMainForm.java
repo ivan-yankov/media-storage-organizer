@@ -7,34 +7,41 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.Form;
+import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.input.FolkloreInputTab;
 
-public class FolkloreScene {
+public class FolkloreMainForm implements Form {
 
-    private static final String CLASS_NAME = FolkloreScene.class.getName();
+    private static final String CLASS_NAME = FolkloreMainForm.class.getName();
 
     public static final String TAB_INPUT = CLASS_NAME + "-tab-input";
     public static final String TAB_OUTPUT = CLASS_NAME + "-tab-output";
 
-    private StackPane root;
-    private Scene scene;
+    private Stage stage;
 
-    public FolkloreScene() {
-        this.root = new StackPane();
-        this.scene = new Scene(root);
+    public FolkloreMainForm(Stage stage) {
+        this.stage = stage;
     }
 
-    public void layout() {
+    @Override
+    public void createControls() {
+        StackPane root = new StackPane();
+
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(createTabPane());
         borderPane.setBottom(createConsole());
 
         root.getChildren().add(borderPane);
+
+        stage.setScene(new Scene(root));
     }
 
-    public Scene getScene() {
-        return scene;
+    @Override
+    public void show() {
+        stage.show();
     }
 
     private Pane createConsole() {

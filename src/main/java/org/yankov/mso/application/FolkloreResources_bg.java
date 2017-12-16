@@ -1,7 +1,7 @@
 package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
-import org.yankov.mso.application.ui.FolkloreScene;
+import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.input.FolkloreInputButtons;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
 import org.yankov.mso.application.utils.FileUtils;
@@ -39,8 +39,8 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {FolkloreApplicationSettings.STAGE_TITLE, "Управление на база данни с българска народна музика"},
 
-                {FolkloreScene.TAB_INPUT, "Въвеждане"},
-                {FolkloreScene.TAB_OUTPUT, "Справка"},
+                {FolkloreMainForm.TAB_INPUT, "Въвеждане"},
+                {FolkloreMainForm.TAB_OUTPUT, "Справка"},
 
                 {FolkloreInputTable.COL_ALBUM, "Албум"},
                 {FolkloreInputTable.COL_ALBUM_TRACK_ORDER, "Номер в албума"},

@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui;
+package org.yankov.mso.application.ui.datamodel;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;

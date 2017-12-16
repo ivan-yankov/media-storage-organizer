@@ -1,9 +1,7 @@
 package org.yankov.mso.application;
 
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
-import org.yankov.mso.application.ui.FolkloreScene;
 
 import java.net.URL;
 import java.util.Optional;
@@ -52,13 +50,6 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
     @Override
     public Optional<Double> getY() {
         return Optional.of(Screen.getPrimary().getVisualBounds().getMinY());
-    }
-
-    @Override
-    public Scene getScene() {
-        FolkloreScene folkloreScene = new FolkloreScene();
-        folkloreScene.layout();
-        return folkloreScene.getScene();
     }
 
 }

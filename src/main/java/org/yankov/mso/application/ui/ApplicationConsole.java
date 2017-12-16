@@ -3,6 +3,8 @@ package org.yankov.mso.application.ui;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import org.yankov.mso.application.ConsoleService;
+import org.yankov.mso.application.UserInterfaceControls;
 
 import java.time.LocalDateTime;
 

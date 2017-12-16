@@ -4,30 +4,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.yankov.mso.application.ui.UserInterfaceControls;
+import org.yankov.mso.application.UserInterfaceControls;
 
 public class FolkloreInputTab implements UserInterfaceControls {
 
-    private VBox container;
+    private HBox container;
 
     public FolkloreInputTab() {
-        this.container = new VBox();
+        this.container = new HBox();
     }
 
     @Override
     public void layout() {
-        HBox tableWithButtons = new HBox();
-
         FolkloreInputTable table = new FolkloreInputTable();
         table.layout();
         HBox.setHgrow(table.getContainer(), Priority.ALWAYS);
-        tableWithButtons.getChildren().add(table.getContainer());
+        container.getChildren().add(table.getContainer());
 
         FolkloreInputButtons buttons = new FolkloreInputButtons(table.getTableView());
         buttons.layout();
-        tableWithButtons.getChildren().add(buttons.getContainer());
-
-        container.getChildren().add(tableWithButtons);
+        container.getChildren().add(buttons.getContainer());
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.yankov.mso.application.ui.FolkloreMainForm;
 
 public class MediaStorageOrganizer extends Application {
 
@@ -12,6 +13,8 @@ public class MediaStorageOrganizer extends Application {
     public void start(Stage primaryStage) throws Exception {
         ApplicationSettings applicationSettings = ApplicationContext.getInstance().getApplicationSettings();
 
+        ApplicationContext.getInstance().setPrmaryStage(primaryStage);
+
         primaryStage.setMaximized(applicationSettings.isMaximized());
 
         applicationSettings.getWindowWidth().ifPresent(primaryStage::setWidth);
@@ -21,9 +24,9 @@ public class MediaStorageOrganizer extends Application {
         applicationSettings.getX().ifPresent(primaryStage::setX);
         applicationSettings.getY().ifPresent(primaryStage::setY);
 
-        primaryStage.setScene(applicationSettings.getScene());
-
-        primaryStage.show();
+        Form form = new FolkloreMainForm(primaryStage);
+        form.createControls();
+        form.show();
     }
 
     public static void main(String[] args) {

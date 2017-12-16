@@ -1,7 +1,7 @@
 package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
-import org.yankov.mso.application.ui.FolkloreScene;
+import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.input.FolkloreInputButtons;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
 import org.yankov.mso.application.utils.FileUtils;
@@ -39,7 +39,7 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {FolkloreApplicationSettings.STAGE_TITLE, ""},
 
-                {FolkloreScene.TAB_INPUT, ""}, {FolkloreScene.TAB_OUTPUT, ""},
+                {FolkloreMainForm.TAB_INPUT, ""}, {FolkloreMainForm.TAB_OUTPUT, ""},
 
                 {FolkloreInputTable.COL_ALBUM, ""},
                 {FolkloreInputTable.COL_ALBUM_TRACK_ORDER, ""},

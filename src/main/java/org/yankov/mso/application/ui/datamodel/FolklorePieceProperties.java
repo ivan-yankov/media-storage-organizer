@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui;
+package org.yankov.mso.application.ui.datamodel;
 
 import javafx.beans.property.SimpleObjectProperty;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;

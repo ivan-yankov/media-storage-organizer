@@ -1,9 +1,8 @@
 package org.yankov.mso.application;
 
+import javafx.stage.Stage;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
-import org.yankov.mso.application.ui.ConsoleService;
-import org.yankov.mso.application.ui.ConsoleServiceAdapter;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -25,6 +24,7 @@ public class ApplicationContext {
     private ApplicationSettings applicationSettings;
     private ResourceBundle folkloreResourceBundle;
     private Logger logger;
+    private Stage prmaryStage;
 
     private ApplicationContext() {
     }
@@ -65,6 +65,14 @@ public class ApplicationContext {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public Stage getPrmaryStage() {
+        return prmaryStage;
+    }
+
+    public void setPrmaryStage(Stage prmaryStage) {
+        this.prmaryStage = prmaryStage;
     }
 
     private ApplicationSettings createApplicationSettings(String type) {
