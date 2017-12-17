@@ -9,7 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class EntityCollections<T extends Piece> {
 
@@ -116,14 +115,14 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     protected final void saveCollectionToDatabase(Collection<?> collection) {
-        DatabaseSessionManager.getInstance().executeOperation(session -> {
+        ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
             collection.forEach(session::saveOrUpdate);
             return null;
         }, message -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
     }
 
     private <CollectionType> List<CollectionType> loadCollectionFromDatabase(Class entityClass) {
-        Optional optResult = DatabaseSessionManager.getInstance().executeOperation(session -> {
+        Optional optResult = ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<CollectionType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
             Root<CollectionType> root = criteriaQuery.from(entityClass);

@@ -2,12 +2,14 @@ package org.yankov.mso.database.generic;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.yankov.mso.application.ApplicationContext;
 
 public class DatabaseConnectionTest extends DatabaseTest {
 
     @Test
     public void testDatabaseConnection() {
-        databaseSessionManager.executeOperation(null, message -> Assert.fail(message));
+        ApplicationContext.getInstance().getDatabaseSessionManager()
+                          .executeOperation(null, message -> Assert.fail(message));
     }
 
 }

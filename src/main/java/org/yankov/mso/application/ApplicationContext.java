@@ -5,6 +5,7 @@ import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.command.InvalidCommandArgumentsException;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
+import org.yankov.mso.database.generic.DatabaseSessionManager;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -12,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApplicationContext {
+
+    private static final String DATABASE_CONFIGURATION_FILE = "hibernate.cfg.xml";
 
     private static final String ARG_KEY_SETTINGS = "-settings";
     private static final String DEFAULT_SETTINGS = "folklore";
@@ -29,6 +32,7 @@ public class ApplicationContext {
     private Logger logger;
     private Stage primaryStage;
     private Commands commands;
+    private DatabaseSessionManager databaseSessionManager;
 
     private ApplicationContext() {
     }
@@ -56,6 +60,8 @@ public class ApplicationContext {
 
         this.commands = new Commands();
         this.commands.initialize();
+
+        this.databaseSessionManager = new DatabaseSessionManager(DATABASE_CONFIGURATION_FILE);
     }
 
     public ApplicationArguments getApplicationArguments() {
@@ -86,6 +92,10 @@ public class ApplicationContext {
         this.primaryStage = primaryStage;
     }
 
+    public DatabaseSessionManager getDatabaseSessionManager() {
+        return databaseSessionManager;
+    }
+
     public void executeCommand(String command, Object... commandArgs) {
         commands.getCommand(command).ifPresentOrElse(cmd -> {
             try {
@@ -106,14 +116,11 @@ public class ApplicationContext {
     }
 
     private ConsoleService createConsoleService(String mode) {
-        switch (mode) {
-            case "run":
-                return ApplicationConsole.getInstance();
-            case "test":
-                return new ConsoleServiceAdapter();
-            default:
-                return new ConsoleServiceAdapter();
-        }
+        return !isTestMode() ? ApplicationConsole.getInstance() : new ConsoleServiceAdapter();
+    }
+
+    private boolean isTestMode() {
+        return applicationArguments.getArgument(ARG_KEY_MODE, DEFAULT_MODE).equals("test");
     }
 
 }

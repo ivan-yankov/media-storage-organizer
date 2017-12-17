@@ -17,13 +17,13 @@ import java.util.function.Function;
 
 public class DatabaseSessionManager {
 
-    private static DatabaseSessionManager instance;
-
+    private String configurationFile;
     private List<Class> annotatedClasses;
-
     private Session session;
 
-    private DatabaseSessionManager() {
+    public DatabaseSessionManager(String configurationFile) {
+        this.configurationFile = configurationFile;
+
         annotatedClasses = new ArrayList<>();
         annotatedClasses.add(SourceType.class);
         annotatedClasses.add(Source.class);
@@ -38,16 +38,9 @@ public class DatabaseSessionManager {
         annotatedClasses.add(FolkloreEntityCollections.class);
     }
 
-    public static DatabaseSessionManager getInstance() {
-        if (instance == null) {
-            instance = new DatabaseSessionManager();
-        }
-        return instance;
-    }
-
-    public void openSession(String configurationFile) {
+    public void openSession() {
         if (session == null || !session.isOpen()) {
-            session = createSessionFactory(configurationFile).openSession();
+            session = createSessionFactory().openSession();
         }
     }
 
@@ -78,7 +71,7 @@ public class DatabaseSessionManager {
         }
     }
 
-    private SessionFactory createSessionFactory(String configurationFile) {
+    private SessionFactory createSessionFactory() {
         Configuration configuration = new Configuration();
         configuration.configure(configurationFile);
 
