@@ -8,6 +8,7 @@ import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.database.generic.DatabaseSessionManager;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,11 +18,8 @@ public class ApplicationContext {
     private static final String DATABASE_CONFIGURATION_FILE = "hibernate.cfg.xml";
 
     private static final String ARG_KEY_SETTINGS = "-settings";
-    private static final String DEFAULT_SETTINGS = "folklore";
     private static final String ARG_KEY_LANGUAGE = "-language";
-    private static final String DEFAULT_LANGUAGE = "bg";
     private static final String ARG_KEY_MODE = "-mode";
-    private static final String DEFAULT_MODE = "run";
 
     private static ApplicationContext instance;
 
@@ -47,16 +45,15 @@ public class ApplicationContext {
     public void initialize(ApplicationArguments applicationArguments) {
         this.applicationArguments = applicationArguments;
 
-        this.locale = new Locale(applicationArguments.getArgument(ARG_KEY_LANGUAGE, DEFAULT_LANGUAGE));
+        applicationArguments.getArgument(ARG_KEY_LANGUAGE).ifPresent(lang -> this.locale = new Locale(lang));
 
-        this.applicationSettings = createApplicationSettings(
-                applicationArguments.getArgument(ARG_KEY_SETTINGS, DEFAULT_SETTINGS));
+        applicationArguments.getArgument(ARG_KEY_SETTINGS).ifPresent(
+                settingsType -> this.applicationSettings = createApplicationSettings(settingsType));
 
         this.folkloreResourceBundle = ResourceBundle.getBundle(FolkloreResources.class.getName(), getLocale());
 
         this.logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        this.logger.addHandler(new ApplicationConsoleLogHandler(
-                createConsoleService(applicationArguments.getArgument(ARG_KEY_MODE, DEFAULT_MODE))));
+        this.logger.addHandler(new ApplicationConsoleLogHandler(createConsoleService()));
 
         this.commands = new Commands();
         this.commands.initialize();
@@ -115,12 +112,13 @@ public class ApplicationContext {
         }
     }
 
-    private ConsoleService createConsoleService(String mode) {
+    private ConsoleService createConsoleService() {
         return !isTestMode() ? ApplicationConsole.getInstance() : new ConsoleServiceAdapter();
     }
 
     private boolean isTestMode() {
-        return applicationArguments.getArgument(ARG_KEY_MODE, DEFAULT_MODE).equals("test");
+        Optional<String> mode = applicationArguments.getArgument(ARG_KEY_MODE);
+        return mode.isPresent() && mode.get().equals("test");
     }
 
 }

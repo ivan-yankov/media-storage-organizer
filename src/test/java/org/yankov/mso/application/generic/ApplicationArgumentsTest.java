@@ -4,23 +4,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.application.ApplicationArguments;
 
-public class ApplicationArgumentsTest {
+import java.util.Optional;
 
-    private static final String DEFAULT = "default";
+public class ApplicationArgumentsTest {
 
     @Test
     public void testGetArgument() {
         ApplicationArguments arguments = new ApplicationArguments(null);
-        String actual = arguments.getArgument("-k", DEFAULT);
-        Assert.assertEquals(DEFAULT, actual);
+        Optional<String> actual = arguments.getArgument("-k");
+        Assert.assertFalse(actual.isPresent());
 
         arguments = new ApplicationArguments(new String[] {"-k1=value1", "-k2=value2"});
-        actual = arguments.getArgument("-k3", DEFAULT);
-        Assert.assertEquals(DEFAULT, actual);
+        actual = arguments.getArgument("-k3");
+        Assert.assertFalse(actual.isPresent());
 
         arguments = new ApplicationArguments(new String[] {"-k1=value1", "-k2=value2"});
-        actual = arguments.getArgument("-k2", DEFAULT);
-        Assert.assertEquals("value2", actual);
+        actual = arguments.getArgument("-k2");
+        Assert.assertTrue(actual.isPresent());
+        Assert.assertEquals("value2", actual.get());
     }
 
 }

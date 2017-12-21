@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ApplicationArguments {
 
@@ -13,8 +14,9 @@ public class ApplicationArguments {
         this.arguments = initialize(args);
     }
 
-    public String getArgument(String key, String defaultValue) {
-        return arguments.getOrDefault(key, defaultValue);
+    public Optional<String> getArgument(String key) {
+        String value = arguments.get(key);
+        return value != null ? Optional.of(value) : Optional.empty();
     }
 
     private Map<String, String> initialize(String[] args) {

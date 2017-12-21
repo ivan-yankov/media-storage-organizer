@@ -12,7 +12,8 @@ public class DatabaseTest {
 
     @BeforeClass
     public static void beforeClass() {
-        ApplicationContext.getInstance().initialize(new ApplicationArguments(new String[] {"-mode=test"}));
+        ApplicationContext.getInstance().initialize(
+                new ApplicationArguments(new String[] {"-settings=folklore", "-language=bg", "-mode=test"}));
         ApplicationContext.getInstance().getDatabaseSessionManager().openSession();
     }
 
