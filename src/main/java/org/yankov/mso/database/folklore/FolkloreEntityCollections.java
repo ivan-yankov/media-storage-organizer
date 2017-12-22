@@ -6,9 +6,12 @@ import org.yankov.mso.datamodel.folklore.FolklorePiece;
 import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Instrument;
-import org.yankov.mso.datamodel.generic.SourceType;
+import org.yankov.mso.datamodel.generic.Source;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> {
 
@@ -34,8 +37,7 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
 
     @Override
     public void initializeEntityCollections() {
-        initializeEntityCollection(SourceType.class, getSourceTypes(),
-                                   FolkloreEntityCollectionFactory.createSourceTypes());
+        initializeEntityCollection(Source.class, getSources(), FolkloreEntityCollectionFactory.createSources());
 
         initializeEntityCollection(Instrument.class, getInstruments(),
                                    FolkloreEntityCollectionFactory.createInstruments());
@@ -52,7 +54,7 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
 
     @Override
     public void saveEntityCollections() {
-        saveCollectionToDatabase(getSourceTypes());
+        saveCollectionToDatabase(getSources());
         saveCollectionToDatabase(getInstruments());
         saveCollectionToDatabase(getArtists());
         saveCollectionToDatabase(getAlbums());

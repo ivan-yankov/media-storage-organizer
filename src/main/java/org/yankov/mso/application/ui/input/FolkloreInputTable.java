@@ -171,7 +171,7 @@ public class FolkloreInputTable implements UserInterfaceControls {
                 resourceBundle.getString(COL_SOURCE));
         colSoloist.setCellValueFactory(param -> {
             Source source = param.getValue().getSource();
-            String s = source != null ? source.getType() + "/" + source.getSignature() : null;
+            String s = source != null ? source.toString() : null;
             return new SimpleStringProperty(s);
         });
 

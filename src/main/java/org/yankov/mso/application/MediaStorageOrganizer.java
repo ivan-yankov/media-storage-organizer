@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.database.folklore.FolkloreEntityCollections;
 
 public class MediaStorageOrganizer extends Application {
 
@@ -24,6 +25,10 @@ public class MediaStorageOrganizer extends Application {
         applicationSettings.getY().ifPresent(primaryStage::setY);
 
         ApplicationContext.getInstance().getDatabaseSessionManager().openSession();
+
+        FolkloreEntityCollections folkloreEntityCollections = new FolkloreEntityCollections();
+        folkloreEntityCollections.initializeEntityCollections();
+        ApplicationContext.getInstance().setFolkloreEntityCollections(folkloreEntityCollections);
 
         Form form = new FolkloreMainForm(primaryStage);
         form.createControls();

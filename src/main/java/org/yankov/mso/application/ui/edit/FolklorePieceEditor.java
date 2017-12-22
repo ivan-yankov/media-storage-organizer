@@ -1,5 +1,7 @@
 package org.yankov.mso.application.ui.edit;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,9 +19,12 @@ import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.generic.Artist;
+import org.yankov.mso.datamodel.generic.ArtistMission;
 import org.yankov.mso.datamodel.generic.Source;
 
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FolklorePieceEditor implements Form {
 
@@ -41,7 +46,7 @@ public class FolklorePieceEditor implements Form {
 
     public FolklorePieceEditor(FolklorePieceProperties piece) {
         this.stage = new Stage();
-        this.piece = piece;
+        this.piece = piece.clone();
     }
 
     @Override
@@ -52,36 +57,47 @@ public class FolklorePieceEditor implements Form {
         UserInterfaceControls album = new LabeledTextField(resourceBundle.getString(FolkloreInputTable.COL_ALBUM));
         album.layout();
 
-        UserInterfaceControls performer = new LabeledComboBox<Artist>(
-                resourceBundle.getString(FolkloreInputTable.COL_PERFORMER));
+        UserInterfaceControls performer = new LabeledComboBox<>(
+                resourceBundle.getString(FolkloreInputTable.COL_PERFORMER),
+                collectArtists(ArtistMission.SINGER, ArtistMission.ORCHESTRA, ArtistMission.INSTRUMENT_PLAYER,
+                               ArtistMission.ENSEMBLE, ArtistMission.CHOIR, ArtistMission.CHAMBER_GROUP),
+                piece.getPerformer(), Artist::getName);
         performer.layout();
 
-        UserInterfaceControls accompanimentPerformer = new LabeledComboBox<Artist>(
-                resourceBundle.getString(FolkloreInputTable.COL_ACCOMPANIMENT_PERFORMER));
+        UserInterfaceControls accompanimentPerformer = new LabeledComboBox<>(
+                resourceBundle.getString(FolkloreInputTable.COL_ACCOMPANIMENT_PERFORMER),
+                collectArtists(ArtistMission.ORCHESTRA, ArtistMission.INSTRUMENT_PLAYER, ArtistMission.ENSEMBLE,
+                               ArtistMission.CHAMBER_GROUP), piece.getAccompanimentPerformer(), Artist::getName);
         accompanimentPerformer.layout();
 
-        UserInterfaceControls arrangementAuthor = new LabeledComboBox<Artist>(
-                resourceBundle.getString(FolkloreInputTable.COL_ARRANGEMENT_AUTHOR));
+        UserInterfaceControls arrangementAuthor = new LabeledComboBox<>(
+                resourceBundle.getString(FolkloreInputTable.COL_ARRANGEMENT_AUTHOR),
+                collectArtists(ArtistMission.COMPOSER), piece.getArrangementAuthor(), Artist::getName);
         arrangementAuthor.layout();
 
-        UserInterfaceControls conductor = new LabeledComboBox<Artist>(
-                resourceBundle.getString(FolkloreInputTable.COL_CONDUCTOR));
+        UserInterfaceControls conductor = new LabeledComboBox<>(
+                resourceBundle.getString(FolkloreInputTable.COL_CONDUCTOR), collectArtists(ArtistMission.CONDUCTOR),
+                piece.getConductor(), Artist::getName);
         conductor.layout();
 
-        UserInterfaceControls author = new LabeledComboBox<Artist>(
-                resourceBundle.getString(FolkloreInputTable.COL_AUTHOR));
+        UserInterfaceControls author = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_AUTHOR),
+                                                             collectArtists(ArtistMission.COMPOSER), piece.getAuthor(),
+                                                             Artist::getName);
         author.layout();
 
-        UserInterfaceControls soloist = new LabeledComboBox<Artist>(
-                resourceBundle.getString(FolkloreInputTable.COL_SOLOIST));
+        UserInterfaceControls soloist = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_SOLOIST),
+                                                              collectArtists(ArtistMission.SINGER,
+                                                                             ArtistMission.INSTRUMENT_PLAYER),
+                                                              piece.getSoloist(), Artist::getName);
         soloist.layout();
 
-        UserInterfaceControls ethnographicRegion = new LabeledComboBox<EthnographicRegion>(
-                resourceBundle.getString(FolkloreInputTable.COL_ETHNOGRAPHIC_REGION));
+        UserInterfaceControls ethnographicRegion = new LabeledComboBox<>(
+                resourceBundle.getString(FolkloreInputTable.COL_ETHNOGRAPHIC_REGION), collectEthnographicRegions(),
+                piece.getEthnographicRegion(), EthnographicRegion::getName);
         ethnographicRegion.layout();
 
-        UserInterfaceControls source = new LabeledComboBox<Source>(
-                resourceBundle.getString(FolkloreInputTable.COL_SOURCE));
+        UserInterfaceControls source = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_SOURCE),
+                                                             collectSources(), piece.getSource(), Source::toString);
         source.layout();
 
         UserInterfaceControls note = new LabeledTextField(resourceBundle.getString(FolkloreInputTable.COL_NOTE));
@@ -121,7 +137,7 @@ public class FolklorePieceEditor implements Form {
 
     @Override
     public void show() {
-        stage.show();
+        stage.showAndWait();
     }
 
     private void initializeStage() {
@@ -151,6 +167,33 @@ public class FolklorePieceEditor implements Form {
         formButtonsContainer.setAlignment(Pos.CENTER);
 
         return formButtonsContainer;
+    }
+
+    private ObservableList<Artist> collectArtists(ArtistMission... missions) {
+        Stream<Artist> artists = ApplicationContext.getInstance().getFolkloreEntityCollections().getArtists().stream();
+        return artists.filter(artist -> hasMission(artist, Arrays.asList(missions)))
+                      .collect(Collectors.collectingAndThen(Collectors.toList(), FXCollections::observableList));
+    }
+
+    private ObservableList<EthnographicRegion> collectEthnographicRegions() {
+        List<EthnographicRegion> list = new ArrayList<>(
+                ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegions());
+        return FXCollections.observableList(list);
+    }
+
+    private ObservableList<Source> collectSources() {
+        List<Source> list = new ArrayList<>(
+                ApplicationContext.getInstance().getFolkloreEntityCollections().getSources());
+        return FXCollections.observableList(list);
+    }
+
+    private boolean hasMission(Artist artist, Collection<ArtistMission> missions) {
+        for (ArtistMission mission : missions) {
+            if (artist.getMissions().contains(mission)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

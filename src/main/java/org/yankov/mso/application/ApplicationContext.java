@@ -5,6 +5,7 @@ import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.command.InvalidCommandArgumentsException;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
+import org.yankov.mso.database.folklore.FolkloreEntityCollections;
 import org.yankov.mso.database.generic.DatabaseSessionManager;
 
 import java.util.Locale;
@@ -31,6 +32,7 @@ public class ApplicationContext {
     private Stage primaryStage;
     private Commands commands;
     private DatabaseSessionManager databaseSessionManager;
+    private FolkloreEntityCollections folkloreEntityCollections;
 
     private ApplicationContext() {
     }
@@ -91,6 +93,14 @@ public class ApplicationContext {
 
     public DatabaseSessionManager getDatabaseSessionManager() {
         return databaseSessionManager;
+    }
+
+    public FolkloreEntityCollections getFolkloreEntityCollections() {
+        return folkloreEntityCollections;
+    }
+
+    public void setFolkloreEntityCollections(FolkloreEntityCollections folkloreEntityCollections) {
+        this.folkloreEntityCollections = folkloreEntityCollections;
     }
 
     public void executeCommand(String command, Object... commandArgs) {

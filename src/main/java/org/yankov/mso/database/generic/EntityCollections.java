@@ -16,22 +16,22 @@ public abstract class EntityCollections<T extends Piece> {
 
     public abstract void saveEntityCollections();
 
-    private Set<SourceType> sourceTypes;
+    private Set<Source> sources;
     private Set<Instrument> instruments;
     private Set<Artist> artists;
     private Set<Album> albums;
     private List<T> pieces;
 
     public EntityCollections() {
-        this.sourceTypes = new HashSet<>();
+        this.sources = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
         this.albums = new HashSet<>();
         this.pieces = new ArrayList<>();
     }
 
-    public Set<SourceType> getSourceTypes() {
-        return sourceTypes;
+    public Set<Source> getSources() {
+        return sources;
     }
 
     public Set<Instrument> getInstruments() {
@@ -50,14 +50,13 @@ public abstract class EntityCollections<T extends Piece> {
         return pieces;
     }
 
-    public Optional<SourceType> getSourceType(String name) {
-        return sourceTypes.stream()
-                          .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
-                          .findFirst();
+    public Optional<Source> getSource(String representation) {
+        return sources.stream().filter(entity -> entity.toString().toLowerCase().trim()
+                                                       .equals(representation.toLowerCase().trim())).findFirst();
     }
 
-    public boolean addSourceType(String name) {
-        return sourceTypes.add(new SourceType(name));
+    public boolean addSource(SourceType type, String signature) {
+        return sources.add(new Source(type, signature));
     }
 
     public Optional<Instrument> getInstrument(String name) {

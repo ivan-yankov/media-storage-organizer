@@ -20,8 +20,9 @@ public class Source {
     public Source() {
     }
 
-    public Source(SourceType type) {
+    public Source(SourceType type, String signature) {
         this.type = type;
+        this.signature = signature;
     }
 
     public Integer getId() {
@@ -46,7 +47,7 @@ public class Source {
 
     @Override
     public int hashCode() {
-        return id;
+        return toString().toLowerCase().trim().hashCode();
     }
 
     @Override
@@ -55,7 +56,20 @@ public class Source {
             return false;
         }
         Source other = (Source) obj;
-        return this.id == other.id;
+        return this.toString().toLowerCase().trim().equals(other.toString().toLowerCase().trim());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder representation = new StringBuilder();
+
+        representation.append(type.getName());
+        if (signature != null && !signature.isEmpty()) {
+            representation.append("/");
+            representation.append(signature);
+        }
+
+        return representation.toString();
     }
 
 }

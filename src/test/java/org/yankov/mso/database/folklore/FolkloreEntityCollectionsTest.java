@@ -8,7 +8,6 @@ import org.yankov.mso.datamodel.generic.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -54,7 +53,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         actualEntityCollections.initializeEntityCollections();
 
         FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections();
-        expectedEntityCollections.getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
+        expectedEntityCollections.getSources().addAll(FolkloreEntityCollectionFactory.createSources());
         expectedEntityCollections.getInstruments().addAll(FolkloreEntityCollectionFactory.createInstruments());
         expectedEntityCollections.getEthnographicRegions()
                                  .addAll(FolkloreEntityCollectionFactory.createEthnographicRegions());
@@ -67,13 +66,15 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetSourceType() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addSourceType("Грамофонна плоча"));
-        Assert.assertFalse(collections.addSourceType(" грамофонна плоча "));
-        Assert.assertFalse(collections.addSourceType("гРАМОФОННА ПЛОЧА"));
-        Assert.assertTrue(collections.addSourceType("Грамофоннаплоча"));
+        Assert.assertTrue(collections.addSource(new SourceType("Грамофонна плоча"), ""));
+        Assert.assertFalse(collections.addSource(new SourceType(" грамофонна плоча "), ""));
+        Assert.assertFalse(collections.addSource(new SourceType("гРАМОФОННА ПЛОЧА"), ""));
+        Assert.assertTrue(collections.addSource(new SourceType("Грамофоннаплоча"), ""));
+        Assert.assertTrue(collections.addSource(new SourceType("Лента"), "Балкантон"));
 
-        Assert.assertTrue(collections.getSourceType("грамофонна плоча ").isPresent());
-        Assert.assertFalse(collections.getSourceType("грамофонна_плоча").isPresent());
+        Assert.assertTrue(collections.getSource("грамофонна плоча ").isPresent());
+        Assert.assertFalse(collections.getSource("грамофонна_плоча").isPresent());
+        Assert.assertTrue(collections.getSource("Лента/Балкантон").isPresent());
     }
 
     @Test
@@ -129,7 +130,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private void assertStoredEntities(FolkloreEntityCollections expectedEntityCollections,
                                       FolkloreEntityCollections actualEntityCollections) {
-        assertSetsEqual(expectedEntityCollections.getSourceTypes(), actualEntityCollections.getSourceTypes());
+        assertSetsEqual(expectedEntityCollections.getSources(), actualEntityCollections.getSources());
         assertSetsEqual(expectedEntityCollections.getInstruments(), actualEntityCollections.getInstruments());
         assertSetsEqual(expectedEntityCollections.getArtists(), actualEntityCollections.getArtists());
         assertSetsEqual(expectedEntityCollections.getAlbums(), actualEntityCollections.getAlbums());
@@ -183,15 +184,14 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertTrue(entityCollections.getPieces().isEmpty());
 
         assertSetsEqual(FolkloreEntityCollectionFactory.createInstruments(), entityCollections.getInstruments());
-        assertSetsEqual(FolkloreEntityCollectionFactory.createSourceTypes(), entityCollections.getSourceTypes());
+        assertSetsEqual(FolkloreEntityCollectionFactory.createSources(), entityCollections.getSources());
         assertSetsEqual(FolkloreEntityCollectionFactory.createEthnographicRegions(),
                         entityCollections.getEthnographicRegions());
     }
 
     private <T> void assertSetsEqual(Set<T> expected, Set<T> actual) {
         Assert.assertTrue(actual.size() == expected.size());
-        Queue<T> actualQueue = new ArrayDeque<>();
-        actualQueue.addAll(actual);
+        Queue<T> actualQueue = new ArrayDeque<>(actual);
         while (actualQueue.peek() != null) {
             Assert.assertTrue(expected.contains(actualQueue.poll()));
         }
@@ -217,6 +217,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
         entityCollections.getAlbums().add(createAlbum());
 
+        entityCollections.addSource(new SourceType(SOURCE_TYPE), SOURCE_SIGNATURE);
+
         for (int i = 0; i < numberPieceTableRecords; i++) {
             entityCollections.addPiece(createPiece(entityCollections, addMediaRecord));
         }
@@ -229,12 +231,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         album.setProductionSignature(ALBUM_PRODUCTION_SIGNATURE);
         album.setNote(ALBUM_NOTE);
         return album;
-    }
-
-    private static Source createSource(SourceType sourceType) {
-        Source source = new Source(sourceType);
-        source.setSignature(SOURCE_SIGNATURE);
-        return source;
     }
 
     private static Record createRecord() {
@@ -258,7 +254,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         piece.setPerformer(entityCollections.getArtist(TRIO).get());
         piece.setSoloist(entityCollections.getArtist(VERKA_SIDEROVA).get());
         piece.setTitle(PIECE_TITLE);
-        piece.setSource(createSource(entityCollections.getSourceType(SOURCE_TYPE).get()));
+        piece.setSource(entityCollections.getSource(SOURCE_TYPE + "/" + SOURCE_SIGNATURE).get());
         if (addMediaRecord) {
             piece.setRecord(createRecord());
         }
