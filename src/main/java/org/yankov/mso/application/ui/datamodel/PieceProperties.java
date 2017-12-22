@@ -7,10 +7,15 @@ import org.yankov.mso.application.utils.FileUtils;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Source;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.time.Duration;
 
-public class PieceProperties {
+public class PieceProperties implements PropertyChangeListener {
+
+    private static final String PROPERTY_NAME_FILE = "file";
 
     private final SimpleStringProperty album;
     private final SimpleIntegerProperty albumTrackOrder;
@@ -26,6 +31,8 @@ public class PieceProperties {
     private final SimpleObjectProperty<Source> source;
     private final SimpleObjectProperty<File> file;
 
+    private final PropertyChangeSupport propertyChangeSupport;
+
     public PieceProperties() {
         this.album = new SimpleStringProperty();
         this.albumTrackOrder = new SimpleIntegerProperty();
@@ -40,6 +47,9 @@ public class PieceProperties {
         this.note = new SimpleStringProperty();
         this.source = new SimpleObjectProperty<>();
         this.file = new SimpleObjectProperty<>();
+
+        this.propertyChangeSupport = new PropertyChangeSupport(this);
+        this.propertyChangeSupport.addPropertyChangeListener(this);
     }
 
     public String getAlbum() {
@@ -143,7 +153,9 @@ public class PieceProperties {
     }
 
     public void setFile(File file) {
+        File oldValue = this.file.get();
         this.file.set(file);
+        propertyChangeSupport.firePropertyChange(PROPERTY_NAME_FILE, oldValue, file);
     }
 
     public PieceProperties clone() {
@@ -169,7 +181,11 @@ public class PieceProperties {
     public void setFromFile(File file) {
         setAlbum(file.getParentFile().getName());
         setFile(file);
-        FileUtils.detectAudioFileDuration(file).ifPresent(this::setDuration);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        FileUtils.detectAudioFileDuration(file.get()).ifPresent(this::setDuration);
     }
 
 }

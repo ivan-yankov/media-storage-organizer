@@ -13,9 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
-import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.font.CustomFont;
 import org.yankov.mso.application.ui.font.FontFamily;
 import org.yankov.mso.application.ui.font.FontStyle;
@@ -169,7 +169,7 @@ public class FolkloreInputTable implements UserInterfaceControls {
 
         TableColumn<FolklorePieceProperties, String> colSource = new TableColumn<>(
                 resourceBundle.getString(COL_SOURCE));
-        colSoloist.setCellValueFactory(param -> {
+        colSource.setCellValueFactory(param -> {
             Source source = param.getValue().getSource();
             String s = source != null ? source.toString() : null;
             return new SimpleStringProperty(s);

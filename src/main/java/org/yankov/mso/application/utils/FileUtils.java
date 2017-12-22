@@ -24,6 +24,10 @@ public class FileUtils {
     public static final String CANNOT_DETECT_AUDIO_FILE_DURATION = CLASS_NAME + "-cannot-detect-audio-file-duration";
 
     public static Optional<Duration> detectAudioFileDuration(File file) {
+        if (file == null) {
+            return Optional.empty();
+        }
+
         ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
         try {

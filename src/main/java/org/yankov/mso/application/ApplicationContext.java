@@ -2,7 +2,6 @@ package org.yankov.mso.application;
 
 import javafx.stage.Stage;
 import org.yankov.mso.application.command.Commands;
-import org.yankov.mso.application.command.InvalidCommandArgumentsException;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.database.folklore.FolkloreEntityCollections;
@@ -105,10 +104,10 @@ public class ApplicationContext {
 
     public void executeCommand(String command, Object... commandArgs) {
         commands.getCommand(command).ifPresentOrElse(cmd -> {
-            try {
+            if (cmd.checkArguments(commandArgs)) {
                 cmd.execute(commandArgs);
-            } catch (InvalidCommandArgumentsException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+            } else {
+                logger.log(Level.SEVERE, cmd.getErrorMessage());
             }
         }, () -> logger.log(Level.SEVERE, "No such command " + command));
     }

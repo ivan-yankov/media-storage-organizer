@@ -11,6 +11,7 @@ import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
+import org.yankov.mso.application.utils.FxUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -127,7 +128,10 @@ public class FolkloreInputButtons implements UserInterfaceControls {
     }
 
     private void handleBtnLoadAlbumTracksAction(ActionEvent event) {
-        Optional<List<File>> files = selectFiles();
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(resourceBundle.getString(FLAC_FILTER_NAME),
+                                                                             resourceBundle.getString(FLAC_FILTER_EXT));
+        Optional<List<File>> files = FxUtils.selectFiles(resourceBundle.getString(SELECT_AUDIO_FILES), false, filter);
+
         if (files.isPresent()) {
             for (File file : files.get()) {
                 FolklorePieceProperties piece = new FolklorePieceProperties();
@@ -135,17 +139,6 @@ public class FolkloreInputButtons implements UserInterfaceControls {
                 table.getItems().add(piece);
             }
         }
-    }
-
-    private Optional<List<File>> selectFiles() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(resourceBundle.getString(SELECT_AUDIO_FILES));
-        FileChooser.ExtensionFilter flacFilter = new FileChooser.ExtensionFilter(
-                resourceBundle.getString(FLAC_FILTER_NAME), resourceBundle.getString(FLAC_FILTER_EXT));
-        fileChooser.getExtensionFilters().add(flacFilter);
-        List<File> files = fileChooser
-                .showOpenMultipleDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
-        return files != null ? Optional.of(files) : Optional.empty();
     }
 
 }
