@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.database.folklore.FolkloreEntityCollections;
 
+import java.util.logging.Level;
+
 public class MediaStorageOrganizer extends Application {
 
     public MediaStorageOrganizer() {
@@ -24,7 +26,12 @@ public class MediaStorageOrganizer extends Application {
         applicationSettings.getX().ifPresent(primaryStage::setX);
         applicationSettings.getY().ifPresent(primaryStage::setY);
 
-        ApplicationContext.getInstance().getDatabaseSessionManager().openSession();
+        boolean sessionOpened = ApplicationContext.getInstance().getDatabaseSessionManager().openSession();
+        if (!sessionOpened) {
+            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, "Unable to create database session.");
+            Platform.exit();
+            System.exit(1);
+        }
 
         FolkloreEntityCollections folkloreEntityCollections = new FolkloreEntityCollections();
         folkloreEntityCollections.initializeEntityCollections();

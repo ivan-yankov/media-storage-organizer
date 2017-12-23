@@ -1,9 +1,11 @@
 package org.yankov.mso.database.generic;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.database.folklore.FolkloreEntityCollections;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 public class DatabaseSessionManager {
 
@@ -38,9 +41,17 @@ public class DatabaseSessionManager {
         annotatedClasses.add(FolkloreEntityCollections.class);
     }
 
-    public void openSession() {
-        if (session == null || !session.isOpen()) {
-            session = createSessionFactory().openSession();
+    public boolean openSession() {
+        if (session != null && session.isOpen()) {
+            return false;
+        }
+
+        Optional<SessionFactory> sessionFactory = createSessionFactory();
+        if (sessionFactory.isPresent()) {
+            session = sessionFactory.get().openSession();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -71,13 +82,18 @@ public class DatabaseSessionManager {
         }
     }
 
-    private SessionFactory createSessionFactory() {
+    private Optional<SessionFactory> createSessionFactory() {
         Configuration configuration = new Configuration();
         configuration.configure(configurationFile);
 
         annotatedClasses.forEach(configuration::addAnnotatedClass);
 
-        return configuration.buildSessionFactory();
+        try {
+            return Optional.of(configuration.buildSessionFactory());
+        } catch (HibernateException e) {
+            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
+            return Optional.empty();
+        }
     }
 
 }
