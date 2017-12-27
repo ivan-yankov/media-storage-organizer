@@ -22,6 +22,7 @@ import org.yankov.mso.application.ui.font.FontStyle;
 import org.yankov.mso.application.ui.font.FontWeight;
 import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
+import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Source;
 
@@ -98,7 +99,11 @@ public class FolkloreInputTable implements UserInterfaceControls {
 
     private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
-        colAlbum.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbum()));
+        colAlbum.setCellValueFactory(param -> {
+            Album album = param.getValue().getAlbum();
+            String s = album != null ? album.getCollectionSignature() : null;
+            return new SimpleStringProperty(s);
+        });
         colAlbum.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(

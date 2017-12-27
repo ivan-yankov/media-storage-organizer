@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
 import org.yankov.mso.application.ui.input.FolkloreInputButtons;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
@@ -77,6 +78,8 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceEditor.STAGE_TITLE, ""},
                 {FolklorePieceEditor.BTN_OK, ""},
                 {FolklorePieceEditor.BTN_CANCEL, ""},
+
+                {PieceProperties.UNDEFINED_ALBUM, ""},
                 };
     }
 

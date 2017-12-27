@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
 import org.yankov.mso.application.ui.input.FolkloreInputButtons;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
@@ -81,6 +82,8 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceEditor.STAGE_TITLE, "Редактиране на запис"},
                 {FolklorePieceEditor.BTN_OK, "OK"},
                 {FolklorePieceEditor.BTN_CANCEL, "Отказ"},
+
+                {PieceProperties.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
                 };
     }
 

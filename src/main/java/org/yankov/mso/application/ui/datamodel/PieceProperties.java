@@ -3,7 +3,9 @@ package org.yankov.mso.application.ui.datamodel;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.utils.FileUtils;
+import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Source;
 
@@ -12,12 +14,19 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.time.Duration;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class PieceProperties implements PropertyChangeListener {
 
+    private static final String CLASS_NAME = PieceProperties.class.getName();
+
+    public static final String UNDEFINED_ALBUM = CLASS_NAME + "-undefined-album";
+
     private static final String PROPERTY_NAME_FILE = "file";
 
-    private final SimpleStringProperty album;
+    private final SimpleObjectProperty<Album> album;
     private final SimpleIntegerProperty albumTrackOrder;
     private final SimpleStringProperty title;
     private final SimpleObjectProperty<Artist> performer;
@@ -33,8 +42,10 @@ public class PieceProperties implements PropertyChangeListener {
 
     private final PropertyChangeSupport propertyChangeSupport;
 
+    private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
+
     public PieceProperties() {
-        this.album = new SimpleStringProperty();
+        this.album = new SimpleObjectProperty<>();
         this.albumTrackOrder = new SimpleIntegerProperty();
         this.title = new SimpleStringProperty();
         this.performer = new SimpleObjectProperty<>();
@@ -52,11 +63,11 @@ public class PieceProperties implements PropertyChangeListener {
         this.propertyChangeSupport.addPropertyChangeListener(this);
     }
 
-    public String getAlbum() {
+    public Album getAlbum() {
         return album.get();
     }
 
-    public void setAlbum(String album) {
+    public void setAlbum(Album album) {
         this.album.set(album);
     }
 
@@ -179,7 +190,12 @@ public class PieceProperties implements PropertyChangeListener {
     }
 
     public void setFromFile(File file) {
-        setAlbum(file.getParentFile().getName());
+        String albumSignature = file.getParentFile().getName();
+        Optional<Album> album = ApplicationContext.getInstance().getFolkloreEntityCollections()
+                                                  .getAlbum(albumSignature);
+        String message = resourceBundle.getString(UNDEFINED_ALBUM) + " " + albumSignature;
+        album.ifPresentOrElse(this::setAlbum,
+                              () -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
         setFile(file);
     }
 

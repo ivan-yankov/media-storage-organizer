@@ -19,6 +19,7 @@ import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
+import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.ArtistMission;
 import org.yankov.mso.datamodel.generic.Source;
@@ -60,8 +61,9 @@ public class FolklorePieceEditor implements Form {
                                                            piece.getTitle(), piece::setTitle);
         title.layout();
 
-        UserInterfaceControls album = new LabeledTextField(resourceBundle.getString(FolkloreInputTable.COL_ALBUM),
-                                                           piece.getAlbum(), piece::setAlbum);
+        UserInterfaceControls album = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_ALBUM),
+                                                            collectAlbums(), piece.getAlbum(), piece::setAlbum,
+                                                            new AlbumStringConverter());
         album.layout();
 
         UserInterfaceControls performer = new LabeledComboBox<>(
@@ -201,6 +203,11 @@ public class FolklorePieceEditor implements Form {
     private ObservableList<Source> collectSources() {
         List<Source> list = new ArrayList<>(
                 ApplicationContext.getInstance().getFolkloreEntityCollections().getSources());
+        return FXCollections.observableList(list);
+    }
+
+    private ObservableList<Album> collectAlbums() {
+        List<Album> list = new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums());
         return FXCollections.observableList(list);
     }
 
