@@ -4,8 +4,7 @@ import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
-import org.yankov.mso.application.ui.input.FolkloreInputButtons;
-import org.yankov.mso.application.ui.input.FolkloreInputTable;
+import org.yankov.mso.application.ui.input.*;
 import org.yankov.mso.application.utils.FileUtils;
 import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
 
@@ -42,6 +41,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreApplicationSettings.STAGE_TITLE, "Управление на база данни с българска народна музика"},
 
                 {FolkloreMainForm.TAB_INPUT, "Въвеждане"},
+                {FolkloreMainForm.TAB_INPUT_ARTIFACTS, "Въвеждане на артефакти"},
                 {FolkloreMainForm.TAB_OUTPUT, "Справка"},
 
                 {FolkloreInputTable.COL_ALBUM, "Албум"},
@@ -84,6 +84,19 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceEditor.BTN_CANCEL, "Отказ"},
 
                 {PieceProperties.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
+
+                {FolkloreInputArtifactsTab.ARTIFACT_TYPE, "Вид артефакт"},
+                {FolkloreInputArtifactsTab.SOURCE, "Източник"},
+                {FolkloreInputArtifactsTab.INSTRUMENT, "Инструмент"},
+                {FolkloreInputArtifactsTab.ARTIST, "Артист"},
+                {FolkloreInputArtifactsTab.ALBUM, "Албум"},
+                {FolkloreInputArtifactsTab.ETHNOGRAPHIC_REGION, "Етнографска област"},
+
+                {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, "Съществуващи артефакти"},
+                {ArtifactInputControls.BTN_ADD_ARTIFACT, "Добавяне"},
+
+                {SourceTypeInputControls.SOURCE_TYPE, "Вид източник"},
+                {SourceTypeInputControls.SIGNATURE, "Сигнатура"},
                 };
     }
 

@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui.edit;
+package org.yankov.mso.application.ui.controls;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -32,7 +32,9 @@ public class LabeledTextField implements UserInterfaceControls {
         container.getChildren().add(label);
 
         textField.setText(value);
-        textField.textProperty().addListener((observable, oldValue, newValue) -> newValueConsumer.accept(newValue));
+        if (newValueConsumer != null) {
+            textField.textProperty().addListener((observable, oldValue, newValue) -> newValueConsumer.accept(newValue));
+        }
         container.getChildren().add(textField);
     }
 

@@ -6,6 +6,7 @@ import org.yankov.mso.datamodel.generic.Instrument;
 import org.yankov.mso.datamodel.generic.Source;
 import org.yankov.mso.datamodel.generic.SourceType;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -39,14 +40,20 @@ public class FolkloreEntityCollectionFactory {
 
     private static final ResourceBundle RESOURCE_BUNDLE = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    public static Set<Source> createSources() {
+    public static Set<SourceType> createSourceTypes() {
+        Set<SourceType> sourceTypes = new HashSet<>();
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_TAPE)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CARTRIDGE)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_GRAMOPHONE_RECORD)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CD)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_VIDEO)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_INTERNET)));
+        return sourceTypes;
+    }
+
+    public static Set<Source> createSources(Collection<SourceType> sourceTypes) {
         Set<Source> sources = new HashSet<>();
-        sources.add(new Source(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_TAPE)), ""));
-        sources.add(new Source(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CARTRIDGE)), ""));
-        sources.add(new Source(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_GRAMOPHONE_RECORD)), ""));
-        sources.add(new Source(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CD)), ""));
-        sources.add(new Source(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_VIDEO)), ""));
-        sources.add(new Source(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_INTERNET)), ""));
+        sourceTypes.forEach(sourceType -> sources.add(new Source(sourceType, "")));
         return sources;
     }
 

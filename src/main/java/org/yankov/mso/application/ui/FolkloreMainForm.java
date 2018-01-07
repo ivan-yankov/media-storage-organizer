@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.Form;
 import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.ui.input.FolkloreInputArtifactsTab;
 import org.yankov.mso.application.ui.input.FolkloreInputTab;
 
 public class FolkloreMainForm implements Form {
@@ -19,6 +20,7 @@ public class FolkloreMainForm implements Form {
 
     public static final String TAB_INPUT = CLASS_NAME + "-tab-input";
     public static final String TAB_OUTPUT = CLASS_NAME + "-tab-output";
+    public static final String TAB_INPUT_ARTIFACTS = CLASS_NAME + "-tab-input-artifacts";
 
     private Stage stage;
 
@@ -53,10 +55,19 @@ public class FolkloreMainForm implements Form {
         UserInterfaceControls inputTab = new FolkloreInputTab();
         inputTab.layout();
 
+        UserInterfaceControls inputArtifactsTab = new FolkloreInputArtifactsTab();
+        inputArtifactsTab.layout();
+
         TabPane tabPane = new TabPane();
         tabPane.getTabs().add(createTab(TAB_INPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                      .getString(TAB_INPUT), false,
                                         inputTab.getContainer()));
+
+        tabPane.getTabs().add(createTab(TAB_INPUT_ARTIFACTS,
+                                        ApplicationContext.getInstance().getFolkloreResourceBundle()
+                                                          .getString(TAB_INPUT_ARTIFACTS), false,
+                                        inputArtifactsTab.getContainer()));
+
         tabPane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                       .getString(TAB_OUTPUT), false, null));
 

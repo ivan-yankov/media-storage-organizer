@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui.edit;
+package org.yankov.mso.application.ui.controls;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,6 +28,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private T value;
     private Consumer<T> newValueConsumer;
     private StringConverter<T> converter;
+    private boolean editable;
     private VBox container;
     private Label label;
     private ComboBox<T> comboBox;
@@ -36,12 +37,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private StringBuilder filterText;
 
     public LabeledComboBox(String labelText, ObservableList<T> items, T value, Consumer<T> newValueConsumer,
-                           StringConverter<T> converter) {
+                           StringConverter<T> converter, boolean editable) {
         this.labelText = labelText;
         this.originalItems = items.sorted();
         this.value = value;
         this.newValueConsumer = newValueConsumer;
         this.converter = converter;
+        this.editable = editable;
         this.container = new VBox();
         this.label = new Label();
         this.comboBox = new ComboBox<>();
@@ -55,7 +57,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         label.setText(labelText);
         container.getChildren().add(label);
 
-        comboBox.setEditable(false);
+        comboBox.setEditable(editable);
         comboBox.setPrefWidth(DEFAULT_PREF_WIDTH);
         comboBox.setConverter(converter);
         comboBox.setItems(originalItems);
@@ -67,10 +69,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
                 resetFilter();
             }
         });
-        comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            newValueConsumer.accept(newValue);
-            resetFilter();
-        });
+
+        if (newValueConsumer != null) {
+            comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+                newValueConsumer.accept(newValue);
+                resetFilter();
+            });
+        }
 
         filterTextField.setDisable(true);
         popup.getContent().add(filterTextField);

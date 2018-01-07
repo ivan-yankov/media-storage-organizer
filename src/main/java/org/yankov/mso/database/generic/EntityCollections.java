@@ -16,6 +16,7 @@ public abstract class EntityCollections<T extends Piece> {
 
     public abstract void saveEntityCollections();
 
+    private Set<SourceType> sourceTypes;
     private Set<Source> sources;
     private Set<Instrument> instruments;
     private Set<Artist> artists;
@@ -23,11 +24,16 @@ public abstract class EntityCollections<T extends Piece> {
     private List<T> pieces;
 
     public EntityCollections() {
+        this.sourceTypes = new HashSet<>();
         this.sources = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
         this.albums = new HashSet<>();
         this.pieces = new ArrayList<>();
+    }
+
+    public Set<SourceType> getSourceTypes() {
+        return sourceTypes;
     }
 
     public Set<Source> getSources() {
@@ -48,6 +54,12 @@ public abstract class EntityCollections<T extends Piece> {
 
     public List<T> getPieces() {
         return pieces;
+    }
+
+    public Optional<SourceType> getSourceType(String name) {
+        return sourceTypes.stream()
+                          .filter(entity -> entity.toString().toLowerCase().trim().equals(name.toLowerCase().trim()))
+                          .findFirst();
     }
 
     public Optional<Source> getSource(String representation) {

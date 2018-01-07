@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui.edit;
+package org.yankov.mso.application.ui.controls;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;

@@ -4,8 +4,7 @@ import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
-import org.yankov.mso.application.ui.input.FolkloreInputButtons;
-import org.yankov.mso.application.ui.input.FolkloreInputTable;
+import org.yankov.mso.application.ui.input.*;
 import org.yankov.mso.application.utils.FileUtils;
 import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
 
@@ -80,6 +79,19 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceEditor.BTN_CANCEL, ""},
 
                 {PieceProperties.UNDEFINED_ALBUM, ""},
+
+                {FolkloreInputArtifactsTab.ARTIFACT_TYPE, ""},
+                {FolkloreInputArtifactsTab.SOURCE, ""},
+                {FolkloreInputArtifactsTab.INSTRUMENT, ""},
+                {FolkloreInputArtifactsTab.ARTIST, ""},
+                {FolkloreInputArtifactsTab.ALBUM, ""},
+                {FolkloreInputArtifactsTab.ETHNOGRAPHIC_REGION, ""},
+
+                {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, ""},
+                {ArtifactInputControls.BTN_ADD_ARTIFACT, ""},
+
+                {SourceTypeInputControls.SOURCE_TYPE, ""},
+                {SourceTypeInputControls.SIGNATURE, ""},
                 };
     }
 

@@ -16,6 +16,13 @@ import javafx.stage.Stage;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.Form;
 import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.ui.controls.FileSelectionField;
+import org.yankov.mso.application.ui.controls.LabeledComboBox;
+import org.yankov.mso.application.ui.controls.LabeledTextField;
+import org.yankov.mso.application.ui.converters.AlbumStringConverter;
+import org.yankov.mso.application.ui.converters.ArtistStringConverter;
+import org.yankov.mso.application.ui.converters.EthnographicRegionStringConverter;
+import org.yankov.mso.application.ui.converters.SourceStringConverter;
 import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 import org.yankov.mso.application.ui.input.FolkloreInputTable;
 import org.yankov.mso.datamodel.folklore.EthnographicRegion;
@@ -63,54 +70,55 @@ public class FolklorePieceEditor implements Form {
 
         UserInterfaceControls album = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_ALBUM),
                                                             collectAlbums(), piece.getAlbum(), piece::setAlbum,
-                                                            new AlbumStringConverter());
+                                                            new AlbumStringConverter(), false);
         album.layout();
 
         UserInterfaceControls performer = new LabeledComboBox<>(
                 resourceBundle.getString(FolkloreInputTable.COL_PERFORMER),
                 collectArtists(ArtistMission.SINGER, ArtistMission.ORCHESTRA, ArtistMission.INSTRUMENT_PLAYER,
                                ArtistMission.ENSEMBLE, ArtistMission.CHOIR, ArtistMission.CHAMBER_GROUP),
-                piece.getPerformer(), piece::setPerformer, new ArtistStringConverter());
+                piece.getPerformer(), piece::setPerformer, new ArtistStringConverter(), false);
         performer.layout();
 
         UserInterfaceControls accompanimentPerformer = new LabeledComboBox<>(
                 resourceBundle.getString(FolkloreInputTable.COL_ACCOMPANIMENT_PERFORMER),
                 collectArtists(ArtistMission.ORCHESTRA, ArtistMission.INSTRUMENT_PLAYER, ArtistMission.ENSEMBLE,
                                ArtistMission.CHAMBER_GROUP), piece.getAccompanimentPerformer(),
-                piece::setAccompanimentPerformer, new ArtistStringConverter());
+                piece::setAccompanimentPerformer, new ArtistStringConverter(), false);
         accompanimentPerformer.layout();
 
         UserInterfaceControls arrangementAuthor = new LabeledComboBox<>(
                 resourceBundle.getString(FolkloreInputTable.COL_ARRANGEMENT_AUTHOR),
                 collectArtists(ArtistMission.COMPOSER), piece.getArrangementAuthor(), piece::setArrangementAuthor,
-                new ArtistStringConverter());
+                new ArtistStringConverter(), false);
         arrangementAuthor.layout();
 
         UserInterfaceControls conductor = new LabeledComboBox<>(
                 resourceBundle.getString(FolkloreInputTable.COL_CONDUCTOR), collectArtists(ArtistMission.CONDUCTOR),
-                piece.getConductor(), piece::setConductor, new ArtistStringConverter());
+                piece.getConductor(), piece::setConductor, new ArtistStringConverter(), false);
         conductor.layout();
 
         UserInterfaceControls author = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_AUTHOR),
                                                              collectArtists(ArtistMission.COMPOSER), piece.getAuthor(),
-                                                             piece::setAuthor, new ArtistStringConverter());
+                                                             piece::setAuthor, new ArtistStringConverter(), false);
         author.layout();
 
         UserInterfaceControls soloist = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_SOLOIST),
                                                               collectArtists(ArtistMission.SINGER,
                                                                              ArtistMission.INSTRUMENT_PLAYER),
                                                               piece.getSoloist(), piece::setSoloist,
-                                                              new ArtistStringConverter());
+                                                              new ArtistStringConverter(), false);
         soloist.layout();
 
         UserInterfaceControls ethnographicRegion = new LabeledComboBox<>(
                 resourceBundle.getString(FolkloreInputTable.COL_ETHNOGRAPHIC_REGION), collectEthnographicRegions(),
-                piece.getEthnographicRegion(), piece::setEthnographicRegion, new EthnographicRegionStringConverter());
+                piece.getEthnographicRegion(), piece::setEthnographicRegion, new EthnographicRegionStringConverter(),
+                false);
         ethnographicRegion.layout();
 
         UserInterfaceControls source = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_SOURCE),
                                                              collectSources(), piece.getSource(), piece::setSource,
-                                                             new SourceStringConverter());
+                                                             new SourceStringConverter(), false);
         source.layout();
 
         UserInterfaceControls note = new LabeledTextField(resourceBundle.getString(FolkloreInputTable.COL_NOTE),

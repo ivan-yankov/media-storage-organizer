@@ -37,7 +37,10 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
 
     @Override
     public void initializeEntityCollections() {
-        initializeEntityCollection(Source.class, getSources(), FolkloreEntityCollectionFactory.createSources());
+        getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
+
+        initializeEntityCollection(Source.class, getSources(),
+                                   FolkloreEntityCollectionFactory.createSources(getSourceTypes()));
 
         initializeEntityCollection(Instrument.class, getInstruments(),
                                    FolkloreEntityCollectionFactory.createInstruments());

@@ -4,7 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.database.generic.DatabaseTest;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
-import org.yankov.mso.datamodel.generic.*;
+import org.yankov.mso.datamodel.generic.Album;
+import org.yankov.mso.datamodel.generic.ArtistMission;
+import org.yankov.mso.datamodel.generic.Record;
+import org.yankov.mso.datamodel.generic.SourceType;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,7 +56,9 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         actualEntityCollections.initializeEntityCollections();
 
         FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections();
-        expectedEntityCollections.getSources().addAll(FolkloreEntityCollectionFactory.createSources());
+        expectedEntityCollections.getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
+        expectedEntityCollections.getSources().addAll(FolkloreEntityCollectionFactory.createSources(
+                expectedEntityCollections.getSourceTypes()));
         expectedEntityCollections.getInstruments().addAll(FolkloreEntityCollectionFactory.createInstruments());
         expectedEntityCollections.getEthnographicRegions()
                                  .addAll(FolkloreEntityCollectionFactory.createEthnographicRegions());
@@ -184,7 +189,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertTrue(entityCollections.getPieces().isEmpty());
 
         assertSetsEqual(FolkloreEntityCollectionFactory.createInstruments(), entityCollections.getInstruments());
-        assertSetsEqual(FolkloreEntityCollectionFactory.createSources(), entityCollections.getSources());
+        assertSetsEqual(FolkloreEntityCollectionFactory.createSources(entityCollections.getSourceTypes()),
+                        entityCollections.getSources());
         assertSetsEqual(FolkloreEntityCollectionFactory.createEthnographicRegions(),
                         entityCollections.getEthnographicRegions());
     }

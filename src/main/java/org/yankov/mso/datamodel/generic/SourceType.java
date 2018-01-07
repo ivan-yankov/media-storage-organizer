@@ -47,4 +47,9 @@ public class SourceType {
         return this.name.toLowerCase().trim().equals(other.name.toLowerCase().trim());
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

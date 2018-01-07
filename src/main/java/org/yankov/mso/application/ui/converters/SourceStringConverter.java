@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui.edit;
+package org.yankov.mso.application.ui.converters;
 
 import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
