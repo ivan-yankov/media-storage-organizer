@@ -56,12 +56,11 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         actualEntityCollections.initializeEntityCollections();
 
         FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections();
-        expectedEntityCollections.getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
-        expectedEntityCollections.getSources().addAll(FolkloreEntityCollectionFactory.createSources(
-                expectedEntityCollections.getSourceTypes()));
-        expectedEntityCollections.getInstruments().addAll(FolkloreEntityCollectionFactory.createInstruments());
-        expectedEntityCollections.getEthnographicRegions()
-                                 .addAll(FolkloreEntityCollectionFactory.createEthnographicRegions());
+        expectedEntityCollections.addSourceTypes(FolkloreEntityCollectionFactory.createSourceTypes());
+        expectedEntityCollections
+                .addSources(FolkloreEntityCollectionFactory.createSources(expectedEntityCollections.getSourceTypes()));
+        expectedEntityCollections.addInstruments(FolkloreEntityCollectionFactory.createInstruments());
+        expectedEntityCollections.addEthnographicRegions(FolkloreEntityCollectionFactory.createEthnographicRegions());
         modifyEntityCollections(expectedEntityCollections, true, 1);
 
         assertStoredEntities(expectedEntityCollections, actualEntityCollections);
@@ -221,7 +220,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         entityCollections.addArtist(NO_AUTHOR);
         entityCollections.addArtist(TRIO);
 
-        entityCollections.getAlbums().add(createAlbum());
+        entityCollections.addAlbum(createAlbum());
 
         entityCollections.addSource(new SourceType(SOURCE_TYPE), SOURCE_SIGNATURE);
 

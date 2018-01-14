@@ -52,6 +52,10 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         this.filterText = new StringBuilder();
     }
 
+    public ComboBox<T> getComboBox() {
+        return comboBox;
+    }
+
     @Override
     public void layout() {
         label.setText(labelText);

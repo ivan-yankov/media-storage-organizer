@@ -2,6 +2,7 @@ package org.yankov.mso.application.ui.input;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -9,11 +10,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.datamodel.generic.Source;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public abstract class ArtifactInputControls implements UserInterfaceControls {
+public abstract class ArtifactInputControls implements UserInterfaceControls, PropertyChangeListener {
 
     private static final String CLASS_NAME = ArtifactInputControls.class.getName();
 
@@ -32,7 +37,9 @@ public abstract class ArtifactInputControls implements UserInterfaceControls {
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    public abstract void refreshExistingArtifacts(ObservableList<String> items);
+    public abstract List<String> collectExistingItems();
+
+    public abstract void handleBtnAddArtifactClick(ActionEvent event);
 
     public ArtifactInputControls(String id) {
         this.id = id;
@@ -62,15 +69,30 @@ public abstract class ArtifactInputControls implements UserInterfaceControls {
     @Override
     public void layout() {
         existingArtifacts.setItems(items);
+        ApplicationContext.getInstance().getFolkloreEntityCollections().addPropertyChangeListener(this);
+
+        btnAddArtifact.setOnAction(this::handleBtnAddArtifactClick);
 
         existingArtifactsContainer.getChildren().add(existingArtifactsLabel);
         existingArtifactsContainer.getChildren().add(existingArtifacts);
-        refreshExistingArtifacts(items);
+        refreshExistingArtifacts();
     }
 
     @Override
     public Pane getContainer() {
         return existingArtifactsContainer;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        refreshExistingArtifacts();
+    }
+
+    private void refreshExistingArtifacts() {
+        items.clear();
+        List<String> newItems = collectExistingItems();
+        Collections.sort(newItems);
+        items.addAll(newItems);
     }
 
 }

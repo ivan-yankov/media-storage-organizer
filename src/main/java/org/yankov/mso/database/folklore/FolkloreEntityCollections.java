@@ -23,7 +23,7 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
     }
 
     public Set<EthnographicRegion> getEthnographicRegions() {
-        return ethnographicRegions;
+        return Collections.unmodifiableSet(ethnographicRegions);
     }
 
     public Optional<EthnographicRegion> getEthnographicRegion(String name) {
@@ -35,24 +35,28 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
         return ethnographicRegions.add(new EthnographicRegion(name));
     }
 
+    public void addEthnographicRegions(Set<EthnographicRegion> ethnographicRegions) {
+        this.ethnographicRegions.addAll(ethnographicRegions);
+    }
+
     @Override
     public void initializeEntityCollections() {
-        getSourceTypes().addAll(FolkloreEntityCollectionFactory.createSourceTypes());
+        sourceTypes.addAll(FolkloreEntityCollectionFactory.createSourceTypes());
 
-        initializeEntityCollection(Source.class, getSources(),
+        initializeEntityCollection(Source.class, sources,
                                    FolkloreEntityCollectionFactory.createSources(getSourceTypes()));
 
-        initializeEntityCollection(Instrument.class, getInstruments(),
+        initializeEntityCollection(Instrument.class, instruments,
                                    FolkloreEntityCollectionFactory.createInstruments());
 
-        initializeEntityCollection(Artist.class, getArtists(), Collections.emptySet());
+        initializeEntityCollection(Artist.class, artists, Collections.emptySet());
 
-        initializeEntityCollection(Album.class, getAlbums(), Collections.emptySet());
+        initializeEntityCollection(Album.class, albums, Collections.emptySet());
 
-        initializeEntityCollection(EthnographicRegion.class, getEthnographicRegions(),
+        initializeEntityCollection(EthnographicRegion.class, ethnographicRegions,
                                    FolkloreEntityCollectionFactory.createEthnographicRegions());
 
-        initializeEntityCollection(FolklorePiece.class, getPieces(), Collections.emptyList());
+        initializeEntityCollection(FolklorePiece.class, pieces, Collections.emptyList());
     }
 
     @Override

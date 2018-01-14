@@ -26,6 +26,10 @@ public class LabeledTextField implements UserInterfaceControls {
         this.newValueConsumer = newValueConsumer;
     }
 
+    public TextField getTextField() {
+        return textField;
+    }
+
     @Override
     public void layout() {
         label.setText(labelText);

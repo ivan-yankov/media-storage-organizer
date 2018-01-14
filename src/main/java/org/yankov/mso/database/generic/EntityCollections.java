@@ -7,23 +7,30 @@ import org.yankov.mso.datamodel.generic.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.logging.Level;
 
 public abstract class EntityCollections<T extends Piece> {
 
+    private static final String PROPERTY_SOURCES = "sources";
+
+    protected final PropertyChangeSupport propertyChangeSupport;
+
+    protected final Set<SourceType> sourceTypes;
+    protected final Set<Source> sources;
+    protected final Set<Instrument> instruments;
+    protected final Set<Artist> artists;
+    protected final Set<Album> albums;
+    protected final List<T> pieces;
+
     public abstract void initializeEntityCollections();
 
     public abstract void saveEntityCollections();
 
-    private Set<SourceType> sourceTypes;
-    private Set<Source> sources;
-    private Set<Instrument> instruments;
-    private Set<Artist> artists;
-    private Set<Album> albums;
-    private List<T> pieces;
-
     public EntityCollections() {
+        this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.sourceTypes = new HashSet<>();
         this.sources = new HashSet<>();
         this.instruments = new HashSet<>();
@@ -32,28 +39,37 @@ public abstract class EntityCollections<T extends Piece> {
         this.pieces = new ArrayList<>();
     }
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
     public Set<SourceType> getSourceTypes() {
-        return sourceTypes;
+        return Collections.unmodifiableSet(sourceTypes);
     }
 
     public Set<Source> getSources() {
-        return sources;
+        return Collections.unmodifiableSet(sources);
     }
 
     public Set<Instrument> getInstruments() {
-        return instruments;
+        return Collections.unmodifiableSet(instruments);
     }
 
     public Set<Artist> getArtists() {
-        return artists;
+        return Collections.unmodifiableSet(artists);
     }
 
     public Set<Album> getAlbums() {
-        return albums;
+        return Collections.unmodifiableSet(albums);
     }
 
     public List<T> getPieces() {
-        return pieces;
+        return Collections.unmodifiableList(pieces);
     }
 
     public Optional<SourceType> getSourceType(String name) {
@@ -62,13 +78,37 @@ public abstract class EntityCollections<T extends Piece> {
                           .findFirst();
     }
 
+    public boolean addSourceType(SourceType sourceType) {
+        return sourceTypes.add(sourceType);
+    }
+
+    public void addSourceTypes(Set<SourceType> sourceTypes) {
+        this.sourceTypes.addAll(sourceTypes);
+    }
+
     public Optional<Source> getSource(String representation) {
         return sources.stream().filter(entity -> entity.toString().toLowerCase().trim()
                                                        .equals(representation.toLowerCase().trim())).findFirst();
     }
 
     public boolean addSource(SourceType type, String signature) {
-        return sources.add(new Source(type, signature));
+        Set<Source> oldValue = new HashSet<>();
+        oldValue.addAll(sources);
+        boolean result = sources.add(new Source(type, signature));
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, sources);
+        return result;
+    }
+
+    public boolean addSource(Source source) {
+        Set<Source> oldValue = new HashSet<>();
+        oldValue.addAll(sources);
+        boolean result = sources.add(source);
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, sources);
+        return result;
+    }
+
+    public void addSources(Set<Source> sources) {
+        this.sources.addAll(sources);
     }
 
     public Optional<Instrument> getInstrument(String name) {
@@ -79,6 +119,10 @@ public abstract class EntityCollections<T extends Piece> {
 
     public boolean addInstrument(String name) {
         return instruments.add(new Instrument(name));
+    }
+
+    public void addInstruments(Set<Instrument> instruments) {
+        this.instruments.addAll(instruments);
     }
 
     public Optional<Artist> getArtist(String name) {
@@ -98,6 +142,10 @@ public abstract class EntityCollections<T extends Piece> {
 
     public boolean addAlbum(String collectionSignature) {
         return albums.add(new Album(collectionSignature));
+    }
+
+    public boolean addAlbum(Album album) {
+        return albums.add(album);
     }
 
     public Optional<T> getPiece(int index) {
