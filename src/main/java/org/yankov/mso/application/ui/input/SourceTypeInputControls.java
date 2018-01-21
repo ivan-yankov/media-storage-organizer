@@ -3,8 +3,6 @@ package org.yankov.mso.application.ui.input;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
@@ -25,24 +23,15 @@ public class SourceTypeInputControls extends ArtifactInputControls {
     public static final String SOURCE_TYPE = CLASS_NAME + "-source-type";
     public static final String SIGNATURE = CLASS_NAME + "-signature";
 
-    private HBox container;
     private LabeledComboBox<SourceType> sourceType;
     private LabeledTextField sourceSignature;
 
     public SourceTypeInputControls(String id) {
         super(id);
-        this.container = new HBox();
     }
 
     @Override
-    public void layout() {
-        super.layout();
-
-        container.setId(getId());
-        container.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
-        container.setSpacing(getWhiteSpace());
-        container.getChildren().add(super.getContainer());
-
+    public Pane createInputControls() {
         ObservableList<SourceType> sourceTypes = FXCollections.observableArrayList();
         sourceTypes.addAll(ApplicationContext.getInstance().getFolkloreEntityCollections().getSourceTypes());
         SourceType defaultSourceType = sourceTypes.get(0);
@@ -59,12 +48,7 @@ public class SourceTypeInputControls extends ArtifactInputControls {
         actionControlsContainer.getChildren().add(sourceSignature.getContainer());
         actionControlsContainer.getChildren().add(getBtnAddArtifact());
 
-        container.getChildren().add(actionControlsContainer);
-    }
-
-    @Override
-    public Pane getContainer() {
-        return container;
+        return actionControlsContainer;
     }
 
     @Override
