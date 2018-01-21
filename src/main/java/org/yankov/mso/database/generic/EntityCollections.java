@@ -15,6 +15,7 @@ import java.util.logging.Level;
 public abstract class EntityCollections<T extends Piece> {
 
     private static final String PROPERTY_SOURCES = "sources";
+    private static final String PROPERTY_INSTRUMENTS = "instruments";
 
     protected final PropertyChangeSupport propertyChangeSupport;
 
@@ -91,14 +92,6 @@ public abstract class EntityCollections<T extends Piece> {
                                                        .equals(representation.toLowerCase().trim())).findFirst();
     }
 
-    public boolean addSource(SourceType type, String signature) {
-        Set<Source> oldValue = new HashSet<>();
-        oldValue.addAll(sources);
-        boolean result = sources.add(new Source(type, signature));
-        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, sources);
-        return result;
-    }
-
     public boolean addSource(Source source) {
         Set<Source> oldValue = new HashSet<>();
         oldValue.addAll(sources);
@@ -117,8 +110,12 @@ public abstract class EntityCollections<T extends Piece> {
                           .findFirst();
     }
 
-    public boolean addInstrument(String name) {
-        return instruments.add(new Instrument(name));
+    public boolean addInstrument(Instrument instrument) {
+        Set<Instrument> oldValue = new HashSet<>();
+        oldValue.addAll(instruments);
+        boolean result = instruments.add(instrument);
+        propertyChangeSupport.firePropertyChange(PROPERTY_INSTRUMENTS, oldValue, instruments);
+        return result;
     }
 
     public void addInstruments(Set<Instrument> instruments) {
@@ -131,17 +128,13 @@ public abstract class EntityCollections<T extends Piece> {
                       .findFirst();
     }
 
-    public boolean addArtist(String name) {
-        return artists.add(new Artist(name));
+    public boolean addArtist(Artist artist) {
+        return artists.add(artist);
     }
 
     public Optional<Album> getAlbum(String collectionSignature) {
         return albums.stream().filter(entity -> entity.getCollectionSignature().toLowerCase().trim()
                                                       .equals(collectionSignature.toLowerCase().trim())).findFirst();
-    }
-
-    public boolean addAlbum(String collectionSignature) {
-        return albums.add(new Album(collectionSignature));
     }
 
     public boolean addAlbum(Album album) {

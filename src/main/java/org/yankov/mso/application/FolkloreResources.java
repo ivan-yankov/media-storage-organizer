@@ -90,8 +90,10 @@ public class FolkloreResources extends ListResourceBundle {
                 {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, ""},
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, ""},
 
-                {SourceTypeInputControls.SOURCE_TYPE, ""},
-                {SourceTypeInputControls.SIGNATURE, ""},
+                {SourceInputControls.SOURCE_TYPE, ""},
+                {SourceInputControls.SIGNATURE, ""},
+
+                {InstrumentInputControls.INSTRUMENT, ""},
                 };
     }
 

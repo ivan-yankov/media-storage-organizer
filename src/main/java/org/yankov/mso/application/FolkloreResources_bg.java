@@ -95,8 +95,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, "Съществуващи артефакти"},
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, "Добавяне"},
 
-                {SourceTypeInputControls.SOURCE_TYPE, "Вид източник"},
-                {SourceTypeInputControls.SIGNATURE, "Сигнатура"},
+                {SourceInputControls.SOURCE_TYPE, "Вид източник"},
+                {SourceInputControls.SIGNATURE, "Сигнатура"},
+
+                {InstrumentInputControls.INSTRUMENT, "Инструмент"},
                 };
     }
 

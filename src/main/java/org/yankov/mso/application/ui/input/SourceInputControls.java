@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.ui.controls.LabeledComboBox;
 import org.yankov.mso.application.ui.controls.LabeledTextField;
@@ -16,9 +17,9 @@ import org.yankov.mso.datamodel.generic.SourceType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SourceTypeInputControls extends ArtifactInputControls {
+public class SourceInputControls extends ArtifactInputControls {
 
-    private static final String CLASS_NAME = SourceTypeInputControls.class.getName();
+    private static final String CLASS_NAME = SourceInputControls.class.getName();
 
     public static final String SOURCE_TYPE = CLASS_NAME + "-source-type";
     public static final String SIGNATURE = CLASS_NAME + "-signature";
@@ -26,12 +27,12 @@ public class SourceTypeInputControls extends ArtifactInputControls {
     private LabeledComboBox<SourceType> sourceType;
     private LabeledTextField sourceSignature;
 
-    public SourceTypeInputControls(String id) {
+    public SourceInputControls(String id) {
         super(id);
     }
 
     @Override
-    public Pane createInputControls() {
+    public Pane createActionsControls() {
         ObservableList<SourceType> sourceTypes = FXCollections.observableArrayList();
         sourceTypes.addAll(ApplicationContext.getInstance().getFolkloreEntityCollections().getSourceTypes());
         SourceType defaultSourceType = sourceTypes.get(0);
@@ -46,7 +47,6 @@ public class SourceTypeInputControls extends ArtifactInputControls {
         actionControlsContainer.setSpacing(getWhiteSpace());
         actionControlsContainer.getChildren().add(sourceType.getContainer());
         actionControlsContainer.getChildren().add(sourceSignature.getContainer());
-        actionControlsContainer.getChildren().add(getBtnAddArtifact());
 
         return actionControlsContainer;
     }
@@ -54,7 +54,7 @@ public class SourceTypeInputControls extends ArtifactInputControls {
     @Override
     public List<String> collectExistingItems() {
         List<String> items = new ArrayList<>();
-        SourceStringConverter converter = new SourceStringConverter();
+        StringConverter converter = new SourceStringConverter();
         ApplicationContext.getInstance().getFolkloreEntityCollections().getSources()
                           .forEach(source -> items.add(converter.toString(source)));
         return items;

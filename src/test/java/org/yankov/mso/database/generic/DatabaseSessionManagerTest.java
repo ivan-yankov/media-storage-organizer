@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public class DatabaseSessionManagerTest extends DatabaseTest {
 
-    private String instrumentName = "Инструмент";
+    private String instrumentName = "Тестов инструмент";
 
     @Test
-    public void testInstrumentWrite() {
+    public void test() {
         Instrument originalInstrument = new Instrument(instrumentName);
 
         ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {

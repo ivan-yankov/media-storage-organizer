@@ -39,7 +39,7 @@ public abstract class ArtifactInputControls implements UserInterfaceControls, Pr
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    protected abstract Pane createInputControls();
+    protected abstract Pane createActionsControls();
 
     protected abstract List<String> collectExistingItems();
 
@@ -57,10 +57,6 @@ public abstract class ArtifactInputControls implements UserInterfaceControls, Pr
 
     public String getId() {
         return id;
-    }
-
-    public Button getBtnAddArtifact() {
-        return btnAddArtifact;
     }
 
     public ResourceBundle getResourceBundle() {
@@ -82,11 +78,19 @@ public abstract class ArtifactInputControls implements UserInterfaceControls, Pr
         existingArtifactsContainer.getChildren().add(existingArtifacts);
         refreshExistingArtifacts();
 
+        VBox actionControlsContainer = new VBox();
+        actionControlsContainer.getChildren().add(createActionsControls());
+
+        VBox btnAddArtifactContainer = new VBox();
+        btnAddArtifactContainer.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
+        btnAddArtifactContainer.getChildren().add(btnAddArtifact);
+        actionControlsContainer.getChildren().add(btnAddArtifactContainer);
+
         container.setId(getId());
         container.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
         container.setSpacing(getWhiteSpace());
         container.getChildren().add(existingArtifactsContainer);
-        container.getChildren().add(createInputControls());
+        container.getChildren().add(actionControlsContainer);
     }
 
     @Override

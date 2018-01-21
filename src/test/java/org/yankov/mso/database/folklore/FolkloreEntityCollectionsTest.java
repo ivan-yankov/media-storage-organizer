@@ -4,10 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.database.generic.DatabaseTest;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
-import org.yankov.mso.datamodel.generic.Album;
-import org.yankov.mso.datamodel.generic.ArtistMission;
-import org.yankov.mso.datamodel.generic.Record;
-import org.yankov.mso.datamodel.generic.SourceType;
+import org.yankov.mso.datamodel.generic.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -70,11 +67,11 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetSourceType() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addSource(new SourceType("Грамофонна плоча"), ""));
-        Assert.assertFalse(collections.addSource(new SourceType(" грамофонна плоча "), ""));
-        Assert.assertFalse(collections.addSource(new SourceType("гРАМОФОННА ПЛОЧА"), ""));
-        Assert.assertTrue(collections.addSource(new SourceType("Грамофоннаплоча"), ""));
-        Assert.assertTrue(collections.addSource(new SourceType("Лента"), "Балкантон"));
+        Assert.assertTrue(collections.addSource(new Source(new SourceType("Грамофонна плоча"), "")));
+        Assert.assertFalse(collections.addSource(new Source(new SourceType(" грамофонна плоча "), "")));
+        Assert.assertFalse(collections.addSource(new Source(new SourceType("гРАМОФОННА ПЛОЧА"), "")));
+        Assert.assertTrue(collections.addSource(new Source(new SourceType("Грамофоннаплоча"), "")));
+        Assert.assertTrue(collections.addSource(new Source(new SourceType("Лента"), "Балкантон")));
 
         Assert.assertTrue(collections.getSource("грамофонна плоча ").isPresent());
         Assert.assertFalse(collections.getSource("грамофонна_плоча").isPresent());
@@ -85,10 +82,10 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetInstrument() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addInstrument("Флигорна"));
-        Assert.assertFalse(collections.addInstrument(" флигорна "));
-        Assert.assertFalse(collections.addInstrument(" фЛИГОРНА"));
-        Assert.assertTrue(collections.addInstrument("Тромпет"));
+        Assert.assertTrue(collections.addInstrument(new Instrument("Флигорна")));
+        Assert.assertFalse(collections.addInstrument(new Instrument(" флигорна ")));
+        Assert.assertFalse(collections.addInstrument(new Instrument(" фЛИГОРНА")));
+        Assert.assertTrue(collections.addInstrument(new Instrument("Тромпет")));
 
         Assert.assertTrue(collections.getInstrument("флигорна ").isPresent());
         Assert.assertFalse(collections.getInstrument("фагот").isPresent());
@@ -98,10 +95,10 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetArtist() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addArtist("Борис Машалов"));
-        Assert.assertFalse(collections.addArtist(" борис машалов "));
-        Assert.assertFalse(collections.addArtist(" бОРИС МАШАЛОВ"));
-        Assert.assertTrue(collections.addArtist("Мита Стойчева"));
+        Assert.assertTrue(collections.addArtist(new Artist("Борис Машалов")));
+        Assert.assertFalse(collections.addArtist(new Artist(" борис машалов ")));
+        Assert.assertFalse(collections.addArtist(new Artist(" бОРИС МАШАЛОВ")));
+        Assert.assertTrue(collections.addArtist(new Artist("Мита Стойчева")));
 
         Assert.assertTrue(collections.getArtist("борис машалов ").isPresent());
         Assert.assertFalse(collections.getArtist("Борис Карлов").isPresent());
@@ -111,9 +108,9 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetDisc() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addAlbum("F1"));
-        Assert.assertFalse(collections.addAlbum(" f1 "));
-        Assert.assertTrue(collections.addAlbum("F2"));
+        Assert.assertTrue(collections.addAlbum(new Album("F1")));
+        Assert.assertFalse(collections.addAlbum(new Album(" f1 ")));
+        Assert.assertTrue(collections.addAlbum(new Album("F2")));
 
         Assert.assertTrue(collections.getAlbum("f1 ").isPresent());
         Assert.assertFalse(collections.getAlbum("F3").isPresent());
@@ -204,9 +201,9 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     public static void modifyEntityCollections(FolkloreEntityCollections entityCollections, boolean addMediaRecord,
                                                int numberPieceTableRecords) {
-        entityCollections.addInstrument(ACCORDEON);
+        entityCollections.addInstrument(new Instrument(ACCORDEON));
 
-        entityCollections.addArtist(KOSTA_KOLEV);
+        entityCollections.addArtist(new Artist(KOSTA_KOLEV));
         entityCollections.getArtist(KOSTA_KOLEV).ifPresent(artist -> {
             artist.setInstrument(entityCollections.getInstrument(ACCORDEON).get());
             artist.setNote(KOSTA_KOLEV_NOTE);
@@ -214,15 +211,15 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
             artist.addMission(ArtistMission.COMPOSER);
             artist.addMission(ArtistMission.CONDUCTOR);
         });
-        entityCollections.addArtist(FILIP_KUTEV);
-        entityCollections.addArtist(ENS_FILIP_KUTEV);
-        entityCollections.addArtist(VERKA_SIDEROVA);
-        entityCollections.addArtist(NO_AUTHOR);
-        entityCollections.addArtist(TRIO);
+        entityCollections.addArtist(new Artist(FILIP_KUTEV));
+        entityCollections.addArtist(new Artist(ENS_FILIP_KUTEV));
+        entityCollections.addArtist(new Artist(VERKA_SIDEROVA));
+        entityCollections.addArtist(new Artist(NO_AUTHOR));
+        entityCollections.addArtist(new Artist(TRIO));
 
         entityCollections.addAlbum(createAlbum());
 
-        entityCollections.addSource(new SourceType(SOURCE_TYPE), SOURCE_SIGNATURE);
+        entityCollections.addSource(new Source(new SourceType(SOURCE_TYPE), SOURCE_SIGNATURE));
 
         for (int i = 0; i < numberPieceTableRecords; i++) {
             entityCollections.addPiece(createPiece(entityCollections, addMediaRecord));
