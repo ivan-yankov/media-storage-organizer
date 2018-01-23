@@ -14,8 +14,12 @@ import java.util.logging.Level;
 
 public abstract class EntityCollections<T extends Piece> {
 
+    private static final String PROPERTY_SOURCE_TYPES = "sourceTypes";
     private static final String PROPERTY_SOURCES = "sources";
     private static final String PROPERTY_INSTRUMENTS = "instruments";
+    private static final String PROPERTY_ARTISTS = "artists";
+    private static final String PROPERTY_ALBUMS = "albums";
+    private static final String PROPERTY_PIECES = "pieces";
 
     protected final PropertyChangeSupport propertyChangeSupport;
 
@@ -80,11 +84,18 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     public boolean addSourceType(SourceType sourceType) {
-        return sourceTypes.add(sourceType);
+        Set<SourceType> oldValue = new HashSet<>();
+        oldValue.addAll(sourceTypes);
+        boolean result = sourceTypes.add(sourceType);
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCE_TYPES, oldValue, sourceTypes);
+        return result;
     }
 
     public void addSourceTypes(Set<SourceType> sourceTypes) {
+        Set<SourceType> oldValue = new HashSet<>();
+        oldValue.addAll(this.sourceTypes);
         this.sourceTypes.addAll(sourceTypes);
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCE_TYPES, oldValue, this.sourceTypes);
     }
 
     public Optional<Source> getSource(String representation) {
@@ -101,7 +112,10 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     public void addSources(Set<Source> sources) {
+        Set<Source> oldValue = new HashSet<>();
+        oldValue.addAll(this.sources);
         this.sources.addAll(sources);
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, this.sources);
     }
 
     public Optional<Instrument> getInstrument(String name) {
@@ -119,7 +133,10 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     public void addInstruments(Set<Instrument> instruments) {
+        Set<Instrument> oldValue = new HashSet<>();
+        oldValue.addAll(this.instruments);
         this.instruments.addAll(instruments);
+        propertyChangeSupport.firePropertyChange(PROPERTY_INSTRUMENTS, oldValue, this.instruments);
     }
 
     public Optional<Artist> getArtist(String name) {
@@ -129,7 +146,11 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     public boolean addArtist(Artist artist) {
-        return artists.add(artist);
+        Set<Artist> oldValue = new HashSet<>();
+        oldValue.addAll(artists);
+        boolean result = artists.add(artist);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ARTISTS, oldValue, artists);
+        return result;
     }
 
     public Optional<Album> getAlbum(String collectionSignature) {
@@ -138,7 +159,11 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     public boolean addAlbum(Album album) {
-        return albums.add(album);
+        Set<Album> oldValue = new HashSet<>();
+        oldValue.addAll(albums);
+        boolean result = albums.add(album);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ALBUMS, oldValue, albums);
+        return result;
     }
 
     public Optional<T> getPiece(int index) {
@@ -150,7 +175,11 @@ public abstract class EntityCollections<T extends Piece> {
     }
 
     public boolean addPiece(T piece) {
-        return pieces.add(piece);
+        List<T> oldValue = new ArrayList<>();
+        oldValue.addAll(pieces);
+        boolean result = pieces.add(piece);
+        propertyChangeSupport.firePropertyChange(PROPERTY_PIECES, oldValue, pieces);
+        return result;
     }
 
     protected final <CollectionType> void initializeEntityCollection(Class entityClass,

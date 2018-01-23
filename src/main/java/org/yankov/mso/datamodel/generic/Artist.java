@@ -1,6 +1,8 @@
 package org.yankov.mso.datamodel.generic;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +71,7 @@ public class Artist {
     }
 
     public Set<ArtistMission> getMissions() {
-        return missions;
+        return Collections.unmodifiableSet(missions);
     }
 
     @Override

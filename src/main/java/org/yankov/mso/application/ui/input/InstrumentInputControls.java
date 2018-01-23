@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.input;
 
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -11,12 +12,14 @@ import org.yankov.mso.datamodel.generic.Instrument;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-public class InstrumentInputControls extends ArtifactInputControls {
+public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
 
     private static final String CLASS_NAME = SourceInputControls.class.getName();
 
     public static final String INSTRUMENT = CLASS_NAME + "-instrument";
+    public static final String INSTRUMENT_NAME_UNDEFINED = CLASS_NAME + "-instrument-name-undefined";
 
     private LabeledTextField instrumentField;
 
@@ -36,22 +39,45 @@ public class InstrumentInputControls extends ArtifactInputControls {
     }
 
     @Override
-    protected List<String> collectExistingItems() {
-        List<String> items = new ArrayList<>();
-        StringConverter converter = new InstrumentStringConverter();
-        ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments()
-                          .forEach(instrument -> items.add(converter.toString(instrument)));
-        return items;
+    protected List<Instrument> collectExistingArtifacts() {
+        return new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
+    }
+
+    @Override
+    protected StringConverter<Instrument> getStringConverter() {
+        return new InstrumentStringConverter();
     }
 
     @Override
     protected void handleBtnAddArtifactClick(ActionEvent event) {
         String instrumentName = instrumentField.getTextField().getText();
         if (instrumentName.isEmpty()) {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.SEVERE, getResourceBundle().getString(INSTRUMENT_NAME_UNDEFINED));
             return;
         }
+
         Instrument instrument = new Instrument(instrumentName);
-        ApplicationContext.getInstance().getFolkloreEntityCollections().addInstrument(instrument);
+        if (!ApplicationContext.getInstance().getFolkloreEntityCollections().addInstrument(instrument)) {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_EXISTS));
+        } else {
+            instrumentField.getTextField().setText("");
+        }
+    }
+
+    @Override
+    protected void handleExistingArtifactSelected(ObservableValue<? extends Instrument> observable, Instrument oldValue,
+                                                  Instrument newValue) {
+        if (newValue == null) {
+            return;
+        }
+
+        instrumentField.getTextField().setText(newValue.getName());
+    }
+
+    @Override
+    protected void dataModelChanged() {
     }
 
 }

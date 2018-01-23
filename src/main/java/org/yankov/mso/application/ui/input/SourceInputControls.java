@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.input;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,13 +17,15 @@ import org.yankov.mso.datamodel.generic.SourceType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-public class SourceInputControls extends ArtifactInputControls {
+public class SourceInputControls extends ArtifactInputControls<Source> {
 
     private static final String CLASS_NAME = SourceInputControls.class.getName();
 
     public static final String SOURCE_TYPE = CLASS_NAME + "-source-type";
     public static final String SIGNATURE = CLASS_NAME + "-signature";
+    public static final String SIGNATURE_UNDEFINED = CLASS_NAME + "-signature-undefined";
 
     private LabeledComboBox<SourceType> sourceType;
     private LabeledTextField sourceSignature;
@@ -52,23 +55,48 @@ public class SourceInputControls extends ArtifactInputControls {
     }
 
     @Override
-    public List<String> collectExistingItems() {
-        List<String> items = new ArrayList<>();
-        StringConverter converter = new SourceStringConverter();
-        ApplicationContext.getInstance().getFolkloreEntityCollections().getSources()
-                          .forEach(source -> items.add(converter.toString(source)));
-        return items;
+    public List<Source> collectExistingArtifacts() {
+        return new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getSources());
+    }
+
+    @Override
+    protected StringConverter<Source> getStringConverter() {
+        return new SourceStringConverter();
     }
 
     @Override
     public void handleBtnAddArtifactClick(ActionEvent event) {
         String signature = sourceSignature.getTextField().getText();
         if (signature.isEmpty()) {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.SEVERE, getResourceBundle().getString(SIGNATURE_UNDEFINED));
             return;
         }
+
         SourceType type = sourceType.getComboBox().getValue();
+
         Source source = new Source(type, signature);
-        ApplicationContext.getInstance().getFolkloreEntityCollections().addSource(source);
+        if (!ApplicationContext.getInstance().getFolkloreEntityCollections().addSource(source)) {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_EXISTS));
+        } else {
+            sourceSignature.getTextField().setText("");
+        }
+    }
+
+    @Override
+    protected void handleExistingArtifactSelected(ObservableValue<? extends Source> observable, Source oldValue,
+                                                  Source newValue) {
+        if (newValue == null) {
+            return;
+        }
+
+        sourceType.getComboBox().setValue(newValue.getType());
+        sourceSignature.getTextField().setText(newValue.getSignature());
+    }
+
+    @Override
+    protected void dataModelChanged() {
     }
 
 }

@@ -89,11 +89,30 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, ""},
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, ""},
+                {ArtifactInputControls.ARTIFACT_EXISTS, ""},
 
                 {SourceInputControls.SOURCE_TYPE, ""},
                 {SourceInputControls.SIGNATURE, ""},
+                {SourceInputControls.SIGNATURE_UNDEFINED, ""},
 
                 {InstrumentInputControls.INSTRUMENT, ""},
+                {InstrumentInputControls.INSTRUMENT_NAME_UNDEFINED, ""},
+
+                {ArtistInputControls.NAME, ""},
+                {ArtistInputControls.NOTE, ""},
+                {ArtistInputControls.MISSIONS, ""},
+                {ArtistInputControls.SINGER, ""},
+                {ArtistInputControls.INSTRUMENT_PLAYER, ""},
+                {ArtistInputControls.COMPOSER, ""},
+                {ArtistInputControls.CONDUCTOR, ""},
+                {ArtistInputControls.ORCHESTRA, ""},
+                {ArtistInputControls.CHOIR, ""},
+                {ArtistInputControls.ENSEMBLE, ""},
+                {ArtistInputControls.CHAMBER_GROUP, ""},
+                {ArtistInputControls.ARTIST_NAME_UNDEFINED, ""},
+                {ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED, ""},
+                {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, ""},
+                {ArtistInputControls.INSTRUMENT, ""},
                 };
     }
 

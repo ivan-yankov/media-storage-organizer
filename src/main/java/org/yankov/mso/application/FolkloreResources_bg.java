@@ -94,11 +94,31 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, "Съществуващи артефакти"},
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, "Добавяне"},
+                {ArtifactInputControls.ARTIFACT_EXISTS, "Артефакт с такава дефиниция вече съществува"},
 
                 {SourceInputControls.SOURCE_TYPE, "Вид източник"},
                 {SourceInputControls.SIGNATURE, "Сигнатура"},
+                {SourceInputControls.SIGNATURE_UNDEFINED, "Не е въведена сигнатура"},
 
-                {InstrumentInputControls.INSTRUMENT, "Инструмент"},
+                {InstrumentInputControls.INSTRUMENT, "Название"},
+                {InstrumentInputControls.INSTRUMENT_NAME_UNDEFINED, "Не е въведено название на инструмент"},
+
+                {ArtistInputControls.NAME, "Име на артист"},
+                {ArtistInputControls.NOTE, "Забележка"},
+                {ArtistInputControls.MISSIONS, "Роли"},
+                {ArtistInputControls.SINGER, "Певец"},
+                {ArtistInputControls.INSTRUMENT_PLAYER, "Инструменталист"},
+                {ArtistInputControls.COMPOSER, "Композитор"},
+                {ArtistInputControls.CONDUCTOR, "Диригент"},
+                {ArtistInputControls.ORCHESTRA, "Оркестър"},
+                {ArtistInputControls.CHOIR, "Хор"},
+                {ArtistInputControls.ENSEMBLE, "Ансамбъл"},
+                {ArtistInputControls.CHAMBER_GROUP, "Камерна група"},
+                {ArtistInputControls.ARTIST_NAME_UNDEFINED, "Не е въведено име на артист"},
+                {ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED,
+                 "Избрана е роля 'инструменталист', но не е посочен инструмент"},
+                {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, "Не е избрана нито една роля"},
+                {ArtistInputControls.INSTRUMENT, "Инструмент"},
                 };
     }
 
