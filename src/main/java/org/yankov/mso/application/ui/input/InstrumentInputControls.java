@@ -1,7 +1,5 @@
 package org.yankov.mso.application.ui.input;
 
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -21,7 +19,7 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
     public static final String INSTRUMENT = CLASS_NAME + "-instrument";
     public static final String INSTRUMENT_NAME_UNDEFINED = CLASS_NAME + "-instrument-name-undefined";
 
-    private LabeledTextField instrumentField;
+    private LabeledTextField instrument;
 
     public InstrumentInputControls(String id) {
         super(id);
@@ -29,11 +27,11 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
 
     @Override
     protected Pane createActionsControls() {
-        instrumentField = new LabeledTextField(getResourceBundle().getString(INSTRUMENT), "", null);
-        instrumentField.layout();
+        instrument = new LabeledTextField(getResourceBundle().getString(INSTRUMENT), "", null);
+        instrument.layout();
 
         VBox actionControlsContainer = new VBox();
-        actionControlsContainer.getChildren().add(instrumentField.getContainer());
+        actionControlsContainer.getChildren().add(instrument.getContainer());
 
         return actionControlsContainer;
     }
@@ -49,31 +47,34 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
     }
 
     @Override
-    protected void handleBtnAddArtifactClick(ActionEvent event) {
-        String instrumentName = instrumentField.getTextField().getText();
-        if (instrumentName.isEmpty()) {
+    protected boolean validateUserInput() {
+        if (instrument.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
                               .log(Level.SEVERE, getResourceBundle().getString(INSTRUMENT_NAME_UNDEFINED));
-            return;
+            return false;
         }
-
-        Instrument instrument = new Instrument(instrumentName);
-        if (!ApplicationContext.getInstance().getFolkloreEntityCollections().addInstrument(instrument)) {
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_EXISTS));
-        } else {
-            instrumentField.getTextField().setText("");
-        }
+        return true;
     }
 
     @Override
-    protected void handleExistingArtifactSelected(ObservableValue<? extends Instrument> observable, Instrument oldValue,
-                                                  Instrument newValue) {
-        if (newValue == null) {
-            return;
-        }
+    protected boolean addNewArtifact() {
+        Instrument newInstrument = new Instrument(instrument.getTextField().getText());
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addInstrument(newInstrument);
+    }
 
-        instrumentField.getTextField().setText(newValue.getName());
+    @Override
+    protected void cleanup() {
+        instrument.getTextField().setText("");
+    }
+
+    @Override
+    protected void setArtifactProperties(Instrument artifact) {
+        artifact.setName(instrument.getTextField().getText());
+    }
+
+    @Override
+    protected void extractArtifactProperties(Instrument artifact) {
+        instrument.getTextField().setText(artifact.getName());
     }
 
     @Override

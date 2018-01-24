@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -20,13 +21,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public abstract class ArtifactInputControls<T> implements UserInterfaceControls, PropertyChangeListener {
 
     private static final String CLASS_NAME = ArtifactInputControls.class.getName();
 
     public static final String EXISTING_ARTIFACTS_LABEL = CLASS_NAME + "-existing-artifacts-label";
-    public static final String BTN_ADD_ARTIFACT = CLASS_NAME + "-btn-add-artifact";
+    public static final String BTN_ADD_ARTIFACT = CLASS_NAME + "-btn-save-artifact";
+    public static final String BTN_SAVE_ARTIFACT = CLASS_NAME + "-btn-add-artifact";
     public static final String ARTIFACT_EXISTS = CLASS_NAME + "-artifact-exists";
 
     private String id;
@@ -34,11 +37,13 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     private Label existingArtifactsLabel;
     private ListView<T> existingArtifacts;
     private Button btnAddArtifact;
+    private Button btnSaveArtifact;
     private HBox container;
 
+    private T selectedArtifact;
     private ObservableList<T> existingItems;
 
-    private final int whiteSpace = 20;
+    private final double whiteSpace = 20.0;
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -48,10 +53,15 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
 
     protected abstract StringConverter<T> getStringConverter();
 
-    protected abstract void handleBtnAddArtifactClick(ActionEvent event);
+    protected abstract boolean validateUserInput();
 
-    protected abstract void handleExistingArtifactSelected(ObservableValue<? extends T> observable, T oldValue,
-                                                           T newValue);
+    protected abstract boolean addNewArtifact();
+
+    protected abstract void cleanup();
+
+    protected abstract void setArtifactProperties(T artifact);
+
+    protected abstract void extractArtifactProperties(T artifact);
 
     protected abstract void dataModelChanged();
 
@@ -61,6 +71,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         this.existingArtifactsLabel = new Label(resourceBundle.getString(EXISTING_ARTIFACTS_LABEL));
         this.existingArtifacts = new ListView<>();
         this.btnAddArtifact = new Button(resourceBundle.getString(BTN_ADD_ARTIFACT));
+        this.btnSaveArtifact = new Button(resourceBundle.getString(BTN_SAVE_ARTIFACT));
         this.existingItems = FXCollections.observableArrayList();
         this.container = new HBox();
     }
@@ -73,7 +84,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         return resourceBundle;
     }
 
-    protected int getWhiteSpace() {
+    protected double getWhiteSpace() {
         return whiteSpace;
     }
 
@@ -82,9 +93,11 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         ApplicationContext.getInstance().getFolkloreEntityCollections().addPropertyChangeListener(this);
 
         btnAddArtifact.setOnAction(this::handleBtnAddArtifactClick);
+        btnSaveArtifact.setOnAction(this::handleBtnSaveArtifactClick);
 
         existingArtifacts.setItems(existingItems);
         existingArtifacts.getSelectionModel().selectedItemProperty().addListener(this::handleExistingArtifactSelected);
+        existingArtifacts.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         existingArtifacts.setCellFactory(listView -> {
             TextFieldListCell<T> cell = new TextFieldListCell<>();
             cell.setConverter(getStringConverter());
@@ -95,13 +108,15 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         existingArtifactsContainer.getChildren().add(existingArtifacts);
         refreshExistingArtifacts();
 
+        HBox btnContainer = new HBox();
+        btnContainer.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
+        btnContainer.setSpacing(getWhiteSpace());
+        btnContainer.getChildren().add(btnAddArtifact);
+        btnContainer.getChildren().add(btnSaveArtifact);
+
         VBox actionControlsContainer = new VBox();
         actionControlsContainer.getChildren().add(createActionsControls());
-
-        VBox btnAddArtifactContainer = new VBox();
-        btnAddArtifactContainer.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
-        btnAddArtifactContainer.getChildren().add(btnAddArtifact);
-        actionControlsContainer.getChildren().add(btnAddArtifactContainer);
+        actionControlsContainer.getChildren().add(btnContainer);
 
         container.setId(getId());
         container.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
@@ -119,6 +134,37 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     public void propertyChange(PropertyChangeEvent evt) {
         refreshExistingArtifacts();
         dataModelChanged();
+    }
+
+    private void handleBtnAddArtifactClick(ActionEvent event) {
+        if (!validateUserInput()) {
+            return;
+        }
+
+        if (addNewArtifact()) {
+            cleanup();
+            selectedArtifact = null;
+        } else {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_EXISTS));
+        }
+    }
+
+    private void handleBtnSaveArtifactClick(ActionEvent event) {
+        if (selectedArtifact != null && validateUserInput()) {
+            setArtifactProperties(selectedArtifact);
+            refreshExistingArtifacts();
+        }
+    }
+
+    private void handleExistingArtifactSelected(ObservableValue<? extends T> observable, T oldValue,
+                                                           T newValue) {
+        if (newValue == null) {
+            return;
+        }
+
+        selectedArtifact = newValue;
+        extractArtifactProperties(selectedArtifact);
     }
 
     private void refreshExistingArtifacts() {

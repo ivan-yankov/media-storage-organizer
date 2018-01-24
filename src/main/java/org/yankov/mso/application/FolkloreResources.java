@@ -40,7 +40,8 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {FolkloreApplicationSettings.STAGE_TITLE, ""},
 
-                {FolkloreMainForm.TAB_INPUT, ""}, {FolkloreMainForm.TAB_OUTPUT, ""},
+                {FolkloreMainForm.TAB_INPUT, ""},
+                {FolkloreMainForm.TAB_OUTPUT, ""},
 
                 {FolkloreInputTable.COL_ALBUM, ""},
                 {FolkloreInputTable.COL_ALBUM_TRACK_ORDER, ""},
@@ -89,6 +90,7 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, ""},
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, ""},
+                {ArtifactInputControls.BTN_SAVE_ARTIFACT, ""},
                 {ArtifactInputControls.ARTIFACT_EXISTS, ""},
 
                 {SourceInputControls.SOURCE_TYPE, ""},

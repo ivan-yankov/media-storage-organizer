@@ -74,6 +74,10 @@ public class Artist {
         return Collections.unmodifiableSet(missions);
     }
 
+    public void clearMissions() {
+        missions.clear();
+    }
+
     @Override
     public int hashCode() {
         return name.toLowerCase().trim().hashCode();

@@ -70,9 +70,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreInputButtons.BTN_EDIT, "Редактиране на запис"},
 
 
-                {FileUtils.FILE_NOT_FOUND, "Не е намерен файл"}, {
-                        FileUtils.CANNOT_DETECT_AUDIO_FILE_DURATION,
-                        "Не може да бъде определена продължителността на файл с аудио запис"
+                {FileUtils.FILE_NOT_FOUND, "Не е намерен файл"},
+                {
+                    FileUtils.CANNOT_DETECT_AUDIO_FILE_DURATION,
+                    "Не може да бъде определена продължителността на файл с аудио запис"
                 },
 
                 {ApplicationConsoleLogHandler.ERROR, "Грешка"},
@@ -94,6 +95,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, "Съществуващи артефакти"},
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, "Добавяне"},
+                {ArtifactInputControls.BTN_SAVE_ARTIFACT, "Запис"},
                 {ArtifactInputControls.ARTIFACT_EXISTS, "Артефакт с такава дефиниция вече съществува"},
 
                 {SourceInputControls.SOURCE_TYPE, "Вид източник"},
@@ -115,8 +117,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {ArtistInputControls.ENSEMBLE, "Ансамбъл"},
                 {ArtistInputControls.CHAMBER_GROUP, "Камерна група"},
                 {ArtistInputControls.ARTIST_NAME_UNDEFINED, "Не е въведено име на артист"},
-                {ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED,
-                 "Избрана е роля 'инструменталист', но не е посочен инструмент"},
+                {
+                    ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED,
+                    "Избрана е роля 'инструменталист', но не е посочен инструмент"
+                },
                 {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, "Не е избрана нито една роля"},
                 {ArtistInputControls.INSTRUMENT, "Инструмент"},
                 };

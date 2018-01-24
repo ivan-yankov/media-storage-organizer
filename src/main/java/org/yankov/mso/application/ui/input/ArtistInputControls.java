@@ -46,8 +46,8 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     public static final String NO_ARTIST_MISSION_SELECTED = CLASS_NAME + "-no-artist-mission-selected";
     public static final String INSTRUMENT = CLASS_NAME + "-instrument";
 
-    private LabeledTextField nameField;
-    private LabeledTextField noteField;
+    private LabeledTextField name;
+    private LabeledTextField note;
     private LabeledComboBox<Instrument> instrument;
     private List<CheckBox> missions;
     private ObservableList<Instrument> observableInstruments;
@@ -72,11 +72,11 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
 
     @Override
     protected Pane createActionsControls() {
-        nameField = new LabeledTextField(getResourceBundle().getString(NAME), "", null);
-        nameField.layout();
+        name = new LabeledTextField(getResourceBundle().getString(NAME), "", null);
+        name.layout();
 
-        noteField = new LabeledTextField(getResourceBundle().getString(NOTE), "", null);
-        noteField.layout();
+        note = new LabeledTextField(getResourceBundle().getString(NOTE), "", null);
+        note.layout();
 
         HBox missionsContainer = new HBox();
         missionsContainer.setSpacing(getWhiteSpace());
@@ -89,8 +89,8 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
 
         VBox actionControlsContainer = new VBox();
         actionControlsContainer.setSpacing(getWhiteSpace());
-        actionControlsContainer.getChildren().add(nameField.getContainer());
-        actionControlsContainer.getChildren().add(noteField.getContainer());
+        actionControlsContainer.getChildren().add(name.getContainer());
+        actionControlsContainer.getChildren().add(note.getContainer());
         TitledPane missionsPane = new TitledPane(getResourceBundle().getString(MISSIONS), missionsContainer);
         missionsPane.setCollapsible(false);
         actionControlsContainer.getChildren().add(missionsPane);
@@ -110,63 +110,69 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     }
 
     @Override
-    protected void handleBtnAddArtifactClick(ActionEvent event) {
-        String name = nameField.getTextField().getText();
-        if (name.isEmpty()) {
+    protected boolean validateUserInput() {
+        if (name.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
                               .log(Level.SEVERE, getResourceBundle().getString(ARTIST_NAME_UNDEFINED));
-            return;
+            return false;
         }
 
         if (getSelectedMissions().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
                               .log(Level.SEVERE, getResourceBundle().getString(NO_ARTIST_MISSION_SELECTED));
-            return;
+            return false;
         }
 
         if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER) && instrument.getComboBox()
                                                                                          .getValue() == null) {
             ApplicationContext.getInstance().getLogger()
                               .log(Level.SEVERE, getResourceBundle().getString(ARTIST_INSTRUMENT_UNDEFINED));
-            return;
+            return false;
         }
 
-        Artist artist = new Artist();
-        artist.setName(name);
-        artist.setNote(noteField.getTextField().getText());
-
-        if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER)) {
-            artist.setInstrument(instrument.getComboBox().getValue());
-        }
-
-        getSelectedMissions().forEach(artist::addMission);
-
-        if (!ApplicationContext.getInstance().getFolkloreEntityCollections().addArtist(artist)) {
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_EXISTS));
-        } else {
-            nameField.getTextField().setText("");
-            noteField.getTextField().setText("");
-            missions.forEach(mission -> mission.setSelected(false));
-            instrument.getComboBox().setValue(null);
-            enableInstrument();
-        }
+        return true;
     }
 
     @Override
-    protected void handleExistingArtifactSelected(ObservableValue<? extends Artist> observable, Artist oldValue,
-                                                  Artist newValue) {
-        if (newValue == null) {
-            return;
+    protected boolean addNewArtifact() {
+        Artist artist = new Artist();
+        setArtifactProperties(artist);
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addArtist(artist);
+    }
+
+    @Override
+    protected void cleanup() {
+        name.getTextField().setText("");
+        note.getTextField().setText("");
+        missions.forEach(mission -> mission.setSelected(false));
+        instrument.getComboBox().setValue(null);
+        enableInstrument();
+    }
+
+    @Override
+    protected void setArtifactProperties(Artist artifact) {
+        artifact.setName(name.getTextField().getText());
+        artifact.setNote(note.getTextField().getText());
+
+        if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER)) {
+            artifact.setInstrument(instrument.getComboBox().getValue());
+        } else {
+            artifact.setInstrument(null);
         }
 
-        nameField.getTextField().setText(newValue.getName());
-        noteField.getTextField().setText(newValue.getNote());
+        artifact.clearMissions();
+        getSelectedMissions().forEach(artifact::addMission);
+    }
+
+    @Override
+    protected void extractArtifactProperties(Artist artifact) {
+        name.getTextField().setText(artifact.getName());
+        note.getTextField().setText(artifact.getNote());
         for (CheckBox mission : missions) {
             ArtistMission artistMission = (ArtistMission) mission.getUserData();
-            mission.setSelected(newValue.getMissions().contains(artistMission));
+            mission.setSelected(artifact.getMissions().contains(artistMission));
         }
-        instrument.getComboBox().setValue(newValue.getInstrument());
+        instrument.getComboBox().setValue(artifact.getInstrument());
         enableInstrument();
     }
 
