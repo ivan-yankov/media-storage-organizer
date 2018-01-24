@@ -26,7 +26,7 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
     }
 
     @Override
-    protected Pane createActionsControls() {
+    protected Pane createControls() {
         instrument = new LabeledTextField(getResourceBundle().getString(INSTRUMENT), "", null);
         instrument.layout();
 

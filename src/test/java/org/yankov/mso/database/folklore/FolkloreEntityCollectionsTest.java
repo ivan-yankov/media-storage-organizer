@@ -3,6 +3,7 @@ package org.yankov.mso.database.folklore;
 import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.database.generic.DatabaseTest;
+import org.yankov.mso.datamodel.folklore.EthnographicRegion;
 import org.yankov.mso.datamodel.folklore.FolklorePiece;
 import org.yankov.mso.datamodel.generic.*;
 
@@ -120,10 +121,10 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     public void testAddGetEthnographicRegion() {
         FolkloreEntityCollections collections = new FolkloreEntityCollections();
 
-        Assert.assertTrue(collections.addEthnographicRegion("Тракийска"));
-        Assert.assertFalse(collections.addEthnographicRegion(" тракийска "));
-        Assert.assertFalse(collections.addEthnographicRegion(" тРАКИЙСКА "));
-        Assert.assertTrue(collections.addEthnographicRegion("Родопска"));
+        Assert.assertTrue(collections.addEthnographicRegion(new EthnographicRegion("Тракийска")));
+        Assert.assertFalse(collections.addEthnographicRegion(new EthnographicRegion(" тракийска ")));
+        Assert.assertFalse(collections.addEthnographicRegion(new EthnographicRegion(" тРАКИЙСКА ")));
+        Assert.assertTrue(collections.addEthnographicRegion(new EthnographicRegion("Родопска")));
 
         Assert.assertTrue(collections.getEthnographicRegion("тракийска ").isPresent());
         Assert.assertFalse(collections.getEthnographicRegion("Северняшка").isPresent());

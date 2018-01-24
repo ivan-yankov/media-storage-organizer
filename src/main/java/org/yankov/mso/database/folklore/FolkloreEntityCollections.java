@@ -15,6 +15,8 @@ import java.util.Set;
 
 public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> {
 
+    private static final String PROPERTY_ETHNOGRAPHIC_REGIONS = "ethnographicRegions";
+
     private Set<EthnographicRegion> ethnographicRegions;
 
     public FolkloreEntityCollections() {
@@ -31,12 +33,19 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
                                                                    .equals(name.toLowerCase().trim())).findFirst();
     }
 
-    public boolean addEthnographicRegion(String name) {
-        return ethnographicRegions.add(new EthnographicRegion(name));
+    public boolean addEthnographicRegion(EthnographicRegion ethnographicRegion) {
+        Set<EthnographicRegion> oldValue = new HashSet<>();
+        oldValue.addAll(ethnographicRegions);
+        boolean result = ethnographicRegions.add(ethnographicRegion);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ETHNOGRAPHIC_REGIONS, oldValue, ethnographicRegions);
+        return result;
     }
 
     public void addEthnographicRegions(Set<EthnographicRegion> ethnographicRegions) {
+        Set<EthnographicRegion> oldValue = new HashSet<>();
+        oldValue.addAll(this.ethnographicRegions);
         this.ethnographicRegions.addAll(ethnographicRegions);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ETHNOGRAPHIC_REGIONS, oldValue, this.ethnographicRegions);
     }
 
     @Override

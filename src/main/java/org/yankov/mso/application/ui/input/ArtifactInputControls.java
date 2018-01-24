@@ -47,7 +47,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    protected abstract Pane createActionsControls();
+    protected abstract Pane createControls();
 
     protected abstract List<T> collectExistingArtifacts();
 
@@ -115,7 +115,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         btnContainer.getChildren().add(btnSaveArtifact);
 
         VBox actionControlsContainer = new VBox();
-        actionControlsContainer.getChildren().add(createActionsControls());
+        actionControlsContainer.getChildren().add(createControls());
         actionControlsContainer.getChildren().add(btnContainer);
 
         container.setId(getId());

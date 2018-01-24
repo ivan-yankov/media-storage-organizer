@@ -33,7 +33,7 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     }
 
     @Override
-    protected Pane createActionsControls() {
+    protected Pane createControls() {
         title = new LabeledTextField(getResourceBundle().getString(TITLE), "", null);
         title.layout();
 

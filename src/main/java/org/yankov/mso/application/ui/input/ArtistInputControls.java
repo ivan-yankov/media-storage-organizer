@@ -71,7 +71,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     }
 
     @Override
-    protected Pane createActionsControls() {
+    protected Pane createControls() {
         name = new LabeledTextField(getResourceBundle().getString(NAME), "", null);
         name.layout();
 

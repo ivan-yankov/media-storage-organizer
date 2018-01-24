@@ -122,6 +122,9 @@ public class FolkloreResources extends ListResourceBundle {
                 {AlbumInputControls.NOTE, ""},
                 {AlbumInputControls.TITLE_UNDEFINED, ""},
                 {AlbumInputControls.COLLECTION_SIGNATURE_UNDEFINED, ""},
+
+                {EthnographicRegionInputControls.NAME, ""},
+                {EthnographicRegionInputControls.NAME_UNDEFINED, ""},
                 };
     }
 

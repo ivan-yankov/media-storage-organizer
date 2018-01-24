@@ -33,7 +33,7 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
     }
 
     @Override
-    protected Pane createActionsControls() {
+    protected Pane createControls() {
         ObservableList<SourceType> sourceTypes = FXCollections.observableArrayList();
         sourceTypes.addAll(ApplicationContext.getInstance().getFolkloreEntityCollections().getSourceTypes());
         SourceType defaultSourceType = sourceTypes.get(0);

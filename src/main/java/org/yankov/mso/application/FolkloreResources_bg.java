@@ -130,6 +130,9 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {AlbumInputControls.NOTE, "Забележка"},
                 {AlbumInputControls.TITLE_UNDEFINED, "Не е въведено заглавие"},
                 {AlbumInputControls.COLLECTION_SIGNATURE_UNDEFINED, "Не е въведена сигнатура в колекцията"},
+
+                {EthnographicRegionInputControls.NAME, "Название"},
+                {EthnographicRegionInputControls.NAME_UNDEFINED, "Не е въведено название"},
                 };
     }
 
