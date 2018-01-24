@@ -53,7 +53,7 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
     }
 
     @Override
-    protected List<Source> collectExistingArtifacts() {
+    protected List<Source> getExistingArtifacts() {
         return new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getSources());
     }
 
@@ -74,9 +74,13 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
     }
 
     @Override
-    protected boolean addNewArtifact() {
-        Source source = new Source(sourceType.getComboBox().getValue(), sourceSignature.getTextField().getText());
-        return ApplicationContext.getInstance().getFolkloreEntityCollections().addSource(source);
+    protected Source createArtifact() {
+        return new Source();
+    }
+
+    @Override
+    protected boolean addArtifact(Source artifact) {
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addSource(artifact);
     }
 
     @Override

@@ -92,6 +92,9 @@ public class FolkloreResources extends ListResourceBundle {
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, ""},
                 {ArtifactInputControls.BTN_SAVE_ARTIFACT, ""},
                 {ArtifactInputControls.ARTIFACT_EXISTS, ""},
+                {ArtifactInputControls.NO_SELECTED_ARTIFACT, ""},
+                {ArtifactInputControls.ARTIFACT_ADDED, ""},
+                {ArtifactInputControls.ARTIFACT_SAVED, ""},
 
                 {SourceInputControls.SOURCE_TYPE, ""},
                 {SourceInputControls.SIGNATURE, ""},

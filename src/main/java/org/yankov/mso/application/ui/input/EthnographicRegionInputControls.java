@@ -38,7 +38,7 @@ public class EthnographicRegionInputControls extends ArtifactInputControls<Ethno
     }
 
     @Override
-    protected List<EthnographicRegion> collectExistingArtifacts() {
+    protected List<EthnographicRegion> getExistingArtifacts() {
         return new ArrayList<>(
                 ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegions());
     }
@@ -60,9 +60,14 @@ public class EthnographicRegionInputControls extends ArtifactInputControls<Ethno
     }
 
     @Override
-    protected boolean addNewArtifact() {
-        EthnographicRegion region = new EthnographicRegion(ethnographicRegion.getTextField().getText());
-        return ApplicationContext.getInstance().getFolkloreEntityCollections().addEthnographicRegion(region);
+    protected EthnographicRegion createArtifact() {
+        return new EthnographicRegion();
+
+    }
+
+    @Override
+    protected boolean addArtifact(EthnographicRegion artifact) {
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addEthnographicRegion(artifact);
     }
 
     @Override

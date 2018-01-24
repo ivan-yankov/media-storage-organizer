@@ -57,13 +57,14 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     }
 
     @Override
-    protected List<Album> collectExistingArtifacts() {
+    protected List<Album> getExistingArtifacts() {
         return new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums());
     }
 
     @Override
     protected StringConverter<Album> getStringConverter() {
-        return new AlbumStringConverter();
+        return new AlbumStringConverter(ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(),
+                                        true);
     }
 
     @Override
@@ -84,10 +85,13 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     }
 
     @Override
-    protected boolean addNewArtifact() {
-        Album album = new Album();
-        setArtifactProperties(album);
-        return ApplicationContext.getInstance().getFolkloreEntityCollections().addAlbum(album);
+    protected Album createArtifact() {
+        return new Album();
+    }
+
+    @Override
+    protected boolean addArtifact(Album artifact) {
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addAlbum(artifact);
     }
 
     @Override

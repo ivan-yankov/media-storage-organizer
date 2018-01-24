@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -100,7 +101,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     }
 
     @Override
-    protected List<Artist> collectExistingArtifacts() {
+    protected List<Artist> getExistingArtifacts() {
         return new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getArtists());
     }
 
@@ -134,10 +135,13 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     }
 
     @Override
-    protected boolean addNewArtifact() {
-        Artist artist = new Artist();
-        setArtifactProperties(artist);
-        return ApplicationContext.getInstance().getFolkloreEntityCollections().addArtist(artist);
+    protected Artist createArtifact() {
+        return new Artist();
+    }
+
+    @Override
+    protected boolean addArtifact(Artist artifact) {
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addArtist(artifact);
     }
 
     @Override

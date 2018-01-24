@@ -31,6 +31,13 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     public static final String BTN_ADD_ARTIFACT = CLASS_NAME + "-btn-save-artifact";
     public static final String BTN_SAVE_ARTIFACT = CLASS_NAME + "-btn-add-artifact";
     public static final String ARTIFACT_EXISTS = CLASS_NAME + "-artifact-exists";
+    public static final String NO_SELECTED_ARTIFACT = CLASS_NAME + "-no-selected-item";
+    public static final String ARTIFACT_ADDED = CLASS_NAME + "-artifact-added";
+    public static final String ARTIFACT_SAVED = CLASS_NAME + "-artifact-saved";
+
+    private static final double WHITE_SPACE = 20.0;
+    private static final double EXISTING_ARTIFACTS_CONTAINER_MIN_WIDTH = 350.0;
+    private static final double ACTION_CONTROLS_CONTAINER_MIN_WIDTH = 350.0;
 
     private String id;
     private VBox existingArtifactsContainer;
@@ -40,22 +47,21 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     private Button btnSaveArtifact;
     private HBox container;
 
-    private T selectedArtifact;
     private ObservableList<T> existingItems;
-
-    private final double whiteSpace = 20.0;
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     protected abstract Pane createControls();
 
-    protected abstract List<T> collectExistingArtifacts();
+    protected abstract List<T> getExistingArtifacts();
 
     protected abstract StringConverter<T> getStringConverter();
 
     protected abstract boolean validateUserInput();
 
-    protected abstract boolean addNewArtifact();
+    protected abstract T createArtifact();
+
+    protected abstract boolean addArtifact(T artifact);
 
     protected abstract void cleanup();
 
@@ -85,7 +91,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     }
 
     protected double getWhiteSpace() {
-        return whiteSpace;
+        return WHITE_SPACE;
     }
 
     @Override
@@ -106,6 +112,8 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
 
         existingArtifactsContainer.getChildren().add(existingArtifactsLabel);
         existingArtifactsContainer.getChildren().add(existingArtifacts);
+        existingArtifactsContainer.setMinWidth(EXISTING_ARTIFACTS_CONTAINER_MIN_WIDTH);
+
         refreshExistingArtifacts();
 
         HBox btnContainer = new HBox();
@@ -117,6 +125,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         VBox actionControlsContainer = new VBox();
         actionControlsContainer.getChildren().add(createControls());
         actionControlsContainer.getChildren().add(btnContainer);
+        actionControlsContainer.setMinWidth(ACTION_CONTROLS_CONTAINER_MIN_WIDTH);
 
         container.setId(getId());
         container.setPadding(new Insets(getWhiteSpace(), 0, getWhiteSpace(), 0));
@@ -141,38 +150,63 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
             return;
         }
 
-        if (addNewArtifact()) {
+        T artifact = createArtifact();
+        setArtifactProperties(artifact);
+        if (addArtifact(artifact)) {
             cleanup();
-            selectedArtifact = null;
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
         } else {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_EXISTS));
+                              .log(Level.SEVERE, getResourceBundle().getString(ARTIFACT_EXISTS));
         }
     }
 
     private void handleBtnSaveArtifactClick(ActionEvent event) {
-        if (selectedArtifact != null && validateUserInput()) {
-            setArtifactProperties(selectedArtifact);
-            refreshExistingArtifacts();
-        }
-    }
-
-    private void handleExistingArtifactSelected(ObservableValue<? extends T> observable, T oldValue,
-                                                           T newValue) {
-        if (newValue == null) {
+        if (!validateUserInput()) {
             return;
         }
 
-        selectedArtifact = newValue;
-        extractArtifactProperties(selectedArtifact);
+        T artifact = createArtifact();
+        setArtifactProperties(artifact);
+        if (!validateHashCode(artifact)) {
+            return;
+        }
+
+        T selectedArtifact = existingArtifacts.getSelectionModel().getSelectedItem();
+        if (selectedArtifact == null) {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.SEVERE, getResourceBundle().getString(NO_SELECTED_ARTIFACT));
+        } else {
+            setArtifactProperties(selectedArtifact);
+            refreshExistingArtifacts();
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_SAVED));
+        }
+    }
+
+    private void handleExistingArtifactSelected(ObservableValue<? extends T> observable, T oldValue, T newValue) {
+        if (newValue != null) {
+            extractArtifactProperties(newValue);
+        }
     }
 
     private void refreshExistingArtifacts() {
         existingItems.clear();
-        List<T> newArtifacts = collectExistingArtifacts();
+        List<T> newArtifacts = getExistingArtifacts();
         newArtifacts.sort((a1, a2) -> getStringConverter().toString(a1)
                                                           .compareToIgnoreCase(getStringConverter().toString(a2)));
         existingItems.addAll(newArtifacts);
+    }
+
+    private boolean validateHashCode(T artifact) {
+        long c = getExistingArtifacts().stream().filter(item -> item.hashCode() == artifact.hashCode()).count();
+        if (c > 0) {
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.SEVERE, getResourceBundle().getString(ARTIFACT_EXISTS));
+            return false;
+        }
+        return true;
     }
 
 }

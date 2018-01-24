@@ -40,7 +40,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {FolkloreApplicationSettings.STAGE_TITLE, "Управление на база данни с българска народна музика"},
 
-                {FolkloreMainForm.TAB_INPUT, "Въвеждане"},
+                {FolkloreMainForm.TAB_INPUT, "Въвеждане на записи"},
                 {FolkloreMainForm.TAB_INPUT_ARTIFACTS, "Въвеждане на артефакти"},
                 {FolkloreMainForm.TAB_OUTPUT, "Справка"},
 
@@ -97,6 +97,9 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {ArtifactInputControls.BTN_ADD_ARTIFACT, "Добавяне"},
                 {ArtifactInputControls.BTN_SAVE_ARTIFACT, "Запис"},
                 {ArtifactInputControls.ARTIFACT_EXISTS, "Артефакт с такава дефиниция вече съществува"},
+                {ArtifactInputControls.NO_SELECTED_ARTIFACT, "Не е избран съществуващ артефакт за запис"},
+                {ArtifactInputControls.ARTIFACT_ADDED, "Артефактът е добавен успешно"},
+                {ArtifactInputControls.ARTIFACT_SAVED, "Промените в артефакта са записани"},
 
                 {SourceInputControls.SOURCE_TYPE, "Вид източник"},
                 {SourceInputControls.SIGNATURE, "Сигнатура"},

@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.Form;
 import org.yankov.mso.application.UserInterfaceControls;
@@ -68,9 +69,11 @@ public class FolklorePieceEditor implements Form {
                                                            piece.getTitle(), piece::setTitle);
         title.layout();
 
+        StringConverter<Album> albumStringConverter = new AlbumStringConverter(
+                ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(), false);
         UserInterfaceControls album = new LabeledComboBox<>(resourceBundle.getString(FolkloreInputTable.COL_ALBUM),
                                                             collectAlbums(), piece.getAlbum(), piece::setAlbum,
-                                                            new AlbumStringConverter(), false);
+                                                            albumStringConverter, false);
         album.layout();
 
         UserInterfaceControls performer = new LabeledComboBox<>(

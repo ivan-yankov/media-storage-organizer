@@ -10,6 +10,7 @@ import org.yankov.mso.datamodel.generic.Instrument;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
@@ -37,7 +38,7 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
     }
 
     @Override
-    protected List<Instrument> collectExistingArtifacts() {
+    protected List<Instrument> getExistingArtifacts() {
         return new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
     }
 
@@ -58,9 +59,13 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
     }
 
     @Override
-    protected boolean addNewArtifact() {
-        Instrument newInstrument = new Instrument(instrument.getTextField().getText());
-        return ApplicationContext.getInstance().getFolkloreEntityCollections().addInstrument(newInstrument);
+    protected Instrument createArtifact() {
+        return new Instrument();
+    }
+
+    @Override
+    protected boolean addArtifact(Instrument artifact) {
+        return ApplicationContext.getInstance().getFolkloreEntityCollections().addInstrument(artifact);
     }
 
     @Override
