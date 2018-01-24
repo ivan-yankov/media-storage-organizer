@@ -115,6 +115,13 @@ public class FolkloreResources extends ListResourceBundle {
                 {ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED, ""},
                 {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, ""},
                 {ArtistInputControls.INSTRUMENT, ""},
+
+                {AlbumInputControls.TITLE, ""},
+                {AlbumInputControls.PRODUCTION_SIGNATURE, ""},
+                {AlbumInputControls.COLLECTION_SIGNATURE, ""},
+                {AlbumInputControls.NOTE, ""},
+                {AlbumInputControls.TITLE_UNDEFINED, ""},
+                {AlbumInputControls.COLLECTION_SIGNATURE_UNDEFINED, ""},
                 };
     }
 

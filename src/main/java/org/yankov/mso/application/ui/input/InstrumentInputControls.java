@@ -53,6 +53,7 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
                               .log(Level.SEVERE, getResourceBundle().getString(INSTRUMENT_NAME_UNDEFINED));
             return false;
         }
+
         return true;
     }
 

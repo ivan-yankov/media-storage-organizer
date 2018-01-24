@@ -69,6 +69,7 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
                               .log(Level.SEVERE, getResourceBundle().getString(SIGNATURE_UNDEFINED));
             return false;
         }
+
         return true;
     }
 
