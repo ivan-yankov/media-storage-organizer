@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.input;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -11,8 +12,10 @@ import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
+import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.application.utils.FxUtils;
 
+import javax.sound.sampled.LineEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,8 @@ public class FolkloreInputButtons implements UserInterfaceControls {
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
     public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
     public static final String BTN_EDIT = CLASS_NAME + "-btn-edit";
+    public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
+    public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
 
     public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
     public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
@@ -42,10 +47,12 @@ public class FolkloreInputButtons implements UserInterfaceControls {
 
     private final TableView<FolklorePieceProperties> table;
     private VBox container;
+    private FlacProcessor flacProcessor;
 
     public FolkloreInputButtons(TableView<FolklorePieceProperties> table) {
         this.table = table;
         this.container = new VBox();
+        this.flacProcessor = new FlacProcessor();
     }
 
     @Override
@@ -93,6 +100,11 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         btnEdit.setOnAction(
                 event -> ApplicationContext.getInstance().executeCommand(Commands.OPEN_FOLKLORE_PIECE_EDITOR, table));
 
+        Button btnPlay = new Button();
+        btnPlay.setText(resourceBundle.getString(BTN_PLAYER_RUN));
+        btnPlay.setMaxWidth(Double.MAX_VALUE);
+        btnPlay.setOnAction(this::handlePlayAction);
+
         List<Button> buttons = new ArrayList<>();
 
         buttons.add(btnAdd);
@@ -101,6 +113,7 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         buttons.add(btnClear);
         buttons.add(btnLoadAlbumTracks);
         buttons.add(btnEdit);
+        buttons.add(btnPlay);
 
         return buttons;
     }
@@ -138,6 +151,29 @@ public class FolkloreInputButtons implements UserInterfaceControls {
                 piece.setFromFile(file);
                 table.getItems().add(piece);
             }
+        }
+    }
+
+    private void handlePlayAction(ActionEvent event) {
+        if (table.getSelectionModel().getSelectedIndex() < 0) {
+            return;
+        }
+
+        if (flacProcessor.isPlaying()) {
+            flacProcessor.stop();
+        } else {
+            flacProcessor.addListener(e -> Platform.runLater(() -> updateButtonText((Button) event.getSource(), e)));
+            flacProcessor.setFile(table.getSelectionModel().getSelectedItem().getFile());
+            Thread thread = new Thread(() -> flacProcessor.play());
+            thread.start();
+        }
+    }
+
+    private void updateButtonText(Button button, LineEvent event) {
+        if (event.getType() == LineEvent.Type.START) {
+            button.setText(resourceBundle.getString(BTN_PLAYER_STOP));
+        } else if (event.getType() == LineEvent.Type.STOP) {
+            button.setText(resourceBundle.getString(BTN_PLAYER_RUN));
         }
     }
 

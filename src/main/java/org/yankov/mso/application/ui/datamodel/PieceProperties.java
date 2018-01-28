@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.utils.FileUtils;
+import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.datamodel.generic.Album;
 import org.yankov.mso.datamodel.generic.Artist;
 import org.yankov.mso.datamodel.generic.Source;
@@ -201,7 +201,9 @@ public class PieceProperties implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        FileUtils.detectAudioFileDuration(file.get()).ifPresent(this::setDuration);
+        FlacProcessor flacProcessor = new FlacProcessor();
+        flacProcessor.setFile(file.get());
+        flacProcessor.detectDuration().ifPresent(this::setDuration);
     }
 
 }

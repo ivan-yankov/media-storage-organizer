@@ -5,7 +5,7 @@ import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
 import org.yankov.mso.application.ui.input.*;
-import org.yankov.mso.application.utils.FileUtils;
+import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
 
 import java.util.ListResourceBundle;
@@ -67,9 +67,12 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreInputButtons.FLAC_FILTER_NAME, ""},
                 {FolkloreInputButtons.FLAC_FILTER_EXT, ""},
                 {FolkloreInputButtons.BTN_EDIT, ""},
+                {FolkloreInputButtons.BTN_PLAYER_RUN, ""},
+                {FolkloreInputButtons.BTN_PLAYER_STOP, ""},
 
-                {FileUtils.FILE_NOT_FOUND, ""},
-                {FileUtils.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},
+                {FlacProcessor.FILE_NOT_FOUND, ""},
+                {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},
+                {FlacProcessor.FLAC_ERROR, ""},
 
                 {ApplicationConsoleLogHandler.ERROR, ""},
                 {ApplicationConsoleLogHandler.WARNING, ""},

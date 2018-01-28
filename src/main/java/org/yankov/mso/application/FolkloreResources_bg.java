@@ -5,7 +5,7 @@ import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
 import org.yankov.mso.application.ui.input.*;
-import org.yankov.mso.application.utils.FileUtils;
+import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
 
 import java.util.ListResourceBundle;
@@ -68,13 +68,16 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreInputButtons.FLAC_FILTER_NAME, "FLAC файлове"},
                 {FolkloreInputButtons.FLAC_FILTER_EXT, "*.flac"},
                 {FolkloreInputButtons.BTN_EDIT, "Редактиране на запис"},
+                {FolkloreInputButtons.BTN_PLAYER_RUN, "Възпроизвеждане"},
+                {FolkloreInputButtons.BTN_PLAYER_STOP, "Стоп"},
 
 
-                {FileUtils.FILE_NOT_FOUND, "Не е намерен файл"},
+                {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {
-                    FileUtils.CANNOT_DETECT_AUDIO_FILE_DURATION,
-                    "Не може да бъде определена продължителността на файл с аудио запис"
+                        FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION,
+                        "Не може да бъде определена продължителността на файл с аудио запис"
                 },
+                {FlacProcessor.FLAC_ERROR, "Грешка при работа с FLAC файл"},
 
                 {ApplicationConsoleLogHandler.ERROR, "Грешка"},
                 {ApplicationConsoleLogHandler.WARNING, "Внимание"},
