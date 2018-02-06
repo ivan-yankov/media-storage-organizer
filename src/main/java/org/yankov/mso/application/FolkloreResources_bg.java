@@ -70,6 +70,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreInputButtons.BTN_EDIT, "Редактиране на запис"},
                 {FolkloreInputButtons.BTN_PLAYER_RUN, "Възпроизвеждане"},
                 {FolkloreInputButtons.BTN_PLAYER_STOP, "Стоп"},
+                {FolkloreInputButtons.BTN_UPLOAD, "Запис в базата данни"},
 
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
@@ -139,6 +140,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {EthnographicRegionInputControls.NAME, "Название"},
                 {EthnographicRegionInputControls.NAME_UNDEFINED, "Не е въведено название"},
+
+                {FolklorePieceUploader.UNABLE_READ_FILE, "Грешка при четене на файл"},
+                {FolklorePieceUploader.FILE_LOADED, "Успешно прочетен файл"},
+                {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, "Успешен запис в базата данни"},
                 };
     }
 

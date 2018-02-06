@@ -1,8 +1,10 @@
 package org.yankov.mso.application.ui.input;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
@@ -34,6 +36,7 @@ public class FolkloreInputButtons implements UserInterfaceControls {
     public static final String BTN_EDIT = CLASS_NAME + "-btn-edit";
     public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
     public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
+    public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
 
     public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
     public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
@@ -105,6 +108,11 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         btnPlay.setMaxWidth(Double.MAX_VALUE);
         btnPlay.setOnAction(this::handlePlayAction);
 
+        Button btnUpload = new Button();
+        btnUpload.setText(resourceBundle.getString(BTN_UPLOAD));
+        btnUpload.setMaxWidth(Double.MAX_VALUE);
+        btnUpload.setOnAction(this::handleUploadAction);
+
         List<Button> buttons = new ArrayList<>();
 
         buttons.add(btnAdd);
@@ -114,6 +122,7 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         buttons.add(btnLoadAlbumTracks);
         buttons.add(btnEdit);
         buttons.add(btnPlay);
+        buttons.add(btnUpload);
 
         return buttons;
     }
@@ -175,6 +184,24 @@ public class FolkloreInputButtons implements UserInterfaceControls {
         } else if (event.getType() == LineEvent.Type.STOP) {
             button.setText(resourceBundle.getString(BTN_PLAYER_RUN));
         }
+    }
+
+    private void handleUploadAction(ActionEvent event) {
+        FolklorePieceUploader uploader = new FolklorePieceUploader(table.getItems());
+
+        Task task = new Task() {
+
+            @Override
+            protected Object call() throws Exception {
+                ApplicationContext.getInstance().getPrimaryStage().getScene().setCursor(Cursor.WAIT);
+                uploader.uploadToDatabase();
+                ApplicationContext.getInstance().getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
+                return null;
+            }
+
+        };
+
+        new Thread(task).start();
     }
 
 }

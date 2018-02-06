@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.input;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -154,8 +155,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         setArtifactProperties(artifact);
         if (addArtifact(artifact)) {
             cleanup();
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
+            ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
         } else {
             ApplicationContext.getInstance().getLogger()
                               .log(Level.SEVERE, getResourceBundle().getString(ARTIFACT_EXISTS));
@@ -180,8 +180,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         } else {
             setArtifactProperties(selectedArtifact);
             refreshExistingArtifacts();
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, getResourceBundle().getString(ARTIFACT_SAVED));
+            ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_SAVED));
         }
     }
 
@@ -192,11 +191,13 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     }
 
     private void refreshExistingArtifacts() {
-        existingItems.clear();
-        List<T> newArtifacts = getExistingArtifacts();
-        newArtifacts.sort((a1, a2) -> getStringConverter().toString(a1)
-                                                          .compareToIgnoreCase(getStringConverter().toString(a2)));
-        existingItems.addAll(newArtifacts);
+        Platform.runLater(() -> {
+            existingItems.clear();
+            List<T> newArtifacts = getExistingArtifacts();
+            newArtifacts.sort((a1, a2) -> getStringConverter().toString(a1)
+                                                              .compareToIgnoreCase(getStringConverter().toString(a2)));
+            existingItems.addAll(newArtifacts);
+        });
     }
 
     private boolean validateHashCode(T artifact) {

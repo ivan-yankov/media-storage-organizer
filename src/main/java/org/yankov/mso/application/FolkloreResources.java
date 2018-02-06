@@ -69,6 +69,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreInputButtons.BTN_EDIT, ""},
                 {FolkloreInputButtons.BTN_PLAYER_RUN, ""},
                 {FolkloreInputButtons.BTN_PLAYER_STOP, ""},
+                {FolkloreInputButtons.BTN_UPLOAD, ""},
 
                 {FlacProcessor.FILE_NOT_FOUND, ""},
                 {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},
@@ -131,6 +132,10 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {EthnographicRegionInputControls.NAME, ""},
                 {EthnographicRegionInputControls.NAME_UNDEFINED, ""},
+
+                {FolklorePieceUploader.UNABLE_READ_FILE, ""},
+                {FolklorePieceUploader.FILE_LOADED, ""},
+                {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, ""},
                 };
     }
 
