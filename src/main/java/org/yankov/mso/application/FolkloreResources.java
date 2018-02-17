@@ -2,11 +2,12 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
-import org.yankov.mso.application.ui.datamodel.PieceProperties;
-import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
-import org.yankov.mso.application.ui.input.*;
+import org.yankov.mso.datamodel.FolkloreSearchFactory;
+import org.yankov.mso.datamodel.PieceProperties;
+import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
+import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.utils.FlacProcessor;
-import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
+import org.yankov.mso.database.FolkloreEntityCollectionFactory;
 
 import java.util.ListResourceBundle;
 
@@ -43,20 +44,20 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreMainForm.TAB_INPUT, ""},
                 {FolkloreMainForm.TAB_OUTPUT, ""},
 
-                {FolkloreInputTable.COL_ALBUM, ""},
-                {FolkloreInputTable.COL_ALBUM_TRACK_ORDER, ""},
-                {FolkloreInputTable.COL_TITLE, ""},
-                {FolkloreInputTable.COL_PERFORMER, ""},
-                {FolkloreInputTable.COL_ACCOMPANIMENT_PERFORMER, ""},
-                {FolkloreInputTable.COL_AUTHOR, ""},
-                {FolkloreInputTable.COL_ARRANGEMENT_AUTHOR, ""},
-                {FolkloreInputTable.COL_CONDUCTOR, ""},
-                {FolkloreInputTable.COL_SOLOIST, ""},
-                {FolkloreInputTable.COL_DURATION, ""},
-                {FolkloreInputTable.COL_SOURCE, ""},
-                {FolkloreInputTable.COL_ETHNOGRAPHIC_REGION, ""},
-                {FolkloreInputTable.COL_FILE, ""},
-                {FolkloreInputTable.COL_NOTE, ""},
+                {FolklorePieceTable.COL_ALBUM, ""},
+                {FolklorePieceTable.COL_ALBUM_TRACK_ORDER, ""},
+                {FolklorePieceTable.COL_TITLE, ""},
+                {FolklorePieceTable.COL_PERFORMER, ""},
+                {FolklorePieceTable.COL_ACCOMPANIMENT_PERFORMER, ""},
+                {FolklorePieceTable.COL_AUTHOR, ""},
+                {FolklorePieceTable.COL_ARRANGEMENT_AUTHOR, ""},
+                {FolklorePieceTable.COL_CONDUCTOR, ""},
+                {FolklorePieceTable.COL_SOLOIST, ""},
+                {FolklorePieceTable.COL_DURATION, ""},
+                {FolklorePieceTable.COL_SOURCE, ""},
+                {FolklorePieceTable.COL_ETHNOGRAPHIC_REGION, ""},
+                {FolklorePieceTable.COL_FILE, ""},
+                {FolklorePieceTable.COL_NOTE, ""},
 
                 {FolkloreInputButtons.BTN_ADD, ""},
                 {FolkloreInputButtons.BTN_REMOVE, ""},
@@ -136,6 +137,33 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceUploader.UNABLE_READ_FILE, ""},
                 {FolklorePieceUploader.FILE_LOADED, ""},
                 {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, ""},
+
+                {FolkloreSearchTab.VARIABLE, ""},
+                {FolkloreSearchTab.OPERATOR, ""},
+                {FolkloreSearchTab.VALUE, ""},
+                {FolkloreSearchTab.BTN_SEARCH, ""},
+
+                {FolkloreSearchFactory.VAR_TITLE, ""},
+                {FolkloreSearchFactory.VAR_PERFORMER, ""},
+                {FolkloreSearchFactory.VAR_ACCOMPANIMENT_PERFORMER, ""},
+                {FolkloreSearchFactory.VAR_ARRANGEMENT_AUTHOR, ""},
+                {FolkloreSearchFactory.VAR_CONDUCTOR, ""},
+                {FolkloreSearchFactory.VAR_INSTRUMENT_PERFORMANCE, ""},
+                {FolkloreSearchFactory.VAR_INSTRUMENT_ACCOMPANIMENT, ""},
+                {FolkloreSearchFactory.VAR_SOLOIST, ""},
+                {FolkloreSearchFactory.VAR_AUTHOR, ""},
+                {FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, ""},
+                {FolkloreSearchFactory.VAR_ALBUM_TITLE, ""},
+                {FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, ""},
+                {FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, ""},
+                {FolkloreSearchFactory.VAR_SOURCE_TYPE, ""},
+                {FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, ""},
+                {FolkloreSearchFactory.OPERATOR_EQUALS, ""},
+                {FolkloreSearchFactory.OPERATOR_NOT_EQUALS, ""},
+                {FolkloreSearchFactory.OPERATOR_CONTAINS, ""},
+                {FolkloreSearchFactory.OPERATOR_NOT_CONTAINS, ""},
+                {FolkloreSearchFactory.OPERATOR_STARTS, ""},
+                {FolkloreSearchFactory.OPERATOR_ENDS, ""},
                 };
     }
 

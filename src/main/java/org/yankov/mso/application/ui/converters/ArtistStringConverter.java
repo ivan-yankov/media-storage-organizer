@@ -2,7 +2,7 @@ package org.yankov.mso.application.ui.converters;
 
 import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.datamodel.generic.Artist;
+import org.yankov.mso.datamodel.Artist;
 
 public class ArtistStringConverter extends StringConverter<Artist> {
 

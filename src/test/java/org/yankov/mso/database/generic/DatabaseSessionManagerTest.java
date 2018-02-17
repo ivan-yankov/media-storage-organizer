@@ -3,7 +3,7 @@ package org.yankov.mso.database.generic;
 import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.datamodel.generic.Instrument;
+import org.yankov.mso.datamodel.Instrument;
 
 import java.util.Optional;
 

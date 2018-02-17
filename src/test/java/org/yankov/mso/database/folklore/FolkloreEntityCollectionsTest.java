@@ -2,10 +2,10 @@ package org.yankov.mso.database.folklore;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.yankov.mso.database.FolkloreEntityCollectionFactory;
+import org.yankov.mso.database.FolkloreEntityCollections;
 import org.yankov.mso.database.generic.DatabaseTest;
-import org.yankov.mso.datamodel.folklore.EthnographicRegion;
-import org.yankov.mso.datamodel.folklore.FolklorePiece;
-import org.yankov.mso.datamodel.generic.*;
+import org.yankov.mso.datamodel.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;

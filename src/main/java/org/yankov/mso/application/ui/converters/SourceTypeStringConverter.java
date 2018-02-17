@@ -2,7 +2,7 @@ package org.yankov.mso.application.ui.converters;
 
 import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.datamodel.generic.SourceType;
+import org.yankov.mso.datamodel.SourceType;
 
 public class SourceTypeStringConverter extends StringConverter<SourceType> {
 

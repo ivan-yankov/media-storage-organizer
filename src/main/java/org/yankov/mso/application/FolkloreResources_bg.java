@@ -2,11 +2,12 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
-import org.yankov.mso.application.ui.datamodel.PieceProperties;
-import org.yankov.mso.application.ui.edit.FolklorePieceEditor;
-import org.yankov.mso.application.ui.input.*;
+import org.yankov.mso.datamodel.FolkloreSearchFactory;
+import org.yankov.mso.datamodel.PieceProperties;
+import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
+import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.utils.FlacProcessor;
-import org.yankov.mso.database.folklore.FolkloreEntityCollectionFactory;
+import org.yankov.mso.database.FolkloreEntityCollectionFactory;
 
 import java.util.ListResourceBundle;
 
@@ -44,20 +45,20 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreMainForm.TAB_INPUT_ARTIFACTS, "Въвеждане на артефакти"},
                 {FolkloreMainForm.TAB_OUTPUT, "Справка"},
 
-                {FolkloreInputTable.COL_ALBUM, "Албум"},
-                {FolkloreInputTable.COL_ALBUM_TRACK_ORDER, "Номер в албума"},
-                {FolkloreInputTable.COL_TITLE, "Заглавие"},
-                {FolkloreInputTable.COL_PERFORMER, "Изпълнител"},
-                {FolkloreInputTable.COL_ACCOMPANIMENT_PERFORMER, "Съпровод"},
-                {FolkloreInputTable.COL_AUTHOR, "Автор"},
-                {FolkloreInputTable.COL_ARRANGEMENT_AUTHOR, "Обработка"},
-                {FolkloreInputTable.COL_CONDUCTOR, "Диригент"},
-                {FolkloreInputTable.COL_SOLOIST, "Солист"},
-                {FolkloreInputTable.COL_DURATION, "Времетраене"},
-                {FolkloreInputTable.COL_SOURCE, "Източник"},
-                {FolkloreInputTable.COL_ETHNOGRAPHIC_REGION, "Област"},
-                {FolkloreInputTable.COL_FILE, "Файл"},
-                {FolkloreInputTable.COL_NOTE, "Забележка"},
+                {FolklorePieceTable.COL_ALBUM, "Албум"},
+                {FolklorePieceTable.COL_ALBUM_TRACK_ORDER, "Номер в албума"},
+                {FolklorePieceTable.COL_TITLE, "Заглавие"},
+                {FolklorePieceTable.COL_PERFORMER, "Изпълнител"},
+                {FolklorePieceTable.COL_ACCOMPANIMENT_PERFORMER, "Съпровод"},
+                {FolklorePieceTable.COL_AUTHOR, "Автор"},
+                {FolklorePieceTable.COL_ARRANGEMENT_AUTHOR, "Обработка"},
+                {FolklorePieceTable.COL_CONDUCTOR, "Диригент"},
+                {FolklorePieceTable.COL_SOLOIST, "Солист"},
+                {FolklorePieceTable.COL_DURATION, "Времетраене"},
+                {FolklorePieceTable.COL_SOURCE, "Източник"},
+                {FolklorePieceTable.COL_ETHNOGRAPHIC_REGION, "Област"},
+                {FolklorePieceTable.COL_FILE, "Файл"},
+                {FolklorePieceTable.COL_NOTE, "Забележка"},
 
                 {FolkloreInputButtons.BTN_ADD, "Добавяне"},
                 {FolkloreInputButtons.BTN_REMOVE, "Премахване"},
@@ -144,6 +145,33 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceUploader.UNABLE_READ_FILE, "Грешка при четене на файл"},
                 {FolklorePieceUploader.FILE_LOADED, "Успешно прочетен файл"},
                 {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, "Успешен запис в базата данни"},
+
+                {FolkloreSearchTab.VARIABLE, "Категория"},
+                {FolkloreSearchTab.OPERATOR, "Оператор"},
+                {FolkloreSearchTab.VALUE, "Стойност"},
+                {FolkloreSearchTab.BTN_SEARCH, "Търсене"},
+
+                {FolkloreSearchFactory.VAR_TITLE, "Заглавие"},
+                {FolkloreSearchFactory.VAR_PERFORMER, "Изпълнител"},
+                {FolkloreSearchFactory.VAR_ACCOMPANIMENT_PERFORMER, "Съпровод"},
+                {FolkloreSearchFactory.VAR_ARRANGEMENT_AUTHOR, "Обработка"},
+                {FolkloreSearchFactory.VAR_CONDUCTOR, "Диригент"},
+                {FolkloreSearchFactory.VAR_INSTRUMENT_PERFORMANCE, "Изпълнение на инструмент"},
+                {FolkloreSearchFactory.VAR_INSTRUMENT_ACCOMPANIMENT, "Съпровод на инструмент"},
+                {FolkloreSearchFactory.VAR_SOLOIST, "Солист"},
+                {FolkloreSearchFactory.VAR_AUTHOR, "Автор"},
+                {FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, "Етнографска област"},
+                {FolkloreSearchFactory.VAR_ALBUM_TITLE, "Заглавие на албум"},
+                {FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, "Сигнатура на издателя"},
+                {FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, "Сигнатура в колекцията"},
+                {FolkloreSearchFactory.VAR_SOURCE_TYPE, "Тип на източник"},
+                {FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, "Сигнатура на източник"},
+                {FolkloreSearchFactory.OPERATOR_EQUALS, "Идентично"},
+                {FolkloreSearchFactory.OPERATOR_NOT_EQUALS, "Различно"},
+                {FolkloreSearchFactory.OPERATOR_CONTAINS, "Съдържа"},
+                {FolkloreSearchFactory.OPERATOR_NOT_CONTAINS, "Не съдържа"},
+                {FolkloreSearchFactory.OPERATOR_STARTS, "Започва с ..."},
+                {FolkloreSearchFactory.OPERATOR_ENDS, "Завършва с ..."},
                 };
     }
 

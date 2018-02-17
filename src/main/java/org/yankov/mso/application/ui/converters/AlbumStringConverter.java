@@ -1,7 +1,7 @@
 package org.yankov.mso.application.ui.converters;
 
 import javafx.util.StringConverter;
-import org.yankov.mso.datamodel.generic.Album;
+import org.yankov.mso.datamodel.Album;
 
 import java.util.Collection;
 

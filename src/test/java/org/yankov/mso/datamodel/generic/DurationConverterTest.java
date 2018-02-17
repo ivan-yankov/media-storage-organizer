@@ -2,6 +2,7 @@ package org.yankov.mso.datamodel.generic;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.yankov.mso.datamodel.DurationConverter;
 
 import java.time.Duration;
 

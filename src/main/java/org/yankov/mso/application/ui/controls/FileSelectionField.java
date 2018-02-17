@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.application.ui.input.FolkloreInputButtons;
+import org.yankov.mso.application.ui.tabs.FolkloreInputButtons;
 import org.yankov.mso.application.utils.FxUtils;
 
 import java.io.File;

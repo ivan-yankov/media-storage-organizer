@@ -1,11 +1,10 @@
 package org.yankov.mso.application;
 
 import javafx.stage.Stage;
-import org.yankov.mso.application.command.Commands;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
-import org.yankov.mso.database.folklore.FolkloreEntityCollections;
-import org.yankov.mso.database.generic.DatabaseSessionManager;
+import org.yankov.mso.database.FolkloreEntityCollections;
+import org.yankov.mso.database.DatabaseSessionManager;
 
 import java.util.Locale;
 import java.util.Optional;

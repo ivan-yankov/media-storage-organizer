@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.yankov.mso.application.ui.FolkloreMainForm;
-import org.yankov.mso.database.folklore.FolkloreEntityCollections;
+import org.yankov.mso.database.FolkloreEntityCollections;
 
 import java.util.logging.Level;
 

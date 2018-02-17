@@ -3,7 +3,7 @@ package org.yankov.mso.application.ui.converters;
 import javafx.util.StringConverter;
 import org.junit.Assert;
 import org.junit.Test;
-import org.yankov.mso.datamodel.generic.Album;
+import org.yankov.mso.datamodel.Album;
 
 import java.util.ArrayList;
 import java.util.List;

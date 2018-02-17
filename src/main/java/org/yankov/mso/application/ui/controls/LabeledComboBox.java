@@ -24,7 +24,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private static final Double DEFAULT_PREF_WIDTH = 250.0;
 
     private String labelText;
-    private ObservableList<T> originalItems;
+    private ObservableList<T> items;
     private T value;
     private Consumer<T> newValueConsumer;
     private StringConverter<T> converter;
@@ -35,11 +35,12 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private Popup popup;
     private TextField filterTextField;
     private StringBuilder filterText;
+    private boolean sortItems;
 
     public LabeledComboBox(String labelText, ObservableList<T> items, T value, Consumer<T> newValueConsumer,
                            StringConverter<T> converter, boolean editable) {
         this.labelText = labelText;
-        this.originalItems = items.sorted();
+        this.items = items;
         this.value = value;
         this.newValueConsumer = newValueConsumer;
         this.converter = converter;
@@ -50,6 +51,11 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         this.popup = new Popup();
         this.filterTextField = new TextField();
         this.filterText = new StringBuilder();
+        this.sortItems = true;
+    }
+
+    public void setSortItems(boolean sortItems) {
+        this.sortItems = sortItems;
     }
 
     public ComboBox<T> getComboBox() {
@@ -64,7 +70,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         comboBox.setEditable(editable);
         comboBox.setPrefWidth(DEFAULT_PREF_WIDTH);
         comboBox.setConverter(converter);
-        comboBox.setItems(originalItems);
+
+        if (sortItems) {
+            comboBox.setItems(items.sorted());
+        } else {
+            comboBox.setItems(items);
+        }
+
         comboBox.setValue(value);
         comboBox.setOnKeyTyped(this::handleKeyTyped);
         comboBox.setOnKeyReleased(this::handleKeyReleased);
@@ -93,16 +105,15 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     }
 
     private void filterItems() {
-        Stream<T> filteredItemsStream = originalItems.stream().filter(item -> converter.toString(item).toLowerCase()
-                                                                                       .contains(
-                                                                                               filterText.toString()));
+        Stream<T> filteredItemsStream = items.stream().filter(item -> converter.toString(item).toLowerCase()
+                                                                               .contains(filterText.toString()));
         List<T> filteredItemsList = filteredItemsStream.collect(Collectors.toList());
         ObservableList<T> filteredItems = FXCollections.observableList(filteredItemsList);
-        comboBox.setItems(filterText.length() == 0 ? originalItems : filteredItems.sorted());
+        comboBox.setItems(filterText.length() == 0 ? items : filteredItems.sorted());
     }
 
     private void resetFilter() {
-        comboBox.setItems(originalItems);
+        comboBox.setItems(items);
         filterText.setLength(0);
         popup.hide();
     }
