@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.tabs;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -59,19 +60,23 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private Pane createSearchControls() {
-        LabeledComboBox<Variable> variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE),
-                                                                    FolkloreSearchFactory.createVariables(), null, null,
+        ObservableList<Variable> variablesList = FolkloreSearchFactory.createVariables();
+        Variable defaultVariable = variablesList.get(0);
+        LabeledComboBox<Variable> variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE), variablesList,
+                                                                    defaultVariable, null,
                                                                     new VariableStringConverter(), false);
         variables.setSortItems(false);
         variables.layout();
 
-        LabeledComboBox<Operator> operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR),
-                                                                    FolkloreSearchFactory.createOperators(), null, null,
+        ObservableList<Operator> operatorsList = FolkloreSearchFactory.createOperators();
+        Operator defaultOperator = operatorsList.get(0);
+        LabeledComboBox<Operator> operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR), operatorsList,
+                                                                    defaultOperator, null,
                                                                     new OperatorStringConverter(), false);
         operators.setSortItems(false);
         operators.layout();
 
-        LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "", null);
+        LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
         value.getTextField().setPrefWidth(SEARCH_VALUE_WIDTH);
         value.layout();
 
