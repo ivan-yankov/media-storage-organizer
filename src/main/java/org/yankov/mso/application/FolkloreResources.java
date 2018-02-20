@@ -3,6 +3,7 @@ package org.yankov.mso.application;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
+import org.yankov.mso.datamodel.Operator;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
 import org.yankov.mso.application.ui.tabs.*;
@@ -143,27 +144,28 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreSearchTab.VALUE, ""},
                 {FolkloreSearchTab.BTN_SEARCH, ""},
 
-                {FolkloreSearchFactory.VAR_TITLE, ""},
-                {FolkloreSearchFactory.VAR_PERFORMER, ""},
-                {FolkloreSearchFactory.VAR_ACCOMPANIMENT_PERFORMER, ""},
-                {FolkloreSearchFactory.VAR_ARRANGEMENT_AUTHOR, ""},
-                {FolkloreSearchFactory.VAR_CONDUCTOR, ""},
-                {FolkloreSearchFactory.VAR_INSTRUMENT_PERFORMANCE, ""},
-                {FolkloreSearchFactory.VAR_INSTRUMENT_ACCOMPANIMENT, ""},
-                {FolkloreSearchFactory.VAR_SOLOIST, ""},
-                {FolkloreSearchFactory.VAR_AUTHOR, ""},
-                {FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, ""},
-                {FolkloreSearchFactory.VAR_ALBUM_TITLE, ""},
-                {FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, ""},
-                {FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, ""},
-                {FolkloreSearchFactory.VAR_SOURCE_TYPE, ""},
-                {FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, ""},
-                {FolkloreSearchFactory.OPERATOR_EQUALS, ""},
-                {FolkloreSearchFactory.OPERATOR_NOT_EQUALS, ""},
-                {FolkloreSearchFactory.OPERATOR_CONTAINS, ""},
-                {FolkloreSearchFactory.OPERATOR_NOT_CONTAINS, ""},
-                {FolkloreSearchFactory.OPERATOR_STARTS, ""},
-                {FolkloreSearchFactory.OPERATOR_ENDS, ""},
+                {FolkloreSearchFactory.VAR_LABEL_TITLE, ""},
+                {FolkloreSearchFactory.VAR_LABEL_PERFORMER, ""},
+                {FolkloreSearchFactory.VAR_LABEL_ACCOMPANIMENT_PERFORMER, ""},
+                {FolkloreSearchFactory.VAR_LABEL_ARRANGEMENT_AUTHOR, ""},
+                {FolkloreSearchFactory.VAR_LABEL_CONDUCTOR, ""},
+                {FolkloreSearchFactory.VAR_LABEL_INSTRUMENT_PERFORMANCE, ""},
+                {FolkloreSearchFactory.VAR_LABEL_INSTRUMENT_ACCOMPANIMENT, ""},
+                {FolkloreSearchFactory.VAR_LABEL_SOLOIST, ""},
+                {FolkloreSearchFactory.VAR_LABEL_AUTHOR, ""},
+                {FolkloreSearchFactory.VAR_LABEL_ETHNOGRAPHIC_REGION, ""},
+                {FolkloreSearchFactory.VAR_LABEL_ALBUM_TITLE, ""},
+                {FolkloreSearchFactory.VAR_LABEL_ALBUM_PRODUCTION_SIGNATURE, ""},
+                {FolkloreSearchFactory.VAR_LABEL_ALBUM_COLLECTION_SIGNATURE, ""},
+                {FolkloreSearchFactory.VAR_LABEL_SOURCE_TYPE, ""},
+                {FolkloreSearchFactory.VAR_LABEL_SOURCE_SIGNATURE, ""},
+                {FolkloreSearchFactory.OPERATOR_LABEL_EQUALS, ""},
+                {FolkloreSearchFactory.OPERATOR_LABEL_NOT_EQUALS, ""},
+                {FolkloreSearchFactory.OPERATOR_LABEL_CONTAINS, ""},
+                {FolkloreSearchFactory.OPERATOR_LABEL_NOT_CONTAINS, ""},
+                {FolkloreSearchFactory.OPERATOR_LABEL_STARTS, ""},
+                {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, ""},
+
                 };
     }
 

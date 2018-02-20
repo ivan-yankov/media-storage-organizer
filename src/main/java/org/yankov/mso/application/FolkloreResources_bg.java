@@ -3,6 +3,7 @@ package org.yankov.mso.application;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
+import org.yankov.mso.datamodel.Operator;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
 import org.yankov.mso.application.ui.tabs.*;
@@ -151,27 +152,28 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreSearchTab.VALUE, "Стойност"},
                 {FolkloreSearchTab.BTN_SEARCH, "Търсене"},
 
-                {FolkloreSearchFactory.VAR_TITLE, "Заглавие"},
-                {FolkloreSearchFactory.VAR_PERFORMER, "Изпълнител"},
-                {FolkloreSearchFactory.VAR_ACCOMPANIMENT_PERFORMER, "Съпровод"},
-                {FolkloreSearchFactory.VAR_ARRANGEMENT_AUTHOR, "Обработка"},
-                {FolkloreSearchFactory.VAR_CONDUCTOR, "Диригент"},
-                {FolkloreSearchFactory.VAR_INSTRUMENT_PERFORMANCE, "Изпълнение на инструмент"},
-                {FolkloreSearchFactory.VAR_INSTRUMENT_ACCOMPANIMENT, "Съпровод на инструмент"},
-                {FolkloreSearchFactory.VAR_SOLOIST, "Солист"},
-                {FolkloreSearchFactory.VAR_AUTHOR, "Автор"},
-                {FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, "Етнографска област"},
-                {FolkloreSearchFactory.VAR_ALBUM_TITLE, "Заглавие на албум"},
-                {FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, "Сигнатура на издателя"},
-                {FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, "Сигнатура в колекцията"},
-                {FolkloreSearchFactory.VAR_SOURCE_TYPE, "Тип на източник"},
-                {FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, "Сигнатура на източник"},
-                {FolkloreSearchFactory.OPERATOR_EQUALS, "Идентично"},
-                {FolkloreSearchFactory.OPERATOR_NOT_EQUALS, "Различно"},
-                {FolkloreSearchFactory.OPERATOR_CONTAINS, "Съдържа"},
-                {FolkloreSearchFactory.OPERATOR_NOT_CONTAINS, "Не съдържа"},
-                {FolkloreSearchFactory.OPERATOR_STARTS, "Започва с ..."},
-                {FolkloreSearchFactory.OPERATOR_ENDS, "Завършва с ..."},
+                {FolkloreSearchFactory.VAR_LABEL_TITLE, "Заглавие"},
+                {FolkloreSearchFactory.VAR_LABEL_PERFORMER, "Изпълнител"},
+                {FolkloreSearchFactory.VAR_LABEL_ACCOMPANIMENT_PERFORMER, "Съпровод"},
+                {FolkloreSearchFactory.VAR_LABEL_ARRANGEMENT_AUTHOR, "Обработка"},
+                {FolkloreSearchFactory.VAR_LABEL_CONDUCTOR, "Диригент"},
+                {FolkloreSearchFactory.VAR_LABEL_INSTRUMENT_PERFORMANCE, "Изпълнение на инструмент"},
+                {FolkloreSearchFactory.VAR_LABEL_INSTRUMENT_ACCOMPANIMENT, "Съпровод на инструмент"},
+                {FolkloreSearchFactory.VAR_LABEL_SOLOIST, "Солист"},
+                {FolkloreSearchFactory.VAR_LABEL_AUTHOR, "Автор"},
+                {FolkloreSearchFactory.VAR_LABEL_ETHNOGRAPHIC_REGION, "Етнографска област"},
+                {FolkloreSearchFactory.VAR_LABEL_ALBUM_TITLE, "Заглавие на албум"},
+                {FolkloreSearchFactory.VAR_LABEL_ALBUM_PRODUCTION_SIGNATURE, "Сигнатура на издателя"},
+                {FolkloreSearchFactory.VAR_LABEL_ALBUM_COLLECTION_SIGNATURE, "Сигнатура в колекцията"},
+                {FolkloreSearchFactory.VAR_LABEL_SOURCE_TYPE, "Тип на източник"},
+                {FolkloreSearchFactory.VAR_LABEL_SOURCE_SIGNATURE, "Сигнатура на източник"},
+                {FolkloreSearchFactory.OPERATOR_LABEL_EQUALS, "Идентично"},
+                {FolkloreSearchFactory.OPERATOR_LABEL_NOT_EQUALS, "Различно"},
+                {FolkloreSearchFactory.OPERATOR_LABEL_CONTAINS, "Съдържа"},
+                {FolkloreSearchFactory.OPERATOR_LABEL_NOT_CONTAINS, "Не съдържа"},
+                {FolkloreSearchFactory.OPERATOR_LABEL_STARTS, "Започва с ..."},
+                {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, "Завършва с ..."},
+
                 };
     }
 

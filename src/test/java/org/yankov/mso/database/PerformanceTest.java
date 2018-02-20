@@ -1,9 +1,7 @@
-package org.yankov.mso.database.folklore;
+package org.yankov.mso.database;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.yankov.mso.database.FolkloreEntityCollections;
-import org.yankov.mso.database.generic.DatabaseTest;
 
 public class PerformanceTest extends DatabaseTest {
 

@@ -161,18 +161,4 @@ public class Piece {
         this.record = record;
     }
 
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Piece)) {
-            return false;
-        }
-        Piece other = (Piece) obj;
-        return this.id == other.id;
-    }
-
 }

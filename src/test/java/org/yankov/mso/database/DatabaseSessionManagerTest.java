@@ -1,4 +1,4 @@
-package org.yankov.mso.database.generic;
+package org.yankov.mso.database;
 
 import org.junit.Assert;
 import org.junit.Test;

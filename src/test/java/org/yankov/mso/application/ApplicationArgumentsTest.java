@@ -1,4 +1,4 @@
-package org.yankov.mso.application.generic;
+package org.yankov.mso.application;
 
 import org.junit.Assert;
 import org.junit.Test;

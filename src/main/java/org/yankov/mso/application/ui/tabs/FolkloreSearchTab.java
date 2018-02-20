@@ -61,7 +61,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     private Pane createSearchControls() {
         ObservableList<Variable> variablesList = FolkloreSearchFactory.createVariables();
-        Variable defaultVariable = variablesList.get(0);
+        Variable defaultVariable = FolkloreSearchFactory.VAR_TITLE;
         LabeledComboBox<Variable> variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE), variablesList,
                                                                     defaultVariable, null,
                                                                     new VariableStringConverter(), false);
@@ -69,7 +69,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         variables.layout();
 
         ObservableList<Operator> operatorsList = FolkloreSearchFactory.createOperators();
-        Operator defaultOperator = operatorsList.get(0);
+        Operator defaultOperator = FolkloreSearchFactory.OPERATOR_EQUALS;
         LabeledComboBox<Operator> operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR), operatorsList,
                                                                     defaultOperator, null,
                                                                     new OperatorStringConverter(), false);
