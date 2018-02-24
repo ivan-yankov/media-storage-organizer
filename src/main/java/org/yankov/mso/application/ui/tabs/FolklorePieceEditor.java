@@ -24,12 +24,7 @@ import org.yankov.mso.application.ui.converters.AlbumStringConverter;
 import org.yankov.mso.application.ui.converters.ArtistStringConverter;
 import org.yankov.mso.application.ui.converters.EthnographicRegionStringConverter;
 import org.yankov.mso.application.ui.converters.SourceStringConverter;
-import org.yankov.mso.datamodel.FolklorePieceProperties;
-import org.yankov.mso.datamodel.EthnographicRegion;
-import org.yankov.mso.datamodel.Album;
-import org.yankov.mso.datamodel.Artist;
-import org.yankov.mso.datamodel.ArtistMission;
-import org.yankov.mso.datamodel.Source;
+import org.yankov.mso.datamodel.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,7 +53,7 @@ public class FolklorePieceEditor implements Form {
     public FolklorePieceEditor(TableView<FolklorePieceProperties> table, int selectedIndex) {
         this.stage = new Stage();
         this.table = table;
-        this.piece = table.getItems().get(selectedIndex).clone();
+        this.piece = table.getItems().get(selectedIndex).copy();
         this.selectedIndex = selectedIndex;
     }
 

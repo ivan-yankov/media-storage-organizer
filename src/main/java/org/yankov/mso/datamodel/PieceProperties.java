@@ -166,7 +166,7 @@ public class PieceProperties implements PropertyChangeListener {
         propertyChangeSupport.firePropertyChange(PROPERTY_NAME_FILE, oldValue, file);
     }
 
-    public PieceProperties clone() {
+    public PieceProperties copy() {
         PieceProperties newPiece = new PieceProperties();
 
         newPiece.setAlbum(getAlbum());

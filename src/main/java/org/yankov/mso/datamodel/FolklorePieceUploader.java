@@ -1,9 +1,6 @@
-package org.yankov.mso.application.ui.tabs;
+package org.yankov.mso.datamodel;
 
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.datamodel.FolklorePieceProperties;
-import org.yankov.mso.datamodel.FolklorePiece;
-import org.yankov.mso.datamodel.Record;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +9,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-public class FolklorePieceUploader {
+public class FolklorePieceUploader implements DatabaseUploader<FolklorePieceProperties> {
 
     private static final String CLASS_NAME = FolklorePieceUploader.class.getName();
     private static final String FLAC = "FLAC";
@@ -21,24 +18,22 @@ public class FolklorePieceUploader {
     public static final String FILE_LOADED = CLASS_NAME + "-file-loaded";
     public static final String PIECES_UPLOAD_COMPLETED = CLASS_NAME + "-pieces-upload-completed";
 
-    private final List<FolklorePieceProperties> items;
-
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    public FolklorePieceUploader(List<FolklorePieceProperties> items) {
-        this.items = items;
+    public FolklorePieceUploader() {
     }
 
-    public void uploadToDatabase() {
+    @Override
+    public void uploadToDatabase(List<FolklorePieceProperties> items) {
         if (items.isEmpty()) {
             return;
         }
-        uploadToDataModel();
+        uploadToDataModel(items);
         ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollections();
         ApplicationContext.getInstance().getLogger().log(Level.INFO, resourceBundle.getString(PIECES_UPLOAD_COMPLETED));
     }
 
-    private void uploadToDataModel() {
+    private void uploadToDataModel(List<FolklorePieceProperties> items) {
         for (FolklorePieceProperties item : items) {
             FolklorePiece piece = createPieceFromProperties(item);
             ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);

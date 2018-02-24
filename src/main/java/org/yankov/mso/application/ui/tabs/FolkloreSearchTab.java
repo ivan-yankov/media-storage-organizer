@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
@@ -14,9 +15,8 @@ import org.yankov.mso.application.ui.controls.LabeledComboBox;
 import org.yankov.mso.application.ui.controls.LabeledTextField;
 import org.yankov.mso.application.ui.converters.OperatorStringConverter;
 import org.yankov.mso.application.ui.converters.VariableStringConverter;
-import org.yankov.mso.datamodel.FolkloreSearchFactory;
-import org.yankov.mso.datamodel.Operator;
-import org.yankov.mso.datamodel.Variable;
+import org.yankov.mso.application.ui.tabs.buttons.SearchTabButtons;
+import org.yankov.mso.datamodel.*;
 
 import java.util.ResourceBundle;
 
@@ -30,10 +30,11 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public static final String BTN_SEARCH = CLASS_NAME + "-btn-search";
 
     private static final Double SPACE = 25.0;
-    private static final Insets INSETS = new Insets(25.0);
-    private static final Double SEARCH_VALUE_WIDTH = 650.0;
+    private static final Insets SEARCH_INSETS = new Insets(20.0, 20.0, 0.0, 20.0);
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
+
+    private FolklorePieceTable table;
 
     private VBox container;
 
@@ -43,12 +44,11 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     @Override
     public void layout() {
-        container.setPadding(INSETS);
         container.setSpacing(SPACE);
         container.getChildren().add(createSearchControls());
 
         HBox tableContainer = new HBox();
-        tableContainer.setSpacing(SPACE);
+        VBox.setVgrow(tableContainer, Priority.ALWAYS);
         tableContainer.getChildren().add(createTable());
         tableContainer.getChildren().add(createButtons());
         container.getChildren().add(tableContainer);
@@ -77,7 +77,6 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         operators.layout();
 
         LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
-        value.getTextField().setPrefWidth(SEARCH_VALUE_WIDTH);
         value.layout();
 
         Button btnSearch = new Button();
@@ -85,6 +84,9 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         btnSearch.setOnAction(this::handleBtnSearch);
 
         HBox searchContainer = new HBox();
+        HBox.setHgrow(searchContainer, Priority.ALWAYS);
+        HBox.setHgrow(value.getContainer(), Priority.ALWAYS);
+        searchContainer.setPadding(SEARCH_INSETS);
         searchContainer.setSpacing(SPACE);
         searchContainer.setAlignment(Pos.BOTTOM_LEFT);
         searchContainer.getChildren().add(variables.getContainer());
@@ -96,11 +98,19 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private Pane createTable() {
-        return new VBox();
+        table = new FolklorePieceTable();
+        table.layout();
+        HBox.setHgrow(table.getContainer(), Priority.ALWAYS);
+        return table.getContainer();
     }
 
     private Pane createButtons() {
-        return new VBox();
+        SearchTabButtons<FolklorePieceProperties> buttons = new SearchTabButtons<>(table.getTableView());
+        buttons.setItemCreator(FolklorePieceProperties::new);
+        buttons.setItemCopier(FolklorePieceProperties::copy);
+        buttons.setDatabaseUploader(new FolklorePieceUploader());
+        buttons.layout();
+        return buttons.getContainer();
     }
 
     private void handleBtnSearch(ActionEvent event) {

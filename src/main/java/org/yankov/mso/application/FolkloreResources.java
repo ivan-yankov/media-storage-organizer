@@ -2,8 +2,10 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
+import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
+import org.yankov.mso.datamodel.FolklorePieceUploader;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
-import org.yankov.mso.datamodel.Operator;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
 import org.yankov.mso.application.ui.tabs.*;
@@ -60,18 +62,19 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceTable.COL_FILE, ""},
                 {FolklorePieceTable.COL_NOTE, ""},
 
-                {FolkloreInputButtons.BTN_ADD, ""},
-                {FolkloreInputButtons.BTN_REMOVE, ""},
-                {FolkloreInputButtons.BTN_COPY, ""},
-                {FolkloreInputButtons.BTN_CLEAR, ""},
-                {FolkloreInputButtons.BTN_LOAD_ALBUM_TRACKS, ""},
-                {FolkloreInputButtons.SELECT_AUDIO_FILES, ""},
-                {FolkloreInputButtons.FLAC_FILTER_NAME, ""},
-                {FolkloreInputButtons.FLAC_FILTER_EXT, ""},
-                {FolkloreInputButtons.BTN_EDIT, ""},
-                {FolkloreInputButtons.BTN_PLAYER_RUN, ""},
-                {FolkloreInputButtons.BTN_PLAYER_STOP, ""},
-                {FolkloreInputButtons.BTN_UPLOAD, ""},
+                {InputTabButtons.BTN_ADD, ""},
+                {InputTabButtons.BTN_REMOVE, ""},
+                {InputTabButtons.BTN_COPY, ""},
+                {InputTabButtons.BTN_CLEAR, ""},
+                {InputTabButtons.BTN_LOAD_ALBUM_TRACKS, ""},
+                {InputTabButtons.SELECT_AUDIO_FILES, ""},
+                {InputTabButtons.FLAC_FILTER_NAME, ""},
+                {InputTabButtons.FLAC_FILTER_EXT, ""},
+                {InputTabButtons.BTN_UPLOAD, ""},
+
+                {EditButtons.BTN_EDIT_PROPERTIES, ""},
+                {EditButtons.BTN_PLAYER_RUN, ""},
+                {EditButtons.BTN_PLAYER_STOP, ""},
 
                 {FlacProcessor.FILE_NOT_FOUND, ""},
                 {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},

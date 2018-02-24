@@ -2,8 +2,10 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
+import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
+import org.yankov.mso.datamodel.FolklorePieceUploader;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
-import org.yankov.mso.datamodel.Operator;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
 import org.yankov.mso.application.ui.tabs.*;
@@ -61,19 +63,19 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceTable.COL_FILE, "Файл"},
                 {FolklorePieceTable.COL_NOTE, "Забележка"},
 
-                {FolkloreInputButtons.BTN_ADD, "Добавяне"},
-                {FolkloreInputButtons.BTN_REMOVE, "Премахване"},
-                {FolkloreInputButtons.BTN_COPY, "Копиране"},
-                {FolkloreInputButtons.BTN_CLEAR, "Изчистване"},
-                {FolkloreInputButtons.BTN_LOAD_ALBUM_TRACKS, "Зареждане на файлове"},
-                {FolkloreInputButtons.SELECT_AUDIO_FILES, "Избор на файлове"},
-                {FolkloreInputButtons.FLAC_FILTER_NAME, "FLAC файлове"},
-                {FolkloreInputButtons.FLAC_FILTER_EXT, "*.flac"},
-                {FolkloreInputButtons.BTN_EDIT, "Редактиране на запис"},
-                {FolkloreInputButtons.BTN_PLAYER_RUN, "Възпроизвеждане"},
-                {FolkloreInputButtons.BTN_PLAYER_STOP, "Стоп"},
-                {FolkloreInputButtons.BTN_UPLOAD, "Запис в базата данни"},
+                {InputTabButtons.BTN_ADD, "Добавяне"},
+                {InputTabButtons.BTN_REMOVE, "Премахване"},
+                {InputTabButtons.BTN_COPY, "Копиране"},
+                {InputTabButtons.BTN_CLEAR, "Изчистване"},
+                {InputTabButtons.BTN_LOAD_ALBUM_TRACKS, "Зареждане на файлове"},
+                {InputTabButtons.SELECT_AUDIO_FILES, "Избор на файлове"},
+                {InputTabButtons.FLAC_FILTER_NAME, "FLAC файлове"},
+                {InputTabButtons.FLAC_FILTER_EXT, "*.flac"},
+                {InputTabButtons.BTN_UPLOAD, "Запис в базата данни"},
 
+                {EditButtons.BTN_EDIT_PROPERTIES, "Редактиране на запис"},
+                {EditButtons.BTN_PLAYER_RUN, "Възпроизвеждане"},
+                {EditButtons.BTN_PLAYER_STOP, "Стоп"},
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {

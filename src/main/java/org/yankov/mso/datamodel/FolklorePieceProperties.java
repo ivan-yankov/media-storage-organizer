@@ -19,7 +19,8 @@ public class FolklorePieceProperties extends PieceProperties {
         this.ethnographicRegion.set(ethnographicRegion);
     }
 
-    public FolklorePieceProperties clone() {
+    @Override
+    public FolklorePieceProperties copy() {
         FolklorePieceProperties newPiece = new FolklorePieceProperties();
 
         newPiece.setAlbum(getAlbum());
