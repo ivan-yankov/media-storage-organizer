@@ -10,16 +10,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class PieceProperties implements PropertyChangeListener {
 
     private static final String CLASS_NAME = PieceProperties.class.getName();
-
-    public static final String UNDEFINED_ALBUM = CLASS_NAME + "-undefined-album";
 
     private static final String PROPERTY_NAME_FILE = "file";
 
@@ -38,8 +39,6 @@ public class PieceProperties implements PropertyChangeListener {
     private final SimpleObjectProperty<File> file;
 
     private final PropertyChangeSupport propertyChangeSupport;
-
-    private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     public PieceProperties() {
         this.album = new SimpleObjectProperty<>();
@@ -164,36 +163,6 @@ public class PieceProperties implements PropertyChangeListener {
         File oldValue = this.file.get();
         this.file.set(file);
         propertyChangeSupport.firePropertyChange(PROPERTY_NAME_FILE, oldValue, file);
-    }
-
-    public PieceProperties copy() {
-        PieceProperties newPiece = new PieceProperties();
-
-        newPiece.setAlbum(getAlbum());
-        newPiece.setAlbumTrackOrder(getAlbumTrackOrder());
-        newPiece.setTitle(getTitle());
-        newPiece.setPerformer(getPerformer());
-        newPiece.setAccompanimentPerformer(getAccompanimentPerformer());
-        newPiece.setAuthor(getAuthor());
-        newPiece.setArrangementAuthor(getArrangementAuthor());
-        newPiece.setConductor(getConductor());
-        newPiece.setSoloist(getSoloist());
-        newPiece.setDuration(getDuration());
-        newPiece.setNote(getNote());
-        newPiece.setSource(getSource());
-        newPiece.setFile(getFile());
-
-        return newPiece;
-    }
-
-    public void setFromFile(File file) {
-        String albumSignature = file.getParentFile().getName();
-        Optional<Album> album = ApplicationContext.getInstance().getFolkloreEntityCollections()
-                                                  .getAlbum(albumSignature);
-        String message = resourceBundle.getString(UNDEFINED_ALBUM) + " " + albumSignature;
-        album.ifPresentOrElse(this::setAlbum,
-                              () -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
-        setFile(file);
     }
 
     @Override

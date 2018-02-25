@@ -53,7 +53,7 @@ public class FolklorePieceEditor implements Form {
     public FolklorePieceEditor(TableView<FolklorePieceProperties> table, int selectedIndex) {
         this.stage = new Stage();
         this.table = table;
-        this.piece = table.getItems().get(selectedIndex).copy();
+        this.piece = PiecePropertiesUtils.copyFolklorePieceProperties(table.getItems().get(selectedIndex));
         this.selectedIndex = selectedIndex;
     }
 

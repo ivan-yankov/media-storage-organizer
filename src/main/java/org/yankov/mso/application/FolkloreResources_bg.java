@@ -11,6 +11,7 @@ import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
+import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import java.util.ListResourceBundle;
 
@@ -92,8 +93,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceEditor.BTN_OK, "OK"},
                 {FolklorePieceEditor.BTN_CANCEL, "Отказ"},
 
-                {PieceProperties.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
-
                 {FolkloreInputArtifactsTab.ARTIFACT_TYPE, "Вид артефакт"},
                 {FolkloreInputArtifactsTab.SOURCE, "Източник"},
                 {FolkloreInputArtifactsTab.INSTRUMENT, "Инструмент"},
@@ -145,7 +144,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {EthnographicRegionInputControls.NAME, "Название"},
                 {EthnographicRegionInputControls.NAME_UNDEFINED, "Не е въведено название"},
 
-                {FolklorePieceUploader.UNABLE_READ_FILE, "Грешка при четене на файл"},
                 {FolklorePieceUploader.FILE_LOADED, "Успешно прочетен файл"},
                 {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, "Успешен запис в базата данни"},
 
@@ -176,6 +174,8 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreSearchFactory.OPERATOR_LABEL_STARTS, "Започва с ..."},
                 {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, "Завършва с ..."},
 
+                {PiecePropertiesUtils.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
+                {PiecePropertiesUtils.UNABLE_READ_FILE, "Грешка при четене на файл"},
                 };
     }
 

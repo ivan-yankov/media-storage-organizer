@@ -11,6 +11,7 @@ import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
+import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import java.util.ListResourceBundle;
 
@@ -88,8 +89,6 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceEditor.BTN_OK, ""},
                 {FolklorePieceEditor.BTN_CANCEL, ""},
 
-                {PieceProperties.UNDEFINED_ALBUM, ""},
-
                 {FolkloreInputArtifactsTab.ARTIFACT_TYPE, ""},
                 {FolkloreInputArtifactsTab.SOURCE, ""},
                 {FolkloreInputArtifactsTab.INSTRUMENT, ""},
@@ -138,7 +137,6 @@ public class FolkloreResources extends ListResourceBundle {
                 {EthnographicRegionInputControls.NAME, ""},
                 {EthnographicRegionInputControls.NAME_UNDEFINED, ""},
 
-                {FolklorePieceUploader.UNABLE_READ_FILE, ""},
                 {FolklorePieceUploader.FILE_LOADED, ""},
                 {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, ""},
 
@@ -169,6 +167,8 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreSearchFactory.OPERATOR_LABEL_STARTS, ""},
                 {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, ""},
 
+                {PiecePropertiesUtils.UNDEFINED_ALBUM, ""},
+                {PiecePropertiesUtils.UNABLE_READ_FILE, ""},
                 };
     }
 

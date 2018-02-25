@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.tabs;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -18,6 +19,7 @@ import org.yankov.mso.application.ui.converters.VariableStringConverter;
 import org.yankov.mso.application.ui.tabs.buttons.SearchTabButtons;
 import org.yankov.mso.datamodel.*;
 
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class FolkloreSearchTab implements UserInterfaceControls {
@@ -37,6 +39,9 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     private FolklorePieceTable table;
 
     private VBox container;
+    private LabeledComboBox<Variable<FolklorePiece>> variables;
+    private LabeledComboBox<Operator> operators;
+    private LabeledTextField value;
 
     public FolkloreSearchTab() {
         this.container = new VBox();
@@ -60,23 +65,20 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private Pane createSearchControls() {
-        ObservableList<Variable> variablesList = FolkloreSearchFactory.createVariables();
-        Variable defaultVariable = FolkloreSearchFactory.VAR_TITLE;
-        LabeledComboBox<Variable> variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE), variablesList,
-                                                                    defaultVariable, null,
-                                                                    new VariableStringConverter(), false);
+        variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE),
+                                          FolkloreSearchFactory.createFolkloreVariables(),
+                                          FolkloreSearchFactory.VAR_TITLE, null, new VariableStringConverter<>(),
+                                          false);
         variables.setSortItems(false);
         variables.layout();
 
-        ObservableList<Operator> operatorsList = FolkloreSearchFactory.createOperators();
-        Operator defaultOperator = FolkloreSearchFactory.OPERATOR_EQUALS;
-        LabeledComboBox<Operator> operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR), operatorsList,
-                                                                    defaultOperator, null,
-                                                                    new OperatorStringConverter(), false);
+        operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR), FolkloreSearchFactory.createOperators(),
+                                          FolkloreSearchFactory.OPERATOR_EQUALS, null, new OperatorStringConverter(),
+                                          false);
         operators.setSortItems(false);
         operators.layout();
 
-        LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
+        value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
         value.layout();
 
         Button btnSearch = new Button();
@@ -107,13 +109,30 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     private Pane createButtons() {
         SearchTabButtons<FolklorePieceProperties> buttons = new SearchTabButtons<>(table.getTableView());
         buttons.setItemCreator(FolklorePieceProperties::new);
-        buttons.setItemCopier(FolklorePieceProperties::copy);
+        buttons.setItemCopier(PiecePropertiesUtils::copyFolklorePieceProperties);
         buttons.setDatabaseUploader(new FolklorePieceUploader());
         buttons.layout();
         return buttons.getContainer();
     }
 
     private void handleBtnSearch(ActionEvent event) {
+        List<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces();
+        Variable<FolklorePiece> variable = variables.getComboBox().getSelectionModel().getSelectedItem();
+        Operator operator = operators.getComboBox().getSelectionModel().getSelectedItem();
+        String searchValue = value.getTextField().getText();
+
+        List<FolklorePiece> piecesFound;
+        if (searchValue.equals("*")) {
+            piecesFound = pieces;
+        } else {
+            piecesFound = operator.match(pieces, variable, searchValue);
+        }
+
+        ObservableList<FolklorePieceProperties> properties = FXCollections.observableArrayList();
+        piecesFound.forEach(piece -> properties.add(PiecePropertiesUtils.createPropertiesFromFolklorePiece(piece)));
+
+        table.getTableView().getItems().clear();
+        table.getTableView().getItems().addAll(properties);
     }
 
 }

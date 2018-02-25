@@ -100,8 +100,8 @@ public class FolkloreSearchFactory {
             resourceBundle.getString(OPERATOR_LABEL_ENDS),
             (s1, s2) -> s1.trim().toLowerCase().endsWith(s2.trim().toLowerCase()), false);
 
-    public static ObservableList<Variable> createVariables() {
-        ObservableList<Variable> variables = FXCollections.observableArrayList();
+    public static ObservableList<Variable<FolklorePiece>> createFolkloreVariables() {
+        ObservableList<Variable<FolklorePiece>> variables = FXCollections.observableArrayList();
 
         variables.add(VAR_TITLE);
         variables.add(VAR_PERFORMER);

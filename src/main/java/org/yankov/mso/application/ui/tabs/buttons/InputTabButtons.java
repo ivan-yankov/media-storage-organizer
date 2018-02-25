@@ -6,6 +6,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.datamodel.PieceProperties;
+import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -98,9 +99,7 @@ public class InputTabButtons<T extends PieceProperties> extends EditButtons<T> {
 
         if (files.isPresent()) {
             for (File file : files.get()) {
-                T item = itemCreator.get();
-                item.setFromFile(file);
-                table.getItems().add(item);
+                table.getItems().add(PiecePropertiesUtils.createPropertiesFromFile(itemCreator, file));
             }
         }
     }

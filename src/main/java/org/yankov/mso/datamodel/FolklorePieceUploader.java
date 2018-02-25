@@ -12,9 +12,7 @@ import java.util.logging.Level;
 public class FolklorePieceUploader implements DatabaseUploader<FolklorePieceProperties> {
 
     private static final String CLASS_NAME = FolklorePieceUploader.class.getName();
-    private static final String FLAC = "FLAC";
 
-    public static final String UNABLE_READ_FILE = CLASS_NAME + "-unable-read-file";
     public static final String FILE_LOADED = CLASS_NAME + "-file-loaded";
     public static final String PIECES_UPLOAD_COMPLETED = CLASS_NAME + "-pieces-upload-completed";
 
@@ -35,51 +33,11 @@ public class FolklorePieceUploader implements DatabaseUploader<FolklorePieceProp
 
     private void uploadToDataModel(List<FolklorePieceProperties> items) {
         for (FolklorePieceProperties item : items) {
-            FolklorePiece piece = createPieceFromProperties(item);
+            FolklorePiece piece = PiecePropertiesUtils.createFolklorePieceFromProperties(item);
             ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
             ApplicationContext.getInstance().getLogger()
                               .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + item.getFile().getName());
         }
-    }
-
-    private FolklorePiece createPieceFromProperties(FolklorePieceProperties properties) {
-        FolklorePiece piece = new FolklorePiece();
-
-        piece.setNote(properties.getNote());
-        piece.setSource(properties.getSource());
-        piece.setEthnographicRegion(properties.getEthnographicRegion());
-        piece.setSoloist(properties.getSoloist());
-        piece.setAuthor(properties.getAuthor());
-        piece.setConductor(properties.getConductor());
-        piece.setArrangementAuthor(properties.getArrangementAuthor());
-        piece.setAccompanimentPerformer(properties.getAccompanimentPerformer());
-        piece.setPerformer(properties.getPerformer());
-        piece.setAlbum(properties.getAlbum());
-        piece.setTitle(properties.getTitle());
-        piece.setAlbumTrackOrder(properties.getAlbumTrackOrder());
-        piece.setDuration(properties.getDuration());
-        piece.setRecord(loadRecordFromFile(properties.getFile()));
-
-        return piece;
-    }
-
-    private Record loadRecordFromFile(File file) {
-        Record record = new Record();
-
-        record.setDataFormat(FLAC);
-
-        try {
-            FileInputStream in = new FileInputStream(file);
-            byte[] bytes = in.readAllBytes();
-            record.setBytes(bytes);
-            in.close();
-        } catch (IOException e) {
-            ApplicationContext.getInstance().getLogger().log(Level.SEVERE,
-                                                             resourceBundle.getString(UNABLE_READ_FILE) + ": " + file
-                                                                     .getAbsolutePath());
-        }
-
-        return record;
     }
 
 }
