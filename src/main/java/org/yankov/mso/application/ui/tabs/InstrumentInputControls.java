@@ -82,8 +82,4 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
         instrument.getTextField().setText(artifact.getName());
     }
 
-    @Override
-    protected void dataModelChanged() {
-    }
-
 }

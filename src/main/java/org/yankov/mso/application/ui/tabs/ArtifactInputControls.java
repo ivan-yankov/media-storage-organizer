@@ -20,11 +20,30 @@ import org.yankov.mso.application.UserInterfaceControls;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 public abstract class ArtifactInputControls<T> implements UserInterfaceControls, PropertyChangeListener {
+
+    protected abstract Pane createControls();
+
+    protected abstract List<T> getExistingArtifacts();
+
+    protected abstract StringConverter<T> getStringConverter();
+
+    protected abstract boolean validateUserInput();
+
+    protected abstract T createArtifact();
+
+    protected abstract boolean addArtifact(T artifact);
+
+    protected abstract void cleanup();
+
+    protected abstract void setArtifactProperties(T artifact);
+
+    protected abstract void extractArtifactProperties(T artifact);
 
     private static final String CLASS_NAME = ArtifactInputControls.class.getName();
 
@@ -52,26 +71,6 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    protected abstract Pane createControls();
-
-    protected abstract List<T> getExistingArtifacts();
-
-    protected abstract StringConverter<T> getStringConverter();
-
-    protected abstract boolean validateUserInput();
-
-    protected abstract T createArtifact();
-
-    protected abstract boolean addArtifact(T artifact);
-
-    protected abstract void cleanup();
-
-    protected abstract void setArtifactProperties(T artifact);
-
-    protected abstract void extractArtifactProperties(T artifact);
-
-    protected abstract void dataModelChanged();
-
     public ArtifactInputControls(String id) {
         this.id = id;
         this.existingArtifactsContainer = new VBox();
@@ -93,6 +92,9 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
 
     protected double getWhiteSpace() {
         return WHITE_SPACE;
+    }
+
+    public void onVisibilityChange(boolean visible) {
     }
 
     @Override
@@ -143,7 +145,6 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         refreshExistingArtifacts();
-        dataModelChanged();
     }
 
     private void handleBtnAddArtifactClick(ActionEvent event) {

@@ -3,6 +3,7 @@ package org.yankov.mso.application.ui.tabs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -52,13 +53,14 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
 
         UserInterfaceControls artifactType = new LabeledComboBox<>(resourceBundle.getString(ARTIFACT_TYPE), artifacts,
                                                                    defaultArtifact, this::artifactTypeSelected,
-                                                                   new StringStringConverter(), false);
+                                                                   new StringStringConverter(), false, false);
         artifactType.layout();
 
-        List<UserInterfaceControls> inputControls = createInputControls();
-        inputControls.forEach(controls -> {
+        createInputControls().forEach(controls -> {
             controls.layout();
-            artifactsContainer.getChildren().add(controls.getContainer());
+            Node node = controls.getContainer();
+            node.setUserData(controls);
+            artifactsContainer.getChildren().add(node);
         });
 
         container.setPadding(new Insets(WHITE_SPACE));
@@ -90,11 +92,16 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
     }
 
     private void refreshArtifactContainer(String type) {
-        artifactsContainer.getChildren().forEach(node -> node.setVisible(node.getId().equals(ARTIFACT_IDS.get(type))));
+        artifactsContainer.getChildren().forEach(node -> {
+            boolean visible = node.getId().equals(ARTIFACT_IDS.get(type));
+            node.setVisible(visible);
+            ArtifactInputControls controls = (ArtifactInputControls) node.getUserData();
+            controls.onVisibilityChange(visible);
+        });
     }
 
-    private List<UserInterfaceControls> createInputControls() {
-        List<UserInterfaceControls> inputControls = new ArrayList<>();
+    private List<ArtifactInputControls> createInputControls() {
+        List<ArtifactInputControls> inputControls = new ArrayList<>();
 
         inputControls.add(new SourceInputControls(SOURCE));
         inputControls.add(new InstrumentInputControls(INSTRUMENT));

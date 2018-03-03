@@ -67,15 +67,13 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     private Pane createSearchControls() {
         variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE),
                                           FolkloreSearchFactory.createFolkloreVariables(),
-                                          FolkloreSearchFactory.VAR_TITLE, null, new VariableStringConverter<>(),
+                                          FolkloreSearchFactory.VAR_TITLE, null, new VariableStringConverter<>(), false,
                                           false);
-        variables.setSortItems(false);
         variables.layout();
 
         operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR), FolkloreSearchFactory.createOperators(),
                                           FolkloreSearchFactory.OPERATOR_EQUALS, null, new OperatorStringConverter(),
-                                          false);
-        operators.setSortItems(false);
+                                          false, false);
         operators.layout();
 
         value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);

@@ -38,7 +38,7 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
         sourceTypes.addAll(ApplicationContext.getInstance().getFolkloreEntityCollections().getSourceTypes());
         SourceType defaultSourceType = sourceTypes.get(0);
         sourceType = new LabeledComboBox<>(getResourceBundle().getString(SOURCE_TYPE), sourceTypes, defaultSourceType,
-                                           null, new SourceTypeStringConverter(), false);
+                                           null, new SourceTypeStringConverter(), false, true);
         sourceType.layout();
 
         sourceSignature = new LabeledTextField(getResourceBundle().getString(SIGNATURE), "", null);
@@ -98,10 +98,6 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
     protected void extractArtifactProperties(Source artifact) {
         sourceType.getComboBox().setValue(artifact.getType());
         sourceSignature.getTextField().setText(artifact.getSignature());
-    }
-
-    @Override
-    protected void dataModelChanged() {
     }
 
 }

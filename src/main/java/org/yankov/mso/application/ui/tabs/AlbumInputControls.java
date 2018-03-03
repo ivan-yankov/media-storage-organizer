@@ -118,8 +118,4 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
         note.getTextField().setText(artifact.getNote());
     }
 
-    @Override
-    protected void dataModelChanged() {
-    }
-
 }

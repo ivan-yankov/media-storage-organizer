@@ -49,7 +49,6 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     private LabeledTextField note;
     private LabeledComboBox<Instrument> instrument;
     private List<CheckBox> missions;
-    private ObservableList<Instrument> observableInstruments;
 
     private final Map<ArtistMission, String> missionLabels;
 
@@ -65,8 +64,15 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         this.missionLabels.put(ArtistMission.CHOIR, getResourceBundle().getString(CHOIR));
         this.missionLabels.put(ArtistMission.ENSEMBLE, getResourceBundle().getString(ENSEMBLE));
         this.missionLabels.put(ArtistMission.CHAMBER_GROUP, getResourceBundle().getString(CHAMBER_GROUP));
+    }
 
-        this.observableInstruments = FXCollections.observableArrayList();
+    @Override
+    public void onVisibilityChange(boolean visible) {
+        if (visible) {
+            ObservableList<Instrument> instruments = FXCollections.observableArrayList(
+                    ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
+            instrument.setItems(instruments);
+        }
     }
 
     @Override
@@ -178,11 +184,6 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         enableInstrument();
     }
 
-    @Override
-    protected void dataModelChanged() {
-        refreshInstruments();
-    }
-
     private List<CheckBox> createMissions() {
         List<CheckBox> missions = new ArrayList<>();
 
@@ -209,15 +210,10 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     }
 
     private LabeledComboBox<Instrument> createInstrumentControl() {
-        refreshInstruments();
-        return new LabeledComboBox<>(getResourceBundle().getString(INSTRUMENT), observableInstruments, null, null,
-                                     new InstrumentStringConverter(), false);
-    }
-
-    private void refreshInstruments() {
-        observableInstruments.clear();
-        observableInstruments.addAll(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
-        observableInstruments.sort((i1, i2) -> i1.getName().compareToIgnoreCase(i2.getName()));
+        ObservableList<Instrument> instruments = FXCollections
+                .observableArrayList(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
+        return new LabeledComboBox<>(getResourceBundle().getString(INSTRUMENT), instruments, null, null,
+                                     new InstrumentStringConverter(), false, true);
     }
 
     private void enableInstrument() {

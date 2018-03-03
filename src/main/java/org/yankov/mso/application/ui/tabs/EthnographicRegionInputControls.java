@@ -85,8 +85,4 @@ public class EthnographicRegionInputControls extends ArtifactInputControls<Ethno
         ethnographicRegion.getTextField().setText(artifact.getName());
     }
 
-    @Override
-    protected void dataModelChanged() {
-    }
-
 }
