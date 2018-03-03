@@ -15,22 +15,19 @@ import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.Commands;
-import org.yankov.mso.datamodel.FolklorePieceProperties;
+import org.yankov.mso.datamodel.*;
 import org.yankov.mso.application.ui.font.CustomFont;
 import org.yankov.mso.application.ui.font.FontFamily;
 import org.yankov.mso.application.ui.font.FontStyle;
 import org.yankov.mso.application.ui.font.FontWeight;
 import org.yankov.mso.application.utils.FxUtils;
-import org.yankov.mso.datamodel.EthnographicRegion;
-import org.yankov.mso.datamodel.Album;
-import org.yankov.mso.datamodel.Artist;
-import org.yankov.mso.datamodel.Source;
 
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class FolklorePieceTable implements UserInterfaceControls {
 
@@ -50,6 +47,8 @@ public class FolklorePieceTable implements UserInterfaceControls {
     public static final String COL_ETHNOGRAPHIC_REGION = CLASS_NAME + "-col-ethnographic-region";
     public static final String COL_FILE = CLASS_NAME + "-col-record";
     public static final String COL_NOTE = CLASS_NAME + "-col-note";
+
+    public static final String FILE_LOADED = CLASS_NAME + "-file-loaded";
 
     private static final String DURATION_FORMAT = "%02d:%02d";
 
@@ -221,6 +220,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
     private void handleTableChange(ListChangeListener.Change<? extends FolklorePieceProperties> change) {
         refreshPieceOrder();
         resizeColumnsToFit();
+        updateDataModel();
     }
 
     private void refreshPieceOrder() {
@@ -241,6 +241,15 @@ public class FolklorePieceTable implements UserInterfaceControls {
             }
             column.setPrefWidth(width);
         });
+    }
+
+    private void updateDataModel() {
+        for (FolklorePieceProperties item : table.getItems()) {
+            FolklorePiece piece = PiecePropertiesUtils.createFolklorePieceFromProperties(item);
+            ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + item.getFile().getName());
+        }
     }
 
 }

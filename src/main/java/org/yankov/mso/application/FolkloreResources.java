@@ -2,15 +2,12 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
-import org.yankov.mso.datamodel.FolklorePieceUploader;
-import org.yankov.mso.datamodel.FolkloreSearchFactory;
-import org.yankov.mso.datamodel.PieceProperties;
-import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
-import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
+import org.yankov.mso.datamodel.FolkloreSearchFactory;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import java.util.ListResourceBundle;
@@ -62,6 +59,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceTable.COL_ETHNOGRAPHIC_REGION, ""},
                 {FolklorePieceTable.COL_FILE, ""},
                 {FolklorePieceTable.COL_NOTE, ""},
+                {FolklorePieceTable.FILE_LOADED, ""},
 
                 {InputTabButtons.BTN_ADD, ""},
                 {InputTabButtons.BTN_REMOVE, ""},
@@ -76,6 +74,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {EditButtons.BTN_EDIT_PROPERTIES, ""},
                 {EditButtons.BTN_PLAYER_RUN, ""},
                 {EditButtons.BTN_PLAYER_STOP, ""},
+                {EditButtons.UPLOAD_COMPLETED, ""},
 
                 {FlacProcessor.FILE_NOT_FOUND, ""},
                 {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},
@@ -136,9 +135,6 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {EthnographicRegionInputControls.NAME, ""},
                 {EthnographicRegionInputControls.NAME_UNDEFINED, ""},
-
-                {FolklorePieceUploader.FILE_LOADED, ""},
-                {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, ""},
 
                 {FolkloreSearchTab.VARIABLE, ""},
                 {FolkloreSearchTab.OPERATOR, ""},

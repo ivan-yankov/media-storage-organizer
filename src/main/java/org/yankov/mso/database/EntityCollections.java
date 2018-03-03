@@ -199,7 +199,8 @@ public abstract class EntityCollections<T extends Piece> {
         ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
             collection.forEach(session::saveOrUpdate);
             return null;
-        }, message -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
+        }, throwable -> ApplicationContext.getInstance().getLogger()
+                                          .log(Level.SEVERE, throwable.getMessage(), throwable));
     }
 
     private <CollectionType> List<CollectionType> loadCollectionFromDatabase(Class entityClass) {
@@ -210,7 +211,8 @@ public abstract class EntityCollections<T extends Piece> {
             criteriaQuery.select(root);
             Query<CollectionType> query = session.createQuery(criteriaQuery);
             return query.getResultList();
-        }, message -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
+        }, throwable -> ApplicationContext.getInstance().getLogger()
+                                          .log(Level.SEVERE, throwable.getMessage(), throwable));
 
         if (!optResult.isPresent()) {
             return Collections.emptyList();

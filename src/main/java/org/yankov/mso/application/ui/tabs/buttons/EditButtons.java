@@ -13,6 +13,7 @@ import org.yankov.mso.datamodel.PieceProperties;
 import javax.sound.sampled.LineEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class EditButtons<T extends PieceProperties> extends Buttons<T> {
 
@@ -22,6 +23,7 @@ public class EditButtons<T extends PieceProperties> extends Buttons<T> {
     public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
     public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
     public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
+    public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
 
     public EditButtons(TableView<T> table) {
         super(table);
@@ -82,9 +84,11 @@ public class EditButtons<T extends PieceProperties> extends Buttons<T> {
 
             @Override
             protected Object call() {
-                ApplicationContext.getInstance().getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                databaseUploader.uploadToDatabase(table.getItems());
-                ApplicationContext.getInstance().getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
+                ApplicationContext context = ApplicationContext.getInstance();
+                context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
+                context.getFolkloreEntityCollections().saveEntityCollections();
+                context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
+                context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
                 return null;
             }
 

@@ -9,7 +9,7 @@ public class DatabaseConnectionTest extends DatabaseTest {
     @Test
     public void testDatabaseConnection() {
         ApplicationContext.getInstance().getDatabaseSessionManager()
-                          .executeOperation(null, message -> Assert.fail(message));
+                          .executeOperation(null, throwable -> Assert.fail(throwable.getMessage()));
     }
 
 }

@@ -18,10 +18,11 @@ public class DatabaseSessionManagerTest extends DatabaseTest {
         ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
             session.saveOrUpdate(originalInstrument);
             return null;
-        }, Assert::fail);
+        }, throwable -> Assert.fail(throwable.getMessage()));
 
         Optional<Object> instrumentObj = ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(
-                session -> session.get(Instrument.class, originalInstrument.getId()), Assert::fail);
+                session -> session.get(Instrument.class, originalInstrument.getId()),
+                throwable -> Assert.fail(throwable.getMessage()));
 
         Assert.assertTrue(instrumentObj.isPresent());
         Instrument instrument = (Instrument) instrumentObj.get();

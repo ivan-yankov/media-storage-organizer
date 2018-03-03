@@ -110,7 +110,6 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         SearchTabButtons<FolklorePieceProperties> buttons = new SearchTabButtons<>(table.getTableView());
         buttons.setItemCreator(FolklorePieceProperties::new);
         buttons.setItemCopier(PiecePropertiesUtils::copyFolklorePieceProperties);
-        buttons.setDatabaseUploader(new FolklorePieceUploader());
         buttons.layout();
         return buttons.getContainer();
     }

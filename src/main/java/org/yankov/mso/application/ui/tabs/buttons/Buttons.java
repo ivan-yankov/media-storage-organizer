@@ -8,7 +8,6 @@ import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacProcessor;
-import org.yankov.mso.datamodel.DatabaseUploader;
 import org.yankov.mso.datamodel.PieceProperties;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
 
     protected Supplier<T> itemCreator;
     protected UnaryOperator<T> itemCopier;
-    protected DatabaseUploader<T> databaseUploader;
 
     private static final Double SPACE = 25.0;
     private static final Insets INSETS = new Insets(25.0);
@@ -46,10 +44,6 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
 
     public void setItemCopier(UnaryOperator<T> itemCopier) {
         this.itemCopier = itemCopier;
-    }
-
-    public void setDatabaseUploader(DatabaseUploader<T> databaseUploader) {
-        this.databaseUploader = databaseUploader;
     }
 
     @Override

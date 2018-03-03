@@ -6,7 +6,6 @@ import javafx.scene.layout.Priority;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
 import org.yankov.mso.datamodel.FolklorePieceProperties;
-import org.yankov.mso.datamodel.FolklorePieceUploader;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 public class FolkloreInputTab implements UserInterfaceControls {
@@ -27,7 +26,6 @@ public class FolkloreInputTab implements UserInterfaceControls {
         InputTabButtons<FolklorePieceProperties> buttons = new InputTabButtons<>(table.getTableView());
         buttons.setItemCreator(FolklorePieceProperties::new);
         buttons.setItemCopier(PiecePropertiesUtils::copyFolklorePieceProperties);
-        buttons.setDatabaseUploader(new FolklorePieceUploader());
         buttons.layout();
         container.getChildren().add(buttons.getContainer());
     }

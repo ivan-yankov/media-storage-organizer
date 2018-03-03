@@ -2,15 +2,12 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
-import org.yankov.mso.datamodel.FolklorePieceUploader;
-import org.yankov.mso.datamodel.FolkloreSearchFactory;
-import org.yankov.mso.datamodel.PieceProperties;
-import org.yankov.mso.application.ui.tabs.FolklorePieceEditor;
-import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
+import org.yankov.mso.datamodel.FolkloreSearchFactory;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import java.util.ListResourceBundle;
@@ -63,6 +60,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceTable.COL_ETHNOGRAPHIC_REGION, "Област"},
                 {FolklorePieceTable.COL_FILE, "Файл"},
                 {FolklorePieceTable.COL_NOTE, "Забележка"},
+                {FolklorePieceTable.FILE_LOADED, "Успешно прочетен файл"},
 
                 {InputTabButtons.BTN_ADD, "Добавяне"},
                 {InputTabButtons.BTN_REMOVE, "Премахване"},
@@ -77,6 +75,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {EditButtons.BTN_EDIT_PROPERTIES, "Редактиране на запис"},
                 {EditButtons.BTN_PLAYER_RUN, "Възпроизвеждане"},
                 {EditButtons.BTN_PLAYER_STOP, "Стоп"},
+                {EditButtons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {
@@ -143,9 +142,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {EthnographicRegionInputControls.NAME, "Название"},
                 {EthnographicRegionInputControls.NAME_UNDEFINED, "Не е въведено название"},
-
-                {FolklorePieceUploader.FILE_LOADED, "Успешно прочетен файл"},
-                {FolklorePieceUploader.PIECES_UPLOAD_COMPLETED, "Успешен запис в базата данни"},
 
                 {FolkloreSearchTab.VARIABLE, "Категория"},
                 {FolkloreSearchTab.OPERATOR, "Оператор"},

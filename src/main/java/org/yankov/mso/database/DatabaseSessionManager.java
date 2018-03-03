@@ -58,7 +58,7 @@ public class DatabaseSessionManager {
         }
     }
 
-    public Optional<Object> executeOperation(Function<Session, Object> operation, Consumer<String> operationFailed) {
+    public Optional<Object> executeOperation(Function<Session, Object> operation, Consumer<Throwable> operationFailed) {
         Object result = null;
         Transaction transaction = null;
         try {
@@ -73,7 +73,7 @@ public class DatabaseSessionManager {
                 transaction.rollback();
             }
             if (operationFailed != null) {
-                operationFailed.accept(e.getMessage());
+                operationFailed.accept(e);
             }
             return Optional.empty();
         }
