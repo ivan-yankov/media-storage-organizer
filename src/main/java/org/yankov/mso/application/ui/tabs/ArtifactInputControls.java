@@ -167,12 +167,6 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
             return;
         }
 
-        T artifact = createArtifact();
-        setArtifactProperties(artifact);
-        if (!validateHashCode(artifact)) {
-            return;
-        }
-
         T selectedArtifact = existingArtifacts.getSelectionModel().getSelectedItem();
         if (selectedArtifact == null) {
             ApplicationContext.getInstance().getLogger()
@@ -198,16 +192,6 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
                                                               .compareToIgnoreCase(getStringConverter().toString(a2)));
             existingItems.addAll(newArtifacts);
         });
-    }
-
-    private boolean validateHashCode(T artifact) {
-        long c = getExistingArtifacts().stream().filter(item -> item.hashCode() == artifact.hashCode()).count();
-        if (c > 0) {
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(ARTIFACT_EXISTS));
-            return false;
-        }
-        return true;
     }
 
 }
