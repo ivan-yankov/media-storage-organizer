@@ -64,7 +64,7 @@ public class FolklorePieceEditor implements Form {
         title.layout();
 
         StringConverter<Album> albumStringConverter = new AlbumStringConverter(
-                ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(), false);
+                ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(), true);
         UserInterfaceControls album = new LabeledComboBox<>(resourceBundle.getString(FolklorePieceTable.COL_ALBUM),
                                                             collectAlbums(), piece.getAlbum(), piece::setAlbum,
                                                             albumStringConverter, false);
