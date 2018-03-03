@@ -15,9 +15,6 @@ public class Album {
     @Column(name = "title")
     private String title;
 
-    @Convert(converter = DurationConverter.class)
-    private Duration duration;
-
     @Column(name = "production_signature")
     private String productionSignature;
 
@@ -44,14 +41,6 @@ public class Album {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
     }
 
     public String getProductionSignature() {

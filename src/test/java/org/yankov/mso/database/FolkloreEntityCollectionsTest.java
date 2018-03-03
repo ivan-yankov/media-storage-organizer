@@ -33,7 +33,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     private static final String RECORD_DATA_FORMAT = "FLAC";
     private static final Integer TRACK_ORDER = 5;
     private static final Duration PIECE_DURATION = Duration.ofMinutes(3);
-    private static final Duration ALBUM_DURATION = Duration.ofMinutes(70);
 
     private static final String RECORD_FILE = "/record.flac";
 
@@ -141,7 +140,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertEquals(ALBUM_NOTE, actualAlbum.getNote());
         Assert.assertEquals(ALBUM_PRODUCTION_SIGNATURE, actualAlbum.getProductionSignature());
         Assert.assertEquals(ALBUM_TITLE, actualAlbum.getTitle());
-        Assert.assertEquals(ALBUM_DURATION, actualAlbum.getDuration());
 
         Assert.assertTrue(actualEntityCollections.getArtist(KOSTA_KOLEV).isPresent());
         Assert.assertEquals(ACCORDEON, actualEntityCollections.getArtist(KOSTA_KOLEV).get().getInstrument().getName());
@@ -226,7 +224,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private static Album createAlbum() {
         Album album = new Album(ALBUM_COLLECTION_SIGNATURE);
-        album.setDuration(ALBUM_DURATION);
         album.setTitle(ALBUM_TITLE);
         album.setProductionSignature(ALBUM_PRODUCTION_SIGNATURE);
         album.setNote(ALBUM_NOTE);
