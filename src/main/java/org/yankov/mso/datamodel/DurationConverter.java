@@ -21,6 +21,10 @@ public class DurationConverter implements AttributeConverter<Duration, String> {
 
     @Override
     public Duration convertToEntityAttribute(String s) {
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
+
         String[] elements = s.split(SEPARATOR);
 
         int hoursPart = Integer.parseInt(elements[0]);

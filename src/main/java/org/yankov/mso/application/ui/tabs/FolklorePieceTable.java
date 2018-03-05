@@ -48,8 +48,6 @@ public class FolklorePieceTable implements UserInterfaceControls {
     public static final String COL_FILE = CLASS_NAME + "-col-record";
     public static final String COL_NOTE = CLASS_NAME + "-col-note";
 
-    public static final String FILE_LOADED = CLASS_NAME + "-file-loaded";
-
     private static final String DURATION_FORMAT = "%02d:%02d";
 
     private static final CustomFont TABLE_FONT = new CustomFont(FontFamily.SANS_SERIF, FontWeight.NORMAL,
@@ -247,8 +245,6 @@ public class FolklorePieceTable implements UserInterfaceControls {
         for (FolklorePieceProperties item : table.getItems()) {
             FolklorePiece piece = PiecePropertiesUtils.createFolklorePieceFromProperties(item);
             ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + item.getFile().getName());
         }
     }
 

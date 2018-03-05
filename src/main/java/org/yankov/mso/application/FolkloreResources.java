@@ -60,7 +60,6 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceTable.COL_ETHNOGRAPHIC_REGION, ""},
                 {FolklorePieceTable.COL_FILE, ""},
                 {FolklorePieceTable.COL_NOTE, ""},
-                {FolklorePieceTable.FILE_LOADED, ""},
 
                 {InputTabButtons.BTN_ADD, ""},
                 {InputTabButtons.BTN_REMOVE, ""},
@@ -166,6 +165,7 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, ""},
                 {PiecePropertiesUtils.UNABLE_READ_FILE, ""},
+                {PiecePropertiesUtils.FILE_LOADED, ""},
 
                 {SaveProgressMonitor.OPERATION, ""},
                 {SaveProgressMonitor.SOURCES, ""},

@@ -61,7 +61,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceTable.COL_ETHNOGRAPHIC_REGION, "Област"},
                 {FolklorePieceTable.COL_FILE, "Файл"},
                 {FolklorePieceTable.COL_NOTE, "Забележка"},
-                {FolklorePieceTable.FILE_LOADED, "Успешно прочетен файл"},
 
                 {InputTabButtons.BTN_ADD, "Добавяне"},
                 {InputTabButtons.BTN_REMOVE, "Премахване"},
@@ -173,6 +172,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
                 {PiecePropertiesUtils.UNABLE_READ_FILE, "Грешка при четене на файл"},
+                {PiecePropertiesUtils.FILE_LOADED, "Успешно прочетен файл"},
 
                 {SaveProgressMonitor.OPERATION, "Запис в база данни"},
                 {SaveProgressMonitor.SOURCES, "Източници"},

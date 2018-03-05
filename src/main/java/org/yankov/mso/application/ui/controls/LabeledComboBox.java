@@ -32,7 +32,6 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private Popup popup;
     private TextField filterTextField;
     private StringBuilder filterText;
-    private boolean sortItems;
 
     private Comparator<T> itemComparator = (i1, i2) -> {
         String s1 = converter != null ? converter.toString(i1) : i1.toString();
@@ -42,17 +41,16 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
 
     public LabeledComboBox(String labelText, ObservableList<T> items, T value, Consumer<T> newValueConsumer,
                            StringConverter<T> converter, boolean editable, boolean sortItems) {
-        this.sortItems = sortItems;
         this.converter = converter;
+
+        this.originalItems = FXCollections.observableArrayList();
+        this.originalItems.addAll(sortItems ? items.sorted(itemComparator) : items);
 
         this.comboBox = new ComboBox<>();
         this.comboBox.setEditable(editable);
         this.comboBox.setConverter(converter);
-        setItems(items);
+        this.comboBox.setItems(originalItems);
         this.comboBox.setValue(value);
-
-        this.originalItems = FXCollections.observableArrayList();
-        this.originalItems.addAll(items);
 
         this.newValueConsumer = newValueConsumer;
         this.container = new VBox();
@@ -65,6 +63,10 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
 
     public ComboBox<T> getComboBox() {
         return comboBox;
+    }
+
+    public Comparator<T> getItemComparator() {
+        return itemComparator;
     }
 
     @Override
@@ -98,10 +100,6 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         return container;
     }
 
-    public void setItems(ObservableList<T> items) {
-        comboBox.setItems(sortItems ? items.sorted(itemComparator) : items);
-    }
-
     private void filterItems() {
         List<T> filteredItemsList = originalItems.stream().filter(item -> converter.toString(item).toLowerCase()
                                                                                    .contains(filterText.toString()
@@ -113,7 +111,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     }
 
     private void resetFilter() {
-        setItems(originalItems);
+        comboBox.setItems(originalItems);
         filterText.setLength(0);
         popup.hide();
     }
