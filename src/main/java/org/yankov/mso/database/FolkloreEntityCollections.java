@@ -1,11 +1,7 @@
 package org.yankov.mso.database;
 
-import org.yankov.mso.datamodel.EthnographicRegion;
-import org.yankov.mso.datamodel.FolklorePiece;
-import org.yankov.mso.datamodel.Album;
-import org.yankov.mso.datamodel.Artist;
-import org.yankov.mso.datamodel.Instrument;
-import org.yankov.mso.datamodel.Source;
+import org.yankov.mso.application.ui.controls.ProgressMonitor;
+import org.yankov.mso.datamodel.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,8 +14,8 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
 
     private Set<EthnographicRegion> ethnographicRegions;
 
-    public FolkloreEntityCollections() {
-        super();
+    public FolkloreEntityCollections(ProgressMonitor progressMonitor) {
+        super(progressMonitor);
         this.ethnographicRegions = new HashSet<>();
     }
 
@@ -54,8 +50,7 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
         initializeEntityCollection(Source.class, sources,
                                    FolkloreEntityCollectionFactory.createSources(getSourceTypes()));
 
-        initializeEntityCollection(Instrument.class, instruments,
-                                   FolkloreEntityCollectionFactory.createInstruments());
+        initializeEntityCollection(Instrument.class, instruments, FolkloreEntityCollectionFactory.createInstruments());
 
         initializeEntityCollection(Artist.class, artists, Collections.emptySet());
 
@@ -68,13 +63,13 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
     }
 
     @Override
-    public void saveEntityCollections() {
-        saveCollectionToDatabase(getSources());
-        saveCollectionToDatabase(getInstruments());
-        saveCollectionToDatabase(getArtists());
-        saveCollectionToDatabase(getAlbums());
-        saveCollectionToDatabase(getEthnographicRegions());
-        saveCollectionToDatabase(getPieces());
+    public void saveEntityCollectionsOperations() {
+        saveCollectionToDatabase(getSources(), Source.class.getName());
+        saveCollectionToDatabase(getInstruments(), Instrument.class.getName());
+        saveCollectionToDatabase(getArtists(), Artist.class.getName());
+        saveCollectionToDatabase(getAlbums(), Album.class.getName());
+        saveCollectionToDatabase(getEthnographicRegions(), EthnographicRegion.class.getName());
+        saveCollectionToDatabase(getPieces(), FolklorePiece.class.getName());
     }
 
 }

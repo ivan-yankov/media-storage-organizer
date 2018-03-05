@@ -20,7 +20,6 @@ import org.yankov.mso.application.UserInterfaceControls;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -156,7 +155,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         setArtifactProperties(artifact);
         if (addArtifact(artifact)) {
             cleanup();
-            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollections();
+            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollectionsOperations();
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
         } else {
             ApplicationContext.getInstance().getLogger()
@@ -176,7 +175,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         } else {
             setArtifactProperties(selectedArtifact);
             refreshExistingArtifacts();
-            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollections();
+            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollectionsOperations();
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_SAVED));
         }
     }

@@ -2,6 +2,7 @@ package org.yankov.mso.database;
 
 import org.hibernate.query.Query;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.ui.controls.ProgressMonitor;
 import org.yankov.mso.datamodel.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,6 +14,10 @@ import java.util.*;
 import java.util.logging.Level;
 
 public abstract class EntityCollections<T extends Piece> {
+
+    public abstract void initializeEntityCollections();
+
+    public abstract void saveEntityCollectionsOperations();
 
     private static final String PROPERTY_SOURCE_TYPES = "sourceTypes";
     private static final String PROPERTY_SOURCES = "sources";
@@ -30,11 +35,9 @@ public abstract class EntityCollections<T extends Piece> {
     protected final Set<Album> albums;
     protected final List<T> pieces;
 
-    public abstract void initializeEntityCollections();
+    protected final ProgressMonitor progressMonitor;
 
-    public abstract void saveEntityCollections();
-
-    public EntityCollections() {
+    public EntityCollections(ProgressMonitor progressMonitor) {
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.sourceTypes = new HashSet<>();
         this.sources = new HashSet<>();
@@ -42,6 +45,7 @@ public abstract class EntityCollections<T extends Piece> {
         this.artists = new HashSet<>();
         this.albums = new HashSet<>();
         this.pieces = new ArrayList<>();
+        this.progressMonitor = progressMonitor;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -182,6 +186,13 @@ public abstract class EntityCollections<T extends Piece> {
         return result;
     }
 
+    public void saveEntityCollections() {
+        progressMonitor.createControls();
+        progressMonitor.show();
+        saveEntityCollectionsOperations();
+        progressMonitor.close();
+    }
+
     protected final <CollectionType> void initializeEntityCollection(Class entityClass,
                                                                      Collection<CollectionType> collection,
                                                                      Collection<CollectionType> defaultCollection) {
@@ -195,9 +206,19 @@ public abstract class EntityCollections<T extends Piece> {
         }
     }
 
-    protected final void saveCollectionToDatabase(Collection<?> collection) {
+    protected final <CollectionType> void saveCollectionToDatabase(Collection<CollectionType> collection,
+                                                                   String operation) {
+        progressMonitor.setOperation(operation);
+        progressMonitor.setWork(collection.size());
+        progressMonitor.setStep(0);
         ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
-            collection.forEach(session::saveOrUpdate);
+            Iterator<CollectionType> iterator = collection.iterator();
+            int step = 0;
+            while (iterator.hasNext()) {
+                session.saveOrUpdate(iterator.next());
+                step++;
+                progressMonitor.setStep(step);
+            }
             return null;
         }, throwable -> ApplicationContext.getInstance().getLogger()
                                           .log(Level.SEVERE, throwable.getMessage(), throwable));

@@ -47,6 +47,11 @@ public class FolkloreMainForm implements Form {
         stage.show();
     }
 
+    @Override
+    public void close() {
+        stage.close();
+    }
+
     private Pane createConsole() {
         ApplicationConsole.getInstance().layout();
         return ApplicationConsole.getInstance().getContainer();

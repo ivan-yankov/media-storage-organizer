@@ -2,6 +2,7 @@ package org.yankov.mso.database;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.yankov.mso.application.ui.controls.ProgressMonitorAdapter;
 import org.yankov.mso.datamodel.*;
 
 import java.io.FileInputStream;
@@ -41,15 +42,16 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testInitializeEntityCollections() {
-        FolkloreEntityCollections actualEntityCollections = new FolkloreEntityCollections();
+        FolkloreEntityCollections actualEntityCollections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
         actualEntityCollections.initializeEntityCollections();
         assertInitializedEntities(actualEntityCollections);
 
         modifyEntityCollections(actualEntityCollections, true, 1);
-        actualEntityCollections.saveEntityCollections();
+        actualEntityCollections.saveEntityCollectionsOperations();
         actualEntityCollections.initializeEntityCollections();
 
-        FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections();
+        FolkloreEntityCollections expectedEntityCollections = new FolkloreEntityCollections(
+                new ProgressMonitorAdapter());
         expectedEntityCollections.addSourceTypes(FolkloreEntityCollectionFactory.createSourceTypes());
         expectedEntityCollections
                 .addSources(FolkloreEntityCollectionFactory.createSources(expectedEntityCollections.getSourceTypes()));
@@ -62,7 +64,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetSourceType() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
 
         Assert.assertTrue(collections.addSource(new Source(new SourceType("Грамофонна плоча"), "")));
         Assert.assertFalse(collections.addSource(new Source(new SourceType(" грамофонна плоча "), "")));
@@ -77,7 +79,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetInstrument() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
 
         Assert.assertTrue(collections.addInstrument(new Instrument("Флигорна")));
         Assert.assertFalse(collections.addInstrument(new Instrument(" флигорна ")));
@@ -90,7 +92,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetArtist() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
 
         Assert.assertTrue(collections.addArtist(new Artist("Борис Машалов")));
         Assert.assertFalse(collections.addArtist(new Artist(" борис машалов ")));
@@ -103,7 +105,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetDisc() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
 
         Assert.assertTrue(collections.addAlbum(new Album("F1")));
         Assert.assertFalse(collections.addAlbum(new Album(" f1 ")));
@@ -115,7 +117,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetEthnographicRegion() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
 
         Assert.assertTrue(collections.addEthnographicRegion(new EthnographicRegion("Тракийска")));
         Assert.assertFalse(collections.addEthnographicRegion(new EthnographicRegion(" тракийска ")));

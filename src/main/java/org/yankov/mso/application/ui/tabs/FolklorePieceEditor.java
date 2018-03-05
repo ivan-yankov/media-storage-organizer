@@ -160,6 +160,11 @@ public class FolklorePieceEditor implements Form {
         stage.showAndWait();
     }
 
+    @Override
+    public void close() {
+        stage.close();
+    }
+
     private void initializeStage() {
         ApplicationContext.getInstance().getApplicationSettings().getIcon().ifPresent(stage.getIcons()::add);
         stage.initOwner(ApplicationContext.getInstance().getPrimaryStage());

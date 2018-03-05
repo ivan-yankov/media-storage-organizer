@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.controls.SaveProgressMonitor;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
@@ -165,6 +166,14 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, ""},
                 {PiecePropertiesUtils.UNABLE_READ_FILE, ""},
+
+                {SaveProgressMonitor.OPERATION, ""},
+                {SaveProgressMonitor.SOURCES, ""},
+                {SaveProgressMonitor.INSTRUMENTS, ""},
+                {SaveProgressMonitor.ARTISTS, ""},
+                {SaveProgressMonitor.ALBUMS, ""},
+                {SaveProgressMonitor.ETHNOGRAPHIC_REGIONS, ""},
+                {SaveProgressMonitor.PIECES, ""},
                 };
     }
 

@@ -86,7 +86,7 @@ public class EditButtons<T extends PieceProperties> extends Buttons<T> {
             protected Object call() {
                 ApplicationContext context = ApplicationContext.getInstance();
                 context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                context.getFolkloreEntityCollections().saveEntityCollections();
+                context.getFolkloreEntityCollections().saveEntityCollectionsOperations();
                 context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
                 context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
                 return null;

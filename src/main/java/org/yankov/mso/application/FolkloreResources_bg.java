@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.controls.SaveProgressMonitor;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
@@ -172,6 +173,14 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
                 {PiecePropertiesUtils.UNABLE_READ_FILE, "Грешка при четене на файл"},
+
+                {SaveProgressMonitor.OPERATION, "Запис в база данни"},
+                {SaveProgressMonitor.SOURCES, "Източници"},
+                {SaveProgressMonitor.INSTRUMENTS, "Инструменти"},
+                {SaveProgressMonitor.ARTISTS, "Изпълнители"},
+                {SaveProgressMonitor.ALBUMS, "Албуми"},
+                {SaveProgressMonitor.ETHNOGRAPHIC_REGIONS, "Етнографски области"},
+                {SaveProgressMonitor.PIECES, "Записи"},
                 };
     }
 

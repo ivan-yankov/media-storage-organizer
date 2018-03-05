@@ -2,6 +2,7 @@ package org.yankov.mso.database;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.yankov.mso.application.ui.controls.ProgressMonitorAdapter;
 
 public class PerformanceTest extends DatabaseTest {
 
@@ -12,12 +13,12 @@ public class PerformanceTest extends DatabaseTest {
 
     @Test
     public void testPerformance() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections(new ProgressMonitorAdapter());
         collections.initializeEntityCollections();
         FolkloreEntityCollectionsTest.modifyEntityCollections(collections, false, NUMBER_OF_RECORDS);
 
         long start = System.currentTimeMillis();
-        collections.saveEntityCollections();
+        collections.saveEntityCollectionsOperations();
         long end = System.currentTimeMillis();
         double executionTime = (end - start) / MILLISECONDS_IN_SECOND;
         Assert.assertTrue(executionTime < MAX_TIME_WRITING_SEC);
