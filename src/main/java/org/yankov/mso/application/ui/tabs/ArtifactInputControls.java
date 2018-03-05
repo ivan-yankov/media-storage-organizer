@@ -155,7 +155,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         setArtifactProperties(artifact);
         if (addArtifact(artifact)) {
             cleanup();
-            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollectionsOperations();
+            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollections();
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
         } else {
             ApplicationContext.getInstance().getLogger()
@@ -175,7 +175,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         } else {
             setArtifactProperties(selectedArtifact);
             refreshExistingArtifacts();
-            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollectionsOperations();
+            ApplicationContext.getInstance().getFolkloreEntityCollections().saveEntityCollections();
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_SAVED));
         }
     }

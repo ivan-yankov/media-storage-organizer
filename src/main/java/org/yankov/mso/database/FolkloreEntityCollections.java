@@ -1,6 +1,5 @@
 package org.yankov.mso.database;
 
-import org.yankov.mso.application.ui.controls.ProgressMonitor;
 import org.yankov.mso.datamodel.*;
 
 import java.util.Collections;
@@ -14,8 +13,8 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
 
     private Set<EthnographicRegion> ethnographicRegions;
 
-    public FolkloreEntityCollections(ProgressMonitor progressMonitor) {
-        super(progressMonitor);
+    public FolkloreEntityCollections() {
+        super();
         this.ethnographicRegions = new HashSet<>();
     }
 
@@ -63,13 +62,13 @@ public class FolkloreEntityCollections extends EntityCollections<FolklorePiece> 
     }
 
     @Override
-    public void saveEntityCollectionsOperations() {
-        saveCollectionToDatabase(getSources(), Source.class.getName());
-        saveCollectionToDatabase(getInstruments(), Instrument.class.getName());
-        saveCollectionToDatabase(getArtists(), Artist.class.getName());
-        saveCollectionToDatabase(getAlbums(), Album.class.getName());
-        saveCollectionToDatabase(getEthnographicRegions(), EthnographicRegion.class.getName());
-        saveCollectionToDatabase(getPieces(), FolklorePiece.class.getName());
+    public void saveEntityCollections() {
+        saveCollectionToDatabase(getSources());
+        saveCollectionToDatabase(getInstruments());
+        saveCollectionToDatabase(getArtists());
+        saveCollectionToDatabase(getAlbums());
+        saveCollectionToDatabase(getEthnographicRegions());
+        saveCollectionToDatabase(getPieces());
     }
 
 }

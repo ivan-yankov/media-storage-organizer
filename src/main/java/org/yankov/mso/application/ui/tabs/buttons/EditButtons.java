@@ -8,7 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.Commands;
+import org.yankov.mso.datamodel.FolklorePiece;
+import org.yankov.mso.datamodel.FolklorePieceProperties;
 import org.yankov.mso.datamodel.PieceProperties;
+import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import javax.sound.sampled.LineEvent;
 import java.util.ArrayList;
@@ -80,13 +83,15 @@ public class EditButtons<T extends PieceProperties> extends Buttons<T> {
     }
 
     private void handleUploadAction(ActionEvent event) {
+        updateDataModel();
+
         Task task = new Task() {
 
             @Override
             protected Object call() {
                 ApplicationContext context = ApplicationContext.getInstance();
                 context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                context.getFolkloreEntityCollections().saveEntityCollectionsOperations();
+                context.getFolkloreEntityCollections().saveEntityCollections();
                 context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
                 context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
                 return null;
@@ -95,6 +100,16 @@ public class EditButtons<T extends PieceProperties> extends Buttons<T> {
         };
 
         new Thread(task).start();
+
+        table.getItems().clear();
+    }
+
+    private void updateDataModel() {
+        for (T item : table.getItems()) {
+            FolklorePiece piece = PiecePropertiesUtils
+                    .createFolklorePieceFromProperties((FolklorePieceProperties) item);
+            ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
+        }
     }
 
 }

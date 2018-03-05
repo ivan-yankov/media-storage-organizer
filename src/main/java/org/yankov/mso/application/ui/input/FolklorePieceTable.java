@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui.tabs;
+package org.yankov.mso.application.ui.input;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -13,14 +13,18 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.Commands;
 import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.command.Commands;
+import org.yankov.mso.application.ui.datamodel.FolklorePieceProperties;
 import org.yankov.mso.application.ui.font.CustomFont;
 import org.yankov.mso.application.ui.font.FontFamily;
 import org.yankov.mso.application.ui.font.FontStyle;
 import org.yankov.mso.application.ui.font.FontWeight;
 import org.yankov.mso.application.utils.FxUtils;
-import org.yankov.mso.datamodel.*;
+import org.yankov.mso.datamodel.folklore.EthnographicRegion;
+import org.yankov.mso.datamodel.generic.Album;
+import org.yankov.mso.datamodel.generic.Artist;
+import org.yankov.mso.datamodel.generic.Source;
 
 import java.io.File;
 import java.time.Duration;

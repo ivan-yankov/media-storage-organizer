@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.yankov.mso.application.ui.FolkloreMainForm;
-import org.yankov.mso.application.ui.controls.SaveProgressMonitor;
 import org.yankov.mso.database.FolkloreEntityCollections;
 
 import java.util.logging.Level;
@@ -35,8 +34,7 @@ public class MediaStorageOrganizer extends Application {
                 System.exit(1);
             }
 
-            FolkloreEntityCollections folkloreEntityCollections = new FolkloreEntityCollections(
-                    new SaveProgressMonitor());
+            FolkloreEntityCollections folkloreEntityCollections = new FolkloreEntityCollections();
             folkloreEntityCollections.initializeEntityCollections();
             ApplicationContext.getInstance().setFolkloreEntityCollections(folkloreEntityCollections);
 
