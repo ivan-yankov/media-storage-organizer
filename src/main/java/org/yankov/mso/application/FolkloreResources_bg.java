@@ -3,7 +3,7 @@ package org.yankov.mso.application;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.tabs.*;
-import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
+import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
@@ -71,10 +71,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {InputTabButtons.FLAC_FILTER_EXT, "*.flac"},
                 {InputTabButtons.BTN_UPLOAD, "Запис в базата данни"},
 
-                {EditButtons.BTN_EDIT_PROPERTIES, "Редактиране на запис"},
-                {EditButtons.BTN_PLAYER_RUN, "Възпроизвеждане"},
-                {EditButtons.BTN_PLAYER_STOP, "Стоп"},
-                {EditButtons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
+                {Buttons.BTN_EDIT_PROPERTIES, "Редактиране на запис"},
+                {Buttons.BTN_PLAYER_RUN, "Възпроизвеждане"},
+                {Buttons.BTN_PLAYER_STOP, "Стоп"},
+                {Buttons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {

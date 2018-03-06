@@ -3,7 +3,7 @@ package org.yankov.mso.application;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.tabs.*;
-import org.yankov.mso.application.ui.tabs.buttons.EditButtons;
+import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
@@ -70,10 +70,10 @@ public class FolkloreResources extends ListResourceBundle {
                 {InputTabButtons.FLAC_FILTER_EXT, ""},
                 {InputTabButtons.BTN_UPLOAD, ""},
 
-                {EditButtons.BTN_EDIT_PROPERTIES, ""},
-                {EditButtons.BTN_PLAYER_RUN, ""},
-                {EditButtons.BTN_PLAYER_STOP, ""},
-                {EditButtons.UPLOAD_COMPLETED, ""},
+                {Buttons.BTN_EDIT_PROPERTIES, ""},
+                {Buttons.BTN_PLAYER_RUN, ""},
+                {Buttons.BTN_PLAYER_STOP, ""},
+                {Buttons.UPLOAD_COMPLETED, ""},
 
                 {FlacProcessor.FILE_NOT_FOUND, ""},
                 {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},
