@@ -5,6 +5,7 @@ import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
+import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
@@ -82,6 +83,10 @@ public class FolkloreResources_bg extends ListResourceBundle {
                         "Не може да бъде определена продължителността на файл с аудио запис"
                 },
                 {FlacProcessor.FLAC_ERROR, "Грешка при работа с FLAC файл"},
+                {FlacProcessor.UNABLE_READ_FILE, "Грешка при четене на файл"},
+                {FlacProcessor.FILE_LOADED, "Успешно прочетен файл"},
+
+                {FlacPlayer.FLAC_PLAY_ERROR, "Грешка при възпроизвеждане на FLAC файл"},
 
                 {ApplicationConsoleLogHandler.ERROR, "Грешка"},
                 {ApplicationConsoleLogHandler.WARNING, "Внимание"},
@@ -170,8 +175,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, "Завършва с ..."},
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
-                {PiecePropertiesUtils.UNABLE_READ_FILE, "Грешка при четене на файл"},
-                {PiecePropertiesUtils.FILE_LOADED, "Успешно прочетен файл"},
                 };
     }
 

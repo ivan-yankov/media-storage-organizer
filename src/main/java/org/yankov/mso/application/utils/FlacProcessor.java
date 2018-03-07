@@ -7,70 +7,34 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
-import org.kc7bfi.jflac.FLACDecoder;
-import org.kc7bfi.jflac.PCMProcessor;
-import org.kc7bfi.jflac.metadata.StreamInfo;
-import org.kc7bfi.jflac.util.ByteData;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.datamodel.Record;
 
-import javax.sound.sampled.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-public class FlacProcessor implements PCMProcessor {
+public class FlacProcessor {
 
     private static final String CLASS_NAME = FlacProcessor.class.getName();
+
+    private static final String FLAC = "FLAC";
 
     public static final String FILE_NOT_FOUND = CLASS_NAME + "-file-not-found";
     public static final String CANNOT_DETECT_AUDIO_FILE_DURATION = CLASS_NAME + "-cannot-detect-audio-file-duration";
     public static final String FLAC_ERROR = CLASS_NAME + "-flac-error";
+    public static final String UNABLE_READ_FILE = CLASS_NAME + "-unable-read-file";
+    public static final String FILE_LOADED = CLASS_NAME + "-file-loaded";
 
-    private File file;
-    private SourceDataLine line;
-    private List<LineListener> listeners;
-
+    private final File file;
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
-    public FlacProcessor() {
-        this.listeners = new ArrayList<>();
-    }
-
-    public void setFile(File file) {
+    public FlacProcessor(File file) {
         this.file = file;
-    }
-
-    public void addListener(LineListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(LineListener listener) {
-        listeners.remove(listener);
-    }
-
-    @Override
-    public void processStreamInfo(StreamInfo streamInfo) {
-        try {
-            AudioFormat audioFormat = streamInfo.getAudioFormat();
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat, AudioSystem.NOT_SPECIFIED);
-            line = (SourceDataLine) AudioSystem.getLine(info);
-            listeners.forEach(line::addLineListener);
-            line.open(audioFormat, AudioSystem.NOT_SPECIFIED);
-            line.start();
-        } catch (LineUnavailableException e) {
-            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, resourceBundle.getString(FLAC_ERROR), e);
-        }
-    }
-
-    @Override
-    public void processPCM(ByteData byteData) {
-        line.write(byteData.getData(), 0, byteData.getLen());
     }
 
     public Optional<Duration> detectDuration() {
@@ -95,38 +59,23 @@ public class FlacProcessor implements PCMProcessor {
         }
     }
 
-    public void play() {
+    public Optional<Record> loadRecordFromFile() {
         if (file == null) {
-            return;
+            return Optional.empty();
         }
 
-        try {
-            FileInputStream is = new FileInputStream(file);
-            FLACDecoder decoder = new FLACDecoder(is);
-            decoder.addPCMProcessor(this);
-            decoder.decode();
-            close();
+        try (FileInputStream in = new FileInputStream(file)) {
+            Record record = new Record();
+            record.setDataFormat(FLAC);
+            record.setBytes(in.readAllBytes());
+            ApplicationContext.getInstance().getLogger()
+                              .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + file.getName());
+            return Optional.of(record);
         } catch (IOException e) {
-            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, resourceBundle.getString(FILE_NOT_FOUND), e);
-        }
-    }
-
-    public void stop() {
-        if (line != null) {
-            line.stop();
-            close();
-        }
-    }
-
-    public boolean isPlaying() {
-        return line != null && line.isActive();
-    }
-
-    private void close() {
-        if (line != null) {
-            line.drain();
-            line.close();
-            listeners.clear();
+            ApplicationContext.getInstance().getLogger().log(Level.SEVERE,
+                                                             resourceBundle.getString(UNABLE_READ_FILE) + ": " + file
+                                                                     .getAbsolutePath());
+            return Optional.empty();
         }
     }
 

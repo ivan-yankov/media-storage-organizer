@@ -13,12 +13,9 @@ import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.Commands;
 import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.application.utils.FlacProcessor;
+import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FxUtils;
-import org.yankov.mso.datamodel.FolklorePiece;
-import org.yankov.mso.datamodel.FolklorePieceProperties;
-import org.yankov.mso.datamodel.PieceProperties;
-import org.yankov.mso.datamodel.PiecePropertiesUtils;
+import org.yankov.mso.datamodel.*;
 
 import javax.sound.sampled.LineEvent;
 import java.io.File;
@@ -52,7 +49,6 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
     private final TableView<T> table;
-    private final FlacProcessor flacProcessor;
 
     private Supplier<T> itemCreator;
     private UnaryOperator<T> itemCopier;
@@ -65,7 +61,6 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
     public Buttons(TableView<T> table) {
         this.table = table;
         this.container = new VBox();
-        this.flacProcessor = new FlacProcessor();
         this.allButtons = createAllButtons();
     }
 
@@ -146,16 +141,18 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
     }
 
     private void handlePlayAction(ActionEvent event) {
-        if (table.getSelectionModel().getSelectedIndex() < 0) {
+        if (table.getSelectionModel().getSelectedIndex() < 0 || table.getSelectionModel().getSelectedItem()
+                                                                     .getRecord() == null) {
             return;
         }
 
-        if (flacProcessor.isPlaying()) {
-            flacProcessor.stop();
+        FlacPlayer flacPlayer = FlacPlayer.getInstance();
+        if (flacPlayer.isPlaying()) {
+            flacPlayer.stop();
         } else {
-            flacProcessor.addListener(e -> Platform.runLater(() -> updateButtonText((Button) event.getSource(), e)));
-            flacProcessor.setFile(table.getSelectionModel().getSelectedItem().getFile());
-            Thread thread = new Thread(flacProcessor::play);
+            flacPlayer.addListener(e -> Platform.runLater(() -> updateButtonText((Button) event.getSource(), e)));
+            flacPlayer.setBytes(table.getSelectionModel().getSelectedItem().getRecord().getBytes());
+            Thread thread = new Thread(flacPlayer::play);
             thread.start();
         }
     }

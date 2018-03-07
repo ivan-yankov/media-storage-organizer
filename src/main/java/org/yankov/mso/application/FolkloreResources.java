@@ -5,6 +5,7 @@ import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
+import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
@@ -78,6 +79,10 @@ public class FolkloreResources extends ListResourceBundle {
                 {FlacProcessor.FILE_NOT_FOUND, ""},
                 {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},
                 {FlacProcessor.FLAC_ERROR, ""},
+                {FlacProcessor.UNABLE_READ_FILE, ""},
+                {FlacProcessor.FILE_LOADED, ""},
+
+                {FlacPlayer.FLAC_PLAY_ERROR, ""},
 
                 {ApplicationConsoleLogHandler.ERROR, ""},
                 {ApplicationConsoleLogHandler.WARNING, ""},
@@ -163,8 +168,6 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, ""},
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, ""},
-                {PiecePropertiesUtils.UNABLE_READ_FILE, ""},
-                {PiecePropertiesUtils.FILE_LOADED, ""},
                 };
     }
 

@@ -14,11 +14,7 @@ public class PiecePropertiesUtils {
 
     private static final String CLASS_NAME = PiecePropertiesUtils.class.getName();
 
-    private static final String FLAC = "FLAC";
-
     public static final String UNDEFINED_ALBUM = CLASS_NAME + "-undefined-album";
-    public static final String UNABLE_READ_FILE = CLASS_NAME + "-unable-read-file";
-    public static final String FILE_LOADED = CLASS_NAME + "-file-loaded";
 
     private static final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -74,26 +70,6 @@ public class PiecePropertiesUtils {
         return dest;
     }
 
-    private static Optional<Record> loadRecordFromFile(File file) {
-        if (file == null) {
-            return Optional.empty();
-        }
-
-        try (FileInputStream in = new FileInputStream(file)) {
-            Record record = new Record();
-            record.setDataFormat(FLAC);
-            record.setBytes(in.readAllBytes());
-            ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + file.getName());
-            return Optional.of(record);
-        } catch (IOException e) {
-            ApplicationContext.getInstance().getLogger().log(Level.SEVERE,
-                                                             resourceBundle.getString(UNABLE_READ_FILE) + ": " + file
-                                                                     .getAbsolutePath());
-            return Optional.empty();
-        }
-    }
-
     private static void setPropertiesToPiece(PieceProperties properties, Piece piece) {
         piece.setNote(properties.getNote());
         piece.setSource(properties.getSource());
@@ -107,9 +83,7 @@ public class PiecePropertiesUtils {
         piece.setTitle(properties.getTitle());
         piece.setAlbumTrackOrder(properties.getAlbumTrackOrder());
         piece.setDuration(properties.getDuration());
-
-        Optional<Record> record = loadRecordFromFile(properties.getFile());
-        record.ifPresent(piece::setRecord);
+        piece.setRecord(properties.getRecord());
     }
 
     private static void setPieceToProperties(Piece piece, PieceProperties properties) {
@@ -125,6 +99,7 @@ public class PiecePropertiesUtils {
         properties.setTitle(piece.getTitle());
         properties.setAlbumTrackOrder(piece.getAlbumTrackOrder());
         properties.setDuration(piece.getDuration());
+        properties.setRecord(piece.getRecord());
     }
 
     private static void copyProperties(PieceProperties source, PieceProperties dest) {
@@ -141,6 +116,7 @@ public class PiecePropertiesUtils {
         dest.setNote(source.getNote());
         dest.setSource(source.getSource());
         dest.setFile(source.getFile());
+        dest.setRecord(source.getRecord());
     }
 
 }

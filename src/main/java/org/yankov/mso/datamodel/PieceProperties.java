@@ -14,13 +14,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class PieceProperties implements PropertyChangeListener {
-
-    private static final String CLASS_NAME = PieceProperties.class.getName();
 
     private static final String PROPERTY_NAME_FILE = "file";
 
@@ -37,6 +33,7 @@ public class PieceProperties implements PropertyChangeListener {
     private final SimpleStringProperty note;
     private final SimpleObjectProperty<Source> source;
     private final SimpleObjectProperty<File> file;
+    private final SimpleObjectProperty<Record> record;
 
     private final PropertyChangeSupport propertyChangeSupport;
 
@@ -54,6 +51,7 @@ public class PieceProperties implements PropertyChangeListener {
         this.note = new SimpleStringProperty();
         this.source = new SimpleObjectProperty<>();
         this.file = new SimpleObjectProperty<>();
+        this.record = new SimpleObjectProperty<>();
 
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.propertyChangeSupport.addPropertyChangeListener(this);
@@ -165,11 +163,20 @@ public class PieceProperties implements PropertyChangeListener {
         propertyChangeSupport.firePropertyChange(PROPERTY_NAME_FILE, oldValue, file);
     }
 
+    public Record getRecord() {
+        return record.get();
+    }
+
+    public void setRecord(Record record) {
+        this.record.set(record);
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        FlacProcessor flacProcessor = new FlacProcessor();
-        flacProcessor.setFile(file.get());
+        FlacProcessor flacProcessor = new FlacProcessor(file.get());
         flacProcessor.detectDuration().ifPresent(this::setDuration);
+        Optional<Record> record = flacProcessor.loadRecordFromFile();
+        record.ifPresent(this::setRecord);
     }
 
 }
