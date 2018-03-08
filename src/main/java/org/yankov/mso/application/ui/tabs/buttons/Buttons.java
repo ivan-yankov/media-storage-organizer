@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public abstract class Buttons<T extends PieceProperties> implements UserInterfaceControls {
 
@@ -184,14 +185,20 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
 
         new Thread(task).start();
 
-        table.getItems().clear();
+        clearTable();
     }
 
     private void updateDataModel() {
         for (T item : table.getItems()) {
-            FolklorePiece piece = PiecePropertiesUtils
-                    .createFolklorePieceFromProperties((FolklorePieceProperties) item);
-            ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
+            if (item.getId() == null) {
+                FolklorePiece piece = PiecePropertiesUtils
+                        .createFolklorePieceFromProperties((FolklorePieceProperties) item);
+                ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
+            } else {
+                Stream<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces().stream();
+                Optional<FolklorePiece> piece = pieces.filter(p -> p.getId().equals(item.getId())).findFirst();
+                piece.ifPresent(p -> PiecePropertiesUtils.setPropertiesToPiece(item, p));
+            }
         }
     }
 
@@ -214,7 +221,7 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
     }
 
     private void handleBtnClearAction(ActionEvent event) {
-        table.getItems().clear();
+        clearTable();
     }
 
     private void handleBtnLoadAlbumTracksAction(ActionEvent event) {
@@ -227,6 +234,13 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
                 table.getItems().add(PiecePropertiesUtils.createPropertiesFromFile(itemCreator, file));
             }
         }
+    }
+
+    private void clearTable() {
+        if (FlacPlayer.getInstance().isPlaying()) {
+            FlacPlayer.getInstance().stop();
+        }
+        table.getItems().clear();
     }
 
 }

@@ -70,7 +70,7 @@ public class PiecePropertiesUtils {
         return dest;
     }
 
-    private static void setPropertiesToPiece(PieceProperties properties, Piece piece) {
+    public static void setPropertiesToPiece(PieceProperties properties, Piece piece) {
         piece.setNote(properties.getNote());
         piece.setSource(properties.getSource());
         piece.setSoloist(properties.getSoloist());
@@ -87,6 +87,7 @@ public class PiecePropertiesUtils {
     }
 
     private static void setPieceToProperties(Piece piece, PieceProperties properties) {
+        properties.setId(piece.getId());
         properties.setNote(piece.getNote());
         properties.setSource(piece.getSource());
         properties.setSoloist(piece.getSoloist());
@@ -103,6 +104,7 @@ public class PiecePropertiesUtils {
     }
 
     private static void copyProperties(PieceProperties source, PieceProperties dest) {
+        dest.setId(source.getId());
         dest.setAlbum(source.getAlbum());
         dest.setAlbumTrackOrder(source.getAlbumTrackOrder());
         dest.setTitle(source.getTitle());
