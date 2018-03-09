@@ -4,7 +4,6 @@ import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
-import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
@@ -61,20 +60,19 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolklorePieceTable.COL_FILE, ""},
                 {FolklorePieceTable.COL_NOTE, ""},
 
-                {InputTabButtons.BTN_ADD, ""},
-                {InputTabButtons.BTN_REMOVE, ""},
-                {InputTabButtons.BTN_COPY, ""},
-                {InputTabButtons.BTN_CLEAR, ""},
-                {InputTabButtons.BTN_LOAD_ALBUM_TRACKS, ""},
-                {InputTabButtons.SELECT_AUDIO_FILES, ""},
-                {InputTabButtons.FLAC_FILTER_NAME, ""},
-                {InputTabButtons.FLAC_FILTER_EXT, ""},
-                {InputTabButtons.BTN_UPLOAD, ""},
-
+                {Buttons.BTN_ADD, ""},
+                {Buttons.BTN_REMOVE, ""},
+                {Buttons.BTN_COPY, ""},
+                {Buttons.BTN_CLEAR, ""},
+                {Buttons.BTN_LOAD_ALBUM_TRACKS, ""},
                 {Buttons.BTN_EDIT_PROPERTIES, ""},
                 {Buttons.BTN_PLAYER_RUN, ""},
                 {Buttons.BTN_PLAYER_STOP, ""},
+                {Buttons.BTN_UPLOAD, ""},
                 {Buttons.UPLOAD_COMPLETED, ""},
+                {Buttons.SELECT_AUDIO_FILES, ""},
+                {Buttons.FLAC_FILTER_NAME, ""},
+                {Buttons.FLAC_FILTER_EXT, ""},
 
                 {FlacProcessor.FILE_NOT_FOUND, ""},
                 {FlacProcessor.CANNOT_DETECT_AUDIO_FILE_DURATION, ""},

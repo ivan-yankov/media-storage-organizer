@@ -4,7 +4,6 @@ import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
-import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FlacProcessor;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
@@ -62,20 +61,19 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolklorePieceTable.COL_FILE, "Файл"},
                 {FolklorePieceTable.COL_NOTE, "Забележка"},
 
-                {InputTabButtons.BTN_ADD, "Добавяне"},
-                {InputTabButtons.BTN_REMOVE, "Премахване"},
-                {InputTabButtons.BTN_COPY, "Копиране"},
-                {InputTabButtons.BTN_CLEAR, "Изчистване"},
-                {InputTabButtons.BTN_LOAD_ALBUM_TRACKS, "Зареждане на файлове"},
-                {InputTabButtons.SELECT_AUDIO_FILES, "Избор на файлове"},
-                {InputTabButtons.FLAC_FILTER_NAME, "FLAC файлове"},
-                {InputTabButtons.FLAC_FILTER_EXT, "*.flac"},
-                {InputTabButtons.BTN_UPLOAD, "Запис в базата данни"},
-
+                {Buttons.BTN_ADD, "Добавяне"},
+                {Buttons.BTN_REMOVE, "Премахване"},
+                {Buttons.BTN_COPY, "Копиране"},
+                {Buttons.BTN_CLEAR, "Изчистване"},
+                {Buttons.BTN_LOAD_ALBUM_TRACKS, "Зареждане на файлове"},
                 {Buttons.BTN_EDIT_PROPERTIES, "Редактиране на запис"},
                 {Buttons.BTN_PLAYER_RUN, "Възпроизвеждане"},
                 {Buttons.BTN_PLAYER_STOP, "Стоп"},
+                {Buttons.BTN_UPLOAD, "Запис в базата данни"},
                 {Buttons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
+                {Buttons.SELECT_AUDIO_FILES, "Избор на файлове"},
+                {Buttons.FLAC_FILTER_NAME, "FLAC файлове"},
+                {Buttons.FLAC_FILTER_EXT, "*.flac"},
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {

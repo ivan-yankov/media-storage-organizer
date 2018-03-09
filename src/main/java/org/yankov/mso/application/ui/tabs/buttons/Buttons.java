@@ -11,66 +11,93 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.Commands;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FxUtils;
-import org.yankov.mso.datamodel.*;
+import org.yankov.mso.database.EntityCollections;
+import org.yankov.mso.datamodel.Piece;
+import org.yankov.mso.datamodel.PieceProperties;
+import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import javax.sound.sampled.LineEvent;
 import java.io.File;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
-public abstract class Buttons<T extends PieceProperties> implements UserInterfaceControls {
-
-    protected abstract List<Button> selectButtons();
+public class Buttons<PropertiesType extends PieceProperties, EntityType extends Piece>
+        implements UserInterfaceControls {
 
     private static final String CLASS_NAME = Buttons.class.getName();
 
-    public static final String BTN_EDIT_PROPERTIES = CLASS_NAME + "-btn-edit-properties";
-    public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
-    public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
-    public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
-    public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String BTN_ADD = CLASS_NAME + "-btn-add";
     public static final String BTN_REMOVE = CLASS_NAME + "-btn-remove";
     public static final String BTN_COPY = CLASS_NAME + "-btn-copy";
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
     public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
+    public static final String BTN_EDIT_PROPERTIES = CLASS_NAME + "-btn-edit-properties";
+    public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
+    public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
+    public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
 
+    public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
     public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
     public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
 
-    protected final Map<String, Button> allButtons;
+    private ResourceBundle resourceBundle;
+    private Consumer<TableView<PropertiesType>> editPieceCommand;
+    private EntityCollections<EntityType> entityCollections;
+    private Function<PropertiesType, EntityType> entityCreator;
+    private Function<Map<String, Button>, List<Button>> selectButtons;
+    private TableView<PropertiesType> table;
+    private Supplier<PropertiesType> propertiesCreator;
+    private UnaryOperator<PropertiesType> propertiesCopier;
 
-    private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
-    private final TableView<T> table;
-
-    private Supplier<T> itemCreator;
-    private UnaryOperator<T> itemCopier;
     private VBox container;
 
     private static final Double SPACE = 25.0;
     private static final Insets INSETS = new Insets(25.0);
     private static final Double MIN_WIDTH = 250.0;
 
-    public Buttons(TableView<T> table) {
-        this.table = table;
+    public Buttons() {
         this.container = new VBox();
-        this.allButtons = createAllButtons();
     }
 
-    public void setItemCreator(Supplier<T> itemCreator) {
-        this.itemCreator = itemCreator;
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
-    public void setItemCopier(UnaryOperator<T> itemCopier) {
-        this.itemCopier = itemCopier;
+    public void setEditPieceCommand(Consumer<TableView<PropertiesType>> editPieceCommand) {
+        this.editPieceCommand = editPieceCommand;
+    }
+
+    public void setEntityCollections(EntityCollections<EntityType> entityCollections) {
+        this.entityCollections = entityCollections;
+    }
+
+    public void setEntityCreator(Function<PropertiesType, EntityType> entityCreator) {
+        this.entityCreator = entityCreator;
+    }
+
+    public void setSelectButtons(Function<Map<String, Button>, List<Button>> selectButtons) {
+        this.selectButtons = selectButtons;
+    }
+
+    public void setTable(TableView<PropertiesType> table) {
+        this.table = table;
+    }
+
+    public void setPropertiesCreator(Supplier<PropertiesType> propertiesCreator) {
+        this.propertiesCreator = propertiesCreator;
+    }
+
+    public void setPropertiesCopier(UnaryOperator<PropertiesType> propertiesCopier) {
+        this.propertiesCopier = propertiesCopier;
     }
 
     @Override
@@ -78,7 +105,7 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
         container.setPadding(INSETS);
         container.setSpacing(SPACE);
         container.setMinWidth(MIN_WIDTH);
-        container.getChildren().addAll(selectButtons());
+        container.getChildren().addAll(selectButtons.apply(createAllButtons()));
     }
 
     @Override
@@ -92,8 +119,7 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
         Button btnEdit = new Button();
         btnEdit.setText(resourceBundle.getString(BTN_EDIT_PROPERTIES));
         btnEdit.setMaxWidth(Double.MAX_VALUE);
-        btnEdit.setOnAction(
-                event -> ApplicationContext.getInstance().executeCommand(Commands.OPEN_FOLKLORE_PIECE_EDITOR, table));
+        btnEdit.setOnAction(event -> editPieceCommand.accept(table));
         buttons.put(BTN_EDIT_PROPERTIES, btnEdit);
 
         Button btnPlay = new Button();
@@ -175,7 +201,7 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
             protected Object call() {
                 ApplicationContext context = ApplicationContext.getInstance();
                 context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                context.getFolkloreEntityCollections().saveEntityCollections();
+                entityCollections.saveEntityCollections();
                 context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
                 context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
                 return null;
@@ -189,21 +215,20 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
     }
 
     private void updateDataModel() {
-        for (T item : table.getItems()) {
+        for (PropertiesType item : table.getItems()) {
             if (item.getId() == null) {
-                FolklorePiece piece = PiecePropertiesUtils
-                        .createFolklorePieceFromProperties((FolklorePieceProperties) item);
-                ApplicationContext.getInstance().getFolkloreEntityCollections().addPiece(piece);
+                EntityType piece = entityCreator.apply(item);
+                entityCollections.addPiece(piece);
             } else {
-                Stream<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces().stream();
-                Optional<FolklorePiece> piece = pieces.filter(p -> p.getId().equals(item.getId())).findFirst();
+                Stream<EntityType> pieces = entityCollections.getPieces().stream();
+                Optional<EntityType> piece = pieces.filter(p -> p.getId().equals(item.getId())).findFirst();
                 piece.ifPresent(p -> PiecePropertiesUtils.setPropertiesToPiece(item, p));
             }
         }
     }
 
     private void handleBtnAddAction(ActionEvent event) {
-        table.getItems().add(itemCreator.get());
+        table.getItems().add(propertiesCreator.get());
     }
 
     private void handleBtnRemoveAction(ActionEvent event) {
@@ -216,7 +241,7 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
     private void handleBtnCopyAction(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            table.getItems().add(itemCopier.apply(table.getItems().get(selectedIndex)));
+            table.getItems().add(propertiesCopier.apply(table.getItems().get(selectedIndex)));
         }
     }
 
@@ -231,7 +256,7 @@ public abstract class Buttons<T extends PieceProperties> implements UserInterfac
 
         if (files.isPresent()) {
             for (File file : files.get()) {
-                table.getItems().add(PiecePropertiesUtils.createPropertiesFromFile(itemCreator, file));
+                table.getItems().add(PiecePropertiesUtils.createPropertiesFromFile(propertiesCreator, file));
             }
         }
     }

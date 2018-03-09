@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.application.ui.tabs.buttons.InputTabButtons;
+import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.utils.FxUtils;
 
 import java.io.File;
@@ -67,10 +67,10 @@ public class FileSelectionField implements UserInterfaceControls {
 
     private void handleButton(ActionEvent event) {
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
-                resourceBundle.getString(InputTabButtons.FLAC_FILTER_NAME),
-                resourceBundle.getString(InputTabButtons.FLAC_FILTER_EXT));
+                resourceBundle.getString(Buttons.FLAC_FILTER_NAME),
+                resourceBundle.getString(Buttons.FLAC_FILTER_EXT));
         Optional<List<File>> selection = FxUtils
-                .selectFiles(resourceBundle.getString(InputTabButtons.SELECT_AUDIO_FILES), true, filter);
+                .selectFiles(resourceBundle.getString(Buttons.SELECT_AUDIO_FILES), true, filter);
 
         selection.ifPresent(files -> {
             newValueConsumer.accept(files.get(0));

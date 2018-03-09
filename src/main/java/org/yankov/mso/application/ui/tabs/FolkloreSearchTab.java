@@ -16,7 +16,8 @@ import org.yankov.mso.application.ui.controls.LabeledComboBox;
 import org.yankov.mso.application.ui.controls.LabeledTextField;
 import org.yankov.mso.application.ui.converters.OperatorStringConverter;
 import org.yankov.mso.application.ui.converters.VariableStringConverter;
-import org.yankov.mso.application.ui.tabs.buttons.SearchTabButtons;
+import org.yankov.mso.application.ui.tabs.buttons.Buttons;
+import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
 import org.yankov.mso.datamodel.*;
 
 import java.util.List;
@@ -105,9 +106,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private Pane createButtons() {
-        SearchTabButtons<FolklorePieceProperties> buttons = new SearchTabButtons<>(table.getTableView());
-        buttons.setItemCreator(FolklorePieceProperties::new);
-        buttons.setItemCopier(PiecePropertiesUtils::copyFolklorePieceProperties);
+        Buttons<FolklorePieceProperties, FolklorePiece> buttons = ButtonsFactory
+                .createFolkloreSearchTabButtons(table.getTableView());
         buttons.layout();
         return buttons.getContainer();
     }
