@@ -8,21 +8,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.utils.FxUtils;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 public class FileSelectionField implements UserInterfaceControls {
-
-    private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     private String labelText;
     private Label label;
@@ -66,12 +60,7 @@ public class FileSelectionField implements UserInterfaceControls {
     }
 
     private void handleButton(ActionEvent event) {
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
-                resourceBundle.getString(Buttons.FLAC_FILTER_NAME),
-                resourceBundle.getString(Buttons.FLAC_FILTER_EXT));
-        Optional<List<File>> selection = FxUtils
-                .selectFiles(resourceBundle.getString(Buttons.SELECT_AUDIO_FILES), true, filter);
-
+        Optional<List<File>> selection = FxUtils.selectFlacFiles(true);
         selection.ifPresent(files -> {
             newValueConsumer.accept(files.get(0));
             textField.setText(files.get(0).getName());

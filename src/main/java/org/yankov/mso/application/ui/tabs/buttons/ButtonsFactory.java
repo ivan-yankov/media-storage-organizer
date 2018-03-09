@@ -43,6 +43,7 @@ public class ButtonsFactory {
             selectedButtons.add(allButtons.get(Buttons.BTN_EDIT_PROPERTIES));
             selectedButtons.add(allButtons.get(Buttons.BTN_PLAYER_RUN));
             selectedButtons.add(allButtons.get(Buttons.BTN_UPLOAD));
+            selectedButtons.add(allButtons.get(Buttons.BTN_EXPORT));
             return selectedButtons;
         });
 

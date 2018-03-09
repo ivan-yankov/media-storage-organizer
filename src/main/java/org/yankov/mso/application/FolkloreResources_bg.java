@@ -6,6 +6,7 @@ import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FlacProcessor;
+import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.database.FolkloreEntityCollectionFactory;
 import org.yankov.mso.datamodel.FolkloreSearchFactory;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
@@ -70,10 +71,14 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {Buttons.BTN_PLAYER_RUN, "Възпроизвеждане"},
                 {Buttons.BTN_PLAYER_STOP, "Стоп"},
                 {Buttons.BTN_UPLOAD, "Запис в базата данни"},
+                {Buttons.BTN_EXPORT, "Експорт"},
                 {Buttons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
-                {Buttons.SELECT_AUDIO_FILES, "Избор на файлове"},
-                {Buttons.FLAC_FILTER_NAME, "FLAC файлове"},
-                {Buttons.FLAC_FILTER_EXT, "*.flac"},
+                {Buttons.UNABLE_WRITE_FILE, "Проблем при запис на файл"},
+
+                {FxUtils.SELECT_AUDIO_FILES, "Избор на файлове"},
+                {FxUtils.SELECT_EXPORT_DIRECTORY, "Избор на папка за експорт"},
+                {FxUtils.FLAC_FILTER_NAME, "FLAC файлове"},
+                {FxUtils.FLAC_FILTER_EXT, "*.flac"},
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {

@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacPlayer;
@@ -21,6 +20,8 @@ import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import javax.sound.sampled.LineEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,11 +44,9 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
     public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
     public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
-
+    public static final String BTN_EXPORT = CLASS_NAME + "-btn-export";
     public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
-    public static final String SELECT_AUDIO_FILES = CLASS_NAME + "-select-audio-files";
-    public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
-    public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
+    public static final String UNABLE_WRITE_FILE = CLASS_NAME + "-unable-write-file";
 
     private ResourceBundle resourceBundle;
     private Consumer<TableView<PropertiesType>> editPieceCommand;
@@ -164,6 +163,12 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracksAction);
         buttons.put(BTN_LOAD_ALBUM_TRACKS, btnLoadAlbumTracks);
 
+        Button btnExport = new Button();
+        btnExport.setText(resourceBundle.getString(BTN_EXPORT));
+        btnExport.setMaxWidth(Double.MAX_VALUE);
+        btnExport.setOnAction(this::handleBtnExportAction);
+        buttons.put(BTN_EXPORT, btnExport);
+
         return buttons;
     }
 
@@ -250,10 +255,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     }
 
     private void handleBtnLoadAlbumTracksAction(ActionEvent event) {
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(resourceBundle.getString(FLAC_FILTER_NAME),
-                                                                             resourceBundle.getString(FLAC_FILTER_EXT));
-        Optional<List<File>> files = FxUtils.selectFiles(resourceBundle.getString(SELECT_AUDIO_FILES), false, filter);
-
+        Optional<List<File>> files = FxUtils.selectFlacFiles(false);
         if (files.isPresent()) {
             for (File file : files.get()) {
                 table.getItems().add(PiecePropertiesUtils.createPropertiesFromFile(propertiesCreator, file));
@@ -266,6 +268,30 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
             FlacPlayer.getInstance().stop();
         }
         table.getItems().clear();
+    }
+
+    private void handleBtnExportAction(ActionEvent event) {
+        Optional<File> directory = FxUtils.selectDirectory();
+        if (directory.isPresent()) {
+            for (PropertiesType item : table.getItems()) {
+                StringBuilder outputFileName = new StringBuilder();
+                outputFileName.append(directory.get().getAbsolutePath());
+                outputFileName.append(File.separator);
+                outputFileName.append(item.getPerformer().getName());
+                outputFileName.append(" - ");
+                outputFileName.append(item.getTitle());
+                outputFileName.append(".");
+                outputFileName.append(item.getRecord().getDataFormat().toLowerCase());
+                try {
+                    FileOutputStream out = new FileOutputStream(outputFileName.toString());
+                    out.write(item.getRecord().getBytes());
+                    out.close();
+                } catch (IOException e) {
+                    String msg = resourceBundle.getString(UNABLE_WRITE_FILE) + outputFileName.toString();
+                    ApplicationContext.getInstance().getLogger().log(Level.SEVERE, msg, e);
+                }
+            }
+        }
     }
 
 }
