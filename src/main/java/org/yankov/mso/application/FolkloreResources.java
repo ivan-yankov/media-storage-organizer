@@ -46,8 +46,8 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreMainForm.TAB_INPUT, ""},
                 {FolkloreMainForm.TAB_OUTPUT, ""},
 
-                {FolklorePieceTable.COL_ALBUM, ""},
                 {FolklorePieceTable.COL_ALBUM_TRACK_ORDER, ""},
+                {FolklorePieceTable.COL_ALBUM, ""},
                 {FolklorePieceTable.COL_TITLE, ""},
                 {FolklorePieceTable.COL_PERFORMER, ""},
                 {FolklorePieceTable.COL_ACCOMPANIMENT_PERFORMER, ""},

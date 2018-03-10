@@ -61,7 +61,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     private static final Double SPACE = 25.0;
     private static final Insets INSETS = new Insets(25.0);
-    private static final Double MIN_WIDTH = 250.0;
+    private static final Double MIN_WIDTH = 200.0;
 
     public Buttons() {
         this.container = new VBox();

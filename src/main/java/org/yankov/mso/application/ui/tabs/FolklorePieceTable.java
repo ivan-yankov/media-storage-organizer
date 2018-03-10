@@ -94,6 +94,12 @@ public class FolklorePieceTable implements UserInterfaceControls {
     }
 
     private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
+        TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
+                resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
+        colAlbumTrackOrder.setCellValueFactory(
+                param -> new SimpleStringProperty(Integer.toString(param.getValue().getAlbumTrackOrder())));
+        colAlbumTrackOrder.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
+
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
         colAlbum.setCellValueFactory(param -> {
             Album album = param.getValue().getAlbum();
@@ -101,12 +107,6 @@ public class FolklorePieceTable implements UserInterfaceControls {
             return new SimpleStringProperty(s);
         });
         colAlbum.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
-
-        TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
-                resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
-        colAlbumTrackOrder.setCellValueFactory(
-                param -> new SimpleStringProperty(Integer.toString(param.getValue().getAlbumTrackOrder())));
-        colAlbumTrackOrder.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colTitle = new TableColumn<>(resourceBundle.getString(COL_TITLE));
         colTitle.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getTitle()));
@@ -196,8 +196,8 @@ public class FolklorePieceTable implements UserInterfaceControls {
 
         List<TableColumn<FolklorePieceProperties, String>> columns = new ArrayList<>();
 
-        columns.add(colAlbum);
         columns.add(colAlbumTrackOrder);
+        columns.add(colAlbum);
         columns.add(colTitle);
         columns.add(colPerformer);
         columns.add(colAccompanimentPerformer);
