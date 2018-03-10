@@ -26,7 +26,7 @@ public class ButtonsFactory {
             selectedButtons.add(allButtons.get(Buttons.BTN_LOAD_ALBUM_TRACKS));
             selectedButtons.add(allButtons.get(Buttons.BTN_EDIT_PROPERTIES));
             selectedButtons.add(allButtons.get(Buttons.BTN_PLAYER_RUN));
-            selectedButtons.add(allButtons.get(Buttons.BTN_UPLOAD));
+            selectedButtons.add(allButtons.get(Buttons.BTN_SAVE));
             return selectedButtons;
         });
 
@@ -42,8 +42,9 @@ public class ButtonsFactory {
             selectedButtons.add(allButtons.get(Buttons.BTN_CLEAR));
             selectedButtons.add(allButtons.get(Buttons.BTN_EDIT_PROPERTIES));
             selectedButtons.add(allButtons.get(Buttons.BTN_PLAYER_RUN));
-            selectedButtons.add(allButtons.get(Buttons.BTN_UPLOAD));
+            selectedButtons.add(allButtons.get(Buttons.BTN_UPDATE));
             selectedButtons.add(allButtons.get(Buttons.BTN_EXPORT));
+            selectedButtons.add(allButtons.get(Buttons.BTN_DELETE));
             return selectedButtons;
         });
 

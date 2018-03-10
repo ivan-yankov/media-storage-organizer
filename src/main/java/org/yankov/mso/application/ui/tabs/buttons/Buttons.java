@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -43,10 +40,13 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String BTN_EDIT_PROPERTIES = CLASS_NAME + "-btn-edit-properties";
     public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
     public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
-    public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
+    public static final String BTN_SAVE = CLASS_NAME + "-btn-upload";
+    public static final String BTN_UPDATE = CLASS_NAME + "-btn-update";
     public static final String BTN_EXPORT = CLASS_NAME + "-btn-export";
+    public static final String BTN_DELETE = CLASS_NAME + "-delete-record";
     public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String UNABLE_WRITE_FILE = CLASS_NAME + "-unable-write-file";
+    public static final String ERROR_UPDATE_DATA_MODEL = CLASS_NAME + "-error-update-data-model";
 
     private ResourceBundle resourceBundle;
     private Consumer<TableView<PropertiesType>> editPieceCommand;
@@ -124,55 +124,67 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         Button btnPlay = new Button();
         btnPlay.setText(resourceBundle.getString(BTN_PLAYER_RUN));
         btnPlay.setMaxWidth(Double.MAX_VALUE);
-        btnPlay.setOnAction(this::handlePlayAction);
+        btnPlay.setOnAction(this::handlePlay);
         buttons.put(BTN_PLAYER_RUN, btnPlay);
 
-        Button btnUpload = new Button();
-        btnUpload.setText(resourceBundle.getString(BTN_UPLOAD));
-        btnUpload.setMaxWidth(Double.MAX_VALUE);
-        btnUpload.setOnAction(this::handleUploadAction);
-        buttons.put(BTN_UPLOAD, btnUpload);
+        Button btnSave = new Button();
+        btnSave.setText(resourceBundle.getString(BTN_SAVE));
+        btnSave.setMaxWidth(Double.MAX_VALUE);
+        btnSave.setOnAction(this::handleBtnSave);
+        buttons.put(BTN_SAVE, btnSave);
 
         Button btnAdd = new Button();
         btnAdd.setText(resourceBundle.getString(BTN_ADD));
         btnAdd.setMaxWidth(Double.MAX_VALUE);
-        btnAdd.setOnAction(this::handleBtnAddAction);
+        btnAdd.setOnAction(this::handleBtnAdd);
         buttons.put(BTN_ADD, btnAdd);
 
         Button btnRemove = new Button();
         btnRemove.setText(resourceBundle.getString(BTN_REMOVE));
         btnRemove.setMaxWidth(Double.MAX_VALUE);
-        btnRemove.setOnAction(this::handleBtnRemoveAction);
+        btnRemove.setOnAction(this::handleBtnRemove);
         buttons.put(BTN_REMOVE, btnRemove);
 
         Button btnCopy = new Button();
         btnCopy.setText(resourceBundle.getString(BTN_COPY));
         btnCopy.setMaxWidth(Double.MAX_VALUE);
-        btnCopy.setOnAction(this::handleBtnCopyAction);
+        btnCopy.setOnAction(this::handleBtnCopy);
         buttons.put(BTN_COPY, btnCopy);
 
         Button btnClear = new Button();
         btnClear.setText(resourceBundle.getString(BTN_CLEAR));
         btnClear.setMaxWidth(Double.MAX_VALUE);
-        btnClear.setOnAction(this::handleBtnClearAction);
+        btnClear.setOnAction(this::handleBtnClear);
         buttons.put(BTN_CLEAR, btnClear);
 
         Button btnLoadAlbumTracks = new Button();
         btnLoadAlbumTracks.setText(resourceBundle.getString(BTN_LOAD_ALBUM_TRACKS));
         btnLoadAlbumTracks.setMaxWidth(Double.MAX_VALUE);
-        btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracksAction);
+        btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracks);
         buttons.put(BTN_LOAD_ALBUM_TRACKS, btnLoadAlbumTracks);
 
         Button btnExport = new Button();
         btnExport.setText(resourceBundle.getString(BTN_EXPORT));
         btnExport.setMaxWidth(Double.MAX_VALUE);
-        btnExport.setOnAction(this::handleBtnExportAction);
+        btnExport.setOnAction(this::handleBtnExport);
         buttons.put(BTN_EXPORT, btnExport);
+
+        Button btnUpdate = new Button();
+        btnUpdate.setText(resourceBundle.getString(BTN_UPDATE));
+        btnUpdate.setMaxWidth(Double.MAX_VALUE);
+        btnUpdate.setOnAction(this::handleBtnUpdate);
+        buttons.put(BTN_UPDATE, btnUpdate);
+
+        Button btnDelete = new Button();
+        btnDelete.setText(resourceBundle.getString(BTN_DELETE));
+        btnDelete.setMaxWidth(Double.MAX_VALUE);
+        btnDelete.setOnAction(this::handleBtnDelete);
+        buttons.put(BTN_DELETE, btnDelete);
 
         return buttons;
     }
 
-    private void handlePlayAction(ActionEvent event) {
+    private void handlePlay(ActionEvent event) {
         if (table.getSelectionModel().getSelectedIndex() < 0 || table.getSelectionModel().getSelectedItem()
                                                                      .getRecord() == null) {
             return;
@@ -197,9 +209,25 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         }
     }
 
-    private void handleUploadAction(ActionEvent event) {
-        updateDataModel();
+    private void handleBtnSave(ActionEvent event) {
+        updateDataModel((properties, piece) -> entityCollections.addPiece(piece));
+        save();
+        clearTable();
+    }
 
+    private void handleBtnUpdate(ActionEvent event) {
+        updateDataModel(PiecePropertiesUtils::setPropertiesToPiece);
+        save();
+        clearTable();
+    }
+
+    private void handleBtnDelete(ActionEvent event) {
+        updateDataModel((properties, piece) -> entityCollections.removePiece(piece));
+        save();
+        clearTable();
+    }
+
+    private void save() {
         Task task = new Task() {
 
             @Override
@@ -215,46 +243,53 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         };
 
         new Thread(task).start();
-
-        clearTable();
     }
 
-    private void updateDataModel() {
-        for (PropertiesType item : table.getItems()) {
-            if (item.getId() == null) {
-                EntityType piece = entityCreator.apply(item);
-                entityCollections.addPiece(piece);
+    private void updateDataModel(BiConsumer<PropertiesType, EntityType> operation) {
+        for (PropertiesType properties : table.getItems()) {
+            EntityType piece = null;
+            if (properties.getId() == null) {
+                piece = entityCreator.apply(properties);
             } else {
                 Stream<EntityType> pieces = entityCollections.getPieces().stream();
-                Optional<EntityType> piece = pieces.filter(p -> p.getId().equals(item.getId())).findFirst();
-                piece.ifPresent(p -> PiecePropertiesUtils.setPropertiesToPiece(item, p));
+                Optional<EntityType> optPiece = pieces.filter(p -> p.getId().equals(properties.getId())).findFirst();
+                if (optPiece.isPresent()) {
+                    piece = optPiece.get();
+                }
+            }
+
+            if (piece != null) {
+                operation.accept(properties, piece);
+            } else {
+                String msg = resourceBundle.getString(ERROR_UPDATE_DATA_MODEL);
+                ApplicationContext.getInstance().getLogger().log(Level.SEVERE, msg);
             }
         }
     }
 
-    private void handleBtnAddAction(ActionEvent event) {
+    private void handleBtnAdd(ActionEvent event) {
         table.getItems().add(propertiesCreator.get());
     }
 
-    private void handleBtnRemoveAction(ActionEvent event) {
+    private void handleBtnRemove(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             table.getItems().remove(selectedIndex);
         }
     }
 
-    private void handleBtnCopyAction(ActionEvent event) {
+    private void handleBtnCopy(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             table.getItems().add(propertiesCopier.apply(table.getItems().get(selectedIndex)));
         }
     }
 
-    private void handleBtnClearAction(ActionEvent event) {
+    private void handleBtnClear(ActionEvent event) {
         clearTable();
     }
 
-    private void handleBtnLoadAlbumTracksAction(ActionEvent event) {
+    private void handleBtnLoadAlbumTracks(ActionEvent event) {
         Optional<List<File>> files = FxUtils.selectFlacFiles(false);
         if (files.isPresent()) {
             for (File file : files.get()) {
@@ -270,7 +305,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         table.getItems().clear();
     }
 
-    private void handleBtnExportAction(ActionEvent event) {
+    private void handleBtnExport(ActionEvent event) {
         Optional<File> directory = FxUtils.selectDirectory();
         if (directory.isPresent()) {
             for (PropertiesType item : table.getItems()) {

@@ -182,6 +182,10 @@ public abstract class EntityCollections<T extends Piece> {
         return result;
     }
 
+    public boolean removePiece(T piece) {
+        return pieces.remove(piece);
+    }
+
     protected final <CollectionType> void initializeEntityCollection(Class entityClass,
                                                                      Collection<CollectionType> collection,
                                                                      Collection<CollectionType> defaultCollection) {
