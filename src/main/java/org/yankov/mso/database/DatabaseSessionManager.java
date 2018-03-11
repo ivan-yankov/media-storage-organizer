@@ -34,7 +34,6 @@ public class DatabaseSessionManager {
         annotatedClasses.add(Artist.class);
         annotatedClasses.add(FolklorePiece.class);
         annotatedClasses.add(EthnographicRegion.class);
-        annotatedClasses.add(EntityCollections.class);
         annotatedClasses.add(FolkloreEntityCollections.class);
     }
 

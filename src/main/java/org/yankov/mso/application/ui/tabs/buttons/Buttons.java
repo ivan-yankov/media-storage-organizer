@@ -14,6 +14,7 @@ import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.database.EntityCollections;
+import org.yankov.mso.database.FolkloreEntityCollections;
 import org.yankov.mso.datamodel.Piece;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
@@ -43,7 +44,6 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String BTN_SAVE = CLASS_NAME + "-btn-upload";
     public static final String BTN_UPDATE = CLASS_NAME + "-btn-update";
     public static final String BTN_EXPORT = CLASS_NAME + "-btn-export";
-    public static final String BTN_DELETE = CLASS_NAME + "-delete-record";
     public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String UNABLE_WRITE_FILE = CLASS_NAME + "-unable-write-file";
     public static final String ERROR_UPDATE_DATA_MODEL = CLASS_NAME + "-error-update-data-model";
@@ -175,12 +175,6 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         btnUpdate.setOnAction(this::handleBtnUpdate);
         buttons.put(BTN_UPDATE, btnUpdate);
 
-        Button btnDelete = new Button();
-        btnDelete.setText(resourceBundle.getString(BTN_DELETE));
-        btnDelete.setMaxWidth(Double.MAX_VALUE);
-        btnDelete.setOnAction(this::handleBtnDelete);
-        buttons.put(BTN_DELETE, btnDelete);
-
         return buttons;
     }
 
@@ -216,15 +210,11 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     }
 
     private void handleBtnUpdate(ActionEvent event) {
-        updateDataModel(PiecePropertiesUtils::setPropertiesToPiece);
-        save();
-        clearTable();
-    }
-
-    private void handleBtnDelete(ActionEvent event) {
-        updateDataModel((properties, piece) -> entityCollections.removePiece(piece));
-        save();
-        clearTable();
+        if (FxUtils.confirmOverwrite()) {
+            updateDataModel(PiecePropertiesUtils::setPropertiesToPiece);
+            save();
+            clearTable();
+        }
     }
 
     private void save() {
@@ -234,7 +224,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
             protected Object call() {
                 ApplicationContext context = ApplicationContext.getInstance();
                 context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                entityCollections.saveEntityCollections();
+                entityCollections.saveToDatabase();
                 context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
                 context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
                 return null;

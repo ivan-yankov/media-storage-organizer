@@ -12,18 +12,18 @@ public class PerformanceTest extends DatabaseTest {
 
     @Test
     public void testPerformance() {
-        FolkloreEntityCollections collections = new FolkloreEntityCollections();
-        collections.initializeEntityCollections();
+        FolkloreEntityCollections collections = FolkloreEntityCollections.getInstance();
+        collections.initialize();
         FolkloreEntityCollectionsTest.modifyEntityCollections(collections, false, NUMBER_OF_RECORDS);
 
         long start = System.currentTimeMillis();
-        collections.saveEntityCollections();
+        collections.saveToDatabase();
         long end = System.currentTimeMillis();
         double executionTime = (end - start) / MILLISECONDS_IN_SECOND;
         Assert.assertTrue(executionTime < MAX_TIME_WRITING_SEC);
 
         start = System.currentTimeMillis();
-        collections.initializeEntityCollections();
+        collections.initialize();
         end = System.currentTimeMillis();
         executionTime = (end - start) / MILLISECONDS_IN_SECOND;
         Assert.assertTrue(executionTime < MAX_TIME_READING_SEC);

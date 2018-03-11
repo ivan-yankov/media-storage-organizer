@@ -44,7 +44,6 @@ public class ButtonsFactory {
             selectedButtons.add(allButtons.get(Buttons.BTN_PLAYER_RUN));
             selectedButtons.add(allButtons.get(Buttons.BTN_UPDATE));
             selectedButtons.add(allButtons.get(Buttons.BTN_EXPORT));
-            selectedButtons.add(allButtons.get(Buttons.BTN_DELETE));
             return selectedButtons;
         });
 

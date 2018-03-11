@@ -34,9 +34,9 @@ public class MediaStorageOrganizer extends Application {
                 System.exit(1);
             }
 
-            FolkloreEntityCollections folkloreEntityCollections = new FolkloreEntityCollections();
-            folkloreEntityCollections.initializeEntityCollections();
-            ApplicationContext.getInstance().setFolkloreEntityCollections(folkloreEntityCollections);
+            FolkloreEntityCollections.getInstance().loadFromDatabase();
+            FolkloreEntityCollections.getInstance().initialize();
+            ApplicationContext.getInstance().setFolkloreEntityCollections(FolkloreEntityCollections.getInstance());
 
             Form form = new FolkloreMainForm(primaryStage);
             form.createControls();

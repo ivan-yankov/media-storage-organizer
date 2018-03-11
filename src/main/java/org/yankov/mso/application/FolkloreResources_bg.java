@@ -73,7 +73,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {Buttons.BTN_SAVE, "Запис"},
                 {Buttons.BTN_UPDATE, "Обновяване"},
                 {Buttons.BTN_EXPORT, "Експорт"},
-                {Buttons.BTN_DELETE, "Изтриване"},
                 {Buttons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
                 {Buttons.UNABLE_WRITE_FILE, "Неуспешен запис на файл"},
                 {Buttons.ERROR_UPDATE_DATA_MODEL, "Неуспешно обновяване на данни"},
@@ -82,6 +81,14 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FxUtils.SELECT_EXPORT_DIRECTORY, "Избор на папка за експорт"},
                 {FxUtils.FLAC_FILTER_NAME, "FLAC файлове"},
                 {FxUtils.FLAC_FILTER_EXT, "*.flac"},
+                {FxUtils.CONFIRMATION, "Потвърждение"},
+                {
+                    FxUtils.OVERWRITE_RECORDS_IN_DATABASE,
+                    "Записите, показани в таблицата ще бъдат обновени в базата данни."
+                },
+                {FxUtils.ARE_YOU_SURE, "Сигурни ли сте?"},
+                {FxUtils.YES, "Да"},
+                {FxUtils.NO, "Не"},
 
                 {FlacProcessor.FILE_NOT_FOUND, "Не е намерен файл"},
                 {

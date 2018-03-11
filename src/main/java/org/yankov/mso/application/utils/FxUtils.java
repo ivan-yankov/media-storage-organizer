@@ -1,6 +1,8 @@
 package org.yankov.mso.application.utils;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.stage.DirectoryChooser;
@@ -23,6 +25,11 @@ public class FxUtils {
     public static final String SELECT_EXPORT_DIRECTORY = CLASS_NAME + "-select-export-directory";
     public static final String FLAC_FILTER_NAME = CLASS_NAME + "-flac-filter-name";
     public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
+    public static final String CONFIRMATION = CLASS_NAME + "-confirmation";
+    public static final String OVERWRITE_RECORDS_IN_DATABASE = CLASS_NAME + "-delete-record-from-database";
+    public static final String ARE_YOU_SURE = CLASS_NAME + "-are-you-sure";
+    public static final String YES = CLASS_NAME + "-yes";
+    public static final String NO = CLASS_NAME + "-no";
 
     private static final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -75,6 +82,21 @@ public class FxUtils {
         File file = directoryChooser
                 .showDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
         return file != null ? Optional.of(file) : Optional.empty();
+    }
+
+    public static boolean confirmOverwrite() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(resourceBundle.getString(CONFIRMATION));
+        alert.setHeaderText(resourceBundle.getString(OVERWRITE_RECORDS_IN_DATABASE));
+        alert.setContentText(resourceBundle.getString(ARE_YOU_SURE));
+
+        ButtonType yes = new ButtonType(resourceBundle.getString(YES));
+        ButtonType no = new ButtonType(resourceBundle.getString(NO));
+
+        alert.getButtonTypes().setAll(yes, no);
+        Optional<ButtonType> answer = alert.showAndWait();
+
+        return answer.isPresent() && answer.get() == yes;
     }
 
     private static FileChooser.ExtensionFilter createFlacFileFilter() {

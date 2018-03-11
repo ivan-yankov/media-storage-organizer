@@ -23,7 +23,7 @@ public class Artist {
     @Column(name = "note")
     private String note;
 
-    @ElementCollection(targetClass = ArtistMission.class)
+    @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(name = "missions")
     private Set<ArtistMission> missions;
