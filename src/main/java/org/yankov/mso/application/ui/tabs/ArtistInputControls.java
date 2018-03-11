@@ -71,7 +71,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         if (visible) {
             ObservableList<Instrument> instruments = FXCollections.observableArrayList(
                     ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
-            instrument.getComboBox().setItems(instruments.sorted(instrument.getItemComparator()));
+            instrument.setItems(instruments.sorted(instrument.getItemComparator()));
         }
     }
 

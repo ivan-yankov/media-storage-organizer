@@ -32,6 +32,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private Popup popup;
     private TextField filterTextField;
     private StringBuilder filterText;
+    private boolean sortItems;
 
     private Comparator<T> itemComparator = (i1, i2) -> {
         String s1 = converter != null ? converter.toString(i1) : i1.toString();
@@ -59,6 +60,8 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         this.popup = new Popup();
         this.filterTextField = new TextField();
         this.filterText = new StringBuilder();
+
+        this.sortItems = sortItems;
     }
 
     public ComboBox<T> getComboBox() {
@@ -67,6 +70,11 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
 
     public Comparator<T> getItemComparator() {
         return itemComparator;
+    }
+
+    public void setItems(ObservableList<T> items) {
+        originalItems.clear();
+        originalItems.setAll(sortItems ? items.sorted(itemComparator) : items);
     }
 
     @Override
