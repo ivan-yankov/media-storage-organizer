@@ -12,10 +12,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
 import org.yankov.mso.application.ui.controls.LabeledComboBox;
 import org.yankov.mso.application.ui.controls.LabeledTextField;
-import org.yankov.mso.application.ui.converters.OperatorStringConverter;
-import org.yankov.mso.application.ui.converters.VariableStringConverter;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
 import org.yankov.mso.datamodel.*;
@@ -66,15 +65,10 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private Pane createSearchControls() {
-        variables = new LabeledComboBox<>(resourceBundle.getString(VARIABLE),
-                                          FolkloreSearchFactory.createFolkloreVariables(),
-                                          FolkloreSearchFactory.VAR_TITLE, null, new VariableStringConverter<>(), false,
-                                          false);
+        variables = FolkloreComboBoxFactory.createSearchVariable();
         variables.layout();
 
-        operators = new LabeledComboBox<>(resourceBundle.getString(OPERATOR), FolkloreSearchFactory.createOperators(),
-                                          FolkloreSearchFactory.OPERATOR_EQUALS, null, new OperatorStringConverter(),
-                                          false, false);
+        operators = FolkloreComboBoxFactory.createSearchOperators();
         operators.layout();
 
         value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
@@ -114,8 +108,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     private void handleBtnSearch(ActionEvent event) {
         List<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces();
-        Variable<FolklorePiece> variable = variables.getComboBox().getSelectionModel().getSelectedItem();
-        Operator operator = operators.getComboBox().getSelectionModel().getSelectedItem();
+        Variable<FolklorePiece> variable = variables.getSelectedItem();
+        Operator operator = operators.getSelectedItem();
         String searchValue = value.getTextField().getText();
 
         List<FolklorePiece> piecesFound;

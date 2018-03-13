@@ -51,9 +51,11 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
         ObservableList<String> artifacts = createArtifacts();
         String defaultArtifact = artifacts.get(0);
 
-        UserInterfaceControls artifactType = new LabeledComboBox<>(resourceBundle.getString(ARTIFACT_TYPE), artifacts,
-                                                                   defaultArtifact, this::artifactTypeSelected,
-                                                                   new StringStringConverter(), false, false);
+        LabeledComboBox<String> artifactType = new LabeledComboBox<>(new StringStringConverter(), false, false);
+        artifactType.setLabelText(resourceBundle.getString(ARTIFACT_TYPE));
+        artifactType.setItems(artifacts);
+        artifactType.setValue(defaultArtifact);
+        artifactType.setNewValueConsumer(this::artifactTypeSelected);
         artifactType.layout();
 
         createInputControls().forEach(controls -> {

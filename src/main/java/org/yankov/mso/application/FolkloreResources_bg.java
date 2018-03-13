@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.utils.FlacPlayer;
@@ -124,7 +125,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {ArtifactInputControls.ARTIFACT_ADDED, "Артефактът е добавен успешно"},
                 {ArtifactInputControls.ARTIFACT_SAVED, "Промените в артефакта са записани"},
 
-                {SourceInputControls.SOURCE_TYPE, "Вид източник"},
                 {SourceInputControls.SIGNATURE, "Сигнатура"},
                 {SourceInputControls.SIGNATURE_UNDEFINED, "Не е въведена сигнатура"},
 
@@ -148,7 +148,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                     "Избрана е роля 'инструменталист', но не е посочен инструмент"
                 },
                 {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, "Не е избрана нито една роля"},
-                {ArtistInputControls.INSTRUMENT, "Инструмент"},
 
                 {AlbumInputControls.TITLE, "Заглавие"},
                 {AlbumInputControls.PRODUCTION_SIGNATURE, "Сигнатура на издателя"},
@@ -188,6 +187,9 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, "Завършва с ..."},
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
+
+                {FolkloreComboBoxFactory.SOURCE_TYPE, "Вид източник"},
+                {FolkloreComboBoxFactory.INSTRUMENT, "Инструмент"},
                 };
     }
 

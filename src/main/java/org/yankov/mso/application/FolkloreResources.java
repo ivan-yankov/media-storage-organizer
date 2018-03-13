@@ -2,6 +2,7 @@ package org.yankov.mso.application;
 
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
 import org.yankov.mso.application.ui.tabs.*;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.utils.FlacPlayer;
@@ -117,7 +118,6 @@ public class FolkloreResources extends ListResourceBundle {
                 {ArtifactInputControls.ARTIFACT_ADDED, ""},
                 {ArtifactInputControls.ARTIFACT_SAVED, ""},
 
-                {SourceInputControls.SOURCE_TYPE, ""},
                 {SourceInputControls.SIGNATURE, ""},
                 {SourceInputControls.SIGNATURE_UNDEFINED, ""},
 
@@ -138,7 +138,6 @@ public class FolkloreResources extends ListResourceBundle {
                 {ArtistInputControls.ARTIST_NAME_UNDEFINED, ""},
                 {ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED, ""},
                 {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, ""},
-                {ArtistInputControls.INSTRUMENT, ""},
 
                 {AlbumInputControls.TITLE, ""},
                 {AlbumInputControls.PRODUCTION_SIGNATURE, ""},
@@ -178,6 +177,9 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, ""},
 
                 {PiecePropertiesUtils.UNDEFINED_ALBUM, ""},
+
+                {FolkloreComboBoxFactory.SOURCE_TYPE, ""},
+                {FolkloreComboBoxFactory.INSTRUMENT, ""},
                 };
     }
 

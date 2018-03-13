@@ -10,10 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
 import org.yankov.mso.application.ui.controls.LabeledComboBox;
 import org.yankov.mso.application.ui.controls.LabeledTextField;
 import org.yankov.mso.application.ui.converters.ArtistStringConverter;
-import org.yankov.mso.application.ui.converters.InstrumentStringConverter;
 import org.yankov.mso.datamodel.Artist;
 import org.yankov.mso.datamodel.ArtistMission;
 import org.yankov.mso.datamodel.Instrument;
@@ -43,7 +43,6 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     public static final String ARTIST_NAME_UNDEFINED = CLASS_NAME + "-artist-name-undefined";
     public static final String ARTIST_INSTRUMENT_UNDEFINED = CLASS_NAME + "-artist-instrument-undefined";
     public static final String NO_ARTIST_MISSION_SELECTED = CLASS_NAME + "-no-artist-mission-selected";
-    public static final String INSTRUMENT = CLASS_NAME + "-instrument";
 
     private LabeledTextField name;
     private LabeledTextField note;
@@ -71,7 +70,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         if (visible) {
             ObservableList<Instrument> instruments = FXCollections.observableArrayList(
                     ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
-            instrument.setItems(instruments.sorted(instrument.getItemComparator()));
+            instrument.setItems(instruments);
         }
     }
 
@@ -88,7 +87,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         missions = createMissions();
         missions.forEach(mission -> missionsContainer.getChildren().add(mission));
 
-        instrument = createInstrumentControl();
+        instrument = FolkloreComboBoxFactory.createInstrument();
         instrument.layout();
         enableInstrument();
 
@@ -128,8 +127,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
             return false;
         }
 
-        if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER) && instrument.getComboBox()
-                                                                                         .getValue() == null) {
+        if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER) && instrument.getValue() == null) {
             ApplicationContext.getInstance().getLogger()
                               .log(Level.SEVERE, getResourceBundle().getString(ARTIST_INSTRUMENT_UNDEFINED));
             return false;
@@ -153,7 +151,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         name.getTextField().setText("");
         note.getTextField().setText("");
         missions.forEach(mission -> mission.setSelected(false));
-        instrument.getComboBox().setValue(null);
+        instrument.setValue(null);
         enableInstrument();
     }
 
@@ -163,7 +161,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
         artifact.setNote(note.getTextField().getText());
 
         if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER)) {
-            artifact.setInstrument(instrument.getComboBox().getValue());
+            artifact.setInstrument(instrument.getValue());
         } else {
             artifact.setInstrument(null);
         }
@@ -180,7 +178,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
             ArtistMission artistMission = (ArtistMission) mission.getUserData();
             mission.setSelected(artifact.getMissions().contains(artistMission));
         }
-        instrument.getComboBox().setValue(artifact.getInstrument());
+        instrument.setValue(artifact.getInstrument());
         enableInstrument();
     }
 
@@ -209,15 +207,8 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
                        .collect(Collectors.toList());
     }
 
-    private LabeledComboBox<Instrument> createInstrumentControl() {
-        ObservableList<Instrument> instruments = FXCollections
-                .observableArrayList(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
-        return new LabeledComboBox<>(getResourceBundle().getString(INSTRUMENT), instruments, null, null,
-                                     new InstrumentStringConverter(), false, true);
-    }
-
     private void enableInstrument() {
-        instrument.getComboBox().setDisable(!getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER));
+        instrument.setDisable(!getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER));
     }
 
 }

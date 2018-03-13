@@ -33,6 +33,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private TextField filterTextField;
     private StringBuilder filterText;
     private boolean sortItems;
+    private boolean nullable;
 
     private Comparator<T> itemComparator = (i1, i2) -> {
         String s1 = converter != null ? converter.toString(i1) : i1.toString();
@@ -40,41 +41,58 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         return s1.compareToIgnoreCase(s2);
     };
 
-    public LabeledComboBox(String labelText, ObservableList<T> items, T value, Consumer<T> newValueConsumer,
-                           StringConverter<T> converter, boolean editable, boolean sortItems) {
+    public LabeledComboBox(StringConverter<T> converter, boolean editable, boolean sortItems) {
         this.converter = converter;
 
         this.originalItems = FXCollections.observableArrayList();
-        this.originalItems.addAll(sortItems ? items.sorted(itemComparator) : items);
 
         this.comboBox = new ComboBox<>();
         this.comboBox.setEditable(editable);
         this.comboBox.setConverter(converter);
         this.comboBox.setItems(originalItems);
-        this.comboBox.setValue(value);
 
-        this.newValueConsumer = newValueConsumer;
         this.container = new VBox();
-        this.label = new Label(labelText);
+        this.label = new Label();
 
         this.popup = new Popup();
         this.filterTextField = new TextField();
         this.filterText = new StringBuilder();
 
         this.sortItems = sortItems;
-    }
-
-    public ComboBox<T> getComboBox() {
-        return comboBox;
-    }
-
-    public Comparator<T> getItemComparator() {
-        return itemComparator;
+        this.nullable = false;
     }
 
     public void setItems(ObservableList<T> items) {
         originalItems.clear();
         originalItems.setAll(sortItems ? items.sorted(itemComparator) : items);
+    }
+
+    public void setLabelText(String labelText) {
+        label.setText(labelText);
+    }
+
+    public T getValue() {
+        return comboBox.getValue();
+    }
+
+    public void setValue(T value) {
+        comboBox.setValue(value);
+    }
+
+    public void setNewValueConsumer(Consumer<T> newValueConsumer) {
+        this.newValueConsumer = newValueConsumer;
+    }
+
+    public void setDisable(boolean disable) {
+        comboBox.setDisable(disable);
+    }
+
+    public T getSelectedItem() {
+        return comboBox.getSelectionModel().getSelectedItem();
+    }
+
+    public void setNullable(boolean nullable) {
+        this.nullable = nullable;
     }
 
     @Override
@@ -132,6 +150,9 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     }
 
     private void handleKeyTyped(KeyEvent event) {
+        if (event.getCharacter().toLowerCase().isEmpty()) {
+            return;
+        }
         filterText.append(event.getCharacter().toLowerCase());
         filterTextField.setText(filterText.toString());
         showPopup();
@@ -139,15 +160,14 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     }
 
     private void handleKeyReleased(KeyEvent event) {
-        if (event.getCode().equals(KeyCode.BACK_SPACE)) {
-            if (filterText.length() > 0) {
-                filterText.deleteCharAt(filterText.length() - 1);
-            }
+        if (event.getCode().equals(KeyCode.BACK_SPACE) && filterText.length() > 0) {
+            filterText.deleteCharAt(filterText.length() - 1);
+            filterTextField.setText(filterText.toString());
+            showPopup();
+            filterItems();
+        } else if (event.getCode().equals(KeyCode.DELETE) && nullable) {
+            setValue(null);
         }
-
-        filterTextField.setText(filterText.toString());
-        showPopup();
-        filterItems();
     }
 
 }
