@@ -81,7 +81,7 @@ public class PiecePropertiesUtils {
         piece.setPerformer(properties.getPerformer());
         piece.setAlbum(properties.getAlbum());
         piece.setTitle(properties.getTitle());
-        piece.setAlbumTrackOrder(properties.getAlbumTrackOrder());
+        piece.setAlbumTrackOrder(Integer.parseInt(properties.getAlbumTrackOrder()));
         piece.setDuration(properties.getDuration());
         piece.setRecord(properties.getRecord());
     }
@@ -98,7 +98,7 @@ public class PiecePropertiesUtils {
         properties.setPerformer(piece.getPerformer());
         properties.setAlbum(piece.getAlbum());
         properties.setTitle(piece.getTitle());
-        properties.setAlbumTrackOrder(piece.getAlbumTrackOrder());
+        properties.setAlbumTrackOrder(Integer.toString(piece.getAlbumTrackOrder()));
         properties.setDuration(piece.getDuration());
         properties.setRecord(piece.getRecord());
     }

@@ -51,12 +51,16 @@ public class FolklorePieceEditor implements Form {
 
     @Override
     public void createControls() {
-        UserInterfaceControls title = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_TITLE),
-                                                           piece.getTitle(), piece::setTitle);
-        title.layout();
+        UserInterfaceControls albumTrackOrder = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_ALBUM_TRACK_ORDER),
+                                                                     piece.getAlbumTrackOrder(), piece::setAlbumTrackOrder);
+        albumTrackOrder.layout();
 
         UserInterfaceControls album = FolkloreComboBoxFactory.createAlbum(piece);
         album.layout();
+
+        UserInterfaceControls title = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_TITLE),
+                                                           piece.getTitle(), piece::setTitle);
+        title.layout();
 
         UserInterfaceControls performer = FolkloreComboBoxFactory.createPerformer(piece);
         performer.layout();
@@ -96,8 +100,9 @@ public class FolklorePieceEditor implements Form {
         gridPane.setHgap(HORIZONTAL_SPACE);
         gridPane.setVgap(VERTICAL_SPACE);
 
-        gridPane.add(title.getContainer(), 1, 0, 2, 1);
-        gridPane.add(album.getContainer(), 0, 0);
+        gridPane.add(albumTrackOrder.getContainer(), 0, 0);
+        gridPane.add(album.getContainer(), 1, 0);
+        gridPane.add(title.getContainer(), 2, 0, 2, 1);
         gridPane.add(performer.getContainer(), 0, 1);
         gridPane.add(accompanimentPerformer.getContainer(), 1, 1);
         gridPane.add(arrangementAuthor.getContainer(), 2, 1);
@@ -132,7 +137,7 @@ public class FolklorePieceEditor implements Form {
         ApplicationContext.getInstance().getApplicationSettings().getIcon().ifPresent(stage.getIcons()::add);
         stage.initOwner(ApplicationContext.getInstance().getPrimaryStage());
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle(resourceBundle.getString(STAGE_TITLE) + String.format(" %d", piece.getAlbumTrackOrder()));
+        stage.setTitle(resourceBundle.getString(STAGE_TITLE));
     }
 
     private HBox createFormButtons() {

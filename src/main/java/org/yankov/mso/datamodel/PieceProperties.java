@@ -22,7 +22,7 @@ public class PieceProperties implements PropertyChangeListener {
 
     private final SimpleObjectProperty<Integer> id;
     private final SimpleObjectProperty<Album> album;
-    private final SimpleIntegerProperty albumTrackOrder;
+    private final SimpleStringProperty albumTrackOrder;
     private final SimpleStringProperty title;
     private final SimpleObjectProperty<Artist> performer;
     private final SimpleObjectProperty<Artist> accompanimentPerformer;
@@ -41,7 +41,7 @@ public class PieceProperties implements PropertyChangeListener {
     public PieceProperties() {
         this.id = new SimpleObjectProperty<>();
         this.album = new SimpleObjectProperty<>();
-        this.albumTrackOrder = new SimpleIntegerProperty();
+        this.albumTrackOrder = new SimpleStringProperty();
         this.title = new SimpleStringProperty();
         this.performer = new SimpleObjectProperty<>();
         this.accompanimentPerformer = new SimpleObjectProperty<>();
@@ -75,11 +75,11 @@ public class PieceProperties implements PropertyChangeListener {
         this.album.set(album);
     }
 
-    public int getAlbumTrackOrder() {
+    public String getAlbumTrackOrder() {
         return albumTrackOrder.get();
     }
 
-    public void setAlbumTrackOrder(int albumTrackOrder) {
+    public void setAlbumTrackOrder(String albumTrackOrder) {
         this.albumTrackOrder.set(albumTrackOrder);
     }
 

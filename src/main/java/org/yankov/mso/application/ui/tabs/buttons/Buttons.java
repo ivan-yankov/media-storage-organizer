@@ -14,7 +14,6 @@ import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.database.EntityCollections;
-import org.yankov.mso.database.FolkloreEntityCollections;
 import org.yankov.mso.datamodel.Piece;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
@@ -47,6 +46,8 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String UNABLE_WRITE_FILE = CLASS_NAME + "-unable-write-file";
     public static final String ERROR_UPDATE_DATA_MODEL = CLASS_NAME + "-error-update-data-model";
+
+    private static final String DEFAULT_TRACK_ORDER = "0";
 
     private ResourceBundle resourceBundle;
     private Consumer<TableView<PropertiesType>> editPieceCommand;
@@ -258,7 +259,9 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     }
 
     private void handleBtnAdd(ActionEvent event) {
-        table.getItems().add(propertiesCreator.get());
+        PropertiesType item = propertiesCreator.get();
+        item.setAlbumTrackOrder(DEFAULT_TRACK_ORDER);
+        table.getItems().add(item);
     }
 
     private void handleBtnRemove(ActionEvent event) {

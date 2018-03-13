@@ -97,7 +97,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
                 resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
         colAlbumTrackOrder.setCellValueFactory(
-                param -> new SimpleStringProperty(Integer.toString(param.getValue().getAlbumTrackOrder())));
+                param -> new SimpleStringProperty(param.getValue().getAlbumTrackOrder()));
         colAlbumTrackOrder.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
@@ -215,14 +215,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
     }
 
     private void handleTableChange(ListChangeListener.Change<? extends FolklorePieceProperties> change) {
-        refreshPieceOrder();
         resizeColumnsToFit();
-    }
-
-    private void refreshPieceOrder() {
-        for (int i = 0; i < table.getItems().size(); i++) {
-            table.getItems().get(i).setAlbumTrackOrder(i + 1);
-        }
     }
 
     private void resizeColumnsToFit() {
