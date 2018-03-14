@@ -14,8 +14,6 @@ import java.util.logging.Logger;
 
 public class ApplicationContext {
 
-    private static final String DATABASE_CONFIGURATION_FILE = "hibernate.cfg.xml";
-
     private static final String ARG_KEY_SETTINGS = "-settings";
     private static final String ARG_KEY_LANGUAGE = "-language";
     private static final String ARG_KEY_MODE = "-mode";
@@ -58,7 +56,7 @@ public class ApplicationContext {
         this.commands = new Commands();
         this.commands.initialize();
 
-        this.databaseSessionManager = new DatabaseSessionManager(DATABASE_CONFIGURATION_FILE);
+        this.databaseSessionManager = new DatabaseSessionManager();
     }
 
     public ApplicationArguments getApplicationArguments() {

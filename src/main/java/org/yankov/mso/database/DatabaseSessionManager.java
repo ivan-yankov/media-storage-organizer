@@ -4,37 +4,25 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
 public class DatabaseSessionManager {
 
-    private String configurationFile;
-    private List<Class> annotatedClasses;
     private Session session;
 
-    public DatabaseSessionManager(String configurationFile) {
-        this.configurationFile = configurationFile;
-
-        annotatedClasses = new ArrayList<>();
-        annotatedClasses.add(SourceType.class);
-        annotatedClasses.add(Source.class);
-        annotatedClasses.add(Record.class);
-        annotatedClasses.add(Piece.class);
-        annotatedClasses.add(Instrument.class);
-        annotatedClasses.add(Album.class);
-        annotatedClasses.add(Artist.class);
-        annotatedClasses.add(FolklorePiece.class);
-        annotatedClasses.add(EthnographicRegion.class);
-        annotatedClasses.add(FolkloreEntityCollections.class);
+    public DatabaseSessionManager() {
     }
 
     public boolean openSession() {
@@ -79,13 +67,36 @@ public class DatabaseSessionManager {
     }
 
     private Optional<SessionFactory> createSessionFactory() {
-        Configuration configuration = new Configuration();
-        configuration.configure(configurationFile);
-
-        annotatedClasses.forEach(configuration::addAnnotatedClass);
-
         try {
-            return Optional.of(configuration.buildSessionFactory());
+            Map<String, String> settings = new HashMap<>();
+            settings.put(Environment.DRIVER, "org.apache.derby.jdbc.ClientDriver");
+            settings.put(Environment.URL, "jdbc:derby://localhost:1527/mso");
+            settings.put(Environment.DEFAULT_SCHEMA, "admin");
+            settings.put(Environment.USER, "admin");
+            settings.put(Environment.PASS, "admin");
+
+            StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+            registryBuilder.applySettings(settings);
+
+            StandardServiceRegistry registry = registryBuilder.build();
+
+            MetadataSources sources = new MetadataSources(registry);
+            sources.addAnnotatedClass(SourceType.class);
+            sources.addAnnotatedClass(Source.class);
+            sources.addAnnotatedClass(Record.class);
+            sources.addAnnotatedClass(Piece.class);
+            sources.addAnnotatedClass(Instrument.class);
+            sources.addAnnotatedClass(Album.class);
+            sources.addAnnotatedClass(Artist.class);
+            sources.addAnnotatedClass(FolklorePiece.class);
+            sources.addAnnotatedClass(EthnographicRegion.class);
+            sources.addAnnotatedClass(FolkloreEntityCollections.class);
+
+            Metadata metadata = sources.getMetadataBuilder().build();
+
+            SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
+
+            return Optional.of(sessionFactory);
         } catch (HibernateException e) {
             ApplicationContext.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             return Optional.empty();
