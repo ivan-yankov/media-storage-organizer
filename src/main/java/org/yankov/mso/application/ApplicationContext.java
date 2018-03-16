@@ -3,20 +3,15 @@ package org.yankov.mso.application;
 import javafx.stage.Stage;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
+import org.yankov.mso.database.DatabaseManager;
 import org.yankov.mso.database.FolkloreEntityCollections;
-import org.yankov.mso.database.DatabaseSessionManager;
 
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApplicationContext {
-
-    private static final String ARG_KEY_SETTINGS = "-settings";
-    private static final String ARG_KEY_LANGUAGE = "-language";
-    private static final String ARG_KEY_MODE = "-mode";
 
     private static ApplicationContext instance;
 
@@ -27,7 +22,7 @@ public class ApplicationContext {
     private Logger logger;
     private Stage primaryStage;
     private Commands commands;
-    private DatabaseSessionManager databaseSessionManager;
+    private DatabaseManager databaseManager;
     private FolkloreEntityCollections folkloreEntityCollections;
 
     private ApplicationContext() {
@@ -43,10 +38,11 @@ public class ApplicationContext {
     public void initialize(ApplicationArguments applicationArguments) {
         this.applicationArguments = applicationArguments;
 
-        applicationArguments.getArgument(ARG_KEY_LANGUAGE).ifPresent(lang -> this.locale = new Locale(lang));
+        String lang = applicationArguments.getArgument(ApplicationArguments.Argument.LANGUAGE);
+        this.locale = new Locale(lang);
 
-        applicationArguments.getArgument(ARG_KEY_SETTINGS).ifPresent(
-                settingsType -> this.applicationSettings = createApplicationSettings(settingsType));
+        String settingsType = applicationArguments.getArgument(ApplicationArguments.Argument.SETTINGS);
+        this.applicationSettings = createApplicationSettings(settingsType);
 
         this.folkloreResourceBundle = ResourceBundle.getBundle(FolkloreResources.class.getName(), getLocale());
 
@@ -56,7 +52,7 @@ public class ApplicationContext {
         this.commands = new Commands();
         this.commands.initialize();
 
-        this.databaseSessionManager = new DatabaseSessionManager();
+        this.databaseManager = new DatabaseManager();
     }
 
     public ApplicationArguments getApplicationArguments() {
@@ -87,8 +83,8 @@ public class ApplicationContext {
         this.primaryStage = primaryStage;
     }
 
-    public DatabaseSessionManager getDatabaseSessionManager() {
-        return databaseSessionManager;
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     public FolkloreEntityCollections getFolkloreEntityCollections() {
@@ -110,11 +106,10 @@ public class ApplicationContext {
     }
 
     private ApplicationSettings createApplicationSettings(String type) {
-        switch (type) {
-            case "folklore":
-                return new FolkloreApplicationSettings();
-            default:
-                return null;
+        if (type.equalsIgnoreCase("folklore")) {
+            return new FolkloreApplicationSettings();
+        } else {
+            return null;
         }
     }
 
@@ -123,8 +118,8 @@ public class ApplicationContext {
     }
 
     private boolean isTestMode() {
-        Optional<String> mode = applicationArguments.getArgument(ARG_KEY_MODE);
-        return mode.isPresent() && mode.get().equals("test");
+        return applicationArguments.getArgument(ApplicationArguments.Argument.APPLICATION_MODE)
+                                   .equalsIgnoreCase("test");
     }
 
 }

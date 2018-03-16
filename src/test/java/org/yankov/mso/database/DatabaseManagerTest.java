@@ -7,7 +7,7 @@ import org.yankov.mso.datamodel.Instrument;
 
 import java.util.Optional;
 
-public class DatabaseSessionManagerTest extends DatabaseTest {
+public class DatabaseManagerTest extends DatabaseTest {
 
     private String instrumentName = "Тестов инструмент";
 
@@ -15,14 +15,13 @@ public class DatabaseSessionManagerTest extends DatabaseTest {
     public void test() {
         Instrument originalInstrument = new Instrument(instrumentName);
 
-        ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
+        ApplicationContext.getInstance().getDatabaseManager().executeOperation(session -> {
             session.saveOrUpdate(originalInstrument);
             return null;
-        }, throwable -> Assert.fail(throwable.getMessage()));
+        });
 
-        Optional<Object> instrumentObj = ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(
-                session -> session.get(Instrument.class, originalInstrument.getId()),
-                throwable -> Assert.fail(throwable.getMessage()));
+        Optional<Object> instrumentObj = ApplicationContext.getInstance().getDatabaseManager().executeOperation(
+                session -> session.get(Instrument.class, originalInstrument.getId()));
 
         Assert.assertTrue(instrumentObj.isPresent());
         Instrument instrument = (Instrument) instrumentObj.get();

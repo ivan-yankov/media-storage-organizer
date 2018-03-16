@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import org.yankov.mso.application.ui.FolkloreMainForm;
 import org.yankov.mso.database.FolkloreEntityCollections;
 
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class MediaStorageOrganizer extends Application {
@@ -27,11 +28,12 @@ public class MediaStorageOrganizer extends Application {
             applicationSettings.getX().ifPresent(primaryStage::setX);
             applicationSettings.getY().ifPresent(primaryStage::setY);
 
-            boolean sessionOpened = ApplicationContext.getInstance().getDatabaseSessionManager().openSession();
-            if (!sessionOpened) {
-                ApplicationContext.getInstance().getLogger().log(Level.SEVERE, "Unable to create database session.");
-                Platform.exit();
-                System.exit(1);
+            Thread startServerThread = new Thread(
+                    () -> ApplicationContext.getInstance().getDatabaseManager().startServer());
+            startServerThread.start();
+
+            if (!ApplicationContext.getInstance().getDatabaseManager().openSession()) {
+                throw new Exception("Database error.");
             }
 
             FolkloreEntityCollections.getInstance().loadFromDatabase();
@@ -42,20 +44,32 @@ public class MediaStorageOrganizer extends Application {
             form.createControls();
             form.show();
         } catch (Exception e) {
-            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, "Cannot start application", e);
-            System.exit(1);
+            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
+            exit(1);
         }
     }
 
     @Override
     public void stop() {
-        ApplicationContext.getInstance().getDatabaseSessionManager().closeSession();
+        ApplicationContext.getInstance().getDatabaseManager().closeSession();
+        ApplicationContext.getInstance().getDatabaseManager().stopServer();
+        exit(0);
+    }
+
+    private void exit(int exitCode) {
         Platform.exit();
-        System.exit(0);
+        System.exit(exitCode);
     }
 
     public static void main(String[] args) {
         ApplicationContext.getInstance().initialize(new ApplicationArguments(args));
+
+        Consumer<Throwable> dbLogger = throwable -> ApplicationContext.getInstance().getLogger()
+                                                                      .log(Level.SEVERE, throwable.getMessage(),
+                                                                           throwable);
+
+        ApplicationContext.getInstance().getDatabaseManager().setOperationFailed(dbLogger);
+
         launch(args);
     }
 

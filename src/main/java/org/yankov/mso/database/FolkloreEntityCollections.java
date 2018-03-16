@@ -104,15 +104,14 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     }
 
     private <CollectionType> List<CollectionType> loadCollectionFromDatabase(Class entityClass) {
-        Optional optResult = ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
+        Optional optResult = ApplicationContext.getInstance().getDatabaseManager().executeOperation(session -> {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<CollectionType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
             Root<CollectionType> root = criteriaQuery.from(entityClass);
             criteriaQuery.select(root);
             Query<CollectionType> query = session.createQuery(criteriaQuery);
             return query.getResultList();
-        }, throwable -> ApplicationContext.getInstance().getLogger()
-                                          .log(Level.SEVERE, throwable.getMessage(), throwable));
+        });
 
         if (!optResult.isPresent()) {
             return Collections.emptyList();
@@ -122,11 +121,10 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     }
 
     private <CollectionType> void saveCollectionToDatabase(Collection<CollectionType> collection) {
-        ApplicationContext.getInstance().getDatabaseSessionManager().executeOperation(session -> {
+        ApplicationContext.getInstance().getDatabaseManager().executeOperation(session -> {
             collection.forEach(session::saveOrUpdate);
             return null;
-        }, throwable -> ApplicationContext.getInstance().getLogger()
-                                          .log(Level.SEVERE, throwable.getMessage(), throwable));
+        });
     }
 
     public Set<EthnographicRegion> getEthnographicRegions() {

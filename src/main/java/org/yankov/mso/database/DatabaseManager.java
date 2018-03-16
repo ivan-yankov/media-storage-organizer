@@ -1,5 +1,6 @@
 package org.yankov.mso.database;
 
+import org.apache.derby.drda.NetworkServerControl;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,21 +9,34 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
+import org.yankov.mso.application.ApplicationArguments;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.*;
 
-import java.util.*;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
-public class DatabaseSessionManager {
+public class DatabaseManager {
 
+    private NetworkServerControl server;
     private Session session;
+    private String driver;
+    private String url;
 
-    public DatabaseSessionManager() {
+    private Consumer<Throwable> operationFailed;
+
+    public DatabaseManager() {
+        initDatabaseSettings();
+    }
+
+    public void setOperationFailed(Consumer<Throwable> operationFailed) {
+        this.operationFailed = operationFailed;
     }
 
     public boolean openSession() {
@@ -45,7 +59,32 @@ public class DatabaseSessionManager {
         }
     }
 
-    public Optional<Object> executeOperation(Function<Session, Object> operation, Consumer<Throwable> operationFailed) {
+    public void startServer() {
+        new Thread(() -> {
+            try {
+                server = new NetworkServerControl();
+                server.start(null);
+            } catch (Exception e) {
+                if (operationFailed != null) {
+                    operationFailed.accept(e);
+                }
+            }
+        }).start();
+    }
+
+    public void stopServer() {
+        try {
+            if (server != null) {
+                server.shutdown();
+            }
+        } catch (Exception e) {
+            if (operationFailed != null) {
+                operationFailed.accept(e);
+            }
+        }
+    }
+
+    public Optional<Object> executeOperation(Function<Session, Object> operation) {
         Object result = null;
         Transaction transaction = null;
         try {
@@ -69,8 +108,8 @@ public class DatabaseSessionManager {
     private Optional<SessionFactory> createSessionFactory() {
         try {
             Map<String, String> settings = new HashMap<>();
-            settings.put(Environment.DRIVER, "org.apache.derby.jdbc.ClientDriver");
-            settings.put(Environment.URL, "jdbc:derby://localhost:1527/mso");
+            settings.put(Environment.DRIVER, driver);
+            settings.put(Environment.URL, url);
             settings.put(Environment.DEFAULT_SCHEMA, "admin");
             settings.put(Environment.USER, "admin");
             settings.put(Environment.PASS, "admin");
@@ -100,6 +139,28 @@ public class DatabaseSessionManager {
         } catch (HibernateException e) {
             ApplicationContext.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             return Optional.empty();
+        }
+    }
+
+    private void initDatabaseSettings() {
+        String dbEmbeddedMode = ApplicationContext.getInstance().getApplicationArguments()
+                                                  .getArgument(ApplicationArguments.Argument.DB_EMBEDDED_MODE);
+        if (dbEmbeddedMode.equalsIgnoreCase("embedded")) {
+            driver = "org.apache.derby.jdbc.EmbeddedDriver";
+            String urlFormat = "jdbc:derby:{0}";
+            String dbName = ApplicationContext.getInstance().getApplicationArguments()
+                                              .getArgument(ApplicationArguments.Argument.DB_NAME);
+            url = MessageFormat.format(urlFormat, dbName);
+        } else {
+            driver = "org.apache.derby.jdbc.ClientDriver";
+            String urlFormat = "jdbc:derby://{0}:{1}/{2}";
+            String dbHost = ApplicationContext.getInstance().getApplicationArguments()
+                                              .getArgument(ApplicationArguments.Argument.DB_HOST);
+            String dbPort = ApplicationContext.getInstance().getApplicationArguments()
+                                              .getArgument(ApplicationArguments.Argument.DB_PORT);
+            String dbName = ApplicationContext.getInstance().getApplicationArguments()
+                                              .getArgument(ApplicationArguments.Argument.DB_NAME);
+            url = MessageFormat.format(urlFormat, dbHost, dbPort, dbName);
         }
     }
 

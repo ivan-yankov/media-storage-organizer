@@ -2,38 +2,48 @@ package org.yankov.mso.application;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class ApplicationArguments {
 
-    private static final String ARGUMENT_VALUE_SEPARATOR = "=";
+    public enum Argument {
+        APPLICATION_MODE,
+        LANGUAGE,
+        SETTINGS,
+        DB_EMBEDDED_MODE,
+        DB_NAME,
+        DB_HOST,
+        DB_PORT
+    }
 
-    private Map<String, String> arguments;
+    private Map<Argument, String> arguments;
 
     public ApplicationArguments(String[] args) {
         this.arguments = initialize(args);
     }
 
-    public Optional<String> getArgument(String key) {
+    public String getArgument(Argument key) {
         String value = arguments.get(key);
-        return value != null ? Optional.of(value) : Optional.empty();
+        return value != null ? value : "";
     }
 
-    private Map<String, String> initialize(String[] args) {
-        if (!argsPresented(args)) {
-            return new HashMap<>();
-        } else {
-            Map<String, String> map = new HashMap<>();
-            for (String arg : args) {
-                String[] argVal = arg.split(ARGUMENT_VALUE_SEPARATOR);
-                map.put(argVal[0], argVal[1]);
-            }
+    private Map<Argument, String> initialize(String[] args) {
+        if (argsValid(args)) {
+            Map<Argument, String> map = new HashMap<>();
+            map.put(Argument.APPLICATION_MODE, args[0]);
+            map.put(Argument.LANGUAGE, args[1]);
+            map.put(Argument.SETTINGS, args[2]);
+            map.put(Argument.DB_EMBEDDED_MODE, args[3]);
+            map.put(Argument.DB_NAME, args[4]);
+            map.put(Argument.DB_HOST, args[5]);
+            map.put(Argument.DB_PORT, args[6]);
             return map;
+        } else {
+            return new HashMap<>();
         }
     }
 
-    private boolean argsPresented(String[] args) {
-        return args != null && args.length > 0;
+    private boolean argsValid(String[] args) {
+        return args != null && args.length == Argument.values().length;
     }
 
 }
