@@ -57,14 +57,14 @@ public class ExpectedCollections {
         return artists.stream().filter(artist -> artist.getName().equals(name)).findFirst();
     }
 
-    public void createExpectedCollections() {
-        sourceTypes.addAll(FolkloreEntityCollections.getInstance().getSourceTypes());
-        sources.addAll(FolkloreEntityCollections.getInstance().getSources());
-        instruments.addAll(FolkloreEntityCollections.getInstance().getInstruments());
-        artists.addAll(FolkloreEntityCollections.getInstance().getArtists());
-        albums.addAll(FolkloreEntityCollections.getInstance().getAlbums());
-        pieces.addAll(FolkloreEntityCollections.getInstance().getPieces());
-        ethnographicRegions.addAll(FolkloreEntityCollections.getInstance().getEthnographicRegions());
+    public void createExpectedCollections(FolkloreEntityCollections collections) {
+        sourceTypes.addAll(collections.getSourceTypes());
+        sources.addAll(collections.getSources());
+        instruments.addAll(collections.getInstruments());
+        artists.addAll(collections.getArtists());
+        albums.addAll(collections.getAlbums());
+        pieces.addAll(collections.getPieces());
+        ethnographicRegions.addAll(collections.getEthnographicRegions());
     }
 
 }

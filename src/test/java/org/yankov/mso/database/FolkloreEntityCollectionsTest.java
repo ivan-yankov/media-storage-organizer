@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.datamodel.*;
 
+import javax.xml.crypto.Data;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -41,30 +42,32 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testInitialize() {
-        FolkloreEntityCollections.getInstance().clear();
-        FolkloreEntityCollections.getInstance().initialize();
-        assertInitializedEntities();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        collections.clear();
+        collections.initialize();
+        assertInitializedEntities(collections);
     }
 
     @Test
     public void testSaveLoadDatabase() {
-        FolkloreEntityCollections.getInstance().clear();
-        FolkloreEntityCollections.getInstance().initialize();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
+        collections.clear();
+        collections.initialize();
 
-        modifyEntityCollections(FolkloreEntityCollections.getInstance(), true, 1);
+        modifyEntityCollections(collections, true, 1);
 
         ExpectedCollections expectedCollections = new ExpectedCollections();
-        expectedCollections.createExpectedCollections();
+        expectedCollections.createExpectedCollections(collections);
 
-        FolkloreEntityCollections.getInstance().saveToDatabase();
-        FolkloreEntityCollections.getInstance().loadFromDatabase();
+        DatabaseOperations.saveToDatabase(collections);
+        collections = DatabaseOperations.loadFromDatabase();
 
-        assertStoredEntities(expectedCollections);
+        assertStoredEntities(expectedCollections, collections);
     }
 
     @Test
     public void testAddGetSourceType() {
-        FolkloreEntityCollections collections = FolkloreEntityCollections.getInstance();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
         collections.clear();
         collections.initialize();
 
@@ -80,7 +83,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetInstrument() {
-        FolkloreEntityCollections collections = FolkloreEntityCollections.getInstance();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
         collections.clear();
         collections.initialize();
 
@@ -95,7 +98,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetArtist() {
-        FolkloreEntityCollections collections = FolkloreEntityCollections.getInstance();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
         collections.clear();
         collections.initialize();
 
@@ -110,7 +113,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetDisc() {
-        FolkloreEntityCollections collections = FolkloreEntityCollections.getInstance();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
         collections.clear();
         collections.initialize();
 
@@ -124,7 +127,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     @Test
     public void testAddGetEthnographicRegion() {
-        FolkloreEntityCollections collections = FolkloreEntityCollections.getInstance();
+        FolkloreEntityCollections collections = new FolkloreEntityCollections();
         collections.clear();
         collections.initialize();
 
@@ -136,33 +139,33 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertFalse(collections.getEthnographicRegion("друг регион").isPresent());
     }
 
-    private void assertStoredEntities(ExpectedCollections expectedCollections) {
-        assertSetsEqual(expectedCollections.getSources(), FolkloreEntityCollections.getInstance().getSources());
-        assertSetsEqual(expectedCollections.getInstruments(), FolkloreEntityCollections.getInstance().getInstruments());
-        assertSetsEqual(expectedCollections.getArtists(), FolkloreEntityCollections.getInstance().getArtists());
-        assertSetsEqual(expectedCollections.getAlbums(), FolkloreEntityCollections.getInstance().getAlbums());
+    private void assertStoredEntities(ExpectedCollections expectedCollections, FolkloreEntityCollections collections) {
+        assertSetsEqual(expectedCollections.getSources(), collections.getSources());
+        assertSetsEqual(expectedCollections.getInstruments(), collections.getInstruments());
+        assertSetsEqual(expectedCollections.getArtists(), collections.getArtists());
+        assertSetsEqual(expectedCollections.getAlbums(), collections.getAlbums());
         assertSetsEqual(expectedCollections.getEthnographicRegions(),
-                        FolkloreEntityCollections.getInstance().getEthnographicRegions());
+                        collections.getEthnographicRegions());
 
-        Assert.assertTrue(FolkloreEntityCollections.getInstance().getAlbum(ALBUM_COLLECTION_SIGNATURE).isPresent());
-        Album actualAlbum = FolkloreEntityCollections.getInstance().getAlbum(ALBUM_COLLECTION_SIGNATURE).get();
+        Assert.assertTrue(collections.getAlbum(ALBUM_COLLECTION_SIGNATURE).isPresent());
+        Album actualAlbum = collections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get();
         Assert.assertEquals(ALBUM_NOTE, actualAlbum.getNote());
         Assert.assertEquals(ALBUM_PRODUCTION_SIGNATURE, actualAlbum.getProductionSignature());
         Assert.assertEquals(ALBUM_TITLE, actualAlbum.getTitle());
 
-        Assert.assertTrue(FolkloreEntityCollections.getInstance().getArtist(KOSTA_KOLEV).isPresent());
+        Assert.assertTrue(collections.getArtist(KOSTA_KOLEV).isPresent());
         Assert.assertEquals(ACCORDEON,
-                            FolkloreEntityCollections.getInstance().getArtist(KOSTA_KOLEV).get().getInstrument()
+                            collections.getArtist(KOSTA_KOLEV).get().getInstrument()
                                                      .getName());
         Assert.assertEquals(KOSTA_KOLEV_NOTE,
-                            FolkloreEntityCollections.getInstance().getArtist(KOSTA_KOLEV).get().getNote());
-        Assert.assertTrue(FolkloreEntityCollections.getInstance().getArtist(FILIP_KUTEV).get().getMissions().isEmpty());
+                            collections.getArtist(KOSTA_KOLEV).get().getNote());
+        Assert.assertTrue(collections.getArtist(FILIP_KUTEV).get().getMissions().isEmpty());
         assertSetsEqual(expectedCollections.findArtist(KOSTA_KOLEV).get().getMissions(),
-                        FolkloreEntityCollections.getInstance().getArtist(KOSTA_KOLEV).get().getMissions());
+                        collections.getArtist(KOSTA_KOLEV).get().getMissions());
 
         Assert.assertEquals(expectedCollections.getPieces().size(),
-                            FolkloreEntityCollections.getInstance().getPieces().size());
-        assertPiece(expectedCollections.getPieces().get(0), FolkloreEntityCollections.getInstance().getPiece(0).get());
+                            collections.getPieces().size());
+        assertPiece(expectedCollections.getPieces().get(0), collections.getPiece(0).get());
     }
 
     private void assertPiece(FolklorePiece expected, FolklorePiece actual) {
@@ -188,18 +191,18 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertEquals(RECORD_DATA_FORMAT, actual.getRecord().getDataFormat());
     }
 
-    private void assertInitializedEntities() {
-        Assert.assertTrue(FolkloreEntityCollections.getInstance().getArtists().isEmpty());
-        Assert.assertTrue(FolkloreEntityCollections.getInstance().getAlbums().isEmpty());
-        Assert.assertTrue(FolkloreEntityCollections.getInstance().getPieces().isEmpty());
+    private void assertInitializedEntities(FolkloreEntityCollections collections) {
+        Assert.assertTrue(collections.getArtists().isEmpty());
+        Assert.assertTrue(collections.getAlbums().isEmpty());
+        Assert.assertTrue(collections.getPieces().isEmpty());
 
         assertSetsEqual(FolkloreEntityCollectionFactory.createInstruments(),
-                        FolkloreEntityCollections.getInstance().getInstruments());
+                        collections.getInstruments());
         assertSetsEqual(
-                FolkloreEntityCollectionFactory.createSources(FolkloreEntityCollections.getInstance().getSourceTypes()),
-                FolkloreEntityCollections.getInstance().getSources());
+                FolkloreEntityCollectionFactory.createSources(collections.getSourceTypes()),
+                collections.getSources());
         assertSetsEqual(FolkloreEntityCollectionFactory.createEthnographicRegions(),
-                        FolkloreEntityCollections.getInstance().getEthnographicRegions());
+                        collections.getEthnographicRegions());
     }
 
     private <T> void assertSetsEqual(Set<T> expected, Set<T> actual) {

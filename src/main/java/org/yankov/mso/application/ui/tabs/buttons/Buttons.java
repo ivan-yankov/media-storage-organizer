@@ -13,6 +13,7 @@ import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FxUtils;
+import org.yankov.mso.database.DatabaseOperations;
 import org.yankov.mso.database.EntityCollections;
 import org.yankov.mso.datamodel.Piece;
 import org.yankov.mso.datamodel.PieceProperties;
@@ -225,7 +226,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
             protected Object call() {
                 ApplicationContext context = ApplicationContext.getInstance();
                 context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                entityCollections.saveToDatabase();
+                DatabaseOperations.saveToDatabase(entityCollections);
                 context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
                 context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
                 return null;

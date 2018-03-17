@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.database.DatabaseOperations;
 import org.yankov.mso.database.FolkloreEntityCollections;
 
 import java.beans.PropertyChangeEvent;
@@ -156,7 +157,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         setArtifactProperties(artifact);
         if (addArtifact(artifact)) {
             cleanup();
-            ApplicationContext.getInstance().getFolkloreEntityCollections().saveToDatabase();
+            DatabaseOperations.saveToDatabase(ApplicationContext.getInstance().getFolkloreEntityCollections());
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
         } else {
             ApplicationContext.getInstance().getLogger()
@@ -176,7 +177,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         } else {
             setArtifactProperties(selectedArtifact);
             refreshExistingArtifacts();
-            ApplicationContext.getInstance().getFolkloreEntityCollections().saveToDatabase();
+            DatabaseOperations.saveToDatabase(ApplicationContext.getInstance().getFolkloreEntityCollections());
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_SAVED));
         }
     }

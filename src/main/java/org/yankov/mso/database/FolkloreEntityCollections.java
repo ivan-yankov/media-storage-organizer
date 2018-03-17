@@ -1,16 +1,10 @@
 package org.yankov.mso.database;
 
-import org.hibernate.query.Query;
-import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
-import java.util.logging.Level;
 
 public class FolkloreEntityCollections implements EntityCollections<FolklorePiece> {
 
@@ -23,8 +17,6 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     private static final String PROPERTY_ALBUMS = "albums";
     private static final String PROPERTY_PIECES = "pieces";
 
-    private static FolkloreEntityCollections instance;
-
     private final PropertyChangeSupport propertyChangeSupport;
 
     private final Set<SourceType> sourceTypes;
@@ -35,7 +27,7 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     private final Set<EthnographicRegion> ethnographicRegions;
     private final List<FolklorePiece> pieces;
 
-    private FolkloreEntityCollections() {
+    public FolkloreEntityCollections() {
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.sourceTypes = new HashSet<>();
         this.sources = new HashSet<>();
@@ -46,120 +38,40 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         this.pieces = new ArrayList<>();
     }
 
-    public static FolkloreEntityCollections getInstance() {
-        if (instance == null) {
-            instance = new FolkloreEntityCollections();
-        }
-        return instance;
-    }
-
-    @Override
-    public void clear() {
-        getInstance().sourceTypes.clear();
-        getInstance().sources.clear();
-        getInstance().instruments.clear();
-        getInstance().artists.clear();
-        getInstance().albums.clear();
-        getInstance().ethnographicRegions.clear();
-        getInstance().pieces.clear();
-    }
-
-    @Override
-    public void initialize() {
-        if (getInstance().sourceTypes.isEmpty()) {
-            getInstance().sourceTypes.addAll(FolkloreEntityCollectionFactory.createSourceTypes());
-        }
-        if (getInstance().sources.isEmpty()) {
-            getInstance().sources.addAll(FolkloreEntityCollectionFactory.createSources(sourceTypes));
-        }
-        if (getInstance().instruments.isEmpty()) {
-            getInstance().instruments.addAll(FolkloreEntityCollectionFactory.createInstruments());
-        }
-        if (getInstance().ethnographicRegions.isEmpty()) {
-            getInstance().ethnographicRegions.addAll(FolkloreEntityCollectionFactory.createEthnographicRegions());
-        }
-    }
-
-    @Override
-    public void loadFromDatabase() {
-        clear();
-        getInstance().sourceTypes.addAll(FolkloreEntityCollectionFactory.createSourceTypes());
-        getInstance().sources.addAll(loadCollectionFromDatabase(Source.class));
-        getInstance().instruments.addAll(loadCollectionFromDatabase(Instrument.class));
-        getInstance().artists.addAll(loadCollectionFromDatabase(Artist.class));
-        getInstance().albums.addAll(loadCollectionFromDatabase(Album.class));
-        getInstance().ethnographicRegions.addAll(loadCollectionFromDatabase(EthnographicRegion.class));
-        getInstance().pieces.addAll(loadCollectionFromDatabase(FolklorePiece.class));
-    }
-
-    @Override
-    public void saveToDatabase() {
-        saveCollectionToDatabase(getInstance().sourceTypes);
-        saveCollectionToDatabase(getInstance().sources);
-        saveCollectionToDatabase(getInstance().instruments);
-        saveCollectionToDatabase(getInstance().artists);
-        saveCollectionToDatabase(getInstance().albums);
-        saveCollectionToDatabase(getInstance().ethnographicRegions);
-        saveCollectionToDatabase(getInstance().pieces);
-    }
-
-    private <CollectionType> List<CollectionType> loadCollectionFromDatabase(Class entityClass) {
-        Optional optResult = ApplicationContext.getInstance().getDatabaseManager().executeOperation(session -> {
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<CollectionType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-            Root<CollectionType> root = criteriaQuery.from(entityClass);
-            criteriaQuery.select(root);
-            Query<CollectionType> query = session.createQuery(criteriaQuery);
-            return query.getResultList();
-        });
-
-        if (!optResult.isPresent()) {
-            return Collections.emptyList();
-        }
-
-        return (List<CollectionType>) optResult.get();
-    }
-
-    private <CollectionType> void saveCollectionToDatabase(Collection<CollectionType> collection) {
-        ApplicationContext.getInstance().getDatabaseManager().executeOperation(session -> {
-            collection.forEach(session::saveOrUpdate);
-            return null;
-        });
-    }
-
-    public Set<EthnographicRegion> getEthnographicRegions() {
-        return Collections.unmodifiableSet(ethnographicRegions);
-    }
-
-    public Optional<EthnographicRegion> getEthnographicRegion(String name) {
-        return ethnographicRegions.stream().filter(entity -> entity.getName().toLowerCase().trim()
-                                                                   .equals(name.toLowerCase().trim())).findFirst();
-    }
-
-    public boolean addEthnographicRegion(EthnographicRegion ethnographicRegion) {
-        Set<EthnographicRegion> oldValue = new HashSet<>();
-        oldValue.addAll(ethnographicRegions);
-        boolean result = ethnographicRegions.add(ethnographicRegion);
-        propertyChangeSupport.firePropertyChange(PROPERTY_ETHNOGRAPHIC_REGIONS, oldValue, ethnographicRegions);
-        return result;
-    }
-
-    public void addEthnographicRegions(Set<EthnographicRegion> ethnographicRegions) {
-        Set<EthnographicRegion> oldValue = new HashSet<>();
-        oldValue.addAll(this.ethnographicRegions);
-        this.ethnographicRegions.addAll(ethnographicRegions);
-        propertyChangeSupport.firePropertyChange(PROPERTY_ETHNOGRAPHIC_REGIONS, oldValue, this.ethnographicRegions);
-    }
-
-    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
-    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void clear() {
+        sourceTypes.clear();
+        sources.clear();
+        instruments.clear();
+        artists.clear();
+        albums.clear();
+        ethnographicRegions.clear();
+        pieces.clear();
+    }
+
+    @Override
+    public void initialize() {
+        if (sourceTypes.isEmpty()) {
+            sourceTypes.addAll(FolkloreEntityCollectionFactory.createSourceTypes());
+        }
+        if (sources.isEmpty()) {
+            sources.addAll(FolkloreEntityCollectionFactory.createSources(sourceTypes));
+        }
+        if (instruments.isEmpty()) {
+            instruments.addAll(FolkloreEntityCollectionFactory.createInstruments());
+        }
+        if (ethnographicRegions.isEmpty()) {
+            ethnographicRegions.addAll(FolkloreEntityCollectionFactory.createEthnographicRegions());
+        }
     }
 
     @Override
@@ -168,28 +80,10 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     }
 
     @Override
-    public Set<Source> getSources() {
-        return Collections.unmodifiableSet(sources);
-    }
-
-    @Override
-    public Set<Instrument> getInstruments() {
-        return Collections.unmodifiableSet(instruments);
-    }
-
-    @Override
-    public Set<Artist> getArtists() {
-        return Collections.unmodifiableSet(artists);
-    }
-
-    @Override
-    public Set<Album> getAlbums() {
-        return Collections.unmodifiableSet(albums);
-    }
-
-    @Override
-    public List<FolklorePiece> getPieces() {
-        return Collections.unmodifiableList(pieces);
+    public void addSourceTypes(Collection<SourceType> sourceTypes) {
+        Set<SourceType> oldValue = new HashSet<>(this.sourceTypes);
+        this.sourceTypes.addAll(sourceTypes);
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCE_TYPES, oldValue, this.sourceTypes);
     }
 
     @Override
@@ -201,19 +95,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     @Override
     public boolean addSourceType(SourceType sourceType) {
-        Set<SourceType> oldValue = new HashSet<>();
-        oldValue.addAll(sourceTypes);
+        Set<SourceType> oldValue = new HashSet<>(sourceTypes);
         boolean result = sourceTypes.add(sourceType);
         propertyChangeSupport.firePropertyChange(PROPERTY_SOURCE_TYPES, oldValue, sourceTypes);
         return result;
     }
 
     @Override
-    public void addSourceTypes(Set<SourceType> sourceTypes) {
-        Set<SourceType> oldValue = new HashSet<>();
-        oldValue.addAll(this.sourceTypes);
-        this.sourceTypes.addAll(sourceTypes);
-        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCE_TYPES, oldValue, this.sourceTypes);
+    public Set<Source> getSources() {
+        return Collections.unmodifiableSet(sources);
+    }
+
+    @Override
+    public void addSources(Collection<Source> sources) {
+        Set<Source> oldValue = new HashSet<>(this.sources);
+        this.sources.addAll(sources);
+        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, this.sources);
     }
 
     @Override
@@ -224,19 +121,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     @Override
     public boolean addSource(Source source) {
-        Set<Source> oldValue = new HashSet<>();
-        oldValue.addAll(sources);
+        Set<Source> oldValue = new HashSet<>(sources);
         boolean result = sources.add(source);
         propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, sources);
         return result;
     }
 
     @Override
-    public void addSources(Set<Source> sources) {
-        Set<Source> oldValue = new HashSet<>();
-        oldValue.addAll(this.sources);
-        this.sources.addAll(sources);
-        propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, this.sources);
+    public Set<Instrument> getInstruments() {
+        return Collections.unmodifiableSet(instruments);
+    }
+
+    @Override
+    public void addInstruments(Collection<Instrument> instruments) {
+        Set<Instrument> oldValue = new HashSet<>(this.instruments);
+        this.instruments.addAll(instruments);
+        propertyChangeSupport.firePropertyChange(PROPERTY_INSTRUMENTS, oldValue, this.instruments);
     }
 
     @Override
@@ -248,19 +148,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     @Override
     public boolean addInstrument(Instrument instrument) {
-        Set<Instrument> oldValue = new HashSet<>();
-        oldValue.addAll(instruments);
+        Set<Instrument> oldValue = new HashSet<>(instruments);
         boolean result = instruments.add(instrument);
         propertyChangeSupport.firePropertyChange(PROPERTY_INSTRUMENTS, oldValue, instruments);
         return result;
     }
 
     @Override
-    public void addInstruments(Set<Instrument> instruments) {
-        Set<Instrument> oldValue = new HashSet<>();
-        oldValue.addAll(this.instruments);
-        this.instruments.addAll(instruments);
-        propertyChangeSupport.firePropertyChange(PROPERTY_INSTRUMENTS, oldValue, this.instruments);
+    public Set<Artist> getArtists() {
+        return Collections.unmodifiableSet(artists);
+    }
+
+    @Override
+    public void addArtists(Collection<Artist> artists) {
+        Set<Artist> oldValue = new HashSet<>(this.artists);
+        this.artists.addAll(artists);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ARTISTS, oldValue, this.artists);
     }
 
     @Override
@@ -272,11 +175,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     @Override
     public boolean addArtist(Artist artist) {
-        Set<Artist> oldValue = new HashSet<>();
-        oldValue.addAll(artists);
+        Set<Artist> oldValue = new HashSet<>(artists);
         boolean result = artists.add(artist);
         propertyChangeSupport.firePropertyChange(PROPERTY_ARTISTS, oldValue, artists);
         return result;
+    }
+
+    @Override
+    public Set<Album> getAlbums() {
+        return Collections.unmodifiableSet(albums);
+    }
+
+    @Override
+    public void addAlbums(Collection<Album> albums) {
+        Set<Album> oldValue = new HashSet<>(this.albums);
+        this.albums.addAll(albums);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ALBUMS, oldValue, this.albums);
     }
 
     @Override
@@ -287,11 +201,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     @Override
     public boolean addAlbum(Album album) {
-        Set<Album> oldValue = new HashSet<>();
-        oldValue.addAll(albums);
+        Set<Album> oldValue = new HashSet<>(albums);
         boolean result = albums.add(album);
         propertyChangeSupport.firePropertyChange(PROPERTY_ALBUMS, oldValue, albums);
         return result;
+    }
+
+    @Override
+    public List<FolklorePiece> getPieces() {
+        return Collections.unmodifiableList(pieces);
+    }
+
+    @Override
+    public void addPieces(Collection<FolklorePiece> pieces) {
+        List<FolklorePiece> oldValue = new ArrayList<>(this.pieces);
+        this.pieces.addAll(pieces);
+        propertyChangeSupport.firePropertyChange(PROPERTY_PIECES, oldValue, this.pieces);
     }
 
     @Override
@@ -305,10 +230,31 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     @Override
     public boolean addPiece(FolklorePiece piece) {
-        List<FolklorePiece> oldValue = new ArrayList<>();
-        oldValue.addAll(pieces);
+        List<FolklorePiece> oldValue = new ArrayList<>(pieces);
         boolean result = pieces.add(piece);
         propertyChangeSupport.firePropertyChange(PROPERTY_PIECES, oldValue, pieces);
+        return result;
+    }
+
+    public Set<EthnographicRegion> getEthnographicRegions() {
+        return Collections.unmodifiableSet(ethnographicRegions);
+    }
+
+    public void addEthnographicRegions(Collection<EthnographicRegion> ethnographicRegions) {
+        Set<EthnographicRegion> oldValue = new HashSet<>(this.ethnographicRegions);
+        this.ethnographicRegions.addAll(ethnographicRegions);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ETHNOGRAPHIC_REGIONS, oldValue, this.ethnographicRegions);
+    }
+
+    public Optional<EthnographicRegion> getEthnographicRegion(String name) {
+        return ethnographicRegions.stream().filter(entity -> entity.getName().toLowerCase().trim()
+                                                                   .equals(name.toLowerCase().trim())).findFirst();
+    }
+
+    public boolean addEthnographicRegion(EthnographicRegion ethnographicRegion) {
+        Set<EthnographicRegion> oldValue = new HashSet<>(ethnographicRegions);
+        boolean result = ethnographicRegions.add(ethnographicRegion);
+        propertyChangeSupport.firePropertyChange(PROPERTY_ETHNOGRAPHIC_REGIONS, oldValue, ethnographicRegions);
         return result;
     }
 

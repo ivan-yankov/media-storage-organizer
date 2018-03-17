@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.database.DatabaseOperations;
 import org.yankov.mso.database.FolkloreEntityCollections;
 
 import java.util.function.Consumer;
@@ -36,9 +37,9 @@ public class MediaStorageOrganizer extends Application {
                 throw new Exception("Database error.");
             }
 
-            FolkloreEntityCollections.getInstance().loadFromDatabase();
-            FolkloreEntityCollections.getInstance().initialize();
-            ApplicationContext.getInstance().setFolkloreEntityCollections(FolkloreEntityCollections.getInstance());
+            FolkloreEntityCollections collections = DatabaseOperations.loadFromDatabase();
+            collections.initialize();
+            ApplicationContext.getInstance().setFolkloreEntityCollections(collections);
 
             Form form = new FolkloreMainForm(primaryStage);
             form.createControls();
