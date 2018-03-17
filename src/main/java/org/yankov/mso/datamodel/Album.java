@@ -1,7 +1,6 @@
 package org.yankov.mso.datamodel;
 
 import javax.persistence.*;
-import java.time.Duration;
 
 @Entity
 @Table(name = "ALBUM")

@@ -24,7 +24,7 @@ public class PerformanceTest extends DatabaseTest {
         Assert.assertTrue(executionTime < MAX_TIME_WRITING_SEC);
 
         start = System.currentTimeMillis();
-        collections = DatabaseOperations.loadFromDatabase();
+        collections = (FolkloreEntityCollections) DatabaseOperations.loadFromDatabase(FolkloreEntityCollections::new);
         end = System.currentTimeMillis();
         executionTime = (end - start) / MILLISECONDS_IN_SECOND;
         Assert.assertTrue(executionTime < MAX_TIME_READING_SEC);

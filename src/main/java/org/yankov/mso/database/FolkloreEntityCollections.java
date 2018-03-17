@@ -27,6 +27,8 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     private final Set<EthnographicRegion> ethnographicRegions;
     private final List<FolklorePiece> pieces;
 
+    private Map<Class, Collection> collections = new HashMap<>();
+
     public FolkloreEntityCollections() {
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.sourceTypes = new HashSet<>();
@@ -36,6 +38,15 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         this.albums = new HashSet<>();
         this.ethnographicRegions = new HashSet<>();
         this.pieces = new ArrayList<>();
+
+        this.collections = new HashMap<>();
+        this.collections.put(SourceType.class, sourceTypes);
+        this.collections.put(Source.class, sources);
+        this.collections.put(Instrument.class, instruments);
+        this.collections.put(Artist.class, artists);
+        this.collections.put(Album.class, albums);
+        this.collections.put(EthnographicRegion.class, ethnographicRegions);
+        this.collections.put(FolklorePiece.class, pieces);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -75,25 +86,31 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     }
 
     @Override
+    public Map<Class, Collection> getCollections() {
+        return collections;
+    }
+
+    @Override
+    public void addEntities(Class c, Collection entities) {
+        collections.get(c).addAll(entities);
+    }
+
     public Set<SourceType> getSourceTypes() {
         return Collections.unmodifiableSet(sourceTypes);
     }
 
-    @Override
     public void addSourceTypes(Collection<SourceType> sourceTypes) {
         Set<SourceType> oldValue = new HashSet<>(this.sourceTypes);
         this.sourceTypes.addAll(sourceTypes);
         propertyChangeSupport.firePropertyChange(PROPERTY_SOURCE_TYPES, oldValue, this.sourceTypes);
     }
 
-    @Override
     public Optional<SourceType> getSourceType(String name) {
         return sourceTypes.stream()
                           .filter(entity -> entity.toString().toLowerCase().trim().equals(name.toLowerCase().trim()))
                           .findFirst();
     }
 
-    @Override
     public boolean addSourceType(SourceType sourceType) {
         Set<SourceType> oldValue = new HashSet<>(sourceTypes);
         boolean result = sourceTypes.add(sourceType);
@@ -101,25 +118,21 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         return result;
     }
 
-    @Override
     public Set<Source> getSources() {
         return Collections.unmodifiableSet(sources);
     }
 
-    @Override
     public void addSources(Collection<Source> sources) {
         Set<Source> oldValue = new HashSet<>(this.sources);
         this.sources.addAll(sources);
         propertyChangeSupport.firePropertyChange(PROPERTY_SOURCES, oldValue, this.sources);
     }
 
-    @Override
     public Optional<Source> getSource(String representation) {
         return sources.stream().filter(entity -> entity.toString().toLowerCase().trim()
                                                        .equals(representation.toLowerCase().trim())).findFirst();
     }
 
-    @Override
     public boolean addSource(Source source) {
         Set<Source> oldValue = new HashSet<>(sources);
         boolean result = sources.add(source);
@@ -127,26 +140,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         return result;
     }
 
-    @Override
     public Set<Instrument> getInstruments() {
         return Collections.unmodifiableSet(instruments);
     }
 
-    @Override
     public void addInstruments(Collection<Instrument> instruments) {
         Set<Instrument> oldValue = new HashSet<>(this.instruments);
         this.instruments.addAll(instruments);
         propertyChangeSupport.firePropertyChange(PROPERTY_INSTRUMENTS, oldValue, this.instruments);
     }
 
-    @Override
     public Optional<Instrument> getInstrument(String name) {
         return instruments.stream()
                           .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
                           .findFirst();
     }
 
-    @Override
     public boolean addInstrument(Instrument instrument) {
         Set<Instrument> oldValue = new HashSet<>(instruments);
         boolean result = instruments.add(instrument);
@@ -154,26 +163,22 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         return result;
     }
 
-    @Override
     public Set<Artist> getArtists() {
         return Collections.unmodifiableSet(artists);
     }
 
-    @Override
     public void addArtists(Collection<Artist> artists) {
         Set<Artist> oldValue = new HashSet<>(this.artists);
         this.artists.addAll(artists);
         propertyChangeSupport.firePropertyChange(PROPERTY_ARTISTS, oldValue, this.artists);
     }
 
-    @Override
     public Optional<Artist> getArtist(String name) {
         return artists.stream()
                       .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
                       .findFirst();
     }
 
-    @Override
     public boolean addArtist(Artist artist) {
         Set<Artist> oldValue = new HashSet<>(artists);
         boolean result = artists.add(artist);
@@ -181,25 +186,21 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         return result;
     }
 
-    @Override
     public Set<Album> getAlbums() {
         return Collections.unmodifiableSet(albums);
     }
 
-    @Override
     public void addAlbums(Collection<Album> albums) {
         Set<Album> oldValue = new HashSet<>(this.albums);
         this.albums.addAll(albums);
         propertyChangeSupport.firePropertyChange(PROPERTY_ALBUMS, oldValue, this.albums);
     }
 
-    @Override
     public Optional<Album> getAlbum(String collectionSignature) {
         return albums.stream().filter(entity -> entity.getCollectionSignature().toLowerCase().trim()
                                                       .equals(collectionSignature.toLowerCase().trim())).findFirst();
     }
 
-    @Override
     public boolean addAlbum(Album album) {
         Set<Album> oldValue = new HashSet<>(albums);
         boolean result = albums.add(album);
@@ -212,14 +213,12 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         return Collections.unmodifiableList(pieces);
     }
 
-    @Override
     public void addPieces(Collection<FolklorePiece> pieces) {
         List<FolklorePiece> oldValue = new ArrayList<>(this.pieces);
         this.pieces.addAll(pieces);
         propertyChangeSupport.firePropertyChange(PROPERTY_PIECES, oldValue, this.pieces);
     }
 
-    @Override
     public Optional<FolklorePiece> getPiece(int index) {
         if (index < 0 || index >= pieces.size()) {
             return Optional.empty();

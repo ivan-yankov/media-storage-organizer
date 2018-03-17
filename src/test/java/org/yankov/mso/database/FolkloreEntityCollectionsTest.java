@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.yankov.mso.datamodel.*;
 
-import javax.xml.crypto.Data;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -60,7 +59,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         expectedCollections.createExpectedCollections(collections);
 
         DatabaseOperations.saveToDatabase(collections);
-        collections = DatabaseOperations.loadFromDatabase();
+        collections = (FolkloreEntityCollections) DatabaseOperations.loadFromDatabase(FolkloreEntityCollections::new);
 
         assertStoredEntities(expectedCollections, collections);
     }
@@ -144,8 +143,7 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         assertSetsEqual(expectedCollections.getInstruments(), collections.getInstruments());
         assertSetsEqual(expectedCollections.getArtists(), collections.getArtists());
         assertSetsEqual(expectedCollections.getAlbums(), collections.getAlbums());
-        assertSetsEqual(expectedCollections.getEthnographicRegions(),
-                        collections.getEthnographicRegions());
+        assertSetsEqual(expectedCollections.getEthnographicRegions(), collections.getEthnographicRegions());
 
         Assert.assertTrue(collections.getAlbum(ALBUM_COLLECTION_SIGNATURE).isPresent());
         Album actualAlbum = collections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get();
@@ -154,17 +152,13 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertEquals(ALBUM_TITLE, actualAlbum.getTitle());
 
         Assert.assertTrue(collections.getArtist(KOSTA_KOLEV).isPresent());
-        Assert.assertEquals(ACCORDEON,
-                            collections.getArtist(KOSTA_KOLEV).get().getInstrument()
-                                                     .getName());
-        Assert.assertEquals(KOSTA_KOLEV_NOTE,
-                            collections.getArtist(KOSTA_KOLEV).get().getNote());
+        Assert.assertEquals(ACCORDEON, collections.getArtist(KOSTA_KOLEV).get().getInstrument().getName());
+        Assert.assertEquals(KOSTA_KOLEV_NOTE, collections.getArtist(KOSTA_KOLEV).get().getNote());
         Assert.assertTrue(collections.getArtist(FILIP_KUTEV).get().getMissions().isEmpty());
         assertSetsEqual(expectedCollections.findArtist(KOSTA_KOLEV).get().getMissions(),
                         collections.getArtist(KOSTA_KOLEV).get().getMissions());
 
-        Assert.assertEquals(expectedCollections.getPieces().size(),
-                            collections.getPieces().size());
+        Assert.assertEquals(expectedCollections.getPieces().size(), collections.getPieces().size());
         assertPiece(expectedCollections.getPieces().get(0), collections.getPiece(0).get());
     }
 
@@ -196,11 +190,9 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertTrue(collections.getAlbums().isEmpty());
         Assert.assertTrue(collections.getPieces().isEmpty());
 
-        assertSetsEqual(FolkloreEntityCollectionFactory.createInstruments(),
-                        collections.getInstruments());
-        assertSetsEqual(
-                FolkloreEntityCollectionFactory.createSources(collections.getSourceTypes()),
-                collections.getSources());
+        assertSetsEqual(FolkloreEntityCollectionFactory.createInstruments(), collections.getInstruments());
+        assertSetsEqual(FolkloreEntityCollectionFactory.createSources(collections.getSourceTypes()),
+                        collections.getSources());
         assertSetsEqual(FolkloreEntityCollectionFactory.createEthnographicRegions(),
                         collections.getEthnographicRegions());
     }

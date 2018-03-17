@@ -1,20 +1,15 @@
 package org.yankov.mso.datamodel;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.utils.FlacProcessor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.logging.Level;
 
 public class PieceProperties implements PropertyChangeListener {
 

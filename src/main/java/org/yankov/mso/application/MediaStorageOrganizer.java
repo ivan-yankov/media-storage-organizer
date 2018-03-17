@@ -37,7 +37,8 @@ public class MediaStorageOrganizer extends Application {
                 throw new Exception("Database error.");
             }
 
-            FolkloreEntityCollections collections = DatabaseOperations.loadFromDatabase();
+            FolkloreEntityCollections collections = (FolkloreEntityCollections) DatabaseOperations
+                    .loadFromDatabase(FolkloreEntityCollections::new);
             collections.initialize();
             ApplicationContext.getInstance().setFolkloreEntityCollections(collections);
 
