@@ -10,13 +10,16 @@ public class DurationConverter implements AttributeConverter<Duration, String> {
     private static final String SEPARATOR = ":";
     private static final String FORMAT_TEMPLATE = "%02d" + SEPARATOR + "%02d" + SEPARATOR + "%02d";
 
-    private static final int SECONDS_IN_MINUTE = 60;
-    private static int SECONDS_IN_HOUR = 60 * SECONDS_IN_MINUTE;
+    private static final long HOURS_IN_DAY = 24;
+    private static final long MINUTES_IN_HOUR = 60;
+    private static final long SECONDS_IN_MINUTE = 60;
+    private static final long SECONDS_IN_HOUR = 60 * SECONDS_IN_MINUTE;
+    private static final long MILLIS_IN_SECOND = 1000;
 
     @Override
     public String convertToDatabaseColumn(Duration duration) {
         return duration != null ? String
-                .format(FORMAT_TEMPLATE, duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()) : "";
+                .format(FORMAT_TEMPLATE, toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration)) : "";
     }
 
     @Override
@@ -35,4 +38,17 @@ public class DurationConverter implements AttributeConverter<Duration, String> {
 
         return Duration.ofSeconds(seconds);
     }
+
+    public static long toHoursPart(Duration duration) {
+        return duration.toHours() % HOURS_IN_DAY;
+    }
+
+    public static long toMinutesPart(Duration duration) {
+        return duration.toMinutes() % MINUTES_IN_HOUR;
+    }
+
+    public static long toSecondsPart(Duration duration) {
+        return (duration.toMillis() / MILLIS_IN_SECOND) % SECONDS_IN_MINUTE;
+    }
+
 }

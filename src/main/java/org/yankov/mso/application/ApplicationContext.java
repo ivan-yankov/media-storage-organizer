@@ -96,13 +96,16 @@ public class ApplicationContext {
     }
 
     public void executeCommand(String command, Object... commandArgs) {
-        commands.getCommand(command).ifPresentOrElse(cmd -> {
+        if (commands.getCommand(command).isPresent()) {
+            Command cmd = commands.getCommand(command).get();
             if (cmd.checkArguments(commandArgs)) {
                 cmd.execute(commandArgs);
             } else {
                 logger.log(Level.SEVERE, cmd.getErrorMessage());
             }
-        }, () -> logger.log(Level.SEVERE, "No such command " + command));
+        } else {
+            logger.log(Level.SEVERE, "No such command " + command);
+        }
     }
 
     private ApplicationSettings createApplicationSettings(String type) {

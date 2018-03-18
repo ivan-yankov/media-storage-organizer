@@ -50,8 +50,13 @@ public class PiecePropertiesUtils {
         Optional<Album> album = ApplicationContext.getInstance().getFolkloreEntityCollections()
                                                   .getAlbum(albumSignature);
         String message = resourceBundle.getString(UNDEFINED_ALBUM) + " " + albumSignature;
-        album.ifPresentOrElse(item::setAlbum,
-                              () -> ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message));
+
+        if (album.isPresent()) {
+            item.setAlbum(album.get());
+        } else {
+            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message);
+        }
+
         item.setFile(file);
 
         return item;

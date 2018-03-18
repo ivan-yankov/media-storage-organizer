@@ -1,9 +1,9 @@
 package org.yankov.mso.application.utils;
 
-import org.kc7bfi.jflac.FLACDecoder;
-import org.kc7bfi.jflac.PCMProcessor;
-import org.kc7bfi.jflac.metadata.StreamInfo;
-import org.kc7bfi.jflac.util.ByteData;
+import org.jflac.FLACDecoder;
+import org.jflac.PCMProcessor;
+import org.jflac.metadata.StreamInfo;
+import org.jflac.util.ByteData;
 import org.yankov.mso.application.ApplicationContext;
 
 import javax.sound.sampled.*;

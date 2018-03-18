@@ -96,8 +96,8 @@ public class FolklorePieceTable implements UserInterfaceControls {
     private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
         TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
                 resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
-        colAlbumTrackOrder.setCellValueFactory(
-                param -> new SimpleStringProperty(param.getValue().getAlbumTrackOrder()));
+        colAlbumTrackOrder
+                .setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbumTrackOrder()));
         colAlbumTrackOrder.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
@@ -163,7 +163,8 @@ public class FolklorePieceTable implements UserInterfaceControls {
                 resourceBundle.getString(COL_DURATION));
         colDuration.setCellValueFactory(param -> {
             Duration d = param.getValue().getDuration();
-            String s = d != null ? String.format(DURATION_FORMAT, d.toMinutesPart(), d.toSecondsPart()) : null;
+            String s = d != null ? String.format(DURATION_FORMAT, DurationConverter.toMinutesPart(d),
+                                                 DurationConverter.toSecondsPart(d)) : null;
             return new SimpleStringProperty(s);
         });
         colDuration.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));

@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="media-storage-organizer" target="1.9" />
+      <module name="media-storage-organizer" target="1.8" />
       <module name="MediaStorageOrganizer" target="1.9" />
     </bytecodeTargetLevel>
   </component>

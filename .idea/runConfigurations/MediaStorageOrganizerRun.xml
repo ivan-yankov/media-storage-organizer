@@ -2,7 +2,7 @@
   <configuration default="false" name="MediaStorageOrganizerRun" type="Application" factoryName="Application">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="org.yankov.mso.application.MediaStorageOrganizer" />
-    <option name="VM_PARAMETERS" value="--add-modules java.xml.bind" />
+    <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="run bg folklore embedded ./test-db-manual/mso host port" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />

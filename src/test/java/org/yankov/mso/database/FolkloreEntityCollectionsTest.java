@@ -6,6 +6,8 @@ import org.yankov.mso.datamodel.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -270,8 +272,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
     private static byte[] readRecordBytes() {
         String path = FolkloreEntityCollectionsTest.class.getResource(RECORD_FILE).getPath();
-        try (FileInputStream in = new FileInputStream(path)) {
-            return in.readAllBytes();
+        try {
+            return Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
             return new byte[0];

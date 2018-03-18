@@ -43,7 +43,7 @@ public class FxUtils {
     }
 
     public static <T> TableCell<T, String> createTextCellAligned(TableColumn<T, String> column, Pos pos) {
-        return new TableCell<>() {
+        return new TableCell<T, String>() {
 
             @Override
             protected void updateItem(String item, boolean empty) {
