@@ -73,6 +73,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {Buttons.BTN_SAVE, ""},
                 {Buttons.BTN_UPDATE, ""},
                 {Buttons.BTN_EXPORT, ""},
+                {Buttons.UPLOAD_STARTED, ""},
                 {Buttons.UPLOAD_COMPLETED, ""},
                 {Buttons.UNABLE_WRITE_FILE, ""},
                 {Buttons.ERROR_UPDATE_DATA_MODEL, ""},

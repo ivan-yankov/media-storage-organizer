@@ -1,6 +1,5 @@
 package org.yankov.mso.application.ui.controls;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ComboBox;
@@ -23,7 +22,6 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
 
     private static final Double DEFAULT_PREF_WIDTH = 250.0;
 
-    private final ObservableList<T> originalItems;
     private Consumer<T> newValueConsumer;
     private StringConverter<T> converter;
     private VBox container;
@@ -44,12 +42,9 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     public LabeledComboBox(StringConverter<T> converter, boolean editable, boolean sortItems) {
         this.converter = converter;
 
-        this.originalItems = FXCollections.observableArrayList();
-
         this.comboBox = new ComboBox<>();
         this.comboBox.setEditable(editable);
         this.comboBox.setConverter(converter);
-        this.comboBox.setItems(originalItems);
 
         this.container = new VBox();
         this.label = new Label();
@@ -63,8 +58,7 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     }
 
     public void setItems(ObservableList<T> items) {
-        originalItems.clear();
-        originalItems.setAll(sortItems ? items.sorted(itemComparator) : items);
+        comboBox.setItems(sortItems ? items.sorted(itemComparator) : items);
     }
 
     public void setLabelText(String labelText) {
@@ -87,10 +81,6 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         comboBox.setDisable(disable);
     }
 
-    public T getSelectedItem() {
-        return comboBox.getSelectionModel().getSelectedItem();
-    }
-
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
     }
@@ -102,16 +92,10 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         comboBox.setPrefWidth(DEFAULT_PREF_WIDTH);
         comboBox.setOnKeyTyped(this::handleKeyTyped);
         comboBox.setOnKeyReleased(this::handleKeyReleased);
-        comboBox.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                resetFilter();
-            }
-        });
 
         if (newValueConsumer != null) {
             comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                 newValueConsumer.accept(newValue);
-                resetFilter();
             });
         }
 
@@ -127,19 +111,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     }
 
     private void filterItems() {
-        List<T> filteredItemsList = originalItems.stream().filter(item -> converter.toString(item).toLowerCase()
-                                                                                   .contains(filterText.toString()
-                                                                                                       .toLowerCase()))
-                                                 .collect(Collectors.toList());
-        ObservableList<T> filteredItems = FXCollections.observableList(filteredItemsList);
-        comboBox.setItems(
-                filterText.length() == 0 ? originalItems.sorted(itemComparator) : filteredItems.sorted(itemComparator));
-    }
-
-    private void resetFilter() {
-        comboBox.setItems(originalItems);
-        filterText.setLength(0);
-        popup.hide();
+        String search = filterText.toString().toLowerCase();
+        List<T> filteredItems = comboBox.getItems().stream()
+                                        .filter(item -> converter.toString(item).toLowerCase().startsWith(search))
+                                        .collect(Collectors.toList());
+        if (!filteredItems.isEmpty()) {
+            comboBox.getSelectionModel().select(filteredItems.get(0));
+        }
     }
 
     private void showPopup() {
@@ -149,8 +127,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         popup.show(comboBox, x, y);
     }
 
+    private void closePopup() {
+        filterText.setLength(0);
+        popup.hide();
+    }
+
     private void handleKeyTyped(KeyEvent event) {
-        if (event.getCharacter().toLowerCase().isEmpty()) {
+        if (event.getCharacter().toLowerCase().trim().isEmpty()) {
             return;
         }
         filterText.append(event.getCharacter().toLowerCase());
@@ -163,10 +146,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         if (event.getCode().equals(KeyCode.BACK_SPACE) && filterText.length() > 0) {
             filterText.deleteCharAt(filterText.length() - 1);
             filterTextField.setText(filterText.toString());
-            showPopup();
             filterItems();
+            showPopup();
         } else if (event.getCode().equals(KeyCode.DELETE) && nullable) {
             setValue(null);
+            closePopup();
+        } else if (event.getCode().equals(KeyCode.ENTER) || event.getCode().equals(KeyCode.ESCAPE)) {
+            closePopup();
         }
     }
 

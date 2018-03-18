@@ -74,7 +74,8 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {Buttons.BTN_SAVE, "Запис"},
                 {Buttons.BTN_UPDATE, "Обновяване"},
                 {Buttons.BTN_EXPORT, "Експорт"},
-                {Buttons.UPLOAD_COMPLETED, "Успешен запис в базата данни"},
+                {Buttons.UPLOAD_STARTED, "Запис в база данни - начало"},
+                {Buttons.UPLOAD_COMPLETED, "Запис в база данни - край"},
                 {Buttons.UNABLE_WRITE_FILE, "Неуспешен запис на файл"},
                 {Buttons.ERROR_UPDATE_DATA_MODEL, "Неуспешно обновяване на данни"},
 

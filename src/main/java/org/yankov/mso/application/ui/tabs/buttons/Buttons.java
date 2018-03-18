@@ -44,6 +44,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String BTN_SAVE = CLASS_NAME + "-btn-upload";
     public static final String BTN_UPDATE = CLASS_NAME + "-btn-update";
     public static final String BTN_EXPORT = CLASS_NAME + "-btn-export";
+    public static final String UPLOAD_STARTED = CLASS_NAME + "-upload-started";
     public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String UNABLE_WRITE_FILE = CLASS_NAME + "-unable-write-file";
     public static final String ERROR_UPDATE_DATA_MODEL = CLASS_NAME + "-error-update-data-model";
@@ -226,6 +227,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
             protected Object call() {
                 ApplicationContext context = ApplicationContext.getInstance();
                 context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
+                context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_STARTED));
                 DatabaseOperations.saveToDatabase(entityCollections);
                 context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
                 context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);

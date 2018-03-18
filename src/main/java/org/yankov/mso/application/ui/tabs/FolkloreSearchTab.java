@@ -108,8 +108,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     private void handleBtnSearch(ActionEvent event) {
         List<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces();
-        Variable<FolklorePiece> variable = variables.getSelectedItem();
-        Operator operator = operators.getSelectedItem();
+        Variable<FolklorePiece> variable = variables.getValue();
+        Operator operator = operators.getValue();
         String searchValue = value.getTextField().getText();
 
         List<FolklorePiece> piecesFound;
