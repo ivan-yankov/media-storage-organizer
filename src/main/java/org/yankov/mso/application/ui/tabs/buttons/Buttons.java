@@ -24,7 +24,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -58,7 +61,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     private Function<Map<String, Button>, List<Button>> selectButtons;
     private TableView<PropertiesType> table;
     private Supplier<PropertiesType> propertiesCreator;
-    private UnaryOperator<PropertiesType> propertiesCopier;
+    private BiConsumer<PropertiesType, PropertiesType> propertiesCopier;
 
     private VBox container;
 
@@ -98,7 +101,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         this.propertiesCreator = propertiesCreator;
     }
 
-    public void setPropertiesCopier(UnaryOperator<PropertiesType> propertiesCopier) {
+    public void setPropertiesCopier(BiConsumer<PropertiesType, PropertiesType> propertiesCopier) {
         this.propertiesCopier = propertiesCopier;
     }
 
@@ -276,8 +279,17 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     private void handleBtnCopy(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            table.getItems().add(propertiesCopier.apply(table.getItems().get(selectedIndex)));
+        if (selectedIndex < 0) {
+            return;
+        }
+        if (selectedIndex == table.getItems().size() - 1) {
+            PropertiesType item = propertiesCreator.get();
+            propertiesCopier.accept(table.getItems().get(selectedIndex), item);
+            table.getItems().add(item);
+        } else {
+            PropertiesType item = table.getItems().get(selectedIndex + 1);
+            propertiesCopier.accept(table.getItems().get(selectedIndex), item);
+            table.getItems().set(selectedIndex + 1, item);
         }
     }
 

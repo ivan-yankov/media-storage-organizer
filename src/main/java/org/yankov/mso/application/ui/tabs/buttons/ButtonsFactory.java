@@ -67,7 +67,7 @@ public class ButtonsFactory {
 
         buttons.setPropertiesCreator(FolklorePieceProperties::new);
 
-        buttons.setPropertiesCopier(PiecePropertiesUtils::copyFolklorePieceProperties);
+        buttons.setPropertiesCopier(PiecePropertiesUtils::copyParticularFolklorePieceProperties);
 
         return buttons;
     }

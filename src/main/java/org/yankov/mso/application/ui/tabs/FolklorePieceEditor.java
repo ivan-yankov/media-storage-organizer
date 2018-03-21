@@ -45,8 +45,9 @@ public class FolklorePieceEditor implements Form {
     public FolklorePieceEditor(TableView<FolklorePieceProperties> table, int selectedIndex) {
         this.stage = new Stage();
         this.table = table;
-        this.piece = PiecePropertiesUtils.copyFolklorePieceProperties(table.getItems().get(selectedIndex));
+        this.piece = new FolklorePieceProperties();
         this.selectedIndex = selectedIndex;
+        PiecePropertiesUtils.copyFolklorePieceProperties(table.getItems().get(selectedIndex), this.piece);
     }
 
     @Override

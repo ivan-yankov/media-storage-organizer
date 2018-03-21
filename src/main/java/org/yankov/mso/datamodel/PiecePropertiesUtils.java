@@ -3,8 +3,6 @@ package org.yankov.mso.datamodel;
 import org.yankov.mso.application.ApplicationContext;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
@@ -62,17 +60,23 @@ public class PiecePropertiesUtils {
         return item;
     }
 
-    public static PieceProperties copyPieceProperties(PieceProperties source) {
-        PieceProperties dest = new PieceProperties();
-        copyProperties(source, dest);
-        return dest;
+    public static void copyPieceProperties(PieceProperties source, PieceProperties dest) {
+        copyProperties(source, dest, true);
     }
 
-    public static FolklorePieceProperties copyFolklorePieceProperties(FolklorePieceProperties source) {
-        FolklorePieceProperties dest = new FolklorePieceProperties();
-        copyProperties(source, dest);
+    public static void copyFolklorePieceProperties(FolklorePieceProperties source, FolklorePieceProperties dest) {
+        copyProperties(source, dest, true);
         dest.setEthnographicRegion(source.getEthnographicRegion());
-        return dest;
+    }
+
+    public static void copyParticularPieceProperties(PieceProperties source, PieceProperties dest) {
+        copyProperties(source, dest, false);
+    }
+
+    public static void copyParticularFolklorePieceProperties(FolklorePieceProperties source,
+                                                             FolklorePieceProperties dest) {
+        copyProperties(source, dest, false);
+        dest.setEthnographicRegion(source.getEthnographicRegion());
     }
 
     public static void setPropertiesToPiece(PieceProperties properties, Piece piece) {
@@ -108,22 +112,24 @@ public class PiecePropertiesUtils {
         properties.setRecord(piece.getRecord());
     }
 
-    private static void copyProperties(PieceProperties source, PieceProperties dest) {
+    private static void copyProperties(PieceProperties source, PieceProperties dest, boolean completeCopy) {
         dest.setId(source.getId());
         dest.setAlbum(source.getAlbum());
-        dest.setAlbumTrackOrder(source.getAlbumTrackOrder());
-        dest.setTitle(source.getTitle());
         dest.setPerformer(source.getPerformer());
         dest.setAccompanimentPerformer(source.getAccompanimentPerformer());
         dest.setAuthor(source.getAuthor());
         dest.setArrangementAuthor(source.getArrangementAuthor());
         dest.setConductor(source.getConductor());
         dest.setSoloist(source.getSoloist());
-        dest.setDuration(source.getDuration());
         dest.setNote(source.getNote());
         dest.setSource(source.getSource());
-        dest.setFile(source.getFile());
-        dest.setRecord(source.getRecord());
+        if (completeCopy) {
+            dest.setAlbumTrackOrder(source.getAlbumTrackOrder());
+            dest.setTitle(source.getTitle());
+            dest.setDuration(source.getDuration());
+            dest.setFile(source.getFile());
+            dest.setRecord(source.getRecord());
+        }
     }
 
 }
