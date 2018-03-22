@@ -1,11 +1,14 @@
 package org.yankov.mso.application.ui.tabs.buttons;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -38,7 +41,9 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     public static final String BTN_ADD = CLASS_NAME + "-btn-add";
     public static final String BTN_REMOVE = CLASS_NAME + "-btn-remove";
-    public static final String BTN_COPY = CLASS_NAME + "-btn-copy";
+    public static final String BTN_DUPLICATE = CLASS_NAME + "-btn-duplicate";
+    public static final String BTN_COPY_PROPERTIES = CLASS_NAME + "-btn-copy-properties";
+    public static final String BTN_APPLY_PROPERTIES = CLASS_NAME + "-btn-apply-properties";
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
     public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
     public static final String BTN_EDIT_PROPERTIES = CLASS_NAME + "-btn-edit-properties";
@@ -62,6 +67,9 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     private TableView<PropertiesType> table;
     private Supplier<PropertiesType> propertiesCreator;
     private BiConsumer<PropertiesType, PropertiesType> propertiesCopier;
+
+    private Map<String, Button> allButtons;
+    private PropertiesType copiedProperties;
 
     private VBox container;
 
@@ -110,7 +118,8 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         container.setPadding(INSETS);
         container.setSpacing(SPACE);
         container.setMinWidth(MIN_WIDTH);
-        container.getChildren().addAll(selectButtons.apply(createAllButtons()));
+        allButtons = createAllButtons();
+        container.getChildren().addAll(selectButtons.apply(allButtons));
     }
 
     @Override
@@ -151,11 +160,24 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         btnRemove.setOnAction(this::handleBtnRemove);
         buttons.put(BTN_REMOVE, btnRemove);
 
-        Button btnCopy = new Button();
-        btnCopy.setText(resourceBundle.getString(BTN_COPY));
-        btnCopy.setMaxWidth(Double.MAX_VALUE);
-        btnCopy.setOnAction(this::handleBtnCopy);
-        buttons.put(BTN_COPY, btnCopy);
+        Button btnDuplicate = new Button();
+        btnDuplicate.setText(resourceBundle.getString(BTN_DUPLICATE));
+        btnDuplicate.setMaxWidth(Double.MAX_VALUE);
+        btnDuplicate.setOnAction(this::handleBtnDuplicate);
+        buttons.put(BTN_DUPLICATE, btnDuplicate);
+
+        Button btnCopyProperties = new Button();
+        btnCopyProperties.setText(resourceBundle.getString(BTN_COPY_PROPERTIES));
+        btnCopyProperties.setMaxWidth(Double.MAX_VALUE);
+        btnCopyProperties.setOnAction(this::handleBtnCopyProperties);
+        buttons.put(BTN_COPY_PROPERTIES, btnCopyProperties);
+
+        Button btnApplyProperties = new Button();
+        btnApplyProperties.setText(resourceBundle.getString(BTN_APPLY_PROPERTIES));
+        btnApplyProperties.setMaxWidth(Double.MAX_VALUE);
+        btnApplyProperties.setOnAction(this::handleBtnApplyProperties);
+        btnApplyProperties.setDisable(true);
+        buttons.put(BTN_APPLY_PROPERTIES, btnApplyProperties);
 
         Button btnClear = new Button();
         btnClear.setText(resourceBundle.getString(BTN_CLEAR));
@@ -277,20 +299,46 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         }
     }
 
-    private void handleBtnCopy(ActionEvent event) {
+    private void handleBtnDuplicate(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
             return;
         }
-        if (selectedIndex == table.getItems().size() - 1) {
-            PropertiesType item = propertiesCreator.get();
-            propertiesCopier.accept(table.getItems().get(selectedIndex), item);
-            table.getItems().add(item);
-        } else {
-            PropertiesType item = table.getItems().get(selectedIndex + 1);
-            propertiesCopier.accept(table.getItems().get(selectedIndex), item);
-            table.getItems().set(selectedIndex + 1, item);
+        PropertiesType item = propertiesCreator.get();
+        propertiesCopier.accept(table.getItems().get(selectedIndex), item);
+        table.getItems().add(item);
+    }
+
+    private void handleBtnCopyProperties(ActionEvent event) {
+        int selectedIndex = table.getSelectionModel().getSelectedIndex();
+        if (selectedIndex < 0) {
+            return;
         }
+        copiedProperties = propertiesCreator.get();
+        propertiesCopier.accept(table.getItems().get(selectedIndex), copiedProperties);
+        allButtons.get(BTN_APPLY_PROPERTIES).setDisable(false);
+        table.getSelectionModel().clearSelection();
+        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
+
+    private void handleBtnApplyProperties(ActionEvent event) {
+        ObservableList<Integer> selected = FXCollections.observableArrayList();
+        selected.addAll(table.getSelectionModel().getSelectedIndices());
+        if (copiedProperties == null || selected.isEmpty()) {
+            return;
+        }
+        // System.out.println(selected.size());
+        for (Integer index : selected) {
+            // System.out.println(index);
+            PropertiesType item = table.getItems().get(index);
+            propertiesCopier.accept(copiedProperties, item);
+            table.getItems().set(index, item);
+            // System.out.println(selected.size());
+        }
+        copiedProperties = null;
+        allButtons.get(BTN_APPLY_PROPERTIES).setDisable(true);
+        table.getSelectionModel().clearSelection();
+        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     private void handleBtnClear(ActionEvent event) {

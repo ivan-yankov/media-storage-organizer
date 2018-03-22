@@ -65,7 +65,9 @@ public class FolkloreResources_bg extends ListResourceBundle {
 
                 {Buttons.BTN_ADD, "Добавяне"},
                 {Buttons.BTN_REMOVE, "Премахване"},
-                {Buttons.BTN_COPY, "Копиране"},
+                {Buttons.BTN_DUPLICATE, "Дублиране"},
+                {Buttons.BTN_COPY_PROPERTIES, "Копиране"},
+                {Buttons.BTN_APPLY_PROPERTIES, "Поставяне"},
                 {Buttons.BTN_CLEAR, "Изчистване"},
                 {Buttons.BTN_LOAD_ALBUM_TRACKS, "Избор на файлове"},
                 {Buttons.BTN_EDIT_PROPERTIES, "Редактиране"},

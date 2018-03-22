@@ -21,7 +21,9 @@ public class ButtonsFactory {
             List<Button> selectedButtons = new ArrayList<>();
             selectedButtons.add(allButtons.get(Buttons.BTN_ADD));
             selectedButtons.add(allButtons.get(Buttons.BTN_REMOVE));
-            selectedButtons.add(allButtons.get(Buttons.BTN_COPY));
+            selectedButtons.add(allButtons.get(Buttons.BTN_DUPLICATE));
+            selectedButtons.add(allButtons.get(Buttons.BTN_COPY_PROPERTIES));
+            selectedButtons.add(allButtons.get(Buttons.BTN_APPLY_PROPERTIES));
             selectedButtons.add(allButtons.get(Buttons.BTN_CLEAR));
             selectedButtons.add(allButtons.get(Buttons.BTN_LOAD_ALBUM_TRACKS));
             selectedButtons.add(allButtons.get(Buttons.BTN_EDIT_PROPERTIES));
