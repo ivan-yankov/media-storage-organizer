@@ -19,7 +19,7 @@ public class FolkloreInputTab implements UserInterfaceControls {
 
     @Override
     public void layout() {
-        FolklorePieceTable table = new FolklorePieceTable();
+        FolklorePieceTable table = new FolklorePieceTable(true);
         table.layout();
         HBox.setHgrow(table.getContainer(), Priority.ALWAYS);
         container.getChildren().add(table.getContainer());

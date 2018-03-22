@@ -52,14 +52,18 @@ public class FolklorePieceTable implements UserInterfaceControls {
     private static final CustomFont TABLE_FONT = new CustomFont(FontFamily.SANS_SERIF, FontWeight.NORMAL,
                                                                 FontStyle.NORMAL, 12);
 
+    private static final double MAX_COLUMN_WIDTH = 225.0;
+
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     private TableView<FolklorePieceProperties> table;
     private StackPane container;
+    private boolean inputTable;
 
-    public FolklorePieceTable() {
+    public FolklorePieceTable(boolean inputTable) {
         this.table = new TableView<>();
         this.container = new StackPane(table);
+        this.inputTable = inputTable;
     }
 
     public TableView<FolklorePieceProperties> getTableView() {
@@ -202,15 +206,17 @@ public class FolklorePieceTable implements UserInterfaceControls {
         columns.add(colTitle);
         columns.add(colPerformer);
         columns.add(colAccompanimentPerformer);
-        columns.add(colAuthor);
         columns.add(colArrangementAuthor);
         columns.add(colConductor);
         columns.add(colSoloist);
+        columns.add(colAuthor);
         columns.add(colDuration);
         columns.add(colSource);
-        columns.add(colFile);
         columns.add(colEthnographicRegion);
         columns.add(colNote);
+        if (inputTable) {
+            columns.add(colFile);
+        }
 
         return columns;
     }
@@ -229,6 +235,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
                     width = Math.max(width, FxUtils.calculateTextWidth(columnValue, TABLE_FONT));
                 }
             }
+            width = Math.min(width, MAX_COLUMN_WIDTH);
             column.setPrefWidth(width);
         });
     }

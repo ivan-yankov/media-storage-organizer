@@ -93,7 +93,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private Pane createTable() {
-        table = new FolklorePieceTable();
+        table = new FolklorePieceTable(false);
         table.layout();
         HBox.setHgrow(table.getContainer(), Priority.ALWAYS);
         return table.getContainer();
