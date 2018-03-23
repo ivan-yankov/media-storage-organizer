@@ -32,7 +32,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public static final String BTN_SEARCH = CLASS_NAME + "-btn-search";
 
     private static final Double SPACE = 25.0;
-    private static final Insets SEARCH_INSETS = new Insets(20.0, 20.0, 0.0, 20.0);
+    private static final Insets SEARCH_INSETS = new Insets(0.0, 20.0, 0.0, 20.0);
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -49,13 +49,15 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     @Override
     public void layout() {
+        createTable();
+
         container.setSpacing(SPACE);
+        container.getChildren().add(createButtons());
         container.getChildren().add(createSearchControls());
 
-        HBox tableContainer = new HBox();
+        VBox tableContainer = new VBox();
         VBox.setVgrow(tableContainer, Priority.ALWAYS);
-        tableContainer.getChildren().add(createTable());
-        tableContainer.getChildren().add(createButtons());
+        tableContainer.getChildren().add(table.getContainer());
         container.getChildren().add(tableContainer);
     }
 
@@ -79,7 +81,6 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         btnSearch.setOnAction(this::handleBtnSearch);
 
         HBox searchContainer = new HBox();
-        HBox.setHgrow(searchContainer, Priority.ALWAYS);
         HBox.setHgrow(value.getContainer(), Priority.ALWAYS);
         searchContainer.setPadding(SEARCH_INSETS);
         searchContainer.setSpacing(SPACE);
@@ -92,11 +93,10 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         return searchContainer;
     }
 
-    private Pane createTable() {
+    private void createTable() {
         table = new FolklorePieceTable(false);
+        VBox.setVgrow(table.getContainer(), Priority.ALWAYS);
         table.layout();
-        HBox.setHgrow(table.getContainer(), Priority.ALWAYS);
-        return table.getContainer();
     }
 
     private Pane createButtons() {

@@ -22,7 +22,7 @@ public class FolkloreApplicationSettings implements ApplicationSettings {
 
     @Override
     public Optional<Image> getIcon() {
-        URL url = getClass().getResource("/application-icon.png");
+        URL url = getClass().getResource("/icons/application.png");
         Image image = new Image(url.toString());
         return Optional.of(image);
     }

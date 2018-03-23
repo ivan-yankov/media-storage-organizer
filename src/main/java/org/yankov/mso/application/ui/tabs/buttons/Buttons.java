@@ -5,11 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
@@ -26,6 +25,7 @@ import javax.sound.sampled.LineEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -41,7 +41,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     public static final String BTN_ADD = CLASS_NAME + "-btn-add";
     public static final String BTN_REMOVE = CLASS_NAME + "-btn-remove";
-    public static final String BTN_DUPLICATE = CLASS_NAME + "-btn-duplicate";
+    public static final String BTN_CLONE = CLASS_NAME + "-btn-duplicate";
     public static final String BTN_COPY_PROPERTIES = CLASS_NAME + "-btn-copy-properties";
     public static final String BTN_APPLY_PROPERTIES = CLASS_NAME + "-btn-apply-properties";
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
@@ -49,7 +49,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String BTN_EDIT_PROPERTIES = CLASS_NAME + "-btn-edit-properties";
     public static final String BTN_PLAYER_RUN = CLASS_NAME + "-btn-player-run";
     public static final String BTN_PLAYER_STOP = CLASS_NAME + "-btn-player-stop";
-    public static final String BTN_SAVE = CLASS_NAME + "-btn-upload";
+    public static final String BTN_UPLOAD = CLASS_NAME + "-btn-upload";
     public static final String BTN_UPDATE = CLASS_NAME + "-btn-update";
     public static final String BTN_EXPORT = CLASS_NAME + "-btn-export";
     public static final String UPLOAD_STARTED = CLASS_NAME + "-upload-started";
@@ -58,6 +58,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String ERROR_UPDATE_DATA_MODEL = CLASS_NAME + "-error-update-data-model";
 
     private static final String DEFAULT_TRACK_ORDER = "0";
+    private static final int ICON_SIZE = 32;
 
     private ResourceBundle resourceBundle;
     private Consumer<TableView<PropertiesType>> editPieceCommand;
@@ -72,10 +73,6 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     private PropertiesType copiedProperties;
 
     private VBox container;
-
-    private static final Double SPACE = 25.0;
-    private static final Insets INSETS = new Insets(25.0);
-    private static final Double MIN_WIDTH = 200.0;
 
     public Buttons() {
         this.container = new VBox();
@@ -115,11 +112,11 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     @Override
     public void layout() {
-        container.setPadding(INSETS);
-        container.setSpacing(SPACE);
-        container.setMinWidth(MIN_WIDTH);
         allButtons = createAllButtons();
-        container.getChildren().addAll(selectButtons.apply(allButtons));
+        List<Button> selectedButtons = selectButtons.apply(allButtons);
+        ToolBar toolBar = new ToolBar();
+        selectedButtons.forEach(button -> toolBar.getItems().add(button));
+        container.getChildren().add(toolBar);
     }
 
     @Override
@@ -131,79 +128,85 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         Map<String, Button> buttons = new HashMap<>();
 
         Button btnEdit = new Button();
-        btnEdit.setText(resourceBundle.getString(BTN_EDIT_PROPERTIES));
-        btnEdit.setMaxWidth(Double.MAX_VALUE);
+        btnEdit.setTooltip(new Tooltip(resourceBundle.getString(BTN_EDIT_PROPERTIES)));
+        btnEdit.setGraphic(getIcon("edit"));
         btnEdit.setOnAction(event -> editPieceCommand.accept(table));
         buttons.put(BTN_EDIT_PROPERTIES, btnEdit);
 
         Button btnPlay = new Button();
-        btnPlay.setText(resourceBundle.getString(BTN_PLAYER_RUN));
-        btnPlay.setMaxWidth(Double.MAX_VALUE);
+        btnPlay.setTooltip(new Tooltip(resourceBundle.getString(BTN_PLAYER_RUN)));
+        btnPlay.setGraphic(getIcon("play"));
         btnPlay.setOnAction(this::handlePlay);
         buttons.put(BTN_PLAYER_RUN, btnPlay);
 
-        Button btnSave = new Button();
-        btnSave.setText(resourceBundle.getString(BTN_SAVE));
-        btnSave.setMaxWidth(Double.MAX_VALUE);
-        btnSave.setOnAction(this::handleBtnSave);
-        buttons.put(BTN_SAVE, btnSave);
+        Button btnUpload = new Button();
+        btnUpload.setTooltip(new Tooltip(resourceBundle.getString(BTN_UPLOAD)));
+        btnUpload.setGraphic(getIcon("upload"));
+        btnUpload.setOnAction(this::handleBtnUpload);
+        buttons.put(BTN_UPLOAD, btnUpload);
 
         Button btnAdd = new Button();
-        btnAdd.setText(resourceBundle.getString(BTN_ADD));
-        btnAdd.setMaxWidth(Double.MAX_VALUE);
+        btnAdd.setTooltip(new Tooltip(resourceBundle.getString(BTN_ADD)));
+        btnAdd.setGraphic(getIcon("add"));
         btnAdd.setOnAction(this::handleBtnAdd);
         buttons.put(BTN_ADD, btnAdd);
 
         Button btnRemove = new Button();
-        btnRemove.setText(resourceBundle.getString(BTN_REMOVE));
-        btnRemove.setMaxWidth(Double.MAX_VALUE);
+        btnRemove.setTooltip(new Tooltip(resourceBundle.getString(BTN_REMOVE)));
+        btnRemove.setGraphic(getIcon("remove"));
         btnRemove.setOnAction(this::handleBtnRemove);
         buttons.put(BTN_REMOVE, btnRemove);
 
-        Button btnDuplicate = new Button();
-        btnDuplicate.setText(resourceBundle.getString(BTN_DUPLICATE));
-        btnDuplicate.setMaxWidth(Double.MAX_VALUE);
-        btnDuplicate.setOnAction(this::handleBtnDuplicate);
-        buttons.put(BTN_DUPLICATE, btnDuplicate);
+        Button btnClone = new Button();
+        btnClone.setTooltip(new Tooltip(resourceBundle.getString(BTN_CLONE)));
+        btnClone.setGraphic(getIcon("clone"));
+        btnClone.setOnAction(this::handleBtnClone);
+        buttons.put(BTN_CLONE, btnClone);
 
         Button btnCopyProperties = new Button();
-        btnCopyProperties.setText(resourceBundle.getString(BTN_COPY_PROPERTIES));
-        btnCopyProperties.setMaxWidth(Double.MAX_VALUE);
+        btnCopyProperties.setTooltip(new Tooltip(resourceBundle.getString(BTN_COPY_PROPERTIES)));
+        btnCopyProperties.setGraphic(getIcon("copy-properties"));
         btnCopyProperties.setOnAction(this::handleBtnCopyProperties);
         buttons.put(BTN_COPY_PROPERTIES, btnCopyProperties);
 
         Button btnApplyProperties = new Button();
-        btnApplyProperties.setText(resourceBundle.getString(BTN_APPLY_PROPERTIES));
-        btnApplyProperties.setMaxWidth(Double.MAX_VALUE);
+        btnApplyProperties.setTooltip(new Tooltip(resourceBundle.getString(BTN_APPLY_PROPERTIES)));
+        btnApplyProperties.setGraphic(getIcon("apply-properties"));
         btnApplyProperties.setOnAction(this::handleBtnApplyProperties);
         btnApplyProperties.setDisable(true);
         buttons.put(BTN_APPLY_PROPERTIES, btnApplyProperties);
 
         Button btnClear = new Button();
-        btnClear.setText(resourceBundle.getString(BTN_CLEAR));
-        btnClear.setMaxWidth(Double.MAX_VALUE);
+        btnClear.setTooltip(new Tooltip(resourceBundle.getString(BTN_CLEAR)));
+        btnClear.setGraphic(getIcon("clear"));
         btnClear.setOnAction(this::handleBtnClear);
         buttons.put(BTN_CLEAR, btnClear);
 
         Button btnLoadAlbumTracks = new Button();
-        btnLoadAlbumTracks.setText(resourceBundle.getString(BTN_LOAD_ALBUM_TRACKS));
-        btnLoadAlbumTracks.setMaxWidth(Double.MAX_VALUE);
+        btnLoadAlbumTracks.setTooltip(new Tooltip(resourceBundle.getString(BTN_LOAD_ALBUM_TRACKS)));
+        btnLoadAlbumTracks.setGraphic(getIcon("select-files"));
         btnLoadAlbumTracks.setOnAction(this::handleBtnLoadAlbumTracks);
         buttons.put(BTN_LOAD_ALBUM_TRACKS, btnLoadAlbumTracks);
 
         Button btnExport = new Button();
-        btnExport.setText(resourceBundle.getString(BTN_EXPORT));
-        btnExport.setMaxWidth(Double.MAX_VALUE);
+        btnExport.setTooltip(new Tooltip(resourceBundle.getString(BTN_EXPORT)));
+        btnExport.setGraphic(getIcon("export"));
         btnExport.setOnAction(this::handleBtnExport);
         buttons.put(BTN_EXPORT, btnExport);
 
         Button btnUpdate = new Button();
-        btnUpdate.setText(resourceBundle.getString(BTN_UPDATE));
-        btnUpdate.setMaxWidth(Double.MAX_VALUE);
+        btnUpdate.setTooltip(new Tooltip(resourceBundle.getString(BTN_UPDATE)));
+        btnUpdate.setGraphic(getIcon("update"));
         btnUpdate.setOnAction(this::handleBtnUpdate);
         buttons.put(BTN_UPDATE, btnUpdate);
 
         return buttons;
+    }
+
+    private ImageView getIcon(String name) {
+        URL url = getClass().getResource("/icons/buttons/" + name + ".png");
+        Image image = new Image(url.toString(), ICON_SIZE, ICON_SIZE, true, true);
+        return new ImageView(image);
     }
 
     private void handlePlay(ActionEvent event) {
@@ -216,22 +219,24 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         if (flacPlayer.isPlaying()) {
             flacPlayer.stop();
         } else {
-            flacPlayer.addListener(e -> Platform.runLater(() -> updateButtonText((Button) event.getSource(), e)));
+            flacPlayer.addListener(e -> Platform.runLater(() -> updatePlayButton((Button) event.getSource(), e)));
             flacPlayer.setBytes(table.getSelectionModel().getSelectedItem().getRecord().getBytes());
             Thread thread = new Thread(flacPlayer::play);
             thread.start();
         }
     }
 
-    private void updateButtonText(Button button, LineEvent event) {
+    private void updatePlayButton(Button button, LineEvent event) {
         if (event.getType() == LineEvent.Type.START) {
-            button.setText(resourceBundle.getString(BTN_PLAYER_STOP));
+            button.setTooltip(new Tooltip(resourceBundle.getString(BTN_PLAYER_STOP)));
+            button.setGraphic(getIcon("stop"));
         } else if (event.getType() == LineEvent.Type.STOP) {
-            button.setText(resourceBundle.getString(BTN_PLAYER_RUN));
+            button.setTooltip(new Tooltip(resourceBundle.getString(BTN_PLAYER_RUN)));
+            button.setGraphic(getIcon("play"));
         }
     }
 
-    private void handleBtnSave(ActionEvent event) {
+    private void handleBtnUpload(ActionEvent event) {
         updateDataModel((properties, piece) -> entityCollections.addPiece(piece));
         save();
         clearTable();
@@ -299,7 +304,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         }
     }
 
-    private void handleBtnDuplicate(ActionEvent event) {
+    private void handleBtnClone(ActionEvent event) {
         int selectedIndex = table.getSelectionModel().getSelectedIndex();
         if (selectedIndex < 0) {
             return;
@@ -327,13 +332,10 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         if (copiedProperties == null || selected.isEmpty()) {
             return;
         }
-        // System.out.println(selected.size());
         for (Integer index : selected) {
-            // System.out.println(index);
             PropertiesType item = table.getItems().get(index);
             propertiesCopier.accept(copiedProperties, item);
             table.getItems().set(index, item);
-            // System.out.println(selected.size());
         }
         copiedProperties = null;
         allButtons.get(BTN_APPLY_PROPERTIES).setDisable(true);

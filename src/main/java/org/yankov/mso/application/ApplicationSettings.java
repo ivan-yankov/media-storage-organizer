@@ -1,6 +1,5 @@
 package org.yankov.mso.application;
 
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
 import java.util.Optional;

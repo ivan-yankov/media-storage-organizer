@@ -3,6 +3,7 @@ package org.yankov.mso.application.ui.tabs;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
@@ -11,23 +12,24 @@ import org.yankov.mso.datamodel.FolklorePieceProperties;
 
 public class FolkloreInputTab implements UserInterfaceControls {
 
-    private HBox container;
+    private VBox container;
 
     public FolkloreInputTab() {
-        this.container = new HBox();
+        this.container = new VBox();
     }
 
     @Override
     public void layout() {
         FolklorePieceTable table = new FolklorePieceTable(true);
-        table.layout();
-        HBox.setHgrow(table.getContainer(), Priority.ALWAYS);
-        container.getChildren().add(table.getContainer());
 
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = ButtonsFactory
                 .createFolkloreInputTabButtons(table.getTableView());
         buttons.layout();
         container.getChildren().add(buttons.getContainer());
+
+        table.layout();
+        VBox.setVgrow(table.getContainer(), Priority.ALWAYS);
+        container.getChildren().add(table.getContainer());
     }
 
     @Override

@@ -64,7 +64,7 @@ public class FolkloreResources extends ListResourceBundle {
 
                 {Buttons.BTN_ADD, ""},
                 {Buttons.BTN_REMOVE, ""},
-                {Buttons.BTN_DUPLICATE, ""},
+                {Buttons.BTN_CLONE, ""},
                 {Buttons.BTN_COPY_PROPERTIES, ""},
                 {Buttons.BTN_APPLY_PROPERTIES, ""},
                 {Buttons.BTN_CLEAR, ""},
@@ -72,7 +72,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {Buttons.BTN_EDIT_PROPERTIES, ""},
                 {Buttons.BTN_PLAYER_RUN, ""},
                 {Buttons.BTN_PLAYER_STOP, ""},
-                {Buttons.BTN_SAVE, ""},
+                {Buttons.BTN_UPLOAD, ""},
                 {Buttons.BTN_UPDATE, ""},
                 {Buttons.BTN_EXPORT, ""},
                 {Buttons.UPLOAD_STARTED, ""},
