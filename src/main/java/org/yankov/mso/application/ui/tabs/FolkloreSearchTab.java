@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -74,6 +76,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         operators.layout();
 
         value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
+        value.getTextField().setOnKeyReleased(this::valueKeyTyped);
         value.layout();
 
         Button btnSearch = new Button();
@@ -93,6 +96,12 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         return searchContainer;
     }
 
+    private void valueKeyTyped(KeyEvent event) {
+        if (event.getCode().equals(KeyCode.ENTER)) {
+            search();
+        }
+    }
+
     private void createTable() {
         table = new FolklorePieceTable(false);
         VBox.setVgrow(table.getContainer(), Priority.ALWAYS);
@@ -107,6 +116,10 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     }
 
     private void handleBtnSearch(ActionEvent event) {
+        search();
+    }
+
+    private void search() {
         List<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces();
         Variable<FolklorePiece> variable = variables.getValue();
         Operator operator = operators.getValue();
