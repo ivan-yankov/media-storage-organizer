@@ -90,6 +90,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                     FxUtils.OVERWRITE_RECORDS_IN_DATABASE,
                     "Записите, показани в таблицата ще бъдат обновени в базата данни."
                 },
+                {FxUtils.CLOSE_APPLICATION, "Изход от програмата."},
                 {FxUtils.ARE_YOU_SURE, "Сигурни ли сте?"},
                 {FxUtils.YES, "Да"},
                 {FxUtils.NO, "Не"},

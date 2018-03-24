@@ -3,7 +3,9 @@ package org.yankov.mso.application;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.utils.FxUtils;
 import org.yankov.mso.database.DatabaseOperations;
 import org.yankov.mso.database.FolkloreEntityCollections;
 
@@ -28,6 +30,8 @@ public class MediaStorageOrganizer extends Application {
             applicationSettings.getTitle().ifPresent(primaryStage::setTitle);
             applicationSettings.getX().ifPresent(primaryStage::setX);
             applicationSettings.getY().ifPresent(primaryStage::setY);
+
+            primaryStage.setOnCloseRequest(this::onCloseApplication);
 
             Thread startServerThread = new Thread(
                     () -> ApplicationContext.getInstance().getDatabaseManager().startServer());
@@ -61,6 +65,12 @@ public class MediaStorageOrganizer extends Application {
     private void exit(int exitCode) {
         Platform.exit();
         System.exit(exitCode);
+    }
+
+    private void onCloseApplication(WindowEvent event) {
+        if (!FxUtils.confirmCloseApplication()) {
+            event.consume();
+        }
     }
 
     public static void main(String[] args) {

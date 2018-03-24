@@ -27,6 +27,7 @@ public class FxUtils {
     public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
     public static final String CONFIRMATION = CLASS_NAME + "-confirmation";
     public static final String OVERWRITE_RECORDS_IN_DATABASE = CLASS_NAME + "-delete-record-from-database";
+    public static final String CLOSE_APPLICATION  = CLASS_NAME + "-close-application";
     public static final String ARE_YOU_SURE = CLASS_NAME + "-are-you-sure";
     public static final String YES = CLASS_NAME + "-yes";
     public static final String NO = CLASS_NAME + "-no";
@@ -85,9 +86,17 @@ public class FxUtils {
     }
 
     public static boolean confirmOverwrite() {
+        return confirmDialog(resourceBundle.getString(OVERWRITE_RECORDS_IN_DATABASE));
+    }
+
+    public static boolean confirmCloseApplication() {
+        return confirmDialog(resourceBundle.getString(CLOSE_APPLICATION));
+    }
+
+    private static boolean confirmDialog(String headerText) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(resourceBundle.getString(CONFIRMATION));
-        alert.setHeaderText(resourceBundle.getString(OVERWRITE_RECORDS_IN_DATABASE));
+        alert.setHeaderText(headerText);
         alert.setContentText(resourceBundle.getString(ARE_YOU_SURE));
 
         ButtonType yes = new ButtonType(resourceBundle.getString(YES));

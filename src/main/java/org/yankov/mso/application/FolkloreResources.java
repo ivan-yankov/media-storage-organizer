@@ -86,6 +86,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {FxUtils.FLAC_FILTER_EXT, ""},
                 {FxUtils.CONFIRMATION, ""},
                 {FxUtils.OVERWRITE_RECORDS_IN_DATABASE, ""},
+                {FxUtils.CLOSE_APPLICATION, ""},
                 {FxUtils.ARE_YOU_SURE, ""},
                 {FxUtils.YES, ""},
                 {FxUtils.NO, ""},
