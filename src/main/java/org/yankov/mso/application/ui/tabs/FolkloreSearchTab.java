@@ -23,6 +23,7 @@ import org.yankov.mso.datamodel.*;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class FolkloreSearchTab implements UserInterfaceControls {
 
@@ -32,6 +33,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public static final String OPERATOR = CLASS_NAME + "-operator";
     public static final String VALUE = CLASS_NAME + "-value";
     public static final String BTN_SEARCH = CLASS_NAME + "-btn-search";
+    public static final String NUMBER_ITEMS_FOUND = CLASS_NAME + "-number-items-found";
 
     private static final Double SPACE = 25.0;
     private static final Insets SEARCH_INSETS = new Insets(0.0, 20.0, 0.0, 20.0);
@@ -137,6 +139,9 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
         table.getTableView().getItems().clear();
         table.getTableView().getItems().addAll(properties);
+
+        String msg = resourceBundle.getString(NUMBER_ITEMS_FOUND) + ": " + properties.size();
+        ApplicationContext.getInstance().getLogger().log(Level.INFO, msg);
     }
 
 }

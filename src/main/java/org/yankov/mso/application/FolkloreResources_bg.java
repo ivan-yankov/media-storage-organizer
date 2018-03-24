@@ -166,6 +166,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreSearchTab.OPERATOR, "Оператор"},
                 {FolkloreSearchTab.VALUE, "Стойност"},
                 {FolkloreSearchTab.BTN_SEARCH, "Търсене"},
+                {FolkloreSearchTab.NUMBER_ITEMS_FOUND, "Брой намерени записи"},
 
                 {FolkloreSearchFactory.VAR_LABEL_TITLE, "Заглавие"},
                 {FolkloreSearchFactory.VAR_LABEL_PERFORMER, "Изпълнител"},
