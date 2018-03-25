@@ -21,6 +21,8 @@ import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
 import org.yankov.mso.datamodel.*;
 
+import java.text.MessageFormat;
+import java.time.Duration;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -33,7 +35,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public static final String OPERATOR = CLASS_NAME + "-operator";
     public static final String VALUE = CLASS_NAME + "-value";
     public static final String BTN_SEARCH = CLASS_NAME + "-btn-search";
-    public static final String NUMBER_ITEMS_FOUND = CLASS_NAME + "-number-items-found";
+    public static final String TOTAL_ITEMS_FOUND = CLASS_NAME + "-number-items-found";
 
     private static final Double SPACE = 25.0;
     private static final Insets SEARCH_INSETS = new Insets(0.0, 20.0, 0.0, 20.0);
@@ -140,8 +142,19 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         table.getTableView().getItems().clear();
         table.getTableView().getItems().addAll(properties);
 
-        String msg = resourceBundle.getString(NUMBER_ITEMS_FOUND) + ": " + properties.size();
+        Duration totalDuration = calculateTotalDuration(properties);
+        DurationConverter converter = new DurationConverter();
+        String msg = MessageFormat.format(resourceBundle.getString(TOTAL_ITEMS_FOUND), properties.size(),
+                                          converter.convertToDatabaseColumn(totalDuration));
         ApplicationContext.getInstance().getLogger().log(Level.INFO, msg);
+    }
+
+    private Duration calculateTotalDuration(List<? extends PieceProperties> pieces) {
+        Duration total = Duration.ZERO;
+        for (PieceProperties piece : pieces) {
+            total = total.plus(piece.getDuration());
+        }
+        return total;
     }
 
 }

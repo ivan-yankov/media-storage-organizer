@@ -157,7 +157,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreSearchTab.OPERATOR, ""},
                 {FolkloreSearchTab.VALUE, ""},
                 {FolkloreSearchTab.BTN_SEARCH, ""},
-                {FolkloreSearchTab.NUMBER_ITEMS_FOUND, ""},
+                {FolkloreSearchTab.TOTAL_ITEMS_FOUND, ""},
 
                 {FolkloreSearchFactory.VAR_LABEL_TITLE, ""},
                 {FolkloreSearchFactory.VAR_LABEL_PERFORMER, ""},
