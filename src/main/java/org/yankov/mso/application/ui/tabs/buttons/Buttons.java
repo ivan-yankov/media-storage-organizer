@@ -136,7 +136,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         Button btnPlay = new Button();
         btnPlay.setTooltip(new Tooltip(resourceBundle.getString(BTN_PLAYER_RUN)));
         btnPlay.setGraphic(getIcon("play"));
-        btnPlay.setOnAction(this::handlePlay);
+        btnPlay.setOnAction(this::handlePlayStop);
         buttons.put(BTN_PLAYER_RUN, btnPlay);
 
         Button btnUpload = new Button();
@@ -209,21 +209,22 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         return new ImageView(image);
     }
 
-    private void handlePlay(ActionEvent event) {
+    private void handlePlayStop(ActionEvent event) {
+        FlacPlayer flacPlayer = FlacPlayer.getInstance();
+        if (flacPlayer.isPlaying()) {
+            flacPlayer.stop();
+            return;
+        }
+
         if (table.getSelectionModel().getSelectedIndex() < 0 || table.getSelectionModel().getSelectedItem()
                                                                      .getRecord() == null) {
             return;
         }
 
-        FlacPlayer flacPlayer = FlacPlayer.getInstance();
-        if (flacPlayer.isPlaying()) {
-            flacPlayer.stop();
-        } else {
-            flacPlayer.addListener(e -> Platform.runLater(() -> updatePlayButton((Button) event.getSource(), e)));
-            flacPlayer.setBytes(table.getSelectionModel().getSelectedItem().getRecord().getBytes());
-            Thread thread = new Thread(flacPlayer::play);
-            thread.start();
-        }
+        flacPlayer.addListener(e -> Platform.runLater(() -> updatePlayButton((Button) event.getSource(), e)));
+        flacPlayer.setBytes(table.getSelectionModel().getSelectedItem().getRecord().getBytes());
+        Thread thread = new Thread(flacPlayer::play);
+        thread.start();
     }
 
     private void updatePlayButton(Button button, LineEvent event) {
