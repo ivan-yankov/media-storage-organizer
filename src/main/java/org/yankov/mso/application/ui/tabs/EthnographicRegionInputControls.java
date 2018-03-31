@@ -27,7 +27,7 @@ public class EthnographicRegionInputControls extends ArtifactInputControls<Ethno
 
     @Override
     protected Pane createControls() {
-        ethnographicRegion = new LabeledTextField(getResourceBundle().getString(NAME), "", null);
+        ethnographicRegion = new LabeledTextField(getResourceBundle().getString(NAME), "");
         ethnographicRegion.layout();
 
         VBox actionControlsContainer = new VBox();

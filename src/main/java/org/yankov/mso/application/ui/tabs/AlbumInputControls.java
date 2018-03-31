@@ -34,16 +34,16 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
 
     @Override
     protected Pane createControls() {
-        title = new LabeledTextField(getResourceBundle().getString(TITLE), "", null);
+        title = new LabeledTextField(getResourceBundle().getString(TITLE), "");
         title.layout();
 
-        productionSignature = new LabeledTextField(getResourceBundle().getString(PRODUCTION_SIGNATURE), "", null);
+        productionSignature = new LabeledTextField(getResourceBundle().getString(PRODUCTION_SIGNATURE), "");
         productionSignature.layout();
 
-        collectionSignature = new LabeledTextField(getResourceBundle().getString(COLLECTION_SIGNATURE), "", null);
+        collectionSignature = new LabeledTextField(getResourceBundle().getString(COLLECTION_SIGNATURE), "");
         collectionSignature.layout();
 
-        note = new LabeledTextField(getResourceBundle().getString(NOTE), "", null);
+        note = new LabeledTextField(getResourceBundle().getString(NOTE), "");
         note.layout();
 
         VBox actionControlsContainer = new VBox();

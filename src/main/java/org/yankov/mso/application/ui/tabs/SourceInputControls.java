@@ -34,7 +34,7 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
         sourceType = FolkloreComboBoxFactory.createSourceTypeInput();
         sourceType.layout();
 
-        sourceSignature = new LabeledTextField(getResourceBundle().getString(SIGNATURE), "", null);
+        sourceSignature = new LabeledTextField(getResourceBundle().getString(SIGNATURE), "");
         sourceSignature.layout();
 
         VBox actionControlsContainer = new VBox();

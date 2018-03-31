@@ -79,7 +79,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         operators = FolkloreComboBoxFactory.createSearchOperators();
         operators.layout();
 
-        value = new LabeledTextField(resourceBundle.getString(VALUE), "*", null);
+        value = new LabeledTextField(resourceBundle.getString(VALUE), "*");
         value.getTextField().setOnKeyReleased(this::valueKeyTyped);
         value.layout();
 

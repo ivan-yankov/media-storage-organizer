@@ -76,10 +76,10 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
 
     @Override
     protected Pane createControls() {
-        name = new LabeledTextField(getResourceBundle().getString(NAME), "", null);
+        name = new LabeledTextField(getResourceBundle().getString(NAME), "");
         name.layout();
 
-        note = new LabeledTextField(getResourceBundle().getString(NOTE), "", null);
+        note = new LabeledTextField(getResourceBundle().getString(NOTE), "");
         note.layout();
 
         HBox missionsContainer = new HBox();

@@ -1,5 +1,6 @@
 package org.yankov.mso.application.ui.tabs;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -52,15 +53,18 @@ public class FolklorePieceEditor implements Form {
 
     @Override
     public void createControls() {
-        UserInterfaceControls albumTrackOrder = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_ALBUM_TRACK_ORDER),
-                                                                     piece.getAlbumTrackOrder(), piece::setAlbumTrackOrder);
+        LabeledTextField albumTrackOrder = new LabeledTextField(
+                resourceBundle.getString(FolklorePieceTable.COL_ALBUM_TRACK_ORDER), piece.getAlbumTrackOrder());
+        albumTrackOrder.setNewValueConsumer(piece::setAlbumTrackOrder);
+        albumTrackOrder.setNewValueValidator(value -> value.matches("[0-9]+"));
         albumTrackOrder.layout();
 
         UserInterfaceControls album = FolkloreComboBoxFactory.createAlbum(piece);
         album.layout();
 
-        UserInterfaceControls title = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_TITLE),
-                                                           piece.getTitle(), piece::setTitle);
+        LabeledTextField title = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_TITLE),
+                                                      piece.getTitle());
+        title.setNewValueConsumer(piece::setTitle);
         title.layout();
 
         UserInterfaceControls performer = FolkloreComboBoxFactory.createPerformer(piece);
@@ -87,8 +91,9 @@ public class FolklorePieceEditor implements Form {
         UserInterfaceControls source = FolkloreComboBoxFactory.createSource(piece);
         source.layout();
 
-        UserInterfaceControls note = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_NOTE),
-                                                          piece.getNote(), piece::setNote);
+        LabeledTextField note = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_NOTE),
+                                                     piece.getNote());
+        note.setNewValueConsumer(piece::setNote);
         note.layout();
 
         UserInterfaceControls fileSelectionField = new FileSelectionField(

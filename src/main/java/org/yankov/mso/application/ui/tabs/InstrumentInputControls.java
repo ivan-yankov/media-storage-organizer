@@ -27,7 +27,7 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
 
     @Override
     protected Pane createControls() {
-        instrument = new LabeledTextField(getResourceBundle().getString(INSTRUMENT), "", null);
+        instrument = new LabeledTextField(getResourceBundle().getString(INSTRUMENT), "");
         instrument.layout();
 
         VBox actionControlsContainer = new VBox();
