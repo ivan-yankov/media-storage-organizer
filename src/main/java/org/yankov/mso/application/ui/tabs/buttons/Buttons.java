@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.Form;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.utils.FlacPlayer;
 import org.yankov.mso.application.utils.FxUtils;
@@ -256,18 +257,27 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
             @Override
             protected Object call() {
-                ApplicationContext context = ApplicationContext.getInstance();
-                context.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
-                context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_STARTED));
+                initSaveOperation(true);
                 DatabaseOperations.saveToDatabase(entityCollections);
-                context.getLogger().log(Level.INFO, resourceBundle.getString(UPLOAD_COMPLETED));
-                context.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
+                initSaveOperation(false);
                 return null;
             }
 
         };
 
         new Thread(task).start();
+    }
+
+    private void initSaveOperation(boolean start) {
+        ApplicationContext context = ApplicationContext.getInstance();
+
+        Cursor cursor = start ? Cursor.WAIT : Cursor.DEFAULT;
+        context.getPrimaryStage().getScene().setCursor(cursor);
+
+        String msg = start ? resourceBundle.getString(UPLOAD_STARTED) : resourceBundle.getString(UPLOAD_COMPLETED);
+        context.getLogger().log(Level.INFO, msg);
+
+        ((Form) context.getPrimaryStage().getScene().getUserData()).disable(start);
     }
 
     private void updateDataModel(BiConsumer<PropertiesType, EntityType> operation) {

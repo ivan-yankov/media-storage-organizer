@@ -1,6 +1,5 @@
 package org.yankov.mso.application.ui.tabs;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -137,6 +136,10 @@ public class FolklorePieceEditor implements Form {
     @Override
     public void close() {
         stage.close();
+    }
+
+    @Override
+    public void disable(boolean value) {
     }
 
     private void initializeStage() {

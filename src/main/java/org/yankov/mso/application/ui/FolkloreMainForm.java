@@ -24,9 +24,11 @@ public class FolkloreMainForm implements Form {
     public static final String TAB_INPUT_ARTIFACTS = CLASS_NAME + "-tab-tabs-artifacts";
 
     private Stage stage;
+    private TabPane tabPane;
 
     public FolkloreMainForm(Stage stage) {
         this.stage = stage;
+        this.tabPane = createTabPane();
     }
 
     @Override
@@ -34,12 +36,14 @@ public class FolkloreMainForm implements Form {
         StackPane root = new StackPane();
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(createTabPane());
+        borderPane.setCenter(tabPane);
         borderPane.setBottom(createConsole());
 
         root.getChildren().add(borderPane);
 
-        stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.setUserData(this);
+        stage.setScene(scene);
     }
 
     @Override
@@ -52,12 +56,17 @@ public class FolkloreMainForm implements Form {
         stage.close();
     }
 
+    @Override
+    public void disable(boolean value) {
+        tabPane.setDisable(value);
+    }
+
     private Pane createConsole() {
         ApplicationConsole.getInstance().layout();
         return ApplicationConsole.getInstance().getContainer();
     }
 
-    private Node createTabPane() {
+    private TabPane createTabPane() {
         UserInterfaceControls inputTab = new FolkloreInputTab();
         inputTab.layout();
 
@@ -67,21 +76,21 @@ public class FolkloreMainForm implements Form {
         UserInterfaceControls searchTab = new FolkloreSearchTab();
         searchTab.layout();
 
-        TabPane tabPane = new TabPane();
-        tabPane.getTabs().add(createTab(TAB_INPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
+        TabPane pane = new TabPane();
+        pane.getTabs().add(createTab(TAB_INPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                      .getString(TAB_INPUT), false,
                                         inputTab.getContainer()));
 
-        tabPane.getTabs().add(createTab(TAB_INPUT_ARTIFACTS,
+        pane.getTabs().add(createTab(TAB_INPUT_ARTIFACTS,
                                         ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                           .getString(TAB_INPUT_ARTIFACTS), false,
                                         inputArtifactsTab.getContainer()));
 
-        tabPane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
+        pane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
                                                                       .getString(TAB_OUTPUT), false,
                                         searchTab.getContainer()));
 
-        return tabPane;
+        return pane;
     }
 
     private Tab createTab(String id, String text, boolean closable, Node content) {

@@ -8,4 +8,6 @@ public interface Form {
 
     void close();
 
+    void disable(boolean value);
+
 }
