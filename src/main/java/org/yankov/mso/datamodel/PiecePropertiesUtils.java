@@ -90,7 +90,7 @@ public class PiecePropertiesUtils {
         piece.setPerformer(properties.getPerformer());
         piece.setAlbum(properties.getAlbum());
         piece.setTitle(properties.getTitle());
-        piece.setAlbumTrackOrder(Integer.parseInt(properties.getAlbumTrackOrder()));
+        piece.setAlbumTrackOrder(parseAlbumTrackOrder(properties.getAlbumTrackOrder()));
         piece.setDuration(properties.getDuration());
         piece.setRecord(properties.getRecord());
     }
@@ -130,6 +130,10 @@ public class PiecePropertiesUtils {
             dest.setFile(source.getFile());
             dest.setRecord(source.getRecord());
         }
+    }
+
+    private static int parseAlbumTrackOrder(String value) {
+        return value != null ? Integer.parseInt(value) : 0;
     }
 
 }
