@@ -143,9 +143,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         table.getTableView().getItems().addAll(properties);
 
         Duration totalDuration = calculateTotalDuration(properties);
-        DurationConverter converter = new DurationConverter();
-        String msg = MessageFormat.format(resourceBundle.getString(TOTAL_ITEMS_FOUND), properties.size(),
-                                          converter.convertToDatabaseColumn(totalDuration));
+        String msg = MessageFormat
+                .format(resourceBundle.getString(TOTAL_ITEMS_FOUND), properties.size(), convertDuration(totalDuration));
         ApplicationContext.getInstance().getLogger().log(Level.INFO, msg);
     }
 
@@ -155,6 +154,12 @@ public class FolkloreSearchTab implements UserInterfaceControls {
             total = total.plus(piece.getDuration());
         }
         return total;
+    }
+
+    private String convertDuration(Duration duration) {
+        String format = "%d:%02d:%02d";
+        return String.format(format, duration.toHours(), DurationConverter.toMinutesPart(duration),
+                             DurationConverter.toSecondsPart(duration));
     }
 
 }
