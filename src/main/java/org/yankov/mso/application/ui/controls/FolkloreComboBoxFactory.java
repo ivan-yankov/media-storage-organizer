@@ -141,7 +141,7 @@ public class FolkloreComboBoxFactory {
         LabeledComboBox<Operator> cb = new LabeledComboBox<>(new OperatorStringConverter(), false, false);
         cb.setLabelText(resourceBundle.getString(FolkloreSearchTab.OPERATOR));
         cb.setItems(FolkloreSearchFactory.createOperators());
-        cb.setValue(FolkloreSearchFactory.OPERATOR_EQUALS);
+        cb.setValue(FolkloreSearchFactory.OPERATOR_CONTAINS);
         return cb;
     }
 
