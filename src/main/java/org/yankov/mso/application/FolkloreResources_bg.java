@@ -168,6 +168,8 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreSearchTab.VALUE, "Стойност"},
                 {FolkloreSearchTab.BTN_SEARCH, "Търсене"},
                 {FolkloreSearchTab.TOTAL_ITEMS_FOUND, "Брой намерени записи {0}, общо времетраене {1}"},
+                {FolkloreSearchTab.PLAY_NEXT, "Възпроизвеждане на следващ запис"},
+                {FolkloreSearchTab.PLAY_RANDOM, "Случаен следващ запис"},
 
                 {FolkloreSearchFactory.VAR_LABEL_TITLE, "Заглавие"},
                 {FolkloreSearchFactory.VAR_LABEL_PERFORMER, "Изпълнител"},

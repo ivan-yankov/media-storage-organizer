@@ -10,12 +10,15 @@ import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ButtonsFactory {
 
     public static Buttons<FolklorePieceProperties, FolklorePiece> createFolkloreInputTabButtons(
-            TableView<FolklorePieceProperties> table) {
-        Buttons<FolklorePieceProperties, FolklorePiece> buttons = createFolkloreButtons(table);
+            TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
+            Supplier<Boolean> playRandomSupplier) {
+        Buttons<FolklorePieceProperties, FolklorePiece> buttons = createFolkloreButtons(table, playNextSupplier,
+                                                                                        playRandomSupplier);
 
         buttons.setSelectButtons(allButtons -> {
             List<Button> selectedButtons = new ArrayList<>();
@@ -36,8 +39,10 @@ public class ButtonsFactory {
     }
 
     public static Buttons<FolklorePieceProperties, FolklorePiece> createFolkloreSearchTabButtons(
-            TableView<FolklorePieceProperties> table) {
-        Buttons<FolklorePieceProperties, FolklorePiece> buttons = createFolkloreButtons(table);
+            TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
+            Supplier<Boolean> playRandomSupplier) {
+        Buttons<FolklorePieceProperties, FolklorePiece> buttons = createFolkloreButtons(table, playNextSupplier,
+                                                                                        playRandomSupplier);
 
         buttons.setSelectButtons(allButtons -> {
             List<Button> selectedButtons = new ArrayList<>();
@@ -53,7 +58,8 @@ public class ButtonsFactory {
     }
 
     private static Buttons<FolklorePieceProperties, FolklorePiece> createFolkloreButtons(
-            TableView<FolklorePieceProperties> table) {
+            TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
+            Supplier<Boolean> playRandomSupplier) {
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = new Buttons<>();
 
         buttons.setResourceBundle(ApplicationContext.getInstance().getFolkloreResourceBundle());
@@ -70,6 +76,10 @@ public class ButtonsFactory {
         buttons.setPropertiesCreator(FolklorePieceProperties::new);
 
         buttons.setPropertiesCopier(PiecePropertiesUtils::copyParticularFolklorePieceProperties);
+
+        buttons.setPlayNextSupplier(playNextSupplier);
+
+        buttons.setPlayRandomSupplier(playRandomSupplier);
 
         return buttons;
     }

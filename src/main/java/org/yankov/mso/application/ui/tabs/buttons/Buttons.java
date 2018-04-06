@@ -69,6 +69,10 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     private TableView<PropertiesType> table;
     private Supplier<PropertiesType> propertiesCreator;
     private BiConsumer<PropertiesType, PropertiesType> propertiesCopier;
+    private Supplier<Boolean> playNextSupplier;
+    private Supplier<Boolean> playRandomSupplier;
+
+    private boolean stoppedByUser;
 
     private Map<String, Button> allButtons;
     private PropertiesType copiedProperties;
@@ -109,6 +113,14 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     public void setPropertiesCopier(BiConsumer<PropertiesType, PropertiesType> propertiesCopier) {
         this.propertiesCopier = propertiesCopier;
+    }
+
+    public void setPlayNextSupplier(Supplier<Boolean> playNextSupplier) {
+        this.playNextSupplier = playNextSupplier;
+    }
+
+    public void setPlayRandomSupplier(Supplier<Boolean> playRandomSupplier) {
+        this.playRandomSupplier = playRandomSupplier;
     }
 
     @Override
@@ -211,9 +223,12 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     }
 
     private void handlePlayStop(ActionEvent event) {
+        stoppedByUser = false;
+
         FlacPlayer flacPlayer = FlacPlayer.getInstance();
         if (flacPlayer.isPlaying()) {
             flacPlayer.stop();
+            stoppedByUser = true;
             return;
         }
 
@@ -222,19 +237,44 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
             return;
         }
 
-        flacPlayer.addListener(e -> Platform.runLater(() -> updatePlayButton((Button) event.getSource(), e)));
-        flacPlayer.setBytes(table.getSelectionModel().getSelectedItem().getRecord().getBytes());
+        playItem(table.getSelectionModel().getSelectedIndex());
+    }
+
+    private void playItem(int index) {
+        FlacPlayer flacPlayer = FlacPlayer.getInstance();
+        flacPlayer.addListener(e -> Platform.runLater(() -> playingListener(index, e)));
+        flacPlayer.setBytes(table.getItems().get(index).getRecord().getBytes());
         Thread thread = new Thread(flacPlayer::play);
         thread.start();
     }
 
-    private void updatePlayButton(Button button, LineEvent event) {
+    private void playingListener(int playingIndex, LineEvent event) {
+        Button button = allButtons.get(BTN_PLAYER_RUN);
+
         if (event.getType() == LineEvent.Type.START) {
             button.setTooltip(new Tooltip(resourceBundle.getString(BTN_PLAYER_STOP)));
             button.setGraphic(getIcon("stop"));
         } else if (event.getType() == LineEvent.Type.STOP) {
             button.setTooltip(new Tooltip(resourceBundle.getString(BTN_PLAYER_RUN)));
             button.setGraphic(getIcon("play"));
+            if (!stoppedByUser && playNextSupplier.get()) {
+                int nextItemIndex = getNextPlayItem(playingIndex);
+                playItem(nextItemIndex);
+                table.getSelectionModel().select(nextItemIndex);
+            }
+        }
+    }
+
+    private int getNextPlayItem(int index) {
+        if (playRandomSupplier.get()) {
+            Random random = new Random(System.currentTimeMillis());
+            return random.nextInt(table.getItems().size());
+        } else {
+            if (index == table.getItems().size() - 1) {
+                return 0;
+            } else {
+                return index + 1;
+            }
         }
     }
 

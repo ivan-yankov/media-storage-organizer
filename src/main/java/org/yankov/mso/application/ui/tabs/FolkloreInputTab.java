@@ -1,6 +1,5 @@
 package org.yankov.mso.application.ui.tabs;
 
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -23,7 +22,7 @@ public class FolkloreInputTab implements UserInterfaceControls {
         FolklorePieceTable table = new FolklorePieceTable(true);
 
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = ButtonsFactory
-                .createFolkloreInputTabButtons(table.getTableView());
+                .createFolkloreInputTabButtons(table.getTableView(), () -> false, () -> false);
         buttons.layout();
         container.getChildren().add(buttons.getContainer());
 

@@ -158,6 +158,8 @@ public class FolkloreResources extends ListResourceBundle {
                 {FolkloreSearchTab.VALUE, ""},
                 {FolkloreSearchTab.BTN_SEARCH, ""},
                 {FolkloreSearchTab.TOTAL_ITEMS_FOUND, ""},
+                {FolkloreSearchTab.PLAY_NEXT, ""},
+                {FolkloreSearchTab.PLAY_RANDOM, ""},
 
                 {FolkloreSearchFactory.VAR_LABEL_TITLE, ""},
                 {FolkloreSearchFactory.VAR_LABEL_PERFORMER, ""},

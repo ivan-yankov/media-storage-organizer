@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -36,9 +37,14 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public static final String VALUE = CLASS_NAME + "-value";
     public static final String BTN_SEARCH = CLASS_NAME + "-btn-search";
     public static final String TOTAL_ITEMS_FOUND = CLASS_NAME + "-number-items-found";
+    public static final String PLAY_NEXT = CLASS_NAME + "-play-next";
+    public static final String PLAY_RANDOM = CLASS_NAME + "-play-random";
 
-    private static final Double SPACE = 25.0;
+    private static final Double SEARCH_SPACE = 25.0;
     private static final Insets SEARCH_INSETS = new Insets(0.0, 20.0, 0.0, 20.0);
+
+    private static final Double PLAY_OPTIONS_SPACE = 10.0;
+    private static final Insets PLAY_OPTIONS_INSETS = new Insets(5.0);
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -48,6 +54,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     private LabeledComboBox<Variable<FolklorePiece>> variables;
     private LabeledComboBox<Operator> operators;
     private LabeledTextField value;
+    private CheckBox playNext;
+    private CheckBox playRandom;
 
     public FolkloreSearchTab() {
         this.container = new VBox();
@@ -57,8 +65,12 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public void layout() {
         createTable();
 
-        container.setSpacing(SPACE);
-        container.getChildren().add(createButtons());
+        HBox buttonsContainer = new HBox();
+        buttonsContainer.getChildren().add(createButtons());
+        buttonsContainer.getChildren().add(createPlayOptions());
+
+        container.setSpacing(SEARCH_SPACE);
+        container.getChildren().add(buttonsContainer);
         container.getChildren().add(createSearchControls());
 
         VBox tableContainer = new VBox();
@@ -70,6 +82,19 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     @Override
     public Pane getContainer() {
         return container;
+    }
+
+    private Pane createPlayOptions() {
+        playNext = new CheckBox(resourceBundle.getString(PLAY_NEXT));
+        playRandom = new CheckBox(resourceBundle.getString(PLAY_RANDOM));
+
+        VBox playOptionsContainer = new VBox();
+        playOptionsContainer.setSpacing(PLAY_OPTIONS_SPACE);
+        playOptionsContainer.setPadding(PLAY_OPTIONS_INSETS);
+        playOptionsContainer.getChildren().add(playNext);
+        playOptionsContainer.getChildren().add(playRandom);
+
+        return playOptionsContainer;
     }
 
     private Pane createSearchControls() {
@@ -90,7 +115,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         HBox searchContainer = new HBox();
         HBox.setHgrow(value.getContainer(), Priority.ALWAYS);
         searchContainer.setPadding(SEARCH_INSETS);
-        searchContainer.setSpacing(SPACE);
+        searchContainer.setSpacing(SEARCH_SPACE);
         searchContainer.setAlignment(Pos.BOTTOM_LEFT);
         searchContainer.getChildren().add(variables.getContainer());
         searchContainer.getChildren().add(operators.getContainer());
@@ -114,7 +139,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     private Pane createButtons() {
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = ButtonsFactory
-                .createFolkloreSearchTabButtons(table.getTableView());
+                .createFolkloreSearchTabButtons(table.getTableView(), () -> playNext.isSelected(),
+                                                () -> playRandom.isSelected());
         buttons.layout();
         return buttons.getContainer();
     }
