@@ -67,6 +67,7 @@ public class FolkloreResources extends ListResourceBundle {
                 {Buttons.BTN_CLONE, ""},
                 {Buttons.BTN_COPY_PROPERTIES, ""},
                 {Buttons.BTN_APPLY_PROPERTIES, ""},
+                {Buttons.BTN_IMPORT_FROM_CLIPBOARD, ""},
                 {Buttons.BTN_CLEAR, ""},
                 {Buttons.BTN_LOAD_ALBUM_TRACKS, ""},
                 {Buttons.BTN_EDIT_PROPERTIES, ""},

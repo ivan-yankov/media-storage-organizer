@@ -9,6 +9,8 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
@@ -45,6 +47,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String BTN_CLONE = CLASS_NAME + "-btn-duplicate";
     public static final String BTN_COPY_PROPERTIES = CLASS_NAME + "-btn-copy-properties";
     public static final String BTN_APPLY_PROPERTIES = CLASS_NAME + "-btn-apply-properties";
+    public static final String BTN_IMPORT_FROM_CLIPBOARD = CLASS_NAME + "-btn-import-from-clipboard";
     public static final String BTN_CLEAR = CLASS_NAME + "-btn-clear";
     public static final String BTN_LOAD_ALBUM_TRACKS = CLASS_NAME + "-btn-load-album-tracks";
     public static final String BTN_EDIT_PROPERTIES = CLASS_NAME + "-btn-edit-properties";
@@ -188,6 +191,12 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         btnApplyProperties.setOnAction(this::handleBtnApplyProperties);
         btnApplyProperties.setDisable(true);
         buttons.put(BTN_APPLY_PROPERTIES, btnApplyProperties);
+
+        Button btnImportFromClipBoard = new Button();
+        btnImportFromClipBoard.setTooltip(new Tooltip(resourceBundle.getString(BTN_IMPORT_FROM_CLIPBOARD)));
+        btnImportFromClipBoard.setGraphic(getIcon("import"));
+        btnImportFromClipBoard.setOnAction((this::handleBtnImportFromClipboard));
+        buttons.put(BTN_IMPORT_FROM_CLIPBOARD, btnImportFromClipBoard);
 
         Button btnClear = new Button();
         btnClear.setTooltip(new Tooltip(resourceBundle.getString(BTN_CLEAR)));
@@ -392,6 +401,21 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         allButtons.get(BTN_APPLY_PROPERTIES).setDisable(true);
         table.getSelectionModel().clearSelection();
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    private void handleBtnImportFromClipboard(ActionEvent event) {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
+            String data = clipboard.getString();
+            String[] titles = data.split(System.lineSeparator());
+            int n = Math.min(table.getItems().size(), titles.length);
+            for (int i = 0; i < n; i++) {
+                PropertiesType item = table.getItems().get(i);
+                item.setAlbumTrackOrder(Integer.toString(i + 1));
+                item.setTitle(titles[i].trim());
+                table.getItems().set(i, item);
+            }
+        }
     }
 
     private void handleBtnClear(ActionEvent event) {

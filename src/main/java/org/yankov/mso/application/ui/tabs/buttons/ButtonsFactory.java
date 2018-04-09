@@ -27,6 +27,7 @@ public class ButtonsFactory {
             selectedButtons.add(allButtons.get(Buttons.BTN_CLONE));
             selectedButtons.add(allButtons.get(Buttons.BTN_COPY_PROPERTIES));
             selectedButtons.add(allButtons.get(Buttons.BTN_APPLY_PROPERTIES));
+            selectedButtons.add(allButtons.get(Buttons.BTN_IMPORT_FROM_CLIPBOARD));
             selectedButtons.add(allButtons.get(Buttons.BTN_CLEAR));
             selectedButtons.add(allButtons.get(Buttons.BTN_LOAD_ALBUM_TRACKS));
             selectedButtons.add(allButtons.get(Buttons.BTN_EDIT_PROPERTIES));
