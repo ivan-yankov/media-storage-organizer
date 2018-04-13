@@ -79,7 +79,7 @@ public class PiecePropertiesUtils {
         dest.setEthnographicRegion(source.getEthnographicRegion());
     }
 
-    public static void setPropertiesToPiece(PieceProperties properties, Piece piece) {
+    public static <T extends PieceProperties, U extends Piece> void setPropertiesToPiece(T properties, U piece) {
         piece.setNote(properties.getNote());
         piece.setSource(properties.getSource());
         piece.setSoloist(properties.getSoloist());
@@ -93,6 +93,12 @@ public class PiecePropertiesUtils {
         piece.setAlbumTrackOrder(parseAlbumTrackOrder(properties.getAlbumTrackOrder()));
         piece.setDuration(properties.getDuration());
         piece.setRecord(properties.getRecord());
+
+        if (properties instanceof FolklorePieceProperties) {
+            FolklorePieceProperties folklorePieceProperties = (FolklorePieceProperties) properties;
+            FolklorePiece folklorePiece = (FolklorePiece) piece;
+            folklorePiece.setEthnographicRegion(folklorePieceProperties.getEthnographicRegion());
+        }
     }
 
     private static void setPieceToProperties(Piece piece, PieceProperties properties) {
