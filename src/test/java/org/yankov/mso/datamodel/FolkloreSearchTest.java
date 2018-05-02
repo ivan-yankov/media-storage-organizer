@@ -468,6 +468,20 @@ public class FolkloreSearchTest {
         assertResult(result, 3);
     }
 
+    @Test
+    public void testEscapeStopWords() {
+        String value;
+        List<FolklorePiece> result;
+
+        value = "недо ле недке хубава";
+        result = FolkloreSearchFactory.OPERATOR_EQUALS.match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
+        assertResult(result, 0);
+
+        value = "димитър, кара гемия";
+        result = FolkloreSearchFactory.OPERATOR_EQUALS.match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
+        assertResult(result, 2);
+    }
+
     private void assertResult(List<FolklorePiece> actualResult, int... expectedIndices) {
         Assert.assertEquals(expectedIndices.length, actualResult.size());
         for (int i = 0; i < expectedIndices.length; i++) {
