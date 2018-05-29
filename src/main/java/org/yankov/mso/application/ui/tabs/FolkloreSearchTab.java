@@ -170,7 +170,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
         Duration totalDuration = calculateTotalDuration(properties);
         String msg = MessageFormat
-                .format(resourceBundle.getString(TOTAL_ITEMS_FOUND), properties.size(), convertDuration(totalDuration));
+                .format(resourceBundle.getString(TOTAL_ITEMS_FOUND), Integer.toString(properties.size()),
+                        convertDuration(totalDuration));
         ApplicationContext.getInstance().getLogger().log(Level.INFO, msg);
     }
 
