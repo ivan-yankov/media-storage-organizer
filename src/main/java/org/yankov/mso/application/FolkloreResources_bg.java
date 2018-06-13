@@ -42,7 +42,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {FolkloreEntityCollectionFactory.SOURCE_TYPE_VIDEO, "Видео"},
                 {FolkloreEntityCollectionFactory.SOURCE_TYPE_INTERNET, "Internet"},
 
-                {FolkloreApplicationSettings.STAGE_TITLE, "Управление на база данни с българска народна музика"},
+                {FolkloreApplicationSettings.STAGE_TITLE, "База данни - българска народна музика"},
 
                 {FolkloreMainForm.TAB_INPUT, "Въвеждане на записи"},
                 {FolkloreMainForm.TAB_INPUT_ARTIFACTS, "Въвеждане на артефакти"},
