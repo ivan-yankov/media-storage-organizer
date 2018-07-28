@@ -8,6 +8,7 @@ import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.database.DatabaseTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FolkloreSearchTest {
@@ -106,71 +107,71 @@ public class FolkloreSearchTest {
 
         value = "недо ле, недке, хубава";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
-        assertResult(result, 1, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(0));
 
         value = "вълкана стоянова";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_PERFORMER, value);
-        assertResult(result, 0, 1, 3, 4);
+        assertResult(result, excludePieceIndeces(2));
 
         value = "онмбнр";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_ACCOMPANIMENT_PERFORMER, value);
-        assertResult(result, 1, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(0));
 
         value = "красимир кюркчийски";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_ARRANGEMENT_AUTHOR, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "коста колев";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_CONDUCTOR, value);
-        assertResult(result, 1, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(0));
 
         value = "гъдулка";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_INSTRUMENT_PERFORMANCE, value);
-        assertResult(result, 0, 1, 2, 4);
+        assertResult(result, excludePieceIndeces(3));
 
         value = "кавал";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_INSTRUMENT_ACCOMPANIMENT, value);
-        assertResult(result, 0, 1, 3, 4);
+        assertResult(result, excludePieceIndeces(2));
 
         value = "надежда хвойнева";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_SOLOIST, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "филип кутев";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_AUTHOR, value);
-        assertResult(result, 0, 1, 2, 3);
+        assertResult(result, excludePieceIndeces(4));
 
         value = "родопи";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "хорови народни песни";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "вна001";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "f001";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "лента";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_SOURCE_TYPE, value);
-        assertResult(result, 0, 1, 2, 4);
+        assertResult(result, excludePieceIndeces(3));
 
         value = "вна002";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, value);
-        assertResult(result, 0, 1, 2, 4);
+        assertResult(result, excludePieceIndeces(3));
     }
 
     @Test
@@ -245,6 +246,26 @@ public class FolkloreSearchTest {
         result = FolkloreSearchFactory.OPERATOR_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, value);
         assertResult(result, 3);
+
+        value = "стани недо ръченица";
+        result = FolkloreSearchFactory.OPERATOR_CONTAINS
+                .match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
+        assertResult(result, 1, 0, 3);
+
+        value = "луди млади";
+        result = FolkloreSearchFactory.OPERATOR_CONTAINS
+                .match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
+        assertResult(result, 5, 6, 7);
+
+        value = "луди-млади";
+        result = FolkloreSearchFactory.OPERATOR_CONTAINS
+                .match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
+        assertResult(result, 5, 6, 7);
+
+        value = "луди - млади";
+        result = FolkloreSearchFactory.OPERATOR_CONTAINS
+                .match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
+        assertResult(result, 5, 6, 7);
     }
 
     @Test
@@ -254,73 +275,73 @@ public class FolkloreSearchTest {
 
         value = "недке";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_TITLE, value);
-        assertResult(result, 1, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(0));
 
         value = "вълкана";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_PERFORMER, value);
-        assertResult(result, 0, 1, 3, 4);
+        assertResult(result, excludePieceIndeces(2));
 
         value = "бнр";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ACCOMPANIMENT_PERFORMER, value);
-        assertResult(result, 1, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(0));
 
         value = "кюркчийски";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ARRANGEMENT_AUTHOR, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "колев";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_CONDUCTOR, value);
-        assertResult(result, 1, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(0));
 
         value = "дулка";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_INSTRUMENT_PERFORMANCE, value);
-        assertResult(result, 0, 1, 2, 4);
+        assertResult(result, excludePieceIndeces(3));
 
         value = "вал";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_INSTRUMENT_ACCOMPANIMENT, value);
-        assertResult(result, 0, 1, 3, 4);
+        assertResult(result, excludePieceIndeces(2));
 
         value = "надежда";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_SOLOIST, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "кутев";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_AUTHOR, value);
-        assertResult(result, 0, 1, 2, 3);
+        assertResult(result, excludePieceIndeces(4));
 
         value = "родоп";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "народни песни";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "01";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "f";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
-        assertResult(result, 0, 2, 3, 4);
+        assertResult(result, excludePieceIndeces(1));
 
         value = "лен";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_SOURCE_TYPE, value);
-        assertResult(result, 0, 1, 2, 4);
+        assertResult(result, excludePieceIndeces(3));
 
         value = "вн";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_SOURCE_SIGNATURE, value);
-        assertResult(result, 0, 1, 2, 4);
+        assertResult(result, excludePieceIndeces(3));
     }
 
     @Test
@@ -482,8 +503,8 @@ public class FolkloreSearchTest {
         assertResult(result, 2);
     }
 
-    private void assertResult(List<FolklorePiece> actualResult, int... expectedIndices) {
-        Assert.assertEquals(expectedIndices.length, actualResult.size());
+    private void assertResult(List<FolklorePiece> actualResult, Integer... expectedIndices) {
+        Assert.assertEquals("Search result length doesn't match", expectedIndices.length, actualResult.size());
         for (int i = 0; i < expectedIndices.length; i++) {
             Assert.assertEquals(pieces.get(expectedIndices[i]), actualResult.get(i));
         }
@@ -528,7 +549,30 @@ public class FolkloreSearchTest {
         piece.setAuthor(new Artist("Филип Кутев"));
         pieces.add(piece);
 
+        piece = new FolklorePiece();
+        piece.setTitle("Луди млади");
+        pieces.add(piece);
+
+        piece = new FolklorePiece();
+        piece.setTitle("Луди-млади");
+        pieces.add(piece);
+
+        piece = new FolklorePiece();
+        piece.setTitle("Луди - млади");
+        pieces.add(piece);
+
         return pieces;
+    }
+
+    private Integer[] excludePieceIndeces(Integer... excludeIndeces) {
+        List<Integer> result = new ArrayList<>();
+        List<Integer> excluded = Arrays.asList(excludeIndeces);
+        for (int i = 0; i < pieces.size(); i++) {
+            if (!excluded.contains(i)) {
+                result.add(i);
+            }
+        }
+        return result.toArray(new Integer[0]);
     }
 
     private Artist createAccompanimentPerformer() {

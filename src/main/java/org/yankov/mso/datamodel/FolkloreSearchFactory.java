@@ -83,22 +83,22 @@ public class FolkloreSearchFactory {
 
     public static final Operator OPERATOR_EQUALS = new Operator(
             resourceBundle.getString(OPERATOR_LABEL_EQUALS),
-            (s1, s2) -> s1.trim().equalsIgnoreCase(s2.trim()), false);
+            (s1, s2) -> s1.trim().equalsIgnoreCase(s2.trim()), false, false);
     public static final Operator OPERATOR_NOT_EQUALS = new Operator(
             resourceBundle.getString(OPERATOR_LABEL_NOT_EQUALS),
-            (s1, s2) -> !s1.trim().equalsIgnoreCase(s2.trim()), true);
+            (s1, s2) -> !s1.trim().equalsIgnoreCase(s2.trim()), true, false);
     public static final Operator OPERATOR_CONTAINS = new Operator(
             resourceBundle.getString(OPERATOR_LABEL_CONTAINS),
-            (s1, s2) -> s1.trim().toLowerCase().contains(s2.trim().toLowerCase()), false);
+            (s1, s2) -> s1.trim().toLowerCase().contains(s2.trim().toLowerCase()), false, true);
     public static final Operator OPERATOR_NOT_CONTAINS = new Operator(
             resourceBundle.getString(OPERATOR_LABEL_NOT_CONTAINS),
-            (s1, s2) -> !s1.trim().toLowerCase().contains(s2.trim().toLowerCase()), true);
+            (s1, s2) -> !s1.trim().toLowerCase().contains(s2.trim().toLowerCase()), true, false);
     public static final Operator OPERATOR_STARTS = new Operator(
             resourceBundle.getString(OPERATOR_LABEL_STARTS),
-            (s1, s2) -> s1.trim().toLowerCase().startsWith(s2.trim().toLowerCase()), false);
+            (s1, s2) -> s1.trim().toLowerCase().startsWith(s2.trim().toLowerCase()), false, false);
     public static final Operator OPERATOR_ENDS = new Operator(
             resourceBundle.getString(OPERATOR_LABEL_ENDS),
-            (s1, s2) -> s1.trim().toLowerCase().endsWith(s2.trim().toLowerCase()), false);
+            (s1, s2) -> s1.trim().toLowerCase().endsWith(s2.trim().toLowerCase()), false, false);
 
     public static ObservableList<Variable<FolklorePiece>> createFolkloreVariables() {
         ObservableList<Variable<FolklorePiece>> variables = FXCollections.observableArrayList();
