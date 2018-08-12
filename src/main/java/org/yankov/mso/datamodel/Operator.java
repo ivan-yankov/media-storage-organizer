@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class Operator {
 
-    private static final String[] STOP_WORDS = {",", ";", "-", "/"};
+    private static final String[] STOP_WORDS = {",", ";", "-", "/", "\""};
 
     private String label;
     private BiPredicate<String, String> predicate;
