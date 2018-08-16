@@ -73,7 +73,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
     @Override
     public void layout() {
         table.setEditable(false);
-        table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        table.getSelectionModel().setSelectionMode(inputTable ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
         table.getColumns().addAll(createTableColumns());
         table.getColumns().forEach(column -> column.setStyle(TABLE_FONT.toCssRepresentation()));
 

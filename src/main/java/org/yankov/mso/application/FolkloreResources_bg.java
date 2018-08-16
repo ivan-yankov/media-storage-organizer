@@ -81,6 +81,8 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {Buttons.UPLOAD_COMPLETED, "Запис в база данни - край"},
                 {Buttons.UNABLE_WRITE_FILE, "Неуспешен запис на файл"},
                 {Buttons.ERROR_UPDATE_DATA_MODEL, "Неуспешно обновяване на данни"},
+                {Buttons.EXPORT_STARTED, "Експорт на файлове - начало"},
+                {Buttons.EXPORT_COMPLETED, "Експорт на файлове - край"},
 
                 {FxUtils.SELECT_AUDIO_FILES, "Избор на файлове"},
                 {FxUtils.SELECT_EXPORT_DIRECTORY, "Избор на папка за експорт"},

@@ -61,6 +61,8 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String UPLOAD_COMPLETED = CLASS_NAME + "-upload-completed";
     public static final String UNABLE_WRITE_FILE = CLASS_NAME + "-unable-write-file";
     public static final String ERROR_UPDATE_DATA_MODEL = CLASS_NAME + "-error-update-data-model";
+    public static final String EXPORT_STARTED = CLASS_NAME + "-export-started";
+    public static final String EXPORT_COMPLETED = CLASS_NAME + "-export-completed";
 
     private static final String DEFAULT_TRACK_ORDER = "0";
     private static final int ICON_SIZE = 32;
@@ -448,25 +450,47 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     private void handleBtnExport(ActionEvent event) {
         Optional<File> directory = FxUtils.selectDirectory();
         if (directory.isPresent()) {
-            for (PropertiesType item : table.getItems()) {
-                StringBuilder outputFileName = new StringBuilder();
-                outputFileName.append(directory.get().getAbsolutePath());
-                outputFileName.append(File.separator);
-                outputFileName.append(item.getPerformer().getName());
-                outputFileName.append(" - ");
-                outputFileName.append(item.getTitle());
-                outputFileName.append(".");
-                outputFileName.append(item.getRecord().getDataFormat().toLowerCase());
+            ApplicationContext.getInstance().getLogger().info(resourceBundle.getString(EXPORT_STARTED));
+            for (PropertiesType item : table.getSelectionModel().getSelectedItems()) {
+                String outputFileName = createOutputFileName(directory.get(), item);
                 try {
-                    FileOutputStream out = new FileOutputStream(outputFileName.toString());
+                    FileOutputStream out = new FileOutputStream(outputFileName);
                     out.write(item.getRecord().getBytes());
                     out.close();
                 } catch (IOException e) {
-                    String msg = resourceBundle.getString(UNABLE_WRITE_FILE) + outputFileName.toString();
+                    String msg = resourceBundle.getString(UNABLE_WRITE_FILE) + outputFileName;
                     ApplicationContext.getInstance().getLogger().log(Level.SEVERE, msg, e);
                 }
             }
+            ApplicationContext.getInstance().getLogger().info(resourceBundle.getString(EXPORT_COMPLETED));
         }
+    }
+
+    private String createOutputFileName(File directory, PropertiesType item) {
+        StringBuilder outputFileName = new StringBuilder();
+
+        outputFileName.append(directory.getAbsolutePath());
+        outputFileName.append(File.separator);
+        outputFileName.append(String.format("%06d", item.getId()));
+
+        if (item.getAlbum() != null) {
+            outputFileName.append(".");
+            outputFileName.append(item.getAlbum().getCollectionSignature());
+        }
+
+        if (item.getAlbumTrackOrder() != null && !item.getAlbumTrackOrder().isEmpty()) {
+            outputFileName.append(".");
+            outputFileName.append(item.getAlbumTrackOrder());
+        }
+
+        outputFileName.append("_");
+        outputFileName.append(item.getTitle());
+        outputFileName.append(" - ");
+        outputFileName.append(item.getPerformer().getName());
+        outputFileName.append(".");
+        outputFileName.append(item.getRecord().getDataFormat().toLowerCase());
+
+        return outputFileName.toString();
     }
 
 }

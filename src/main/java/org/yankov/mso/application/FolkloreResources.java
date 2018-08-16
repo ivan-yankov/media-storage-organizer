@@ -80,6 +80,8 @@ public class FolkloreResources extends ListResourceBundle {
                 {Buttons.UPLOAD_COMPLETED, ""},
                 {Buttons.UNABLE_WRITE_FILE, ""},
                 {Buttons.ERROR_UPDATE_DATA_MODEL, ""},
+                {Buttons.EXPORT_STARTED, ""},
+                {Buttons.EXPORT_COMPLETED, ""},
 
                 {FxUtils.SELECT_AUDIO_FILES, ""},
                 {FxUtils.SELECT_EXPORT_DIRECTORY, ""},
