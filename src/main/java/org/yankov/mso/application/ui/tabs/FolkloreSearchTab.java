@@ -7,12 +7,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.UserInterfaceControls;
 import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
@@ -22,8 +20,10 @@ import org.yankov.mso.application.ui.tabs.buttons.Buttons;
 import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
 import org.yankov.mso.datamodel.*;
 
+import javax.swing.border.TitledBorder;
 import java.text.MessageFormat;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -39,26 +39,27 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     public static final String TOTAL_ITEMS_FOUND = CLASS_NAME + "-number-items-found";
     public static final String PLAY_NEXT = CLASS_NAME + "-play-next";
     public static final String PLAY_RANDOM = CLASS_NAME + "-play-random";
+    public static final String FILTER = CLASS_NAME + "-filter";
 
     private static final Double SEARCH_SPACE = 25.0;
-    private static final Insets SEARCH_INSETS = new Insets(0.0, 20.0, 0.0, 20.0);
+    private static final Insets SEARCH_INSETS = new Insets(10.0, 20.0, 10.0, 20.0);
 
     private static final Double PLAY_OPTIONS_SPACE = 10.0;
     private static final Insets PLAY_OPTIONS_INSETS = new Insets(5.0);
+    private static final int NUMBER_OF_FILTERS = 3;
 
     private final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     private FolklorePieceTable table;
 
     private VBox container;
-    private LabeledComboBox<Variable<FolklorePiece>> variables;
-    private LabeledComboBox<Operator> operators;
-    private LabeledTextField value;
+    private List<Filter<FolklorePiece>> filters;
     private CheckBox playNext;
     private CheckBox playRandom;
 
     public FolkloreSearchTab() {
         this.container = new VBox();
+        this.filters = new ArrayList<>();
     }
 
     @Override
@@ -69,9 +70,11 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         buttonsContainer.getChildren().add(createButtons());
         buttonsContainer.getChildren().add(createPlayOptions());
 
-        container.setSpacing(SEARCH_SPACE);
         container.getChildren().add(buttonsContainer);
-        container.getChildren().add(createSearchControls());
+        for (int i = 0; i < NUMBER_OF_FILTERS; i++) {
+            String filter = resourceBundle.getString(FILTER);
+            container.getChildren().add(createSearchControls(i == 0, filter + " " + Integer.toString(i + 1)));
+        }
 
         VBox tableContainer = new VBox();
         VBox.setVgrow(tableContainer, Priority.ALWAYS);
@@ -97,20 +100,19 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         return playOptionsContainer;
     }
 
-    private Pane createSearchControls() {
-        variables = FolkloreComboBoxFactory.createSearchVariable();
+    private TitledPane createSearchControls(boolean isFirst, String title) {
+        LabeledComboBox<Variable<FolklorePiece>> variables = FolkloreComboBoxFactory.createSearchVariable();
         variables.layout();
 
-        operators = FolkloreComboBoxFactory.createSearchOperators();
+        LabeledComboBox<Operator> operators = FolkloreComboBoxFactory.createSearchOperators();
         operators.layout();
 
-        value = new LabeledTextField(resourceBundle.getString(VALUE), "*");
+        LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "*");
         value.getTextField().setOnKeyReleased(this::valueKeyTyped);
         value.layout();
 
-        Button btnSearch = new Button();
-        btnSearch.setText(resourceBundle.getString(BTN_SEARCH));
-        btnSearch.setOnAction(this::handleBtnSearch);
+        Filter<FolklorePiece> filter = new Filter<>(variables, operators, value);
+        filters.add(filter);
 
         HBox searchContainer = new HBox();
         HBox.setHgrow(value.getContainer(), Priority.ALWAYS);
@@ -120,9 +122,18 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         searchContainer.getChildren().add(variables.getContainer());
         searchContainer.getChildren().add(operators.getContainer());
         searchContainer.getChildren().add(value.getContainer());
-        searchContainer.getChildren().add(btnSearch);
 
-        return searchContainer;
+        if (isFirst) {
+            Button btnSearch = new Button();
+            btnSearch.setText(resourceBundle.getString(BTN_SEARCH));
+            btnSearch.setOnAction(this::handleBtnSearch);
+            searchContainer.getChildren().add(btnSearch);
+        }
+
+        TitledPane titledPane = new TitledPane(title, searchContainer);
+        titledPane.setExpanded(isFirst);
+
+        return titledPane;
     }
 
     private void valueKeyTyped(KeyEvent event) {
@@ -151,19 +162,13 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     private void search() {
         List<FolklorePiece> pieces = ApplicationContext.getInstance().getFolkloreEntityCollections().getPieces();
-        Variable<FolklorePiece> variable = variables.getValue();
-        Operator operator = operators.getValue();
-        String searchValue = value.getTextField().getText();
 
-        List<FolklorePiece> piecesFound;
-        if (searchValue.equals("*")) {
-            piecesFound = pieces;
-        } else {
-            piecesFound = operator.match(pieces, variable, searchValue);
+        for (Filter<FolklorePiece> filter : filters) {
+            pieces = applyFilter(pieces, filter);
         }
 
         ObservableList<FolklorePieceProperties> properties = FXCollections.observableArrayList();
-        piecesFound.forEach(piece -> properties.add(PiecePropertiesUtils.createPropertiesFromFolklorePiece(piece)));
+        pieces.forEach(piece -> properties.add(PiecePropertiesUtils.createPropertiesFromFolklorePiece(piece)));
 
         table.getTableView().getItems().clear();
         table.getTableView().getItems().addAll(properties);
@@ -173,6 +178,21 @@ public class FolkloreSearchTab implements UserInterfaceControls {
                 .format(resourceBundle.getString(TOTAL_ITEMS_FOUND), Integer.toString(properties.size()),
                         convertDuration(totalDuration));
         ApplicationContext.getInstance().getLogger().log(Level.INFO, msg);
+    }
+
+    private List<FolklorePiece> applyFilter(List<FolklorePiece> pieces, Filter<FolklorePiece> filter) {
+        Variable<FolklorePiece> variable = filter.getVariables().getValue();
+        Operator operator = filter.getOperators().getValue();
+        String searchValue = filter.getValue().getTextField().getText();
+
+        List<FolklorePiece> piecesFound;
+        if (searchValue.equals("*")) {
+            piecesFound = pieces;
+        } else {
+            piecesFound = operator.match(pieces, variable, searchValue);
+        }
+
+        return piecesFound;
     }
 
     private Duration calculateTotalDuration(List<? extends PieceProperties> pieces) {
