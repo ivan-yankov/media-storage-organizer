@@ -17,6 +17,7 @@
               <option value="package" />
             </list>
           </option>
+          <option name="pomFileName" />
           <option name="profilesMap">
             <map />
           </option>
