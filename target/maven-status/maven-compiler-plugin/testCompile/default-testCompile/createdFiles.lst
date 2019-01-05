@@ -1,0 +1,10 @@
+org/yankov/mso/application/ApplicationArgumentsTest.class
+org/yankov/mso/database/DatabaseManagerTest.class
+org/yankov/mso/datamodel/FolkloreSearchTest.class
+org/yankov/mso/application/ui/converters/AlbumStringConverterTest.class
+org/yankov/mso/database/DurationConverterTest.class
+org/yankov/mso/database/DatabaseConnectionTest.class
+org/yankov/mso/database/DatabaseTest.class
+org/yankov/mso/database/PerformanceTest.class
+org/yankov/mso/database/ExpectedCollections.class
+org/yankov/mso/database/FolkloreEntityCollectionsTest.class
