@@ -3,5 +3,5 @@ test*
 .idea
 *.iml
 .project
-.log
+*.log
 maven-repo.tar
