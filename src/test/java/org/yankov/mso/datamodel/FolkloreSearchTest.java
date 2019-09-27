@@ -1,15 +1,14 @@
 package org.yankov.mso.datamodel;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.yankov.mso.application.ApplicationArguments;
-import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.database.DatabaseTest;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.database.DatabaseTest;
 
 public class FolkloreSearchTest {
 

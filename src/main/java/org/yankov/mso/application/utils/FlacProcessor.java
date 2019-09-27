@@ -1,5 +1,13 @@
 package org.yankov.mso.application.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Duration;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -9,17 +17,6 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.Record;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 public class FlacProcessor {
 

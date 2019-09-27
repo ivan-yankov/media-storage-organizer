@@ -1,5 +1,27 @@
 package org.yankov.mso.application.ui.tabs;
 
+import java.text.MessageFormat;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+
+import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
+import org.yankov.mso.application.ui.controls.LabeledComboBox;
+import org.yankov.mso.application.ui.controls.LabeledTextField;
+import org.yankov.mso.application.ui.tabs.buttons.Buttons;
+import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
+import org.yankov.mso.datamodel.DurationConverter;
+import org.yankov.mso.datamodel.FolklorePiece;
+import org.yankov.mso.datamodel.FolklorePieceProperties;
+import org.yankov.mso.datamodel.Operator;
+import org.yankov.mso.datamodel.PieceProperties;
+import org.yankov.mso.datamodel.PiecePropertiesUtils;
+import org.yankov.mso.datamodel.Variable;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,23 +32,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.*;
-import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
-import org.yankov.mso.application.ui.controls.LabeledComboBox;
-import org.yankov.mso.application.ui.controls.LabeledTextField;
-import org.yankov.mso.application.ui.tabs.buttons.Buttons;
-import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
-import org.yankov.mso.datamodel.*;
-
-import javax.swing.border.TitledBorder;
-import java.text.MessageFormat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 public class FolkloreSearchTab implements UserInterfaceControls {
 

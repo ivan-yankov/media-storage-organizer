@@ -1,5 +1,15 @@
 package org.yankov.mso.application.ui.tabs;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+
+import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.database.DatabaseOperations;
+
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -15,16 +25,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.database.DatabaseOperations;
-import org.yankov.mso.database.FolkloreEntityCollections;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 public abstract class ArtifactInputControls<T> implements UserInterfaceControls, PropertyChangeListener {
 
