@@ -1,10 +1,5 @@
 package org.yankov.mso.database;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.yankov.mso.datamodel.*;
-
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,6 +7,18 @@ import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.yankov.mso.datamodel.Album;
+import org.yankov.mso.datamodel.Artist;
+import org.yankov.mso.datamodel.ArtistMission;
+import org.yankov.mso.datamodel.EthnographicRegion;
+import org.yankov.mso.datamodel.FolklorePiece;
+import org.yankov.mso.datamodel.Instrument;
+import org.yankov.mso.datamodel.Record;
+import org.yankov.mso.datamodel.Source;
+import org.yankov.mso.datamodel.SourceType;
 
 public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
