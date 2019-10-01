@@ -1,5 +1,12 @@
 package org.yankov.mso.database;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.logging.Level;
 import org.apache.derby.drda.NetworkServerControl;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -12,15 +19,15 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 import org.yankov.mso.application.ApplicationArguments;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.datamodel.*;
-
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.logging.Level;
+import org.yankov.mso.datamodel.Album;
+import org.yankov.mso.datamodel.Artist;
+import org.yankov.mso.datamodel.EthnographicRegion;
+import org.yankov.mso.datamodel.FolklorePiece;
+import org.yankov.mso.datamodel.Instrument;
+import org.yankov.mso.datamodel.Piece;
+import org.yankov.mso.datamodel.Record;
+import org.yankov.mso.datamodel.Source;
+import org.yankov.mso.datamodel.SourceType;
 
 public class DatabaseManager {
 
@@ -113,6 +120,7 @@ public class DatabaseManager {
             settings.put(Environment.DEFAULT_SCHEMA, "admin");
             settings.put(Environment.USER, "admin");
             settings.put(Environment.PASS, "admin");
+            settings.put(Environment.HBM2DDL_AUTO, "create-drop");
 
             StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
             registryBuilder.applySettings(settings);
@@ -144,22 +152,28 @@ public class DatabaseManager {
 
     private void initDatabaseSettings() {
         String dbEmbeddedMode = ApplicationContext.getInstance().getApplicationArguments()
-                                                  .getArgument(ApplicationArguments.Argument.DB_EMBEDDED_MODE);
+            .getArgument(ApplicationArguments.Argument.DB_MODE);
         if (dbEmbeddedMode.equalsIgnoreCase("embedded")) {
             driver = "org.apache.derby.jdbc.EmbeddedDriver";
             String urlFormat = "jdbc:derby:{0}";
             String dbName = ApplicationContext.getInstance().getApplicationArguments()
-                                              .getArgument(ApplicationArguments.Argument.DB_NAME);
+                .getArgument(ApplicationArguments.Argument.DB_NAME);
+            url = MessageFormat.format(urlFormat, dbName);
+        } else if (dbEmbeddedMode.equalsIgnoreCase("memory")) {
+            driver = "org.apache.derby.jdbc.EmbeddedDriver";
+            String urlFormat = "jdbc:derby:memory:{0};create=true";
+            String dbName = ApplicationContext.getInstance().getApplicationArguments()
+                .getArgument(ApplicationArguments.Argument.DB_NAME);
             url = MessageFormat.format(urlFormat, dbName);
         } else {
             driver = "org.apache.derby.jdbc.ClientDriver";
             String urlFormat = "jdbc:derby://{0}:{1}/{2}";
             String dbHost = ApplicationContext.getInstance().getApplicationArguments()
-                                              .getArgument(ApplicationArguments.Argument.DB_HOST);
+                .getArgument(ApplicationArguments.Argument.DB_HOST);
             String dbPort = ApplicationContext.getInstance().getApplicationArguments()
-                                              .getArgument(ApplicationArguments.Argument.DB_PORT);
+                .getArgument(ApplicationArguments.Argument.DB_PORT);
             String dbName = ApplicationContext.getInstance().getApplicationArguments()
-                                              .getArgument(ApplicationArguments.Argument.DB_NAME);
+                .getArgument(ApplicationArguments.Argument.DB_NAME);
             url = MessageFormat.format(urlFormat, dbHost, dbPort, dbName);
         }
     }
