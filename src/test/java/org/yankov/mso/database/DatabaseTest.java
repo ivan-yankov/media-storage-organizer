@@ -9,7 +9,7 @@ import org.yankov.mso.application.ApplicationContext;
 public class DatabaseTest {
 
     public static final ApplicationArguments TEST_ARGUMENTS = new ApplicationArguments(
-            new String[] {"test", "bg", "folklore", "embedded", "./test-db-unit/mso", "host", "port"});
+        new String[] { "test", "bg", "folklore", "memory", "testdb", "host", "port" });
 
     public DatabaseTest() {
     }
@@ -19,7 +19,7 @@ public class DatabaseTest {
         ApplicationContext.getInstance().initialize(TEST_ARGUMENTS);
 
         ApplicationContext.getInstance().getDatabaseManager()
-                          .setOperationFailed(throwable -> Assert.fail(throwable.getMessage()));
+            .setOperationFailed(throwable -> Assert.fail(throwable.getMessage()));
 
         ApplicationContext.getInstance().getDatabaseManager().startServer();
         ApplicationContext.getInstance().getDatabaseManager().openSession();

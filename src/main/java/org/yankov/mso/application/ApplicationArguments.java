@@ -9,7 +9,7 @@ public class ApplicationArguments {
         APPLICATION_MODE,
         LANGUAGE,
         SETTINGS,
-        DB_EMBEDDED_MODE,
+        DB_MODE,
         DB_NAME,
         DB_HOST,
         DB_PORT
@@ -32,7 +32,7 @@ public class ApplicationArguments {
             map.put(Argument.APPLICATION_MODE, args[0]);
             map.put(Argument.LANGUAGE, args[1]);
             map.put(Argument.SETTINGS, args[2]);
-            map.put(Argument.DB_EMBEDDED_MODE, args[3]);
+            map.put(Argument.DB_MODE, args[3]);
             map.put(Argument.DB_NAME, args[4]);
             map.put(Argument.DB_HOST, args[5]);
             map.put(Argument.DB_PORT, args[6]);
