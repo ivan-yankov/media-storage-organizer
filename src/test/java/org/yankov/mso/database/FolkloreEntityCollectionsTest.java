@@ -30,7 +30,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     private static final String VERKA_SIDEROVA = "Верка Сидерова";
     private static final String ALBUM_COLLECTION_SIGNATURE = "F1";
     private static final String ALBUM_TITLE = "Българска народна музика";
-    private static final String ALBUM_PRODUCTION_SIGNATURE = "ВНА-001";
     private static final String ALBUM_NOTE = "Тестов диск";
     private static final String ETHNOGRAPHIC_REGION = "Добруджанска";
     private static final String NO_AUTHOR = "Народна";
@@ -157,7 +156,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         Assert.assertTrue(collections.getAlbum(ALBUM_COLLECTION_SIGNATURE).isPresent());
         Album actualAlbum = collections.getAlbum(ALBUM_COLLECTION_SIGNATURE).get();
         Assert.assertEquals(ALBUM_NOTE, actualAlbum.getNote());
-        Assert.assertEquals(ALBUM_PRODUCTION_SIGNATURE, actualAlbum.getProductionSignature());
         Assert.assertEquals(ALBUM_TITLE, actualAlbum.getTitle());
 
         Assert.assertTrue(collections.getArtist(KOSTA_KOLEV).isPresent());
@@ -244,7 +242,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
     private static Album createAlbum() {
         Album album = new Album(ALBUM_COLLECTION_SIGNATURE);
         album.setTitle(ALBUM_TITLE);
-        album.setProductionSignature(ALBUM_PRODUCTION_SIGNATURE);
         album.setNote(ALBUM_NOTE);
         return album;
     }

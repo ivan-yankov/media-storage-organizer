@@ -80,11 +80,6 @@ public class FolkloreSearchTest {
         result = FolkloreSearchFactory.OPERATOR_EQUALS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
         assertResult(result, 1);
 
-        value = "вна001";
-        result = FolkloreSearchFactory.OPERATOR_EQUALS
-                .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
-        assertResult(result, 1);
-
         value = "f001";
         result = FolkloreSearchFactory.OPERATOR_EQUALS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
@@ -151,11 +146,6 @@ public class FolkloreSearchTest {
 
         value = "хорови народни песни";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, excludePieceIndeces(1));
-
-        value = "вна001";
-        result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
-                .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
         assertResult(result, excludePieceIndeces(1));
 
         value = "f001";
@@ -225,11 +215,6 @@ public class FolkloreSearchTest {
 
         value = "народни песни";
         result = FolkloreSearchFactory.OPERATOR_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 1);
-
-        value = "01";
-        result = FolkloreSearchFactory.OPERATOR_CONTAINS
-                .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
         assertResult(result, 1);
 
         value = "f";
@@ -322,11 +307,6 @@ public class FolkloreSearchTest {
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
         assertResult(result, excludePieceIndeces(1));
 
-        value = "01";
-        result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
-                .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
-        assertResult(result, excludePieceIndeces(1));
-
         value = "f";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
@@ -397,11 +377,6 @@ public class FolkloreSearchTest {
         result = FolkloreSearchFactory.OPERATOR_STARTS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
         assertResult(result, 1);
 
-        value = "вна";
-        result = FolkloreSearchFactory.OPERATOR_STARTS
-                .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
-        assertResult(result, 1);
-
         value = "f";
         result = FolkloreSearchFactory.OPERATOR_STARTS
                 .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
@@ -467,11 +442,6 @@ public class FolkloreSearchTest {
 
         value = "песни";
         result = FolkloreSearchFactory.OPERATOR_ENDS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 1);
-
-        value = "01";
-        result = FolkloreSearchFactory.OPERATOR_ENDS
-                .match(pieces, FolkloreSearchFactory.VAR_ALBUM_PRODUCTION_SIGNATURE, value);
         assertResult(result, 1);
 
         value = "1";
@@ -584,7 +554,6 @@ public class FolkloreSearchTest {
         Album album = new Album();
         album.setTitle("Хорови народни песни");
         album.setCollectionSignature("F001");
-        album.setProductionSignature("ВНА001");
         return album;
     }
 

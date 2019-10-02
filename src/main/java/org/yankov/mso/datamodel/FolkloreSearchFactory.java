@@ -68,9 +68,6 @@ public class FolkloreSearchFactory {
     public static final Variable<FolklorePiece> VAR_ALBUM_TITLE = new Variable<>(
             resourceBundle.getString(VAR_LABEL_ALBUM_TITLE),
             folklorePiece -> folklorePiece.getAlbum().getTitle());
-    public static final Variable<FolklorePiece> VAR_ALBUM_PRODUCTION_SIGNATURE = new Variable<>(
-            resourceBundle.getString(VAR_LABEL_ALBUM_PRODUCTION_SIGNATURE),
-            folklorePiece -> folklorePiece.getAlbum().getProductionSignature());
     public static final Variable<FolklorePiece> VAR_ALBUM_COLLECTION_SIGNATURE = new Variable<>(
             resourceBundle.getString(VAR_LABEL_ALBUM_COLLECTION_SIGNATURE),
             folklorePiece -> folklorePiece.getAlbum().getCollectionSignature());
@@ -114,7 +111,6 @@ public class FolkloreSearchFactory {
         variables.add(VAR_AUTHOR);
         variables.add(VAR_ETHNOGRAPHIC_REGION);
         variables.add(VAR_ALBUM_TITLE);
-        variables.add(VAR_ALBUM_PRODUCTION_SIGNATURE);
         variables.add(VAR_ALBUM_COLLECTION_SIGNATURE);
         variables.add(VAR_SOURCE_TYPE);
         variables.add(VAR_SOURCE_SIGNATURE);

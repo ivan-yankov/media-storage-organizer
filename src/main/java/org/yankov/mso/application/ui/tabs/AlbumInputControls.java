@@ -17,14 +17,12 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     private static final String CLASS_NAME = AlbumInputControls.class.getName();
 
     public static final String TITLE = CLASS_NAME + "-title";
-    public static final String PRODUCTION_SIGNATURE = CLASS_NAME + "-production-signature";
     public static final String COLLECTION_SIGNATURE = CLASS_NAME + "-collection-signature";
     public static final String NOTE = CLASS_NAME + "-note";
     public static final String TITLE_UNDEFINED = CLASS_NAME + "-title-undefined";
     public static final String COLLECTION_SIGNATURE_UNDEFINED = CLASS_NAME + "-collection-signature-undefined";
 
     private LabeledTextField title;
-    private LabeledTextField productionSignature;
     private LabeledTextField collectionSignature;
     private LabeledTextField note;
 
@@ -37,9 +35,6 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
         title = new LabeledTextField(getResourceBundle().getString(TITLE), "");
         title.layout();
 
-        productionSignature = new LabeledTextField(getResourceBundle().getString(PRODUCTION_SIGNATURE), "");
-        productionSignature.layout();
-
         collectionSignature = new LabeledTextField(getResourceBundle().getString(COLLECTION_SIGNATURE), "");
         collectionSignature.layout();
 
@@ -49,7 +44,6 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
         VBox actionControlsContainer = new VBox();
         actionControlsContainer.setSpacing(getWhiteSpace());
         actionControlsContainer.getChildren().add(title.getContainer());
-        actionControlsContainer.getChildren().add(productionSignature.getContainer());
         actionControlsContainer.getChildren().add(collectionSignature.getContainer());
         actionControlsContainer.getChildren().add(note.getContainer());
 
@@ -97,7 +91,6 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     @Override
     protected void cleanup() {
         title.getTextField().setText("");
-        productionSignature.getTextField().setText("");
         collectionSignature.getTextField().setText("");
         note.getTextField().setText("");
     }
@@ -105,7 +98,6 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     @Override
     protected void setArtifactProperties(Album artifact) {
         artifact.setTitle(title.getTextField().getText());
-        artifact.setProductionSignature(productionSignature.getTextField().getText());
         artifact.setCollectionSignature(collectionSignature.getTextField().getText());
         artifact.setNote(note.getTextField().getText());
     }
@@ -113,7 +105,6 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     @Override
     protected void extractArtifactProperties(Album artifact) {
         title.getTextField().setText(artifact.getTitle());
-        productionSignature.getTextField().setText(artifact.getProductionSignature());
         collectionSignature.getTextField().setText(artifact.getCollectionSignature());
         note.getTextField().setText(artifact.getNote());
     }
