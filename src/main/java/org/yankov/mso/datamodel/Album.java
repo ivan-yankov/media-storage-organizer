@@ -14,9 +14,6 @@ public class Album {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "production_signature")
-    private String productionSignature;
-
     @Column(name = "collection_signature")
     private String collectionSignature;
 
@@ -40,14 +37,6 @@ public class Album {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getProductionSignature() {
-        return productionSignature;
-    }
-
-    public void setProductionSignature(String productionSignature) {
-        this.productionSignature = productionSignature;
     }
 
     public String getCollectionSignature() {

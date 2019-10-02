@@ -157,7 +157,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
                 {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, "Не е избрана нито една роля"},
 
                 {AlbumInputControls.TITLE, "Заглавие"},
-                {AlbumInputControls.PRODUCTION_SIGNATURE, "Сигнатура на издателя"},
                 {AlbumInputControls.COLLECTION_SIGNATURE, "Сигнатура в колекцията"},
                 {AlbumInputControls.NOTE, "Забележка"},
                 {AlbumInputControls.TITLE_UNDEFINED, "Не е въведено заглавие"},
