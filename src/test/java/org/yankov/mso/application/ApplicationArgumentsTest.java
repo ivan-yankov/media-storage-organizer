@@ -1,30 +1,52 @@
 package org.yankov.mso.application;
 
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ApplicationArgumentsTest {
 
     @Test
+    public void testParse_NoRequiredArgumentsProvided_ShouldFail() {
+        ApplicationArguments arguments = new ApplicationArguments();
+        Optional<String> errors = arguments.parse(new String[] {});
+        Assert.assertTrue(errors.isPresent());
+        Assert.assertTrue(errors.get().startsWith("There is no provided value for required argument"));
+    }
+
+    @Test
+    public void testParse_InvalidKey_ShouldFail() {
+        ApplicationArguments arguments = new ApplicationArguments();
+        Optional<String> errors = arguments.parse(new String[] { "--invalid-key", "value" });
+        Assert.assertTrue(errors.isPresent());
+        Assert.assertTrue(errors.get().startsWith("Argument key"));
+    }
+
+    @Test
+    public void testParse_UnsupportedArgumentValue_ShouldFail() {
+        ApplicationArguments arguments = new ApplicationArguments();
+        Optional<String> errors = arguments.parse(new String[] { "--test-mode", "invalid-mode" });
+        Assert.assertTrue(errors.isPresent());
+        Assert.assertTrue(errors.get().startsWith("Argument value"));
+    }
+
+    @Test
+    public void testParse_ShouldPass() {
+        ApplicationArguments arguments = new ApplicationArguments();
+        Optional<String> errors = arguments.parse(new String[] { "--db-url", "url" });
+        Assert.assertFalse(errors.isPresent());
+        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.DB_DRIVER_KEY));
+        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.DB_URL_KEY));
+        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.LANGUAGE_KEY));
+        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.TEST_MODE_KEY));
+    }
+
+    @Test
     public void testGetArgument() {
-        ApplicationArguments arguments = new ApplicationArguments(null);
-        Assert.assertTrue(arguments.getArgument(ApplicationArguments.Argument.LANGUAGE).isEmpty());
-
-        arguments = new ApplicationArguments(new String[] {"", "bg"});
-        // number of arguments is invalid
-        Assert.assertTrue(arguments.getArgument(ApplicationArguments.Argument.LANGUAGE).isEmpty());
-
-        String[] args = new String[] {
-                "mode", "lang", "settings-type", "db-embedded-mode", "db-name", "db-host", "db-port"
-        };
-        arguments = new ApplicationArguments(args);
-        Assert.assertEquals(args[0], arguments.getArgument(ApplicationArguments.Argument.APPLICATION_MODE));
-        Assert.assertEquals(args[1], arguments.getArgument(ApplicationArguments.Argument.LANGUAGE));
-        Assert.assertEquals(args[2], arguments.getArgument(ApplicationArguments.Argument.SETTINGS));
-        Assert.assertEquals(args[3], arguments.getArgument(ApplicationArguments.Argument.DB_MODE));
-        Assert.assertEquals(args[4], arguments.getArgument(ApplicationArguments.Argument.DB_NAME));
-        Assert.assertEquals(args[5], arguments.getArgument(ApplicationArguments.Argument.DB_HOST));
-        Assert.assertEquals(args[6], arguments.getArgument(ApplicationArguments.Argument.DB_PORT));
+        ApplicationArguments arguments = new ApplicationArguments();
+        Optional<String> errors = arguments.parse(new String[] { "--db-url", "url" });
+        Assert.assertFalse(errors.isPresent());
+        Assert.assertEquals("url", arguments.getArgument(ApplicationArguments.DB_URL_KEY));
     }
 
 }

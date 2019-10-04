@@ -1,15 +1,14 @@
 package org.yankov.mso.application;
 
-import javafx.stage.Stage;
-import org.yankov.mso.application.ui.ApplicationConsole;
-import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
-import org.yankov.mso.database.DatabaseManager;
-import org.yankov.mso.database.FolkloreEntityCollections;
-
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.yankov.mso.application.ui.ApplicationConsole;
+import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
+import org.yankov.mso.database.DatabaseManager;
+import org.yankov.mso.database.FolkloreEntityCollections;
+import javafx.stage.Stage;
 
 public class ApplicationContext {
 
@@ -38,11 +37,10 @@ public class ApplicationContext {
     public void initialize(ApplicationArguments applicationArguments) {
         this.applicationArguments = applicationArguments;
 
-        String lang = applicationArguments.getArgument(ApplicationArguments.Argument.LANGUAGE);
+        String lang = applicationArguments.getArgument(ApplicationArguments.LANGUAGE_KEY);
         this.locale = new Locale(lang);
 
-        String settingsType = applicationArguments.getArgument(ApplicationArguments.Argument.SETTINGS);
-        this.applicationSettings = createApplicationSettings(settingsType);
+        this.applicationSettings = new FolkloreApplicationSettings();
 
         this.folkloreResourceBundle = ResourceBundle.getBundle(FolkloreResources.class.getName(), getLocale());
 
@@ -108,21 +106,12 @@ public class ApplicationContext {
         }
     }
 
-    private ApplicationSettings createApplicationSettings(String type) {
-        if (type.equalsIgnoreCase("folklore")) {
-            return new FolkloreApplicationSettings();
-        } else {
-            return null;
-        }
-    }
-
     private ConsoleService createConsoleService() {
         return !isTestMode() ? ApplicationConsole.getInstance() : new ConsoleServiceAdapter();
     }
 
     private boolean isTestMode() {
-        return applicationArguments.getArgument(ApplicationArguments.Argument.APPLICATION_MODE)
-                                   .equalsIgnoreCase("test");
+        return Boolean.parseBoolean(applicationArguments.getArgument(ApplicationArguments.TEST_MODE_KEY));
     }
 
 }
