@@ -8,8 +8,14 @@ import org.yankov.mso.application.ApplicationContext;
 
 public class DatabaseTest {
 
-    public static final ApplicationArguments TEST_ARGUMENTS = new ApplicationArguments(
-        new String[] { "test", "bg", "folklore", "memory", "testdb", "host", "port" });
+    public static final String[] ARGS = new String[] { "--test-mode", "true", "--db-url",
+        "jdbc:derby:memory:testdb;create=true" };
+    public static final ApplicationArguments TEST_ARGUMENTS;
+
+    static {
+        TEST_ARGUMENTS = new ApplicationArguments();
+        TEST_ARGUMENTS.parse(ARGS);
+    }
 
     public DatabaseTest() {
     }

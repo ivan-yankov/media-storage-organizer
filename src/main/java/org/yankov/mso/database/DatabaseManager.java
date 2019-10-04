@@ -1,6 +1,5 @@
 package org.yankov.mso.database;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,13 +32,10 @@ public class DatabaseManager {
 
     private NetworkServerControl server;
     private Session session;
-    private String driver;
-    private String url;
 
     private Consumer<Throwable> operationFailed;
 
     public DatabaseManager() {
-        initDatabaseSettings();
     }
 
     public void setOperationFailed(Consumer<Throwable> operationFailed) {
@@ -114,13 +110,21 @@ public class DatabaseManager {
 
     private Optional<SessionFactory> createSessionFactory() {
         try {
+            String url = ApplicationContext.getInstance().getApplicationArguments()
+                .getArgument(ApplicationArguments.DB_URL_KEY);
+
+            String driver = ApplicationContext.getInstance().getApplicationArguments()
+                .getArgument(ApplicationArguments.DB_DRIVER_KEY).equalsIgnoreCase("embedded")
+                    ? "org.apache.derby.jdbc.EmbeddedDriver"
+                    : "org.apache.derby.jdbc.ClientDriver";
+
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.DRIVER, driver);
             settings.put(Environment.URL, url);
             settings.put(Environment.DEFAULT_SCHEMA, "admin");
             settings.put(Environment.USER, "admin");
             settings.put(Environment.PASS, "admin");
-            settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+            settings.put(Environment.HBM2DDL_AUTO, "validate");
 
             StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
             registryBuilder.applySettings(settings);
@@ -147,34 +151,6 @@ public class DatabaseManager {
         } catch (HibernateException e) {
             ApplicationContext.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             return Optional.empty();
-        }
-    }
-
-    private void initDatabaseSettings() {
-        String dbEmbeddedMode = ApplicationContext.getInstance().getApplicationArguments()
-            .getArgument(ApplicationArguments.Argument.DB_MODE);
-        if (dbEmbeddedMode.equalsIgnoreCase("embedded")) {
-            driver = "org.apache.derby.jdbc.EmbeddedDriver";
-            String urlFormat = "jdbc:derby:{0}";
-            String dbName = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.Argument.DB_NAME);
-            url = MessageFormat.format(urlFormat, dbName);
-        } else if (dbEmbeddedMode.equalsIgnoreCase("memory")) {
-            driver = "org.apache.derby.jdbc.EmbeddedDriver";
-            String urlFormat = "jdbc:derby:memory:{0};create=true";
-            String dbName = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.Argument.DB_NAME);
-            url = MessageFormat.format(urlFormat, dbName);
-        } else {
-            driver = "org.apache.derby.jdbc.ClientDriver";
-            String urlFormat = "jdbc:derby://{0}:{1}/{2}";
-            String dbHost = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.Argument.DB_HOST);
-            String dbPort = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.Argument.DB_PORT);
-            String dbName = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.Argument.DB_NAME);
-            url = MessageFormat.format(urlFormat, dbHost, dbPort, dbName);
         }
     }
 
