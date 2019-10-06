@@ -1,8 +1,11 @@
 target
 test*
-.idea
+launch
 *.iml
-.project
 *.log
 *.tar
 *.tar.gz
+.idea
+.settings
+.project
+.classpath
