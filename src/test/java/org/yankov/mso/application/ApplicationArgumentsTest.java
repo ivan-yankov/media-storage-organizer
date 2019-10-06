@@ -17,17 +17,25 @@ public class ApplicationArgumentsTest {
     @Test
     public void testParse_InvalidKey_ShouldFail() {
         ApplicationArguments arguments = new ApplicationArguments();
-        Optional<String> errors = arguments.parse(new String[] { "--invalid-key", "value" });
+        Optional<String> errors = arguments.parse(new String[] { "--invalid-name", "value" });
         Assert.assertTrue(errors.isPresent());
-        Assert.assertTrue(errors.get().startsWith("Argument key"));
+        Assert.assertTrue(errors.get().startsWith("Argument name"));
     }
 
     @Test
     public void testParse_UnsupportedArgumentValue_ShouldFail() {
         ApplicationArguments arguments = new ApplicationArguments();
-        Optional<String> errors = arguments.parse(new String[] { "--test-mode", "invalid-mode" });
+        Optional<String> errors = arguments.parse(new String[] { "--lang", "invalid-lang" });
         Assert.assertTrue(errors.isPresent());
         Assert.assertTrue(errors.get().startsWith("Argument value"));
+    }
+
+    @Test
+    public void testParse_FlagArgument_ShouldPass() {
+        ApplicationArguments arguments = new ApplicationArguments();
+        Optional<String> errors = arguments.parse(new String[] { "--test-mode", "--db-url", "url" });
+        Assert.assertFalse(errors.isPresent());
+        Assert.assertEquals("true", arguments.getArgument("test-mode"));
     }
 
     @Test
@@ -35,10 +43,10 @@ public class ApplicationArgumentsTest {
         ApplicationArguments arguments = new ApplicationArguments();
         Optional<String> errors = arguments.parse(new String[] { "--db-url", "url" });
         Assert.assertFalse(errors.isPresent());
-        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.DB_DRIVER_KEY));
-        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.DB_URL_KEY));
-        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.LANGUAGE_KEY));
-        Assert.assertNotNull(arguments.getArgument(ApplicationArguments.TEST_MODE_KEY));
+        Assert.assertNotNull(arguments.getArgument("driver-name"));
+        Assert.assertNotNull(arguments.getArgument("db-url"));
+        Assert.assertNotNull(arguments.getArgument("lang"));
+        Assert.assertNotNull(arguments.getArgument("test-mode"));
     }
 
     @Test
@@ -46,7 +54,7 @@ public class ApplicationArgumentsTest {
         ApplicationArguments arguments = new ApplicationArguments();
         Optional<String> errors = arguments.parse(new String[] { "--db-url", "url" });
         Assert.assertFalse(errors.isPresent());
-        Assert.assertEquals("url", arguments.getArgument(ApplicationArguments.DB_URL_KEY));
+        Assert.assertEquals("url", arguments.getArgument(ApplicationArguments.DB_URL_NAME));
     }
 
 }

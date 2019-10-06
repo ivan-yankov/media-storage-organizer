@@ -37,7 +37,7 @@ public class ApplicationContext {
     public void initialize(ApplicationArguments applicationArguments) {
         this.applicationArguments = applicationArguments;
 
-        String lang = applicationArguments.getArgument(ApplicationArguments.LANGUAGE_KEY);
+        String lang = applicationArguments.getArgument(ApplicationArguments.LANGUAGE_NAME);
         this.locale = new Locale(lang);
 
         this.applicationSettings = new FolkloreApplicationSettings();
@@ -111,7 +111,7 @@ public class ApplicationContext {
     }
 
     private boolean isTestMode() {
-        return Boolean.parseBoolean(applicationArguments.getArgument(ApplicationArguments.TEST_MODE_KEY));
+        return Boolean.parseBoolean(applicationArguments.getArgument(ApplicationArguments.TEST_MODE_NAME));
     }
 
 }
