@@ -6,25 +6,39 @@ import java.util.List;
 
 public class ApplicationArgument {
 
-    private final String key;
+    private final String longName;
+    private final Character shortName;
     private final String defaultValue;
     private final boolean required;
+    private final boolean flag;
     private final List<String> supportedValues;
     private String value;
 
-    public ApplicationArgument(String key, String defaultValue, boolean required, String... supportedValues) {
-        this.key = key;
+    @SafeVarargs
+    public ApplicationArgument(String longName, Character shortName, String defaultValue, boolean required,
+        boolean flag, String... supportedValues) {
+        this.longName = longName;
+        this.shortName = shortName;
         this.defaultValue = defaultValue;
         this.required = required;
+        this.flag = flag;
         this.supportedValues = Arrays.asList(supportedValues);
     }
 
-    public String getKey() {
-        return key;
+    public String getLongName() {
+        return longName;
+    }
+
+    public Character getShortName() {
+        return shortName;
     }
 
     public boolean isRequired() {
         return required;
+    }
+
+    public boolean isFlag() {
+        return flag;
     }
 
     public List<String> getSupportedValues() {

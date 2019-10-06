@@ -111,10 +111,10 @@ public class DatabaseManager {
     private Optional<SessionFactory> createSessionFactory() {
         try {
             String url = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.DB_URL_KEY);
+                .getArgument(ApplicationArguments.DB_URL_NAME);
 
             String driver = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.DB_DRIVER_KEY).equalsIgnoreCase("embedded")
+                .getArgument(ApplicationArguments.DB_DRIVER_NAME).equalsIgnoreCase("embedded")
                     ? "org.apache.derby.jdbc.EmbeddedDriver"
                     : "org.apache.derby.jdbc.ClientDriver";
 
