@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.MediaStorageOrganizer;
 import org.yankov.mso.database.DatabaseTest;
 
 public class FolkloreSearchTest {
@@ -20,7 +21,8 @@ public class FolkloreSearchTest {
 
     @BeforeClass
     public static void beforeClass() {
-        ApplicationContext.getInstance().initialize(DatabaseTest.TEST_ARGUMENTS);
+        MediaStorageOrganizer.arguments.parseValues(DatabaseTest.ARGS);
+        ApplicationContext.getInstance().initialize(MediaStorageOrganizer.arguments);
 
         ApplicationContext.getInstance().getDatabaseManager()
                           .setOperationFailed(throwable -> Assert.fail(throwable.getMessage()));
