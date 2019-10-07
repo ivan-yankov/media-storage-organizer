@@ -14,7 +14,7 @@ public class ApplicationContext {
 
     private static ApplicationContext instance;
 
-    private ApplicationArguments applicationArguments;
+    private CommandLineArguments commandLineArguments;
     private Locale locale;
     private ApplicationSettings applicationSettings;
     private ResourceBundle folkloreResourceBundle;
@@ -34,10 +34,10 @@ public class ApplicationContext {
         return instance;
     }
 
-    public void initialize(ApplicationArguments applicationArguments) {
-        this.applicationArguments = applicationArguments;
+    public void initialize(CommandLineArguments applicationArguments) {
+        this.commandLineArguments = applicationArguments;
 
-        String lang = applicationArguments.getArgument(ApplicationArguments.LANGUAGE_NAME);
+        String lang = applicationArguments.getValue(MediaStorageOrganizer.LANGUAGE_NAME);
         this.locale = new Locale(lang);
 
         this.applicationSettings = new FolkloreApplicationSettings();
@@ -53,8 +53,8 @@ public class ApplicationContext {
         this.databaseManager = new DatabaseManager();
     }
 
-    public ApplicationArguments getApplicationArguments() {
-        return applicationArguments;
+    public CommandLineArguments getApplicationArguments() {
+        return commandLineArguments;
     }
 
     public Locale getLocale() {
@@ -111,7 +111,7 @@ public class ApplicationContext {
     }
 
     private boolean isTestMode() {
-        return Boolean.parseBoolean(applicationArguments.getArgument(ApplicationArguments.TEST_MODE_NAME));
+        return Boolean.parseBoolean(commandLineArguments.getValue(MediaStorageOrganizer.TEST_MODE_NAME));
     }
 
 }

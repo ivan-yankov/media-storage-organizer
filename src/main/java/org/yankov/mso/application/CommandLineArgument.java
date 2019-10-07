@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ApplicationArgument {
+public class CommandLineArgument {
 
     private final String longName;
     private final Character shortName;
@@ -15,7 +15,7 @@ public class ApplicationArgument {
     private String value;
 
     @SafeVarargs
-    public ApplicationArgument(String longName, Character shortName, String defaultValue, boolean required,
+    public CommandLineArgument(String longName, Character shortName, String defaultValue, boolean required,
         boolean flag, String... supportedValues) {
         this.longName = longName;
         this.shortName = shortName;

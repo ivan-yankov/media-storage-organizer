@@ -16,8 +16,8 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
-import org.yankov.mso.application.ApplicationArguments;
 import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.MediaStorageOrganizer;
 import org.yankov.mso.datamodel.Album;
 import org.yankov.mso.datamodel.Artist;
 import org.yankov.mso.datamodel.EthnographicRegion;
@@ -111,10 +111,10 @@ public class DatabaseManager {
     private Optional<SessionFactory> createSessionFactory() {
         try {
             String url = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.DB_URL_NAME);
+                .getValue(MediaStorageOrganizer.DB_URL_NAME);
 
             String driver = ApplicationContext.getInstance().getApplicationArguments()
-                .getArgument(ApplicationArguments.DB_DRIVER_NAME).equalsIgnoreCase("embedded")
+                .getValue(MediaStorageOrganizer.DB_DRIVER_NAME).equalsIgnoreCase("embedded")
                     ? "org.apache.derby.jdbc.EmbeddedDriver"
                     : "org.apache.derby.jdbc.ClientDriver";
 
