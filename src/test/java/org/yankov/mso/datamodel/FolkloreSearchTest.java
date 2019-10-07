@@ -21,8 +21,7 @@ public class FolkloreSearchTest {
 
     @BeforeClass
     public static void beforeClass() {
-        MediaStorageOrganizer.arguments.parseValues(DatabaseTest.ARGS);
-        ApplicationContext.getInstance().initialize(MediaStorageOrganizer.arguments);
+        ApplicationContext.getInstance().initialize(DatabaseTest.TEST_ARGUMENTS);
 
         ApplicationContext.getInstance().getDatabaseManager()
                           .setOperationFailed(throwable -> Assert.fail(throwable.getMessage()));

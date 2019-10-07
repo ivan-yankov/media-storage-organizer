@@ -37,7 +37,7 @@ public class ApplicationContext {
     public void initialize(CommandLineArguments applicationArguments) {
         this.commandLineArguments = applicationArguments;
 
-        String lang = applicationArguments.getValue(MediaStorageOrganizer.LANGUAGE_NAME);
+        String lang = applicationArguments.getValue(CommandLineArgumentsFactory.LANGUAGE_NAME);
         this.locale = new Locale(lang);
 
         this.applicationSettings = new FolkloreApplicationSettings();
@@ -111,7 +111,7 @@ public class ApplicationContext {
     }
 
     private boolean isTestMode() {
-        return Boolean.parseBoolean(commandLineArguments.getValue(MediaStorageOrganizer.TEST_MODE_NAME));
+        return Boolean.parseBoolean(commandLineArguments.getValue(CommandLineArgumentsFactory.TEST_MODE_NAME));
     }
 
 }
