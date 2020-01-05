@@ -107,8 +107,8 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     public Optional<SourceType> getSourceType(String name) {
         return sourceTypes.stream()
-                          .filter(entity -> entity.toString().toLowerCase().trim().equals(name.toLowerCase().trim()))
-                          .findFirst();
+            .filter(entity -> entity.toString().toLowerCase().trim().equals(name.toLowerCase().trim()))
+            .findFirst();
     }
 
     public boolean addSourceType(SourceType sourceType) {
@@ -130,7 +130,7 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     public Optional<Source> getSource(String representation) {
         return sources.stream().filter(entity -> entity.toString().toLowerCase().trim()
-                                                       .equals(representation.toLowerCase().trim())).findFirst();
+            .equals(representation.toLowerCase().trim())).findFirst();
     }
 
     public boolean addSource(Source source) {
@@ -152,8 +152,8 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     public Optional<Instrument> getInstrument(String name) {
         return instruments.stream()
-                          .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
-                          .findFirst();
+            .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
+            .findFirst();
     }
 
     public boolean addInstrument(Instrument instrument) {
@@ -175,8 +175,8 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     public Optional<Artist> getArtist(String name) {
         return artists.stream()
-                      .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
-                      .findFirst();
+            .filter(entity -> entity.getName().toLowerCase().trim().equals(name.toLowerCase().trim()))
+            .findFirst();
     }
 
     public boolean addArtist(Artist artist) {
@@ -198,7 +198,7 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     public Optional<Album> getAlbum(String collectionSignature) {
         return albums.stream().filter(entity -> entity.getCollectionSignature().toLowerCase().trim()
-                                                      .equals(collectionSignature.toLowerCase().trim())).findFirst();
+            .equals(collectionSignature.toLowerCase().trim())).findFirst();
     }
 
     public boolean addAlbum(Album album) {
@@ -247,7 +247,7 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
 
     public Optional<EthnographicRegion> getEthnographicRegion(String name) {
         return ethnographicRegions.stream().filter(entity -> entity.getName().toLowerCase().trim()
-                                                                   .equals(name.toLowerCase().trim())).findFirst();
+            .equals(name.toLowerCase().trim())).findFirst();
     }
 
     public boolean addEthnographicRegion(EthnographicRegion ethnographicRegion) {

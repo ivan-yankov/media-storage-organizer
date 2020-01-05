@@ -58,20 +58,20 @@ public class AlbumInputControls extends ArtifactInputControls<Album> {
     @Override
     protected StringConverter<Album> getStringConverter() {
         return new AlbumStringConverter(ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(),
-                                        true);
+            true);
     }
 
     @Override
     protected boolean validateUserInput() {
         if (title.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(TITLE_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(TITLE_UNDEFINED));
             return false;
         }
 
         if (collectionSignature.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(COLLECTION_SIGNATURE_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(COLLECTION_SIGNATURE_UNDEFINED));
             return false;
         }
 

@@ -16,7 +16,7 @@ public class CommandLineArgument {
 
     @SafeVarargs
     public CommandLineArgument(String longName, Character shortName, String defaultValue, boolean required,
-        boolean flag, String... supportedValues) {
+                               boolean flag, String... supportedValues) {
         this.longName = longName;
         this.shortName = shortName;
         this.defaultValue = defaultValue;

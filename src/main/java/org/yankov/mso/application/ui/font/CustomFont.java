@@ -7,7 +7,7 @@ import java.text.MessageFormat;
 public class CustomFont {
 
     private static final String CSS_PATTERN =
-            "-fx-font-family:{0};-fx-font-weight:{1};-fx-font-style:{2};-fx-font-size:{3}px;";
+        "-fx-font-family:{0};-fx-font-weight:{1};-fx-font-style:{2};-fx-font-size:{3}px;";
 
     private final FontFamily family;
     private final FontWeight weight;
@@ -39,7 +39,7 @@ public class CustomFont {
 
     public String toCssRepresentation() {
         return MessageFormat.format(CSS_PATTERN, family.getCssRepresentation(), weight.getCssRepresentation(),
-                                    style.getCssRepresentation(), Integer.toString(size));
+            style.getCssRepresentation(), Integer.toString(size));
     }
 
     public Font toFxFont() {

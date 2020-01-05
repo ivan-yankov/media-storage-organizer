@@ -94,8 +94,8 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
         comboBox.setOnKeyTyped(this::handleKeyTyped);
         comboBox.setOnKeyReleased(this::handleKeyReleased);
         comboBox.focusedProperty().addListener(
-                (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> handleFocusChanged(
-                        newValue));
+            (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> handleFocusChanged(
+                newValue));
 
         if (newValueConsumer != null) {
             comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -123,13 +123,13 @@ public class LabeledComboBox<T> implements UserInterfaceControls {
     private void filterItems() {
         String search = filterText.toString().toLowerCase();
         List<T> filteredItems = comboBox.getItems().stream()
-                                        .filter(item -> converter.toString(item).toLowerCase().startsWith(search))
-                                        .collect(Collectors.toList());
+            .filter(item -> converter.toString(item).toLowerCase().startsWith(search))
+            .collect(Collectors.toList());
 
         if (filteredItems.isEmpty()) {
             filteredItems = comboBox.getItems().stream()
-                                    .filter(item -> converter.toString(item).toLowerCase().contains(search))
-                                    .collect(Collectors.toList());
+                .filter(item -> converter.toString(item).toLowerCase().contains(search))
+                .collect(Collectors.toList());
         }
 
         if (!filteredItems.isEmpty()) {

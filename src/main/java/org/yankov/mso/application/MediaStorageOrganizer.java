@@ -1,16 +1,17 @@
 package org.yankov.mso.application;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import org.yankov.mso.application.ui.FolkloreMainForm;
-import org.yankov.mso.application.utils.FxUtils;
-import org.yankov.mso.database.DatabaseOperations;
-import org.yankov.mso.database.FolkloreEntityCollections;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.yankov.mso.application.ui.FolkloreMainForm;
+import org.yankov.mso.application.utils.FxUtils;
+import org.yankov.mso.database.DatabaseOperations;
+import org.yankov.mso.database.FolkloreEntityCollections;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class MediaStorageOrganizer extends Application {
 

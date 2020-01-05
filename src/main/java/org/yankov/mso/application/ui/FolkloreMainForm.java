@@ -78,17 +78,17 @@ public class FolkloreMainForm implements Form {
 
         TabPane pane = new TabPane();
         pane.getTabs().add(createTab(TAB_INPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
-                                                                     .getString(TAB_INPUT), false,
-                                        inputTab.getContainer()));
+                .getString(TAB_INPUT), false,
+            inputTab.getContainer()));
 
         pane.getTabs().add(createTab(TAB_INPUT_ARTIFACTS,
-                                        ApplicationContext.getInstance().getFolkloreResourceBundle()
-                                                          .getString(TAB_INPUT_ARTIFACTS), false,
-                                        inputArtifactsTab.getContainer()));
+            ApplicationContext.getInstance().getFolkloreResourceBundle()
+                .getString(TAB_INPUT_ARTIFACTS), false,
+            inputArtifactsTab.getContainer()));
 
         pane.getTabs().add(createTab(TAB_OUTPUT, ApplicationContext.getInstance().getFolkloreResourceBundle()
-                                                                      .getString(TAB_OUTPUT), false,
-                                        searchTab.getContainer()));
+                .getString(TAB_OUTPUT), false,
+            searchTab.getContainer()));
 
         return pane;
     }

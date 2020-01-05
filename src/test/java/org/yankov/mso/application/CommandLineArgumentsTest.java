@@ -1,9 +1,10 @@
 package org.yankov.mso.application;
 
-import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Optional;
 
 public class CommandLineArgumentsTest {
 
@@ -20,35 +21,35 @@ public class CommandLineArgumentsTest {
 
     @Test
     public void testParse_NoRequiredArgumentsProvided_ShouldFail() {
-        Optional<String> errors = arguments.parseValues(new String[] {});
+        Optional<String> errors = arguments.parseValues(new String[]{});
         Assert.assertTrue(errors.isPresent());
         Assert.assertTrue(errors.get().startsWith("There is no provided value for required argument"));
     }
 
     @Test
     public void testParse_InvalidKey_ShouldFail() {
-        Optional<String> errors = arguments.parseValues(new String[] { "--invalid-name", "value" });
+        Optional<String> errors = arguments.parseValues(new String[]{"--invalid-name", "value"});
         Assert.assertTrue(errors.isPresent());
         Assert.assertTrue(errors.get().startsWith("Argument name"));
     }
 
     @Test
     public void testParse_UnsupportedArgumentValue_ShouldFail() {
-        Optional<String> errors = arguments.parseValues(new String[] { "--not-required", "invalid-value" });
+        Optional<String> errors = arguments.parseValues(new String[]{"--not-required", "invalid-value"});
         Assert.assertTrue(errors.isPresent());
         Assert.assertTrue(errors.get().startsWith("Argument value"));
     }
 
     @Test
     public void testParse_FlagArgument_ShouldPass() {
-        Optional<String> errors = arguments.parseValues(new String[] { "--flag", "--required", "required-value" });
+        Optional<String> errors = arguments.parseValues(new String[]{"--flag", "--required", "required-value"});
         Assert.assertFalse(errors.isPresent());
         Assert.assertEquals("true", arguments.getValue("flag"));
     }
 
     @Test
     public void testParse_ShouldPass() {
-        Optional<String> errors = arguments.parseValues(new String[] { "--required", "required-value", "-s", "short-value" });
+        Optional<String> errors = arguments.parseValues(new String[]{"--required", "required-value", "-s", "short-value"});
         Assert.assertFalse(errors.isPresent());
         Assert.assertNotNull(arguments.getValue("flag"));
         Assert.assertNotNull(arguments.getValue("required"));
@@ -58,7 +59,7 @@ public class CommandLineArgumentsTest {
 
     @Test
     public void testGetArgument() {
-        Optional<String> errors = arguments.parseValues(new String[] { "--required", "required-value", "-s", "short-value" });
+        Optional<String> errors = arguments.parseValues(new String[]{"--required", "required-value", "-s", "short-value"});
         Assert.assertFalse(errors.isPresent());
         Assert.assertEquals("required-value", arguments.getValue("required"));
         Assert.assertEquals("short-value", arguments.getValue("s"));

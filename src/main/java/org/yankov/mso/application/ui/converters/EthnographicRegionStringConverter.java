@@ -14,7 +14,7 @@ public class EthnographicRegionStringConverter extends StringConverter<Ethnograp
     @Override
     public EthnographicRegion fromString(String string) {
         return ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegion(string)
-                                 .orElse(null);
+            .orElse(null);
     }
 
 }

@@ -63,7 +63,7 @@ public class ApplicationConsole implements UserInterfaceControls, ConsoleService
     private String produceTimeStamp() {
         LocalDateTime now = LocalDateTime.now();
         return String.format(TIME_STAMP_FORMAT, now.getDayOfMonth(), now.getMonthValue(), now.getYear(), now.getHour(),
-                             now.getMinute(), now.getSecond());
+            now.getMinute(), now.getSecond());
     }
 
 }

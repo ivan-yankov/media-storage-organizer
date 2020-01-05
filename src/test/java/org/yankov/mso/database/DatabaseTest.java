@@ -6,12 +6,11 @@ import org.junit.BeforeClass;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.CommandLineArguments;
 import org.yankov.mso.application.CommandLineArgumentsFactory;
-import org.yankov.mso.application.MediaStorageOrganizer;
 
 public class DatabaseTest {
 
-    public static final String[] ARGS = new String[] { "--test-mode", "--db-url",
-        "jdbc:derby:memory:testdb;create=true" };
+    public static final String[] ARGS = new String[]{"--test-mode", "--db-url",
+        "jdbc:derby:memory:testdb;create=true"};
     public static final CommandLineArguments TEST_ARGUMENTS = CommandLineArgumentsFactory.createCommandLineArguments();
 
     static {

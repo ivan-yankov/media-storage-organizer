@@ -22,7 +22,7 @@ public class FolkloreInputTab implements UserInterfaceControls {
         FolklorePieceTable table = new FolklorePieceTable(true);
 
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = ButtonsFactory
-                .createFolkloreInputTabButtons(table.getTableView(), () -> false, () -> false);
+            .createFolkloreInputTabButtons(table.getTableView(), () -> false, () -> false);
         buttons.layout();
         container.getChildren().add(buttons.getContainer());
 

@@ -1,18 +1,8 @@
 package org.yankov.mso.database;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import org.yankov.mso.datamodel.*;
 
-import org.yankov.mso.datamodel.Album;
-import org.yankov.mso.datamodel.Artist;
-import org.yankov.mso.datamodel.EthnographicRegion;
-import org.yankov.mso.datamodel.FolklorePiece;
-import org.yankov.mso.datamodel.Instrument;
-import org.yankov.mso.datamodel.Source;
-import org.yankov.mso.datamodel.SourceType;
+import java.util.*;
 
 public class ExpectedCollections {
 

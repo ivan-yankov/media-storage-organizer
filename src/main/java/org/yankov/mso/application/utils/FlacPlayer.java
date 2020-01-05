@@ -62,7 +62,7 @@ public class FlacPlayer implements PCMProcessor {
             line.start();
         } catch (LineUnavailableException e) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, resourceBundle.getString(FLAC_PLAY_ERROR), e);
+                .log(Level.SEVERE, resourceBundle.getString(FLAC_PLAY_ERROR), e);
         }
     }
 
@@ -84,7 +84,7 @@ public class FlacPlayer implements PCMProcessor {
             close();
         } catch (IOException e) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, resourceBundle.getString(FLAC_PLAY_ERROR), e);
+                .log(Level.SEVERE, resourceBundle.getString(FLAC_PLAY_ERROR), e);
         }
     }
 

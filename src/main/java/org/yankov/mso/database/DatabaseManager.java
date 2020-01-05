@@ -1,11 +1,5 @@
 package org.yankov.mso.database;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.logging.Level;
 import org.apache.derby.drda.NetworkServerControl;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -18,15 +12,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.CommandLineArgumentsFactory;
-import org.yankov.mso.datamodel.Album;
-import org.yankov.mso.datamodel.Artist;
-import org.yankov.mso.datamodel.EthnographicRegion;
-import org.yankov.mso.datamodel.FolklorePiece;
-import org.yankov.mso.datamodel.Instrument;
-import org.yankov.mso.datamodel.Piece;
-import org.yankov.mso.datamodel.Record;
-import org.yankov.mso.datamodel.Source;
-import org.yankov.mso.datamodel.SourceType;
+import org.yankov.mso.datamodel.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.logging.Level;
 
 public class DatabaseManager {
 
@@ -115,8 +108,8 @@ public class DatabaseManager {
 
             String driver = ApplicationContext.getInstance().getApplicationArguments()
                 .getValue(CommandLineArgumentsFactory.DB_DRIVER_NAME).equalsIgnoreCase("embedded")
-                    ? "org.apache.derby.jdbc.EmbeddedDriver"
-                    : "org.apache.derby.jdbc.ClientDriver";
+                ? "org.apache.derby.jdbc.EmbeddedDriver"
+                : "org.apache.derby.jdbc.ClientDriver";
 
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.DRIVER, driver);

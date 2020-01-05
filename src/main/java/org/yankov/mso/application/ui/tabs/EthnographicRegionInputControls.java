@@ -40,7 +40,7 @@ public class EthnographicRegionInputControls extends ArtifactInputControls<Ethno
     @Override
     protected List<EthnographicRegion> getExistingArtifacts() {
         return new ArrayList<>(
-                ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegions());
+            ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegions());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class EthnographicRegionInputControls extends ArtifactInputControls<Ethno
     protected boolean validateUserInput() {
         if (ethnographicRegion.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(NAME_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(NAME_UNDEFINED));
             return false;
         }
 

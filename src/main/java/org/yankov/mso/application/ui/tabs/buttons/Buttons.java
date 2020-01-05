@@ -1,24 +1,18 @@
 package org.yankov.mso.application.ui.tabs.buttons;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.ResourceBundle;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.stream.Stream;
-
-import javax.sound.sampled.LineEvent;
-
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.scene.Cursor;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.application.Form;
 import org.yankov.mso.application.UserInterfaceControls;
@@ -30,26 +24,21 @@ import org.yankov.mso.datamodel.Piece;
 import org.yankov.mso.datamodel.PieceProperties;
 import org.yankov.mso.datamodel.PiecePropertiesUtils;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.DataFormat;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javax.sound.sampled.LineEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class Buttons<PropertiesType extends PieceProperties, EntityType extends Piece>
-        implements UserInterfaceControls {
+    implements UserInterfaceControls {
 
     private static final String CLASS_NAME = Buttons.class.getName();
 
@@ -255,7 +244,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         }
 
         if (table.getSelectionModel().getSelectedIndex() < 0 || table.getSelectionModel().getSelectedItem()
-                                                                     .getRecord() == null) {
+            .getRecord() == null) {
             return;
         }
 

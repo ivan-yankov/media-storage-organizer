@@ -1,27 +1,5 @@
 package org.yankov.mso.application.ui.tabs;
 
-import java.text.MessageFormat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-
-import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
-import org.yankov.mso.application.ui.controls.LabeledComboBox;
-import org.yankov.mso.application.ui.controls.LabeledTextField;
-import org.yankov.mso.application.ui.tabs.buttons.Buttons;
-import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
-import org.yankov.mso.datamodel.DurationConverter;
-import org.yankov.mso.datamodel.FolklorePiece;
-import org.yankov.mso.datamodel.FolklorePieceProperties;
-import org.yankov.mso.datamodel.Operator;
-import org.yankov.mso.datamodel.PieceProperties;
-import org.yankov.mso.datamodel.PiecePropertiesUtils;
-import org.yankov.mso.datamodel.Variable;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,6 +14,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.application.ui.controls.FolkloreComboBoxFactory;
+import org.yankov.mso.application.ui.controls.LabeledComboBox;
+import org.yankov.mso.application.ui.controls.LabeledTextField;
+import org.yankov.mso.application.ui.tabs.buttons.Buttons;
+import org.yankov.mso.application.ui.tabs.buttons.ButtonsFactory;
+import org.yankov.mso.datamodel.*;
+
+import java.text.MessageFormat;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class FolkloreSearchTab implements UserInterfaceControls {
 
@@ -159,8 +152,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
     private Pane createButtons() {
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = ButtonsFactory
-                .createFolkloreSearchTabButtons(table.getTableView(), () -> playNext.isSelected(),
-                                                () -> playRandom.isSelected());
+            .createFolkloreSearchTabButtons(table.getTableView(), () -> playNext.isSelected(),
+                () -> playRandom.isSelected());
         buttons.layout();
         return buttons.getContainer();
     }
@@ -184,8 +177,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
 
         Duration totalDuration = calculateTotalDuration(properties);
         String msg = MessageFormat
-                .format(resourceBundle.getString(TOTAL_ITEMS_FOUND), Integer.toString(properties.size()),
-                        convertDuration(totalDuration));
+            .format(resourceBundle.getString(TOTAL_ITEMS_FOUND), Integer.toString(properties.size()),
+                convertDuration(totalDuration));
         ApplicationContext.getInstance().getLogger().log(Level.INFO, msg);
     }
 
@@ -215,7 +208,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
     private String convertDuration(Duration duration) {
         String format = "%d:%02d:%02d";
         return String.format(format, duration.toHours(), DurationConverter.toMinutesPart(duration),
-                             DurationConverter.toSecondsPart(duration));
+            DurationConverter.toSecondsPart(duration));
     }
 
 }

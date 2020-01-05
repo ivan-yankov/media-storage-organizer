@@ -35,7 +35,7 @@ public class FolkloreComboBoxFactory {
 
     public static LabeledComboBox<Album> createAlbum(FolklorePieceProperties piece) {
         StringConverter<Album> albumStringConverter = new AlbumStringConverter(
-                ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(), true);
+            ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(), true);
         LabeledComboBox<Album> cb = new LabeledComboBox<>(albumStringConverter, false, true);
         cb.setLabelText(resourceBundle.getString(FolklorePieceTable.COL_ALBUM));
         cb.setItems(collectAlbums());
@@ -49,7 +49,7 @@ public class FolkloreComboBoxFactory {
         LabeledComboBox<Artist> cb = new LabeledComboBox<>(new ArtistStringConverter(), false, true);
         cb.setLabelText(resourceBundle.getString(FolklorePieceTable.COL_PERFORMER));
         cb.setItems(collectArtists(ArtistMission.SINGER, ArtistMission.ORCHESTRA, ArtistMission.INSTRUMENT_PLAYER,
-                                   ArtistMission.ENSEMBLE, ArtistMission.CHOIR, ArtistMission.CHAMBER_GROUP));
+            ArtistMission.ENSEMBLE, ArtistMission.CHOIR, ArtistMission.CHAMBER_GROUP));
         cb.setValue(piece.getPerformer());
         cb.setNewValueConsumer(piece::setPerformer);
         cb.setNullable(true);
@@ -60,7 +60,7 @@ public class FolkloreComboBoxFactory {
         LabeledComboBox<Artist> cb = new LabeledComboBox<>(new ArtistStringConverter(), false, true);
         cb.setLabelText(resourceBundle.getString(FolklorePieceTable.COL_ACCOMPANIMENT_PERFORMER));
         cb.setItems(collectArtists(ArtistMission.ORCHESTRA, ArtistMission.INSTRUMENT_PLAYER, ArtistMission.ENSEMBLE,
-                                   ArtistMission.CHAMBER_GROUP));
+            ArtistMission.CHAMBER_GROUP));
         cb.setValue(piece.getAccompanimentPerformer());
         cb.setNewValueConsumer(piece::setAccompanimentPerformer);
         cb.setNullable(true);
@@ -109,7 +109,7 @@ public class FolkloreComboBoxFactory {
 
     public static LabeledComboBox<EthnographicRegion> createEthnographicRegion(FolklorePieceProperties piece) {
         LabeledComboBox<EthnographicRegion> cb = new LabeledComboBox<>(new EthnographicRegionStringConverter(), false,
-                                                                       true);
+            true);
         cb.setLabelText(resourceBundle.getString(FolklorePieceTable.COL_ETHNOGRAPHIC_REGION));
         cb.setItems(collectEthnographicRegions());
         cb.setValue(piece.getEthnographicRegion());
@@ -130,7 +130,7 @@ public class FolkloreComboBoxFactory {
 
     public static LabeledComboBox<Variable<FolklorePiece>> createSearchVariable() {
         LabeledComboBox<Variable<FolklorePiece>> cb = new LabeledComboBox<>(new VariableStringConverter<>(), false,
-                                                                            false);
+            false);
         cb.setLabelText(resourceBundle.getString(FolkloreSearchTab.VARIABLE));
         cb.setItems(FolkloreSearchFactory.createFolkloreVariables());
         cb.setValue(FolkloreSearchFactory.VAR_TITLE);
@@ -147,7 +147,7 @@ public class FolkloreComboBoxFactory {
 
     public static LabeledComboBox<Instrument> createInstrument() {
         ObservableList<Instrument> instruments = FXCollections
-                .observableArrayList(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
+            .observableArrayList(ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
         LabeledComboBox<Instrument> cb = new LabeledComboBox<>(new InstrumentStringConverter(), false, true);
         cb.setLabelText(resourceBundle.getString(INSTRUMENT));
         cb.setItems(instruments);
@@ -164,7 +164,7 @@ public class FolkloreComboBoxFactory {
     private static ObservableList<Artist> collectArtists(ArtistMission... missions) {
         Stream<Artist> artists = ApplicationContext.getInstance().getFolkloreEntityCollections().getArtists().stream();
         return artists.filter(artist -> hasMission(artist, Arrays.asList(missions)))
-                      .collect(Collectors.collectingAndThen(Collectors.toList(), FXCollections::observableList));
+            .collect(Collectors.collectingAndThen(Collectors.toList(), FXCollections::observableList));
     }
 
     private static boolean hasMission(Artist artist, Collection<ArtistMission> missions) {
@@ -178,13 +178,13 @@ public class FolkloreComboBoxFactory {
 
     private static ObservableList<EthnographicRegion> collectEthnographicRegions() {
         List<EthnographicRegion> list = new ArrayList<>(
-                ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegions());
+            ApplicationContext.getInstance().getFolkloreEntityCollections().getEthnographicRegions());
         return FXCollections.observableList(list);
     }
 
     private static ObservableList<Source> collectSources() {
         List<Source> list = new ArrayList<>(
-                ApplicationContext.getInstance().getFolkloreEntityCollections().getSources());
+            ApplicationContext.getInstance().getFolkloreEntityCollections().getSources());
         return FXCollections.observableList(list);
     }
 

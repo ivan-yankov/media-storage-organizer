@@ -1,14 +1,15 @@
 package org.yankov.mso.application;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.stage.Stage;
 import org.yankov.mso.application.ui.ApplicationConsole;
 import org.yankov.mso.application.ui.ApplicationConsoleLogHandler;
 import org.yankov.mso.database.DatabaseManager;
 import org.yankov.mso.database.FolkloreEntityCollections;
-import javafx.stage.Stage;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ApplicationContext {
 

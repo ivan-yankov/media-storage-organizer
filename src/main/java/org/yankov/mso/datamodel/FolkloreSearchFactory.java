@@ -1,9 +1,10 @@
 package org.yankov.mso.datamodel;
 
-import java.util.ResourceBundle;
-import org.yankov.mso.application.ApplicationContext;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.yankov.mso.application.ApplicationContext;
+
+import java.util.ResourceBundle;
 
 public class FolkloreSearchFactory {
 
