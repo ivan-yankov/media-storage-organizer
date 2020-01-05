@@ -1,13 +1,5 @@
 package org.yankov.mso.application.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Duration;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -17,6 +9,14 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 import org.yankov.mso.application.ApplicationContext;
 import org.yankov.mso.datamodel.Record;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Duration;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public class FlacProcessor {
 
@@ -49,12 +49,12 @@ public class FlacProcessor {
             return Optional.of(Duration.ofSeconds(lengthInSec));
         } catch (IOException e) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, resourceBundle.getString(FILE_NOT_FOUND), e.getMessage());
+                .log(Level.SEVERE, resourceBundle.getString(FILE_NOT_FOUND), e.getMessage());
             return Optional.empty();
         } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, resourceBundle.getString(CANNOT_DETECT_AUDIO_FILE_DURATION),
-                                   e.getMessage());
+                .log(Level.SEVERE, resourceBundle.getString(CANNOT_DETECT_AUDIO_FILE_DURATION),
+                    e.getMessage());
             return Optional.empty();
         }
     }
@@ -69,12 +69,12 @@ public class FlacProcessor {
             record.setDataFormat(FLAC);
             record.setBytes(Files.readAllBytes(file.toPath()));
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + file.getName());
+                .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + file.getName());
             return Optional.of(record);
         } catch (IOException e) {
             ApplicationContext.getInstance().getLogger().log(Level.SEVERE,
-                                                             resourceBundle.getString(UNABLE_READ_FILE) + ": " + file
-                                                                     .getAbsolutePath());
+                resourceBundle.getString(UNABLE_READ_FILE) + ": " + file
+                    .getAbsolutePath());
             return Optional.empty();
         }
     }

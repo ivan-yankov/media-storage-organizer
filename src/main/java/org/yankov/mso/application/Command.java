@@ -33,20 +33,20 @@ public abstract class Command {
         int actualNumberOfArguments = argumentTypeNames != null ? argumentTypeNames.size() : 0;
         if (expectedNumberOfArguments != actualNumberOfArguments) {
             errorMessage = MessageFormat
-                    .format(MESSAGE_PATTERN_ARGUMENTS_COUNT, name, Integer.toString(expectedNumberOfArguments),
-                            Integer.toString(actualNumberOfArguments));
+                .format(MESSAGE_PATTERN_ARGUMENTS_COUNT, name, Integer.toString(expectedNumberOfArguments),
+                    Integer.toString(actualNumberOfArguments));
             return false;
         }
 
         for (int i = 0; i < actualNumberOfArguments; i++) {
             if (!argumentTypeNames.get(i).equals(commandArgs[i].getClass().getName())) {
                 String expectedArguments = argumentTypeNames.stream()
-                                                            .reduce("", (type1, type2) -> type1 + type2 + ", ");
+                    .reduce("", (type1, type2) -> type1 + type2 + ", ");
                 String actualArguments = Arrays.asList(commandArgs).stream().map(arg -> arg.getClass().getName())
-                                               .reduce("", (type1, type2) -> type1 + type2 + ", ");
+                    .reduce("", (type1, type2) -> type1 + type2 + ", ");
                 errorMessage = MessageFormat.format(MESSAGE_PATTERN_ARGUMENT_TYPES, name,
-                                                    expectedArguments.substring(0, expectedArguments.length() - 2),
-                                                    actualArguments.substring(0, actualArguments.length() - 2));
+                    expectedArguments.substring(0, expectedArguments.length() - 2),
+                    actualArguments.substring(0, actualArguments.length() - 2));
                 return false;
             }
         }

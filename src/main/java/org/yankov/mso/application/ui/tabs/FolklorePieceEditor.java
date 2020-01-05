@@ -53,7 +53,7 @@ public class FolklorePieceEditor implements Form {
     @Override
     public void createControls() {
         LabeledTextField albumTrackOrder = new LabeledTextField(
-                resourceBundle.getString(FolklorePieceTable.COL_ALBUM_TRACK_ORDER), piece.getAlbumTrackOrder());
+            resourceBundle.getString(FolklorePieceTable.COL_ALBUM_TRACK_ORDER), piece.getAlbumTrackOrder());
         albumTrackOrder.setNewValueConsumer(piece::setAlbumTrackOrder);
         albumTrackOrder.setNewValueValidator(value -> value.matches("[0-9]+"));
         albumTrackOrder.layout();
@@ -62,7 +62,7 @@ public class FolklorePieceEditor implements Form {
         album.layout();
 
         LabeledTextField title = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_TITLE),
-                                                      piece.getTitle());
+            piece.getTitle());
         title.setNewValueConsumer(piece::setTitle);
         title.layout();
 
@@ -91,12 +91,12 @@ public class FolklorePieceEditor implements Form {
         source.layout();
 
         LabeledTextField note = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_NOTE),
-                                                     piece.getNote());
+            piece.getNote());
         note.setNewValueConsumer(piece::setNote);
         note.layout();
 
         UserInterfaceControls fileSelectionField = new FileSelectionField(
-                resourceBundle.getString(FolklorePieceTable.COL_FILE), piece.getFile(), piece::setFile);
+            resourceBundle.getString(FolklorePieceTable.COL_FILE), piece.getFile(), piece::setFile);
         fileSelectionField.layout();
 
         GridPane gridPane = new GridPane();

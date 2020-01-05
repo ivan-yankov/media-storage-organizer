@@ -59,7 +59,7 @@ public class SourceInputControls extends ArtifactInputControls<Source> {
     protected boolean validateUserInput() {
         if (sourceSignature.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(SIGNATURE_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(SIGNATURE_UNDEFINED));
             return false;
         }
 

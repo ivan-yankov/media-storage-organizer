@@ -26,7 +26,7 @@ public class AlbumStringConverter extends StringConverter<Album> {
     public Album fromString(String string) {
         String signature = getCollectionSignature(string);
         return albums.stream().filter(album -> album.getCollectionSignature().equalsIgnoreCase(signature)).findFirst()
-                     .orElse(null);
+            .orElse(null);
     }
 
     private String composeLabel(Album object) {

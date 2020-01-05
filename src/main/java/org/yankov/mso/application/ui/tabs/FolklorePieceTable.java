@@ -50,7 +50,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
     private static final String DURATION_FORMAT = "%02d:%02d";
 
     private static final CustomFont TABLE_FONT = new CustomFont(FontFamily.SANS_SERIF, FontWeight.NORMAL,
-                                                                FontStyle.NORMAL, 12);
+        FontStyle.NORMAL, 12);
 
     private static final double MAX_COLUMN_WIDTH = 225.0;
 
@@ -99,9 +99,9 @@ public class FolklorePieceTable implements UserInterfaceControls {
 
     private List<TableColumn<FolklorePieceProperties, String>> createTableColumns() {
         TableColumn<FolklorePieceProperties, String> colAlbumTrackOrder = new TableColumn<>(
-                resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
+            resourceBundle.getString(COL_ALBUM_TRACK_ORDER));
         colAlbumTrackOrder
-                .setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbumTrackOrder()));
+            .setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getAlbumTrackOrder()));
         colAlbumTrackOrder.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colAlbum = new TableColumn<>(resourceBundle.getString(COL_ALBUM));
@@ -116,7 +116,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         colTitle.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getTitle()));
 
         TableColumn<FolklorePieceProperties, String> colPerformer = new TableColumn<>(
-                resourceBundle.getString(COL_PERFORMER));
+            resourceBundle.getString(COL_PERFORMER));
         colPerformer.setCellValueFactory(param -> {
             Artist performer = param.getValue().getPerformer();
             String s = performer != null ? performer.getName() : null;
@@ -124,7 +124,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colAccompanimentPerformer = new TableColumn<>(
-                resourceBundle.getString(COL_ACCOMPANIMENT_PERFORMER));
+            resourceBundle.getString(COL_ACCOMPANIMENT_PERFORMER));
         colAccompanimentPerformer.setCellValueFactory(param -> {
             Artist accompanimentPerformer = param.getValue().getAccompanimentPerformer();
             String s = accompanimentPerformer != null ? accompanimentPerformer.getName() : null;
@@ -132,7 +132,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colAuthor = new TableColumn<>(
-                resourceBundle.getString(COL_AUTHOR));
+            resourceBundle.getString(COL_AUTHOR));
         colAuthor.setCellValueFactory(param -> {
             Artist author = param.getValue().getAuthor();
             String s = author != null ? author.getName() : null;
@@ -140,7 +140,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colArrangementAuthor = new TableColumn<>(
-                resourceBundle.getString(COL_ARRANGEMENT_AUTHOR));
+            resourceBundle.getString(COL_ARRANGEMENT_AUTHOR));
         colArrangementAuthor.setCellValueFactory(param -> {
             Artist arrangementAuthor = param.getValue().getArrangementAuthor();
             String s = arrangementAuthor != null ? arrangementAuthor.getName() : null;
@@ -148,7 +148,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colConductor = new TableColumn<>(
-                resourceBundle.getString(COL_CONDUCTOR));
+            resourceBundle.getString(COL_CONDUCTOR));
         colConductor.setCellValueFactory(param -> {
             Artist conductor = param.getValue().getConductor();
             String s = conductor != null ? conductor.getName() : null;
@@ -156,7 +156,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colSoloist = new TableColumn<>(
-                resourceBundle.getString(COL_SOLOIST));
+            resourceBundle.getString(COL_SOLOIST));
         colSoloist.setCellValueFactory(param -> {
             Artist soloist = param.getValue().getSoloist();
             String s = soloist != null ? soloist.getName() : null;
@@ -164,17 +164,17 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colDuration = new TableColumn<>(
-                resourceBundle.getString(COL_DURATION));
+            resourceBundle.getString(COL_DURATION));
         colDuration.setCellValueFactory(param -> {
             Duration d = param.getValue().getDuration();
             String s = d != null ? String.format(DURATION_FORMAT, DurationConverter.toMinutesPart(d),
-                                                 DurationConverter.toSecondsPart(d)) : null;
+                DurationConverter.toSecondsPart(d)) : null;
             return new SimpleStringProperty(s);
         });
         colDuration.setCellFactory(column -> FxUtils.createTextCellAligned(column, Pos.BASELINE_RIGHT));
 
         TableColumn<FolklorePieceProperties, String> colSource = new TableColumn<>(
-                resourceBundle.getString(COL_SOURCE));
+            resourceBundle.getString(COL_SOURCE));
         colSource.setCellValueFactory(param -> {
             Source source = param.getValue().getSource();
             String s = source != null ? source.toString() : null;
@@ -189,7 +189,7 @@ public class FolklorePieceTable implements UserInterfaceControls {
         });
 
         TableColumn<FolklorePieceProperties, String> colEthnographicRegion = new TableColumn<>(
-                resourceBundle.getString(COL_ETHNOGRAPHIC_REGION));
+            resourceBundle.getString(COL_ETHNOGRAPHIC_REGION));
         colEthnographicRegion.setCellValueFactory(param -> {
             EthnographicRegion ethnographicRegion = param.getValue().getEthnographicRegion();
             String s = ethnographicRegion != null ? ethnographicRegion.getName() : null;

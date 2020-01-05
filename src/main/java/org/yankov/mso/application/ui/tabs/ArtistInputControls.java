@@ -69,7 +69,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     public void onVisibilityChange(boolean visible) {
         if (visible) {
             ObservableList<Instrument> instruments = FXCollections.observableArrayList(
-                    ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
+                ApplicationContext.getInstance().getFolkloreEntityCollections().getInstruments());
             instrument.setItems(instruments);
         }
     }
@@ -117,19 +117,19 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
     protected boolean validateUserInput() {
         if (name.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(ARTIST_NAME_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(ARTIST_NAME_UNDEFINED));
             return false;
         }
 
         if (getSelectedMissions().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(NO_ARTIST_MISSION_SELECTED));
+                .log(Level.SEVERE, getResourceBundle().getString(NO_ARTIST_MISSION_SELECTED));
             return false;
         }
 
         if (getSelectedMissions().contains(ArtistMission.INSTRUMENT_PLAYER) && instrument.getValue() == null) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(ARTIST_INSTRUMENT_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(ARTIST_INSTRUMENT_UNDEFINED));
             return false;
         }
 
@@ -204,7 +204,7 @@ public class ArtistInputControls extends ArtifactInputControls<Artist> {
 
     private List<ArtistMission> getSelectedMissions() {
         return missions.stream().filter(CheckBox::isSelected).map(cb -> (ArtistMission) cb.getUserData())
-                       .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     private void enableInstrument() {

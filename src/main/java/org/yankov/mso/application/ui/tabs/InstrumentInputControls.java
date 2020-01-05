@@ -50,7 +50,7 @@ public class InstrumentInputControls extends ArtifactInputControls<Instrument> {
     protected boolean validateUserInput() {
         if (instrument.getTextField().getText().isEmpty()) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(INSTRUMENT_NAME_UNDEFINED));
+                .log(Level.SEVERE, getResourceBundle().getString(INSTRUMENT_NAME_UNDEFINED));
             return false;
         }
 

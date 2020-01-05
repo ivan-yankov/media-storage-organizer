@@ -1,15 +1,5 @@
 package org.yankov.mso.application.ui.tabs;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-
-import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.application.UserInterfaceControls;
-import org.yankov.mso.database.DatabaseOperations;
-
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -25,6 +15,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import org.yankov.mso.application.ApplicationContext;
+import org.yankov.mso.application.UserInterfaceControls;
+import org.yankov.mso.database.DatabaseOperations;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 public abstract class ArtifactInputControls<T> implements UserInterfaceControls, PropertyChangeListener {
 
@@ -161,7 +160,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
             ApplicationContext.getInstance().getLogger().log(Level.INFO, getResourceBundle().getString(ARTIFACT_ADDED));
         } else {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(ARTIFACT_EXISTS));
+                .log(Level.SEVERE, getResourceBundle().getString(ARTIFACT_EXISTS));
         }
     }
 
@@ -173,7 +172,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
         T selectedArtifact = existingArtifacts.getSelectionModel().getSelectedItem();
         if (selectedArtifact == null) {
             ApplicationContext.getInstance().getLogger()
-                              .log(Level.SEVERE, getResourceBundle().getString(NO_SELECTED_ARTIFACT));
+                .log(Level.SEVERE, getResourceBundle().getString(NO_SELECTED_ARTIFACT));
         } else {
             setArtifactProperties(selectedArtifact);
             refreshExistingArtifacts();
@@ -193,7 +192,7 @@ public abstract class ArtifactInputControls<T> implements UserInterfaceControls,
             existingItems.clear();
             List<T> newArtifacts = getExistingArtifacts();
             newArtifacts.sort((a1, a2) -> getStringConverter().toString(a1)
-                                                              .compareToIgnoreCase(getStringConverter().toString(a2)));
+                .compareToIgnoreCase(getStringConverter().toString(a2)));
             existingItems.addAll(newArtifacts);
         });
     }

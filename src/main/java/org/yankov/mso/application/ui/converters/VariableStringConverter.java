@@ -7,7 +7,7 @@ public class VariableStringConverter<T> extends StringConverter<Variable<T>> {
 
     @Override
     public String toString(Variable<T> object) {
-        return object!= null ? object.getLabel() : "";
+        return object != null ? object.getLabel() : "";
     }
 
     @Override

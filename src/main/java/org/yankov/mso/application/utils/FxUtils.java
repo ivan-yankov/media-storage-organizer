@@ -27,7 +27,7 @@ public class FxUtils {
     public static final String FLAC_FILTER_EXT = CLASS_NAME + "-flac-filter-ext";
     public static final String CONFIRMATION = CLASS_NAME + "-confirmation";
     public static final String OVERWRITE_RECORDS_IN_DATABASE = CLASS_NAME + "-delete-record-from-database";
-    public static final String CLOSE_APPLICATION  = CLASS_NAME + "-close-application";
+    public static final String CLOSE_APPLICATION = CLASS_NAME + "-close-application";
     public static final String ARE_YOU_SURE = CLASS_NAME + "-are-you-sure";
     public static final String YES = CLASS_NAME + "-yes";
     public static final String NO = CLASS_NAME + "-no";
@@ -62,7 +62,7 @@ public class FxUtils {
         fileChooser.getExtensionFilters().add(createFlacFileFilter());
         if (singleSelection) {
             File file = fileChooser
-                    .showOpenDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
+                .showOpenDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
             if (file != null) {
                 List<File> list = new ArrayList<>();
                 list.add(file);
@@ -72,7 +72,7 @@ public class FxUtils {
             }
         } else {
             List<File> files = fileChooser
-                    .showOpenMultipleDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
+                .showOpenMultipleDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
             return files != null ? Optional.of(files) : Optional.empty();
         }
     }
@@ -81,7 +81,7 @@ public class FxUtils {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle(resourceBundle.getString(SELECT_EXPORT_DIRECTORY));
         File file = directoryChooser
-                .showDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
+            .showDialog(ApplicationContext.getInstance().getPrimaryStage().getScene().getWindow());
         return file != null ? Optional.of(file) : Optional.empty();
     }
 
@@ -110,7 +110,7 @@ public class FxUtils {
 
     private static FileChooser.ExtensionFilter createFlacFileFilter() {
         return new FileChooser.ExtensionFilter(resourceBundle.getString(FLAC_FILTER_NAME),
-                                               resourceBundle.getString(FLAC_FILTER_EXT));
+            resourceBundle.getString(FLAC_FILTER_EXT));
     }
 
 }

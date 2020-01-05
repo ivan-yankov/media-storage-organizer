@@ -46,7 +46,7 @@ public class PiecePropertiesUtils {
         T item = creator.get();
         String albumSignature = file.getParentFile().getName();
         Optional<Album> album = ApplicationContext.getInstance().getFolkloreEntityCollections()
-                                                  .getAlbum(albumSignature);
+            .getAlbum(albumSignature);
         String message = resourceBundle.getString(UNDEFINED_ALBUM) + " " + albumSignature;
 
         if (album.isPresent()) {

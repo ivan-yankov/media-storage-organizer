@@ -1,8 +1,8 @@
 package org.yankov.mso.application.ui.tabs;
 
 import javafx.scene.control.TableView;
-import org.yankov.mso.application.Form;
 import org.yankov.mso.application.Command;
+import org.yankov.mso.application.Form;
 import org.yankov.mso.datamodel.FolklorePieceProperties;
 
 import java.util.List;

@@ -15,10 +15,10 @@ import java.util.function.Supplier;
 public class ButtonsFactory {
 
     public static Buttons<FolklorePieceProperties, FolklorePiece> createFolkloreInputTabButtons(
-            TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
-            Supplier<Boolean> playRandomSupplier) {
+        TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
+        Supplier<Boolean> playRandomSupplier) {
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = createFolkloreButtons(table, playNextSupplier,
-                                                                                        playRandomSupplier);
+            playRandomSupplier);
 
         buttons.setSelectButtons(allButtons -> {
             List<Button> selectedButtons = new ArrayList<>();
@@ -40,10 +40,10 @@ public class ButtonsFactory {
     }
 
     public static Buttons<FolklorePieceProperties, FolklorePiece> createFolkloreSearchTabButtons(
-            TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
-            Supplier<Boolean> playRandomSupplier) {
+        TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
+        Supplier<Boolean> playRandomSupplier) {
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = createFolkloreButtons(table, playNextSupplier,
-                                                                                        playRandomSupplier);
+            playRandomSupplier);
 
         buttons.setSelectButtons(allButtons -> {
             List<Button> selectedButtons = new ArrayList<>();
@@ -59,14 +59,14 @@ public class ButtonsFactory {
     }
 
     private static Buttons<FolklorePieceProperties, FolklorePiece> createFolkloreButtons(
-            TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
-            Supplier<Boolean> playRandomSupplier) {
+        TableView<FolklorePieceProperties> table, Supplier<Boolean> playNextSupplier,
+        Supplier<Boolean> playRandomSupplier) {
         Buttons<FolklorePieceProperties, FolklorePiece> buttons = new Buttons<>();
 
         buttons.setResourceBundle(ApplicationContext.getInstance().getFolkloreResourceBundle());
 
         buttons.setEditPieceCommand(
-                t -> ApplicationContext.getInstance().executeCommand(Commands.OPEN_FOLKLORE_PIECE_EDITOR, t));
+            t -> ApplicationContext.getInstance().executeCommand(Commands.OPEN_FOLKLORE_PIECE_EDITOR, t));
 
         buttons.setEntityCollections(ApplicationContext.getInstance().getFolkloreEntityCollections());
 

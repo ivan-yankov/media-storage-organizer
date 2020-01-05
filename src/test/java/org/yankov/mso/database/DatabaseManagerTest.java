@@ -21,7 +21,7 @@ public class DatabaseManagerTest extends DatabaseTest {
         });
 
         Optional<Object> instrumentObj = ApplicationContext.getInstance().getDatabaseManager().executeOperation(
-                session -> session.get(Instrument.class, originalInstrument.getId()));
+            session -> session.get(Instrument.class, originalInstrument.getId()));
 
         Assert.assertTrue(instrumentObj.isPresent());
         Instrument instrument = (Instrument) instrumentObj.get();
