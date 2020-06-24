@@ -111,13 +111,16 @@ public class DatabaseManager {
                 ? "org.apache.derby.jdbc.EmbeddedDriver"
                 : "org.apache.derby.jdbc.ClientDriver";
 
+            String schemaAction = ApplicationContext.getInstance().getApplicationArguments()
+                .getValue(CommandLineArgumentsFactory.DB_SCHEMA_ACTION);
+
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.DRIVER, driver);
             settings.put(Environment.URL, url);
             settings.put(Environment.DEFAULT_SCHEMA, "admin");
             settings.put(Environment.USER, "admin");
             settings.put(Environment.PASS, "admin");
-            settings.put(Environment.HBM2DDL_AUTO, "validate");
+            settings.put(Environment.HBM2DDL_AUTO, schemaAction);
 
             StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
             registryBuilder.applySettings(settings);

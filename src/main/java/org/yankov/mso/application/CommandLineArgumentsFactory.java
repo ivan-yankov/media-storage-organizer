@@ -7,6 +7,7 @@ public class CommandLineArgumentsFactory {
     public static final String LANGUAGE_NAME = "lang";
     public static final String DB_URL_NAME = "db-url";
     public static final String DB_DRIVER_NAME = "db-driver";
+    public static final String DB_SCHEMA_ACTION = "db-schema-action";
 
     public static final CommandLineArguments createCommandLineArguments() {
         CommandLineArguments arguments = new CommandLineArguments();
@@ -15,6 +16,7 @@ public class CommandLineArgumentsFactory {
         arguments.add(new CommandLineArgument(LANGUAGE_NAME, null, "bg", false, false, "bg"));
         arguments.add(new CommandLineArgument(DB_URL_NAME, null, null, true, false));
         arguments.add(new CommandLineArgument(DB_DRIVER_NAME, null, "embedded", false, false, "embedded", "client"));
+        arguments.add(new CommandLineArgument(DB_SCHEMA_ACTION, null, "validate", false, false, "validate", "update", "create", "create-drop", "none"));
 
         return arguments;
     }
