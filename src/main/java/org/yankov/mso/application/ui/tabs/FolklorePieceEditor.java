@@ -96,7 +96,7 @@ public class FolklorePieceEditor implements Form {
         gridPane.setHgap(HORIZONTAL_SPACE);
         gridPane.setVgap(VERTICAL_SPACE);
 
-        gridPane.add(title.getContainer(), 2, 0, 2, 1);
+        gridPane.add(title.getContainer(), 0, 0, 4, 1);
         gridPane.add(performer.getContainer(), 0, 1);
         gridPane.add(accompanimentPerformer.getContainer(), 1, 1);
         gridPane.add(arrangementAuthor.getContainer(), 2, 1);
