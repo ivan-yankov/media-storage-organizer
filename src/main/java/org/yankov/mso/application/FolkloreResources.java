@@ -112,7 +112,6 @@ public class FolkloreResources extends ListResourceBundle {
             {FolkloreInputArtifactsTab.SOURCE, ""},
             {FolkloreInputArtifactsTab.INSTRUMENT, ""},
             {FolkloreInputArtifactsTab.ARTIST, ""},
-            {FolkloreInputArtifactsTab.ALBUM, ""},
             {FolkloreInputArtifactsTab.ETHNOGRAPHIC_REGION, ""},
 
             {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, ""},

@@ -119,7 +119,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
             {FolkloreInputArtifactsTab.SOURCE, "Източник"},
             {FolkloreInputArtifactsTab.INSTRUMENT, "Инструмент"},
             {FolkloreInputArtifactsTab.ARTIST, "Артист"},
-            {FolkloreInputArtifactsTab.ALBUM, "Албум"},
             {FolkloreInputArtifactsTab.ETHNOGRAPHIC_REGION, "Етнографска област"},
 
             {ArtifactInputControls.EXISTING_ARTIFACTS_LABEL, "Съществуващи артефакти"},

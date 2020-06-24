@@ -26,7 +26,6 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
     public static final String SOURCE = CLASS_NAME + "-source";
     public static final String INSTRUMENT = CLASS_NAME + "-instrument";
     public static final String ARTIST = CLASS_NAME + "-artist";
-    public static final String ALBUM = CLASS_NAME + "-album";
     public static final String ETHNOGRAPHIC_REGION = CLASS_NAME + "-ethnographic-region";
 
     private VBox container;
@@ -37,7 +36,6 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
         ARTIFACT_IDS.put(resourceBundle.getString(SOURCE), SOURCE);
         ARTIFACT_IDS.put(resourceBundle.getString(INSTRUMENT), INSTRUMENT);
         ARTIFACT_IDS.put(resourceBundle.getString(ARTIST), ARTIST);
-        ARTIFACT_IDS.put(resourceBundle.getString(ALBUM), ALBUM);
         ARTIFACT_IDS.put(resourceBundle.getString(ETHNOGRAPHIC_REGION), ETHNOGRAPHIC_REGION);
     }
 
@@ -83,7 +81,6 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
         artifacts.add(resourceBundle.getString(SOURCE));
         artifacts.add(resourceBundle.getString(INSTRUMENT));
         artifacts.add(resourceBundle.getString(ARTIST));
-        artifacts.add(resourceBundle.getString(ALBUM));
         artifacts.add(resourceBundle.getString(ETHNOGRAPHIC_REGION));
 
         return artifacts.sorted();
