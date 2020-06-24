@@ -109,7 +109,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         LabeledComboBox<Operator> operators = FolkloreComboBoxFactory.createSearchOperators();
         operators.layout();
 
-        LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "*");
+        LabeledTextField value = new LabeledTextField(resourceBundle.getString(VALUE), "");
         value.getTextField().setOnKeyReleased(this::valueKeyTyped);
         value.layout();
 
@@ -188,7 +188,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
         String searchValue = filter.getValue().getTextField().getText();
 
         List<FolklorePiece> piecesFound;
-        if (searchValue.equals("*")) {
+        if (searchValue.isEmpty()) {
             piecesFound = pieces;
         } else {
             piecesFound = operator.match(pieces, variable, searchValue);
