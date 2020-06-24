@@ -33,18 +33,6 @@ public class FolkloreComboBoxFactory {
         return cb;
     }
 
-    public static LabeledComboBox<Album> createAlbum(FolklorePieceProperties piece) {
-        StringConverter<Album> albumStringConverter = new AlbumStringConverter(
-            ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums(), true);
-        LabeledComboBox<Album> cb = new LabeledComboBox<>(albumStringConverter, false, true);
-        cb.setLabelText(resourceBundle.getString(FolklorePieceTable.COL_ALBUM));
-        cb.setItems(collectAlbums());
-        cb.setValue(piece.getAlbum());
-        cb.setNewValueConsumer(piece::setAlbum);
-        cb.setNullable(true);
-        return cb;
-    }
-
     public static LabeledComboBox<Artist> createPerformer(FolklorePieceProperties piece) {
         LabeledComboBox<Artist> cb = new LabeledComboBox<>(new ArtistStringConverter(), false, true);
         cb.setLabelText(resourceBundle.getString(FolklorePieceTable.COL_PERFORMER));
@@ -154,11 +142,6 @@ public class FolkloreComboBoxFactory {
         cb.setNullable(true);
         cb.setValue(null);
         return cb;
-    }
-
-    private static ObservableList<Album> collectAlbums() {
-        List<Album> list = new ArrayList<>(ApplicationContext.getInstance().getFolkloreEntityCollections().getAlbums());
-        return FXCollections.observableList(list);
     }
 
     private static ObservableList<Artist> collectArtists(ArtistMission... missions) {

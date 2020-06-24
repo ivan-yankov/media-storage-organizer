@@ -76,15 +76,6 @@ public class FolkloreSearchTest {
             .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
         assertResult(result, 1);
 
-        value = "хорови народни песни";
-        result = FolkloreSearchFactory.OPERATOR_EQUALS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 1);
-
-        value = "f001";
-        result = FolkloreSearchFactory.OPERATOR_EQUALS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
-        assertResult(result, 1);
-
         value = "лента";
         result = FolkloreSearchFactory.OPERATOR_EQUALS.match(pieces, FolkloreSearchFactory.VAR_SOURCE_TYPE, value);
         assertResult(result, 3);
@@ -142,15 +133,6 @@ public class FolkloreSearchTest {
         value = "родопи";
         result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
             .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
-        assertResult(result, excludePieceIndeces(1));
-
-        value = "хорови народни песни";
-        result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, excludePieceIndeces(1));
-
-        value = "f001";
-        result = FolkloreSearchFactory.OPERATOR_NOT_EQUALS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
         assertResult(result, excludePieceIndeces(1));
 
         value = "лента";
@@ -211,15 +193,6 @@ public class FolkloreSearchTest {
         value = "родоп";
         result = FolkloreSearchFactory.OPERATOR_CONTAINS
             .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
-        assertResult(result, 1);
-
-        value = "народни песни";
-        result = FolkloreSearchFactory.OPERATOR_CONTAINS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 1);
-
-        value = "f";
-        result = FolkloreSearchFactory.OPERATOR_CONTAINS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
         assertResult(result, 1);
 
         value = "лен";
@@ -302,16 +275,6 @@ public class FolkloreSearchTest {
             .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
         assertResult(result, excludePieceIndeces(1));
 
-        value = "народни песни";
-        result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, excludePieceIndeces(1));
-
-        value = "f";
-        result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
-        assertResult(result, excludePieceIndeces(1));
-
         value = "лен";
         result = FolkloreSearchFactory.OPERATOR_NOT_CONTAINS
             .match(pieces, FolkloreSearchFactory.VAR_SOURCE_TYPE, value);
@@ -373,15 +336,6 @@ public class FolkloreSearchTest {
             .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
         assertResult(result, 1);
 
-        value = "хор";
-        result = FolkloreSearchFactory.OPERATOR_STARTS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 1);
-
-        value = "f";
-        result = FolkloreSearchFactory.OPERATOR_STARTS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
-        assertResult(result, 1);
-
         value = "л";
         result = FolkloreSearchFactory.OPERATOR_STARTS.match(pieces, FolkloreSearchFactory.VAR_SOURCE_TYPE, value);
         assertResult(result, 3);
@@ -440,15 +394,6 @@ public class FolkloreSearchTest {
             .match(pieces, FolkloreSearchFactory.VAR_ETHNOGRAPHIC_REGION, value);
         assertResult(result, 1);
 
-        value = "песни";
-        result = FolkloreSearchFactory.OPERATOR_ENDS.match(pieces, FolkloreSearchFactory.VAR_ALBUM_TITLE, value);
-        assertResult(result, 1);
-
-        value = "1";
-        result = FolkloreSearchFactory.OPERATOR_ENDS
-            .match(pieces, FolkloreSearchFactory.VAR_ALBUM_COLLECTION_SIGNATURE, value);
-        assertResult(result, 1);
-
         value = "та";
         result = FolkloreSearchFactory.OPERATOR_ENDS.match(pieces, FolkloreSearchFactory.VAR_SOURCE_TYPE, value);
         assertResult(result, 3);
@@ -497,7 +442,6 @@ public class FolkloreSearchTest {
         piece.setPerformer(new Artist("Мистерията на българските гласове"));
         piece.setSoloist(new Artist("Надежда Хвойнева"));
         piece.setEthnographicRegion(new EthnographicRegion("Родопи"));
-        piece.setAlbum(createAlbum());
         piece.setArrangementAuthor(new Artist("Красимир Кюркчийски"));
         pieces.add(piece);
 
@@ -548,13 +492,6 @@ public class FolkloreSearchTest {
         Artist artist = new Artist("ОНМБНР");
         artist.addMission(ArtistMission.ORCHESTRA);
         return artist;
-    }
-
-    private Album createAlbum() {
-        Album album = new Album();
-        album.setTitle("Хорови народни песни");
-        album.setCollectionSignature("F001");
-        return album;
     }
 
     private Artist createInstrumentAccompanimentPerformer() {

@@ -47,8 +47,6 @@ public class FolkloreResources extends ListResourceBundle {
             {FolkloreMainForm.TAB_INPUT, ""},
             {FolkloreMainForm.TAB_OUTPUT, ""},
 
-            {FolklorePieceTable.COL_ALBUM_TRACK_ORDER, ""},
-            {FolklorePieceTable.COL_ALBUM, ""},
             {FolklorePieceTable.COL_TITLE, ""},
             {FolklorePieceTable.COL_PERFORMER, ""},
             {FolklorePieceTable.COL_ACCOMPANIMENT_PERFORMER, ""},
@@ -146,12 +144,6 @@ public class FolkloreResources extends ListResourceBundle {
             {ArtistInputControls.ARTIST_INSTRUMENT_UNDEFINED, ""},
             {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, ""},
 
-            {AlbumInputControls.TITLE, ""},
-            {AlbumInputControls.COLLECTION_SIGNATURE, ""},
-            {AlbumInputControls.NOTE, ""},
-            {AlbumInputControls.TITLE_UNDEFINED, ""},
-            {AlbumInputControls.COLLECTION_SIGNATURE_UNDEFINED, ""},
-
             {EthnographicRegionInputControls.NAME, ""},
             {EthnographicRegionInputControls.NAME_UNDEFINED, ""},
 
@@ -175,9 +167,6 @@ public class FolkloreResources extends ListResourceBundle {
             {FolkloreSearchFactory.VAR_LABEL_AUTHOR, ""},
             {FolkloreSearchFactory.VAR_LABEL_ETHNOGRAPHIC_REGION, ""},
             {FolkloreSearchFactory.VAR_LABEL_PIECE_NOTE, ""},
-            {FolkloreSearchFactory.VAR_LABEL_ALBUM_TITLE, ""},
-            {FolkloreSearchFactory.VAR_LABEL_ALBUM_COLLECTION_SIGNATURE, ""},
-            {FolkloreSearchFactory.VAR_LABEL_ALBUM_NOTE, ""},
             {FolkloreSearchFactory.VAR_LABEL_SOURCE_TYPE, ""},
             {FolkloreSearchFactory.VAR_LABEL_SOURCE_SIGNATURE, ""},
             {FolkloreSearchFactory.OPERATOR_LABEL_EQUALS, ""},
@@ -186,8 +175,6 @@ public class FolkloreResources extends ListResourceBundle {
             {FolkloreSearchFactory.OPERATOR_LABEL_NOT_CONTAINS, ""},
             {FolkloreSearchFactory.OPERATOR_LABEL_STARTS, ""},
             {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, ""},
-
-            {PiecePropertiesUtils.UNDEFINED_ALBUM, ""},
 
             {FolkloreComboBoxFactory.SOURCE_TYPE, ""},
             {FolkloreComboBoxFactory.INSTRUMENT, ""},

@@ -12,8 +12,6 @@ public class PiecePropertiesUtils {
 
     private static final String CLASS_NAME = PiecePropertiesUtils.class.getName();
 
-    public static final String UNDEFINED_ALBUM = CLASS_NAME + "-undefined-album";
-
     private static final ResourceBundle resourceBundle = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
     public static Piece createPieceFromProperties(PieceProperties properties) {
@@ -44,19 +42,7 @@ public class PiecePropertiesUtils {
 
     public static <T extends PieceProperties> T createPropertiesFromFile(Supplier<T> creator, File file) {
         T item = creator.get();
-        String albumSignature = file.getParentFile().getName();
-        Optional<Album> album = ApplicationContext.getInstance().getFolkloreEntityCollections()
-            .getAlbum(albumSignature);
-        String message = resourceBundle.getString(UNDEFINED_ALBUM) + " " + albumSignature;
-
-        if (album.isPresent()) {
-            item.setAlbum(album.get());
-        } else {
-            ApplicationContext.getInstance().getLogger().log(Level.SEVERE, message);
-        }
-
         item.setFile(file);
-
         return item;
     }
 
@@ -88,9 +74,7 @@ public class PiecePropertiesUtils {
         piece.setArrangementAuthor(properties.getArrangementAuthor());
         piece.setAccompanimentPerformer(properties.getAccompanimentPerformer());
         piece.setPerformer(properties.getPerformer());
-        piece.setAlbum(properties.getAlbum());
         piece.setTitle(properties.getTitle());
-        piece.setAlbumTrackOrder(parseAlbumTrackOrder(properties.getAlbumTrackOrder()));
         piece.setDuration(properties.getDuration());
         piece.setRecord(properties.getRecord());
 
@@ -111,16 +95,13 @@ public class PiecePropertiesUtils {
         properties.setArrangementAuthor(piece.getArrangementAuthor());
         properties.setAccompanimentPerformer(piece.getAccompanimentPerformer());
         properties.setPerformer(piece.getPerformer());
-        properties.setAlbum(piece.getAlbum());
         properties.setTitle(piece.getTitle());
-        properties.setAlbumTrackOrder(Integer.toString(piece.getAlbumTrackOrder()));
         properties.setDuration(piece.getDuration());
         properties.setRecord(piece.getRecord());
     }
 
     private static void copyProperties(PieceProperties source, PieceProperties dest, boolean completeCopy) {
         dest.setId(source.getId());
-        dest.setAlbum(source.getAlbum());
         dest.setPerformer(source.getPerformer());
         dest.setAccompanimentPerformer(source.getAccompanimentPerformer());
         dest.setAuthor(source.getAuthor());

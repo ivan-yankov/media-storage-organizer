@@ -108,7 +108,6 @@ public class FolkloreInputArtifactsTab implements UserInterfaceControls {
         inputControls.add(new SourceInputControls(SOURCE));
         inputControls.add(new InstrumentInputControls(INSTRUMENT));
         inputControls.add(new ArtistInputControls(ARTIST));
-        inputControls.add(new AlbumInputControls(ALBUM));
         inputControls.add(new EthnographicRegionInputControls(ETHNOGRAPHIC_REGION));
 
         return inputControls;

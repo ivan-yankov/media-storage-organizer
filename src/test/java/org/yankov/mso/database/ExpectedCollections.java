@@ -10,7 +10,6 @@ public class ExpectedCollections {
     private final Set<Source> sources;
     private final Set<Instrument> instruments;
     private final Set<Artist> artists;
-    private final Set<Album> albums;
     private final List<FolklorePiece> pieces;
     private final Set<EthnographicRegion> ethnographicRegions;
 
@@ -19,7 +18,6 @@ public class ExpectedCollections {
         this.sources = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
-        this.albums = new HashSet<>();
         this.pieces = new ArrayList<>();
         this.ethnographicRegions = new HashSet<>();
     }
@@ -40,10 +38,6 @@ public class ExpectedCollections {
         return artists;
     }
 
-    public Set<Album> getAlbums() {
-        return albums;
-    }
-
     public List<FolklorePiece> getPieces() {
         return pieces;
     }
@@ -61,7 +55,6 @@ public class ExpectedCollections {
         sources.addAll(collections.getSources());
         instruments.addAll(collections.getInstruments());
         artists.addAll(collections.getArtists());
-        albums.addAll(collections.getAlbums());
         pieces.addAll(collections.getPieces());
         ethnographicRegions.addAll(collections.getEthnographicRegions());
     }

@@ -411,15 +411,8 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
             String data = clipboard.getString();
             String[] titles = data.split(System.lineSeparator());
             int n = Math.min(table.getItems().size(), titles.length);
-            int order = 0;
             for (int i = 0; i < n; i++) {
                 PropertiesType item = table.getItems().get(i);
-
-                if (i > 0 && !item.getAlbum().equals(table.getItems().get(i - 1).getAlbum())) {
-                    order = 0;
-                }
-
-                item.setAlbumTrackOrder(Integer.toString(++order));
                 item.setTitle(titles[i].trim());
                 table.getItems().set(i, item);
             }
@@ -471,11 +464,6 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         outputFileName.append(directory.getAbsolutePath());
         outputFileName.append(File.separator);
         outputFileName.append(String.format("%06d", item.getId()));
-
-        if (item.getAlbum() != null) {
-            outputFileName.append(".");
-            outputFileName.append(item.getAlbum().getCollectionSignature());
-        }
 
         if (item.getAlbumTrackOrder() != null && !item.getAlbumTrackOrder().isEmpty()) {
             outputFileName.append(".");

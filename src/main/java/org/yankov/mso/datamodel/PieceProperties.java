@@ -16,7 +16,6 @@ public class PieceProperties implements PropertyChangeListener {
     private static final String PROPERTY_NAME_FILE = "file";
 
     private final SimpleObjectProperty<Integer> id;
-    private final SimpleObjectProperty<Album> album;
     private final SimpleStringProperty albumTrackOrder;
     private final SimpleStringProperty title;
     private final SimpleObjectProperty<Artist> performer;
@@ -35,7 +34,6 @@ public class PieceProperties implements PropertyChangeListener {
 
     public PieceProperties() {
         this.id = new SimpleObjectProperty<>();
-        this.album = new SimpleObjectProperty<>();
         this.albumTrackOrder = new SimpleStringProperty();
         this.title = new SimpleStringProperty();
         this.performer = new SimpleObjectProperty<>();
@@ -60,14 +58,6 @@ public class PieceProperties implements PropertyChangeListener {
 
     public void setId(Integer id) {
         this.id.set(id);
-    }
-
-    public Album getAlbum() {
-        return album.get();
-    }
-
-    public void setAlbum(Album album) {
-        this.album.set(album);
     }
 
     public String getAlbumTrackOrder() {

@@ -23,11 +23,10 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
     private final Set<Source> sources;
     private final Set<Instrument> instruments;
     private final Set<Artist> artists;
-    private final Set<Album> albums;
     private final Set<EthnographicRegion> ethnographicRegions;
     private final List<FolklorePiece> pieces;
 
-    private Map<Class, Collection> collections = new HashMap<>();
+    private Map<Class, Collection> collections;
 
     public FolkloreEntityCollections() {
         this.propertyChangeSupport = new PropertyChangeSupport(this);
@@ -35,7 +34,6 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         this.sources = new HashSet<>();
         this.instruments = new HashSet<>();
         this.artists = new HashSet<>();
-        this.albums = new HashSet<>();
         this.ethnographicRegions = new HashSet<>();
         this.pieces = new ArrayList<>();
 
@@ -44,7 +42,6 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         this.collections.put(Source.class, sources);
         this.collections.put(Instrument.class, instruments);
         this.collections.put(Artist.class, artists);
-        this.collections.put(Album.class, albums);
         this.collections.put(EthnographicRegion.class, ethnographicRegions);
         this.collections.put(FolklorePiece.class, pieces);
     }
@@ -64,7 +61,6 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         sources.clear();
         instruments.clear();
         artists.clear();
-        albums.clear();
         ethnographicRegions.clear();
         pieces.clear();
     }
@@ -183,28 +179,6 @@ public class FolkloreEntityCollections implements EntityCollections<FolklorePiec
         Set<Artist> oldValue = new HashSet<>(artists);
         boolean result = artists.add(artist);
         propertyChangeSupport.firePropertyChange(PROPERTY_ARTISTS, oldValue, artists);
-        return result;
-    }
-
-    public Set<Album> getAlbums() {
-        return Collections.unmodifiableSet(albums);
-    }
-
-    public void addAlbums(Collection<Album> albums) {
-        Set<Album> oldValue = new HashSet<>(this.albums);
-        this.albums.addAll(albums);
-        propertyChangeSupport.firePropertyChange(PROPERTY_ALBUMS, oldValue, this.albums);
-    }
-
-    public Optional<Album> getAlbum(String collectionSignature) {
-        return albums.stream().filter(entity -> entity.getCollectionSignature().toLowerCase().trim()
-            .equals(collectionSignature.toLowerCase().trim())).findFirst();
-    }
-
-    public boolean addAlbum(Album album) {
-        Set<Album> oldValue = new HashSet<>(albums);
-        boolean result = albums.add(album);
-        propertyChangeSupport.firePropertyChange(PROPERTY_ALBUMS, oldValue, albums);
         return result;
     }
 

@@ -21,10 +21,6 @@ public class FolkloreSearchFactory {
     public static final String VAR_LABEL_AUTHOR = CLASS_NAME + "-author";
     public static final String VAR_LABEL_ETHNOGRAPHIC_REGION = CLASS_NAME + "-ethnographic-region";
     public static final String VAR_LABEL_PIECE_NOTE = CLASS_NAME + "-piece-note";
-    public static final String VAR_LABEL_ALBUM_TITLE = CLASS_NAME + "-album-title";
-    public static final String VAR_LABEL_ALBUM_PRODUCTION_SIGNATURE = CLASS_NAME + "-album-production-signature";
-    public static final String VAR_LABEL_ALBUM_COLLECTION_SIGNATURE = CLASS_NAME + "-album-collection-signature";
-    public static final String VAR_LABEL_ALBUM_NOTE = CLASS_NAME + "-album-note";
     public static final String VAR_LABEL_SOURCE_TYPE = CLASS_NAME + "-source-type";
     public static final String VAR_LABEL_SOURCE_SIGNATURE = CLASS_NAME + "-source-signature";
 
@@ -73,17 +69,7 @@ public class FolkloreSearchFactory {
         folklorePiece -> folklorePiece.getEthnographicRegion().getName());
 
     public static final Variable<FolklorePiece> VAR_PIECE_NOTE = new Variable<>(
-        resourceBundle.getString(VAR_LABEL_PIECE_NOTE), folklorePiece -> folklorePiece.getNote());
-
-    public static final Variable<FolklorePiece> VAR_ALBUM_TITLE = new Variable<>(
-        resourceBundle.getString(VAR_LABEL_ALBUM_TITLE), folklorePiece -> folklorePiece.getAlbum().getTitle());
-
-    public static final Variable<FolklorePiece> VAR_ALBUM_COLLECTION_SIGNATURE = new Variable<>(
-        resourceBundle.getString(VAR_LABEL_ALBUM_COLLECTION_SIGNATURE),
-        folklorePiece -> folklorePiece.getAlbum().getCollectionSignature());
-
-    public static final Variable<FolklorePiece> VAR_ALBUM_NOTE = new Variable<>(
-        resourceBundle.getString(VAR_LABEL_ALBUM_NOTE), folklorePiece -> folklorePiece.getAlbum().getNote());
+        resourceBundle.getString(VAR_LABEL_PIECE_NOTE), Piece::getNote);
 
     public static final Variable<FolklorePiece> VAR_SOURCE_TYPE = new Variable<>(
         resourceBundle.getString(VAR_LABEL_SOURCE_TYPE),
@@ -126,9 +112,6 @@ public class FolkloreSearchFactory {
         variables.add(VAR_AUTHOR);
         variables.add(VAR_ETHNOGRAPHIC_REGION);
         variables.add(VAR_PIECE_NOTE);
-        variables.add(VAR_ALBUM_TITLE);
-        variables.add(VAR_ALBUM_COLLECTION_SIGNATURE);
-        variables.add(VAR_ALBUM_NOTE);
         variables.add(VAR_SOURCE_TYPE);
         variables.add(VAR_SOURCE_SIGNATURE);
 

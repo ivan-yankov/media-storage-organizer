@@ -48,8 +48,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
             {FolkloreMainForm.TAB_INPUT_ARTIFACTS, "Въвеждане на артефакти"},
             {FolkloreMainForm.TAB_OUTPUT, "Справка"},
 
-            {FolklorePieceTable.COL_ALBUM_TRACK_ORDER, "Номер"},
-            {FolklorePieceTable.COL_ALBUM, "Албум"},
             {FolklorePieceTable.COL_TITLE, "Заглавие"},
             {FolklorePieceTable.COL_PERFORMER, "Изпълнител"},
             {FolklorePieceTable.COL_ACCOMPANIMENT_PERFORMER, "Съпровод"},
@@ -156,12 +154,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
             },
             {ArtistInputControls.NO_ARTIST_MISSION_SELECTED, "Не е избрана нито една роля"},
 
-            {AlbumInputControls.TITLE, "Заглавие"},
-            {AlbumInputControls.COLLECTION_SIGNATURE, "Сигнатура в колекцията"},
-            {AlbumInputControls.NOTE, "Забележка"},
-            {AlbumInputControls.TITLE_UNDEFINED, "Не е въведено заглавие"},
-            {AlbumInputControls.COLLECTION_SIGNATURE_UNDEFINED, "Не е въведена сигнатура в колекцията"},
-
             {EthnographicRegionInputControls.NAME, "Название"},
             {EthnographicRegionInputControls.NAME_UNDEFINED, "Не е въведено название"},
 
@@ -185,9 +177,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
             {FolkloreSearchFactory.VAR_LABEL_AUTHOR, "Автор"},
             {FolkloreSearchFactory.VAR_LABEL_ETHNOGRAPHIC_REGION, "Етнографска област"},
             {FolkloreSearchFactory.VAR_LABEL_PIECE_NOTE, "Забележка"},
-            {FolkloreSearchFactory.VAR_LABEL_ALBUM_TITLE, "Заглавие на албум"},
-            {FolkloreSearchFactory.VAR_LABEL_ALBUM_COLLECTION_SIGNATURE, "Сигнатура на албум"},
-            {FolkloreSearchFactory.VAR_LABEL_ALBUM_NOTE, "Забележка на албум"},
             {FolkloreSearchFactory.VAR_LABEL_SOURCE_TYPE, "Тип на източник"},
             {FolkloreSearchFactory.VAR_LABEL_SOURCE_SIGNATURE, "Сигнатура на източник"},
             {FolkloreSearchFactory.OPERATOR_LABEL_EQUALS, "Идентично"},
@@ -196,8 +185,6 @@ public class FolkloreResources_bg extends ListResourceBundle {
             {FolkloreSearchFactory.OPERATOR_LABEL_NOT_CONTAINS, "Не съдържа"},
             {FolkloreSearchFactory.OPERATOR_LABEL_STARTS, "Започва с ..."},
             {FolkloreSearchFactory.OPERATOR_LABEL_ENDS, "Завършва с ..."},
-
-            {PiecePropertiesUtils.UNDEFINED_ALBUM, "Не е намерен албум със сигнатура"},
 
             {FolkloreComboBoxFactory.SOURCE_TYPE, "Вид източник"},
             {FolkloreComboBoxFactory.INSTRUMENT, "Инструмент"},

@@ -52,15 +52,6 @@ public class FolklorePieceEditor implements Form {
 
     @Override
     public void createControls() {
-        LabeledTextField albumTrackOrder = new LabeledTextField(
-            resourceBundle.getString(FolklorePieceTable.COL_ALBUM_TRACK_ORDER), piece.getAlbumTrackOrder());
-        albumTrackOrder.setNewValueConsumer(piece::setAlbumTrackOrder);
-        albumTrackOrder.setNewValueValidator(value -> value.matches("[0-9]+"));
-        albumTrackOrder.layout();
-
-        UserInterfaceControls album = FolkloreComboBoxFactory.createAlbum(piece);
-        album.layout();
-
         LabeledTextField title = new LabeledTextField(resourceBundle.getString(FolklorePieceTable.COL_TITLE),
             piece.getTitle());
         title.setNewValueConsumer(piece::setTitle);
@@ -105,8 +96,6 @@ public class FolklorePieceEditor implements Form {
         gridPane.setHgap(HORIZONTAL_SPACE);
         gridPane.setVgap(VERTICAL_SPACE);
 
-        gridPane.add(albumTrackOrder.getContainer(), 0, 0);
-        gridPane.add(album.getContainer(), 1, 0);
         gridPane.add(title.getContainer(), 2, 0, 2, 1);
         gridPane.add(performer.getContainer(), 0, 1);
         gridPane.add(accompanimentPerformer.getContainer(), 1, 1);

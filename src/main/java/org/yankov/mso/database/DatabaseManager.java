@@ -130,7 +130,6 @@ public class DatabaseManager {
             sources.addAnnotatedClass(Record.class);
             sources.addAnnotatedClass(Piece.class);
             sources.addAnnotatedClass(Instrument.class);
-            sources.addAnnotatedClass(Album.class);
             sources.addAnnotatedClass(Artist.class);
             sources.addAnnotatedClass(FolklorePiece.class);
             sources.addAnnotatedClass(EthnographicRegion.class);
