@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class FolkloreSearchTab implements UserInterfaceControls {
 
@@ -194,7 +195,7 @@ public class FolkloreSearchTab implements UserInterfaceControls {
             piecesFound = operator.match(pieces, variable, searchValue);
         }
 
-        return piecesFound;
+        return piecesFound.stream().distinct().collect(Collectors.toList());
     }
 
     private Duration calculateTotalDuration(List<? extends PieceProperties> pieces) {
