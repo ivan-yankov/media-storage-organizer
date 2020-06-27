@@ -26,6 +26,7 @@ import org.yankov.mso.datamodel.*;
 import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -195,7 +196,8 @@ public class FolkloreSearchTab implements UserInterfaceControls {
             piecesFound = operator.match(pieces, variable, searchValue);
         }
 
-        return piecesFound.stream().distinct().collect(Collectors.toList());
+        return piecesFound.stream().distinct().sorted(Comparator.comparingInt(Piece::getId))
+            .collect(Collectors.toList());
     }
 
     private Duration calculateTotalDuration(List<? extends PieceProperties> pieces) {
