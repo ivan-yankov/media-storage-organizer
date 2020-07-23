@@ -471,6 +471,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         outputFileName.append(item.getSource().getType().getName());
         outputFileName.append("_");
         outputFileName.append(item.getSource().getSignature());
+        outputFileName.append(".");
         outputFileName.append(item.getRecord().getDataFormat().toLowerCase());
 
         return outputFileName.toString();
