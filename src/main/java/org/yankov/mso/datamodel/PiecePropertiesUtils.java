@@ -111,16 +111,11 @@ public class PiecePropertiesUtils {
         dest.setNote(source.getNote());
         dest.setSource(source.getSource());
         if (completeCopy) {
-            dest.setAlbumTrackOrder(source.getAlbumTrackOrder());
             dest.setTitle(source.getTitle());
             dest.setDuration(source.getDuration());
             dest.setFile(source.getFile());
             dest.setRecord(source.getRecord());
         }
-    }
-
-    private static int parseAlbumTrackOrder(String value) {
-        return value != null ? Integer.parseInt(value) : 0;
     }
 
 }
