@@ -63,7 +63,6 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     public static final String EXPORT_STARTED = CLASS_NAME + "-export-started";
     public static final String EXPORT_COMPLETED = CLASS_NAME + "-export-completed";
 
-    private static final String DEFAULT_TRACK_ORDER = "0";
     private static final int ICON_SIZE = 32;
 
     private ResourceBundle resourceBundle;
@@ -355,7 +354,6 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
     private void handleBtnAdd(ActionEvent event) {
         PropertiesType item = propertiesCreator.get();
-        item.setAlbumTrackOrder(DEFAULT_TRACK_ORDER);
         table.getItems().add(item);
     }
 
@@ -463,18 +461,16 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
 
         outputFileName.append(directory.getAbsolutePath());
         outputFileName.append(File.separator);
-        outputFileName.append(String.format("%06d", item.getId()));
 
-        if (item.getAlbumTrackOrder() != null && !item.getAlbumTrackOrder().isEmpty()) {
-            outputFileName.append(".");
-            outputFileName.append(item.getAlbumTrackOrder());
-        }
-
+        outputFileName.append(item.getId().toString());
         outputFileName.append("_");
         outputFileName.append(item.getTitle());
-        outputFileName.append(" - ");
+        outputFileName.append("_");
         outputFileName.append(item.getPerformer().getName());
-        outputFileName.append(".");
+        outputFileName.append("_");
+        outputFileName.append(item.getSource().getType().getName());
+        outputFileName.append("_");
+        outputFileName.append(item.getSource().getSignature());
         outputFileName.append(item.getRecord().getDataFormat().toLowerCase());
 
         return outputFileName.toString();
