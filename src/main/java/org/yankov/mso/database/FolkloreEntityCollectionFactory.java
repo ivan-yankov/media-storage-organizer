@@ -37,6 +37,7 @@ public class FolkloreEntityCollectionFactory {
     public static final String SOURCE_TYPE_CD = CLASS_NAME + "-source-type-cd";
     public static final String SOURCE_TYPE_VIDEO = CLASS_NAME + "-source-type-video";
     public static final String SOURCE_TYPE_INTERNET = CLASS_NAME + "-source-type-internet";
+    public static final String SOURCE_TYPE_DIGITAL_RECORDING = CLASS_NAME + "-source-type-digital-recording";
 
     private static final ResourceBundle RESOURCE_BUNDLE = ApplicationContext.getInstance().getFolkloreResourceBundle();
 
@@ -48,6 +49,7 @@ public class FolkloreEntityCollectionFactory {
         sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_CD)));
         sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_VIDEO)));
         sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_INTERNET)));
+        sourceTypes.add(new SourceType(RESOURCE_BUNDLE.getString(SOURCE_TYPE_DIGITAL_RECORDING)));
         return sourceTypes;
     }
 
