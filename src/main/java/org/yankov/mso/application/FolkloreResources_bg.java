@@ -41,6 +41,7 @@ public class FolkloreResources_bg extends ListResourceBundle {
             {FolkloreEntityCollectionFactory.SOURCE_TYPE_CD, "CD"},
             {FolkloreEntityCollectionFactory.SOURCE_TYPE_VIDEO, "Видео"},
             {FolkloreEntityCollectionFactory.SOURCE_TYPE_INTERNET, "Internet"},
+            {FolkloreEntityCollectionFactory.SOURCE_TYPE_DIGITAL_RECORDING, "DDD"},
 
             {FolkloreApplicationSettings.STAGE_TITLE, "База данни - българска народна музика"},
 

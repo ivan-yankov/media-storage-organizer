@@ -41,6 +41,7 @@ public class FolkloreResources extends ListResourceBundle {
             {FolkloreEntityCollectionFactory.SOURCE_TYPE_CD, ""},
             {FolkloreEntityCollectionFactory.SOURCE_TYPE_VIDEO, ""},
             {FolkloreEntityCollectionFactory.SOURCE_TYPE_INTERNET, ""},
+            {FolkloreEntityCollectionFactory.SOURCE_TYPE_DIGITAL_RECORDING, ""},
 
             {FolkloreApplicationSettings.STAGE_TITLE, ""},
 
