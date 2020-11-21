@@ -130,7 +130,6 @@ public class DatabaseManager {
             MetadataSources sources = new MetadataSources(registry);
             sources.addAnnotatedClass(SourceType.class);
             sources.addAnnotatedClass(Source.class);
-            sources.addAnnotatedClass(Record.class);
             sources.addAnnotatedClass(Piece.class);
             sources.addAnnotatedClass(Instrument.class);
             sources.addAnnotatedClass(Artist.class);

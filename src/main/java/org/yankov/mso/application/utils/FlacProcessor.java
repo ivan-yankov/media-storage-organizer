@@ -8,7 +8,6 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 import org.yankov.mso.application.ApplicationContext;
-import org.yankov.mso.datamodel.Record;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +20,6 @@ import java.util.logging.Level;
 public class FlacProcessor {
 
     private static final String CLASS_NAME = FlacProcessor.class.getName();
-
-    private static final String FLAC = "FLAC";
 
     public static final String FILE_NOT_FOUND = CLASS_NAME + "-file-not-found";
     public static final String CANNOT_DETECT_AUDIO_FILE_DURATION = CLASS_NAME + "-cannot-detect-audio-file-duration";
@@ -59,15 +56,13 @@ public class FlacProcessor {
         }
     }
 
-    public Optional<Record> loadRecordFromFile() {
+    public Optional<byte[]> loadRecordFromFile() {
         if (file == null) {
             return Optional.empty();
         }
 
         try {
-            Record record = new Record();
-            record.setDataFormat(FLAC);
-            record.setBytes(Files.readAllBytes(file.toPath()));
+            byte[] record = Files.readAllBytes(file.toPath());
             ApplicationContext.getInstance().getLogger()
                 .log(Level.INFO, resourceBundle.getString(FILE_LOADED) + ": " + file.getName());
             return Optional.of(record);

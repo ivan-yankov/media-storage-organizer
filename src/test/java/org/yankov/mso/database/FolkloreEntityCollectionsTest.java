@@ -158,8 +158,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
 
         byte[] expectedRecordBytes = readRecordBytes();
         Assert.assertTrue(expectedRecordBytes.length > 0);
-        Assert.assertArrayEquals(expectedRecordBytes, actual.getRecord().getBytes());
-        Assert.assertEquals(RECORD_DATA_FORMAT, actual.getRecord().getDataFormat());
+        Assert.assertArrayEquals(expectedRecordBytes, actual.getRecord());
+        Assert.assertEquals(RECORD_DATA_FORMAT, actual.getRecordFormat());
     }
 
     private void assertInitializedEntities(FolkloreEntityCollections collections) {
@@ -206,13 +206,6 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         }
     }
 
-    private static Record createRecord() {
-        Record record = new Record();
-        record.setBytes(readRecordBytes());
-        record.setDataFormat(RECORD_DATA_FORMAT);
-        return record;
-    }
-
     private static FolklorePiece createPiece(FolkloreEntityCollections entityCollections, boolean addMediaRecord) {
         FolklorePiece piece = new FolklorePiece();
         piece.setEthnographicRegion(entityCollections.getEthnographicRegion(ETHNOGRAPHIC_REGION).get());
@@ -227,7 +220,8 @@ public class FolkloreEntityCollectionsTest extends DatabaseTest {
         piece.setTitle(PIECE_TITLE);
         piece.setSource(entityCollections.getSource(SOURCE_TYPE + "/" + SOURCE_SIGNATURE).get());
         if (addMediaRecord) {
-            piece.setRecord(createRecord());
+            piece.setRecord(readRecordBytes());
+            piece.setRecordFormat(RECORD_DATA_FORMAT);
         }
         return piece;
     }
