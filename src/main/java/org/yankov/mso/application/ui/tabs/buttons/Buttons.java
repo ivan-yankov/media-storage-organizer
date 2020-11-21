@@ -253,7 +253,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
     private void playItem(int index) {
         FlacPlayer flacPlayer = FlacPlayer.getInstance();
         flacPlayer.addListener(e -> Platform.runLater(() -> playingListener(index, e)));
-        flacPlayer.setBytes(table.getItems().get(index).getRecord().getBytes());
+        flacPlayer.setBytes(table.getItems().get(index).getRecord());
         Thread thread = new Thread(flacPlayer::play);
         thread.start();
     }
@@ -445,7 +445,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
                 String outputFileName = createOutputFileName(directory.get(), item);
                 try {
                     FileOutputStream out = new FileOutputStream(outputFileName);
-                    out.write(item.getRecord().getBytes());
+                    out.write(item.getRecord());
                     out.close();
                 } catch (IOException e) {
                     String msg = resourceBundle.getString(UNABLE_WRITE_FILE) + outputFileName;
@@ -472,7 +472,7 @@ public class Buttons<PropertiesType extends PieceProperties, EntityType extends 
         outputFileName.append("_");
         outputFileName.append(item.getSource().getSignature());
         outputFileName.append(".");
-        outputFileName.append(item.getRecord().getDataFormat().toLowerCase());
+        outputFileName.append(item.getRecordFormat().toLowerCase());
 
         return outputFileName.toString();
     }

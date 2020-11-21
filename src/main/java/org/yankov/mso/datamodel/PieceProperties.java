@@ -14,6 +14,7 @@ import java.util.Optional;
 public class PieceProperties implements PropertyChangeListener {
 
     private static final String PROPERTY_NAME_FILE = "file";
+    private static final String FLAC = "FLAC";
 
     private final SimpleObjectProperty<Integer> id;
     private final SimpleStringProperty title;
@@ -27,7 +28,8 @@ public class PieceProperties implements PropertyChangeListener {
     private final SimpleStringProperty note;
     private final SimpleObjectProperty<Source> source;
     private final SimpleObjectProperty<File> file;
-    private final SimpleObjectProperty<Record> record;
+    private final SimpleObjectProperty<byte[]> record;
+    private final SimpleStringProperty recordFormat;
 
     private final PropertyChangeSupport propertyChangeSupport;
 
@@ -45,6 +47,7 @@ public class PieceProperties implements PropertyChangeListener {
         this.source = new SimpleObjectProperty<>();
         this.file = new SimpleObjectProperty<>();
         this.record = new SimpleObjectProperty<>();
+        this.recordFormat = new SimpleStringProperty();
 
         this.propertyChangeSupport = new PropertyChangeSupport(this);
         this.propertyChangeSupport.addPropertyChangeListener(this);
@@ -148,20 +151,31 @@ public class PieceProperties implements PropertyChangeListener {
         propertyChangeSupport.firePropertyChange(PROPERTY_NAME_FILE, oldValue, file);
     }
 
-    public Record getRecord() {
+    public byte[] getRecord() {
         return record.get();
     }
 
-    public void setRecord(Record record) {
+    public void setRecord(byte[] record) {
         this.record.set(record);
+    }
+
+    public String getRecordFormat() {
+        return recordFormat.get();
+    }
+
+    public void setRecordFormat(String recordFormat) {
+        this.recordFormat.set(recordFormat);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         FlacProcessor flacProcessor = new FlacProcessor(file.get());
         flacProcessor.detectDuration().ifPresent(this::setDuration);
-        Optional<Record> record = flacProcessor.loadRecordFromFile();
-        record.ifPresent(this::setRecord);
+        Optional<byte[]> record = flacProcessor.loadRecordFromFile();
+        if (record.isPresent()) {
+            setRecord(record.get());
+            setRecordFormat(FLAC);
+        }
     }
 
 }

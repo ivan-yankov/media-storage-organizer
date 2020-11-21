@@ -41,8 +41,13 @@ public class Piece {
     @OneToOne(cascade = CascadeType.ALL)
     private Source source;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Record record;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "record")
+    private byte[] record;
+
+    @Column(name = "record_format")
+    private String recordFormat;
 
     public Piece() {
     }
@@ -131,12 +136,19 @@ public class Piece {
         this.source = source;
     }
 
-    public Record getRecord() {
+    public byte[] getRecord() {
         return record;
     }
 
-    public void setRecord(Record record) {
+    public void setRecord(byte[] record) {
         this.record = record;
     }
 
+    public String getRecordFormat() {
+        return recordFormat;
+    }
+
+    public void setRecordFormat(String recordFormat) {
+        this.recordFormat = recordFormat;
+    }
 }
