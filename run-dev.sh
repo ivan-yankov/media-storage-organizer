@@ -1,7 +1,4 @@
-VERSION='1.9'
+VERSION='2.0'
 DB=testdb
 
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
-export JRE_HOME=$JAVA_HOME/jre
-
-$JAVA_HOME/bin/java -Xms2G -Xmx6G -jar target/media-storage-organizer-$VERSION.jar --db-url jdbc:derby:$DB
+java -Xms2G -Xmx6G -jar target/scala-2.12/media-storage-organizer-assembly-$VERSION.jar #--db-url jdbc:derby:$DB
