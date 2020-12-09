@@ -40,7 +40,7 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     },
     new Button {
       id = Resources.ControlIds.btnClone
-      tooltip = new Tooltip(Resources.ToolbarButtons.cln)
+      tooltip = new Tooltip(Resources.ToolbarButtons._clone)
       graphic = getIcon("clone")
       onAction = handlers.cln
     },

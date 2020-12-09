@@ -1,14 +1,16 @@
 package org.yankov.mso.application
 
-import org.yankov.mso.application.ui.UiModel.ApplicationSettings
+import org.yankov.mso.application.model.UiModel.ApplicationSettings
+import org.yankov.mso.application.ui.console.ApplicationConsole
+import org.yankov.mso.application.ui.table.FolkloreTrackTable
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
-import org.yankov.mso.application.ui.{FolkloreTrackTable, FxUtils, Resources}
+import org.yankov.mso.application.ui.{FxUtils, Resources}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane, ToolBar}
-import scalafx.scene.layout.{BorderPane, Pane, Priority, VBox}
+import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
 object MediaStorageOrganizer extends JFXApp {
   stage = new PrimaryStage {
@@ -24,16 +26,10 @@ object MediaStorageOrganizer extends JFXApp {
 
     scene = new Scene {
       root = new BorderPane {
-        padding = Insets(25)
         center = tabPane
-        bottom = console
+        bottom = ApplicationConsole.container
       }
     }
-  }
-
-  private def console: Pane = {
-    ApplicationConsole.getInstance.layout
-    ApplicationConsole.getInstance.getContainer
   }
 
   private def tabPane: TabPane = {
@@ -43,17 +39,15 @@ object MediaStorageOrganizer extends JFXApp {
     val inputTab = new VBox {
       children = Seq(
         new ToolBar {
-          items = ToolbarButtons(FolkloreToolbarButtonHandlers()).inputTabButtons
+//          items = ToolbarButtons(FolkloreToolbarButtonHandlers()).inputTabButtons
         },
         table.container
       )
     }
 
-    val inputArtifactsTab = new FolkloreInputArtifactsTab();
-    inputArtifactsTab.layout();
+//    val inputArtifactsTab = ???
 
-    val searchTab = new FolkloreSearchTab();
-    searchTab.layout();
+//    val searchTab = ???
 
     new TabPane {
       tabs = Seq(
@@ -67,13 +61,13 @@ object MediaStorageOrganizer extends JFXApp {
           id = Resources.ControlIds.inputArtifactsTab
           text = Resources.MainForm.inputArtifactsTab
           closable = false
-          content = inputArtifactsTab
+//          content = inputArtifactsTab
         },
         new Tab {
           id = Resources.ControlIds.searchTab
           text = Resources.MainForm.searchTab
           closable = false
-          content = searchTab
+//          content = searchTab
         }
       )
     }
