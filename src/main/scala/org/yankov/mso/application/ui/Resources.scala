@@ -47,7 +47,7 @@ object Resources {
   object ToolbarButtons {
     val add: String = "Добавяне"
     val remove: String = "Премахване"
-    val cln: String = "Клониране"
+    val _clone: String = "Клониране"
     val copyProperties: String = "Копиране на атрибути"
     val applyProperties: String = "Поставяне на атрибути"
     val importFromClipboard: String = "Въвеждане на заглавия от клипборд"
@@ -59,5 +59,20 @@ object Resources {
     val upload: String = "Добавяне в базата данни"
     val update: String = "Запис"
     val export: String = "Експорт"
+  }
+
+  object TableColumns {
+    val title: String = "Заглавие"
+    val performer: String = "Изпълнител"
+    val accompanimentPerformer: String = "Съпровод"
+    val author: String = "Автор"
+    val arrangementAuthor: String = "Обработка"
+    val conductor: String = "Диригент"
+    val soloist: String = "Солист"
+    val duration: String = "Време"
+    val source: String = "Източник"
+    val ethnographicRegion: String = "Област"
+    val file: String = "Файл"
+    val note: String = "Забележка"
   }
 }
