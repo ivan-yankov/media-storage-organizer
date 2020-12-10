@@ -7,9 +7,8 @@ import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, To
 import org.yankov.mso.application.ui.{FxUtils, Resources}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
-import scalafx.geometry.Insets
 import scalafx.scene.Scene
-import scalafx.scene.control.{Tab, TabPane, ToolBar}
+import scalafx.scene.control.{Button, Tab, TabPane, ToolBar}
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
 object MediaStorageOrganizer extends JFXApp {
@@ -32,16 +31,20 @@ object MediaStorageOrganizer extends JFXApp {
     }
   }
 
+  lazy val inputTable: FolkloreTrackTable = FolkloreTrackTable(true)
+  lazy val searchTable: FolkloreTrackTable = FolkloreTrackTable(false)
+
+  lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
+
   private def tabPane: TabPane = {
-    val table = FolkloreTrackTable(true)
-    VBox.setVgrow(table.container, Priority.Always)
+    VBox.setVgrow(inputTable.container, Priority.Always)
 
     val inputTab = new VBox {
       children = Seq(
         new ToolBar {
-//          items = ToolbarButtons(FolkloreToolbarButtonHandlers()).inputTabButtons
+          items = toolbarButtons.inputTabButtons
         },
-        table.container
+        inputTable.container
       )
     }
 

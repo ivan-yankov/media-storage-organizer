@@ -13,7 +13,7 @@ import scalafx.scene.layout.StackPane
 case class FolkloreTrackTable(inputTable: Boolean) {
   private val tableFont = CustomFont(SansSerif, NormalStyle, NormalWeight, 12)
 
-  private val table = new TableView[FolkloreTrackProperties] {
+  val table: TableView[FolkloreTrackProperties] = new TableView[FolkloreTrackProperties] {
     editable = false
     selectionModel.value.setSelectionMode(if (inputTable) SelectionMode.Single else SelectionMode.Multiple)
 
@@ -88,7 +88,7 @@ case class FolkloreTrackTable(inputTable: Boolean) {
 
     val fileColumn = new TableColumn[FolkloreTrackProperties, String] {
       text = Resources.TableColumns.file
-      cellValueFactory = {_.value.file}
+      cellValueFactory = {_.value.fileName}
     }
 
     if (inputTable) columns ++ List(fileColumn)

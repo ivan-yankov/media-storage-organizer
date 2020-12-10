@@ -47,7 +47,7 @@ object Resources {
   object ToolbarButtons {
     val add: String = "Добавяне"
     val remove: String = "Премахване"
-    val _clone: String = "Клониране"
+    val cloneItems: String = "Клониране"
     val copyProperties: String = "Копиране на атрибути"
     val applyProperties: String = "Поставяне на атрибути"
     val importFromClipboard: String = "Въвеждане на заглавия от клипборд"
@@ -58,7 +58,7 @@ object Resources {
     val stop: String = "Стоп"
     val upload: String = "Добавяне в базата данни"
     val update: String = "Запис"
-    val export: String = "Експорт"
+    val exportItems: String = "Експорт"
   }
 
   object TableColumns {
@@ -74,5 +74,14 @@ object Resources {
     val ethnographicRegion: String = "Област"
     val file: String = "Файл"
     val note: String = "Забележка"
+  }
+
+  object LogMessages {
+    val uploadStarted: String = "Запис в база данни - начало"
+    val uploadCompleted: String = "Запис в база данни - край"
+    val unableWriteFile: String = "Неуспешен запис на файл"
+    val errorUpdateDataModel: String = "Неуспешно обновяване на данни"
+    val exportStarted: String = "Експорт на файлове - начало"
+    val exportCompleted: String = "Експорт на файлове - край"
   }
 }

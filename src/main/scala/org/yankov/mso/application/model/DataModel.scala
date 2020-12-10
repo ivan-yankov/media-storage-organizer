@@ -50,4 +50,21 @@ object DataModel {
   def emptyArtist: Artist = Artist(-1, "", Option.empty, Option.empty, List())
 
   def emptyEthnographicRegion: EthnographicRegion = EthnographicRegion(-1, "")
+
+  def emptyFolkloreTrack: FolkloreTrack = FolkloreTrack(
+    id = -1,
+    title = "",
+    performer = Option.empty,
+    accompanimentPerformer = Option.empty,
+    author = Option.empty,
+    arrangementAuthor = Option.empty,
+    conductor = Option.empty,
+    soloist = Option.empty,
+    duration = Duration.ZERO,
+    note = Option.empty,
+    source = Option.empty,
+    ethnographicRegion = Option.empty,
+    record = Array(),
+    recordFormat = "FLAC"
+  )
 }

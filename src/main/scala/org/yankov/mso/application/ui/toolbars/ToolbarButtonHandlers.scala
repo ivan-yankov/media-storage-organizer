@@ -1,31 +1,31 @@
 package org.yankov.mso.application.ui.toolbars
 
-import javafx.event.{ActionEvent, EventHandler}
+import javafx.event.ActionEvent
 
 trait ToolbarButtonHandlers {
-  def update: EventHandler[ActionEvent]
+  def updateDatabase(event: ActionEvent): Unit
 
-  def export: EventHandler[ActionEvent]
+  def exportItems(event: ActionEvent): Unit
 
-  def loadTracks: EventHandler[ActionEvent]
+  def loadTracks(event: ActionEvent): Unit
 
-  def clear: EventHandler[ActionEvent]
+  def clearTable(event: ActionEvent): Unit
 
-  def importFromClipboard: EventHandler[ActionEvent]
+  def importFromClipboard(event: ActionEvent): Unit
 
-  def applyProperties: EventHandler[ActionEvent]
+  def applyProperties(event: ActionEvent): Unit
 
-  def copyProperties: EventHandler[ActionEvent]
+  def copyProperties(event: ActionEvent): Unit
 
-  def cln: EventHandler[ActionEvent]
+  def cloneItem(event: ActionEvent): Unit
 
-  def remove: EventHandler[ActionEvent]
+  def removeItem(event: ActionEvent): Unit
 
-  def add: EventHandler[ActionEvent]
+  def addItem(event: ActionEvent): Unit
 
-  def upload: EventHandler[ActionEvent]
+  def upload(event: ActionEvent): Unit
 
-  def playStop: EventHandler[ActionEvent]
+  def playStop(event: ActionEvent): Unit
 
-  def editTrack: EventHandler[ActionEvent]
+  def editTrack(event: ActionEvent): Unit
 }
