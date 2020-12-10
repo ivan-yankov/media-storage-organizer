@@ -1,5 +1,6 @@
 package org.yankov.mso.application.model
 
+import java.io.File
 import java.time.Duration
 
 import org.yankov.mso.application.converters.DurationConverter
@@ -30,7 +31,7 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class FolkloreTrackProperties(folkloreTrack: FolkloreTrack) {
+  case class FolkloreTrackProperties(folkloreTrack: FolkloreTrack, file: Option[File]) {
     val id: StringProperty = StringProperty(folkloreTrack.id.toString)
     val title: StringProperty = StringProperty(folkloreTrack.title)
     val performer: StringProperty = StringProperty(folkloreTrack.performer.getOrElse(emptyArtist).name)
@@ -43,7 +44,7 @@ object UiModel {
     val source: StringProperty = StringProperty(printSource(folkloreTrack.source))
     val ethnographicRegion: StringProperty = StringProperty(folkloreTrack.ethnographicRegion.getOrElse(emptyEthnographicRegion).name)
     val note: StringProperty = StringProperty(folkloreTrack.note.getOrElse(""))
-    val file: StringProperty = StringProperty("")
+    val fileName: StringProperty = StringProperty(if (file.isDefined) file.get.getName else "")
 
     private def printDuration(duration: Duration): String =
       "%02d:%02d".format(DurationConverter.toMinutesPart(duration), DurationConverter.toSecondsPart(duration))
