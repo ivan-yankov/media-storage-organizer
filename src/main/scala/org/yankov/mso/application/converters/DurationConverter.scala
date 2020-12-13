@@ -11,10 +11,10 @@ object DurationConverter {
   private val secondsInHour = 60 * secondsInMinute
   private val millisInSecond = 1000
 
-  def print(duration: Duration): String =
+  def toString(duration: Duration): String =
     formatTemplate.format(toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration))
 
-  def parse(s: String): Duration = {
+  def fromString(s: String): Duration = {
     if (s.isEmpty) Duration.ZERO
     else {
       val elements = s.split(separator)

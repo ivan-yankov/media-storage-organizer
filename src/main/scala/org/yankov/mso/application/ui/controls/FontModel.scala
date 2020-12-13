@@ -1,4 +1,4 @@
-package org.yankov.mso.application.ui.table
+package org.yankov.mso.application.ui.controls
 
 import scalafx.scene.text.{Font, FontPosture, FontWeight}
 
