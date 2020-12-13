@@ -1,13 +1,14 @@
 package org.yankov.mso.application.model
 
-import java.io.File
 import java.time.Duration
 
-import org.yankov.mso.application.converters.DurationConverter
-import org.yankov.mso.application.model.DataModel.{FolkloreTrack, Source, emptyArtist, emptyEthnographicRegion}
-import org.yankov.mso.application.ui.Resources
+import org.yankov.mso.application.Resources
+import org.yankov.mso.application.converters.{DurationConverter, StringConverters}
+import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.EmptyValues._
 import scalafx.beans.property.StringProperty
 import scalafx.scene.image.Image
+import scalafx.scene.layout.Pane
 import scalafx.stage.Screen
 
 object UiModel {
@@ -20,7 +21,7 @@ object UiModel {
       new Image(url.toString)
     }
 
-    def getTitle: String = Resources.Stage.title
+    def getTitle: String = Resources.MainForm.title
 
     def getWindowWidth: Double = 1000.0
 
@@ -31,32 +32,29 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class FolkloreTrackProperties(folkloreTrack: FolkloreTrack, file: Option[File]) {
-    val id: StringProperty = StringProperty(folkloreTrack.id.toString)
-    val title: StringProperty = StringProperty(folkloreTrack.title)
-    val performer: StringProperty = StringProperty(folkloreTrack.performer.getOrElse(emptyArtist).name)
-    val accompanimentPerformer: StringProperty = StringProperty(folkloreTrack.accompanimentPerformer.getOrElse(emptyArtist).name)
-    val arrangementAuthor: StringProperty = StringProperty(folkloreTrack.arrangementAuthor.getOrElse(emptyArtist).name)
-    val conductor: StringProperty = StringProperty(folkloreTrack.conductor.getOrElse(emptyArtist).name)
-    val author: StringProperty = StringProperty(folkloreTrack.author.getOrElse(emptyArtist).name)
-    val soloist: StringProperty = StringProperty(folkloreTrack.soloist.getOrElse(emptyArtist).name)
-    val duration: StringProperty = StringProperty(printDuration(folkloreTrack.duration))
-    val source: StringProperty = StringProperty(printSource(folkloreTrack.source))
-    val ethnographicRegion: StringProperty = StringProperty(folkloreTrack.ethnographicRegion.getOrElse(emptyEthnographicRegion).name)
-    val note: StringProperty = StringProperty(folkloreTrack.note.getOrElse(""))
-    val fileName: StringProperty = StringProperty(if (file.isDefined) file.get.getName else "")
+  case class FolkloreTrackProperties(track: FolkloreTrack) {
+    def id: StringProperty = StringProperty(track.id.toString)
+    def title: StringProperty = StringProperty(track.title)
+    def performer: StringProperty = StringProperty(track.performer.getOrElse(emptyArtist).name)
+    def accompanimentPerformer: StringProperty = StringProperty(track.accompanimentPerformer.getOrElse(emptyArtist).name)
+    def arrangementAuthor: StringProperty = StringProperty(track.arrangementAuthor.getOrElse(emptyArtist).name)
+    def conductor: StringProperty = StringProperty(track.conductor.getOrElse(emptyArtist).name)
+    def author: StringProperty = StringProperty(track.author.getOrElse(emptyArtist).name)
+    def soloist: StringProperty = StringProperty(track.soloist.getOrElse(emptyArtist).name)
+    def duration: StringProperty = StringProperty(printDuration(track.duration))
+    def source: StringProperty = StringProperty(StringConverters.sourceToString(track.source))
+    def ethnographicRegion: StringProperty = StringProperty(track.ethnographicRegion.getOrElse(emptyEthnographicRegion).name)
+    def note: StringProperty = StringProperty(track.note)
+    def file: StringProperty = StringProperty(if (track.file.isDefined) track.file.get.getName else "")
 
     private def printDuration(duration: Duration): String =
       "%02d:%02d".format(DurationConverter.toMinutesPart(duration), DurationConverter.toSecondsPart(duration))
+  }
 
-    private def printSource(source: Option[Source]): String = {
-      if (source.isDefined) {
-        val src = source.get
-        if (src.signature.isDefined) src.sourceType.name + "/" + src.signature.get
-        else src.sourceType.name
-      }
-      else ""
-    }
+  trait Control[T] {
+    def getContainer: Pane
+
+    def getValue: T
   }
 
 }

@@ -2,9 +2,11 @@ package org.yankov.mso.application.ui
 
 import java.io.File
 
-import org.yankov.mso.application.{ApplicationContext, MediaStorageOrganizer}
-import scalafx.scene.control.{Alert, ButtonType}
-import scalafx.stage.DirectoryChooser
+import org.yankov.mso.application.{Main, Resources}
+import scalafx.scene.control.{Alert, ButtonType, TableView}
+import scalafx.stage.{DirectoryChooser, FileChooser}
+
+import collection.JavaConverters._
 
 object FxUtils {
   def confirmCloseApplication: Boolean = confirmDialog(Resources.Dialogs.closeApplication)
@@ -14,8 +16,25 @@ object FxUtils {
   def selectDirectory: Option[File] = {
     val directoryChooser = new DirectoryChooser()
     directoryChooser.setTitle(Resources.Dialogs.selectExportDirectory)
-    val file = directoryChooser.showDialog(MediaStorageOrganizer.stage.scene.value.getWindow)
+    val file = directoryChooser.showDialog(Main.stage.scene.value.getWindow)
     if (file != null) Option(file) else Option.empty
+  }
+
+  def selectFlacFiles(singleSelection: Boolean): Option[List[File]] = {
+    val fileChooser = new FileChooser()
+    fileChooser.setTitle(Resources.Dialogs.selectAudioFiles)
+    fileChooser.getExtensionFilters.add(
+      new FileChooser.ExtensionFilter(Resources.Dialogs.flacFilterName, Resources.Dialogs.flacFilterExtension)
+    )
+    if (singleSelection) {
+      val file = fileChooser.showOpenDialog(Main.stage.getScene.getWindow)
+      if (file != null) Option(List(file))
+      else Option.empty
+    }
+    else {
+      val files = fileChooser.showOpenMultipleDialog(Main.stage.getScene.getWindow).asScala.toList
+      if (files != null) Option(files) else Option.empty
+    }
   }
 
   private def confirmDialog(headerText: String): Boolean = {

@@ -1,133 +1,156 @@
 package org.yankov.mso.application.ui.toolbars
 
-import org.yankov.mso.application.ui.Resources
+import org.yankov.mso.application.Resources
 import scalafx.scene.control.{Button, Tooltip}
 import scalafx.scene.image.{Image, ImageView}
 
+object ButtonIds {
+  val btnAdd: String = "atn-add"
+  val btnRemove: String = "btn-remove"
+  val btnClone: String = "btn-clone"
+  val btnCopyProperties: String = "btn-copy-properties"
+  val btnApplyProperties: String = "btn-apply-properties"
+  val btnImportFromClipboard: String = "btn-import-from-clipboard"
+  val btnClear: String = "btn-clean"
+  val btnLoadTracks: String = "btn-load-tracks"
+  val btnEditTrack: String = "btn-edit-trac"
+  val btnPlay: String = "btn-play"
+  val btnUpload: String = "btn-upload"
+  val btnUpdate: String = "btn-update"
+  val btnExport: String = "btn-export"
+}
+
+case class ButtonUserData(atInputTab: Boolean)
+
 case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
   private val iconSize = 32
-  private val atInputTabToolbar: String = "at-input-tab-toolbar"
-  private val atOutputTabToolbar: String = "at-output-tab-toolbar"
 
-  val inputTabButtons: List[Button] = {
-    val buttons = createButtons
-    List(
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnAdd)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnRemove)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnClone)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnCopyProperties)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnApplyProperties)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnImportFromClipboard)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnClear)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnLoadTracks)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnEditProperties)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnPlay)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnUpload))
-    )
-      .map(x => x.get)
-      .map(x => {
-        x.setUserData(atInputTabToolbar)
-        x
-      })
-  }
-
-  val searchTabButtons: List[Button] = {
-    val buttons = createButtons
-    List(
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnEditProperties)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnPlay)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnUpdate)),
-      buttons.find(x => x.id.getValue.equals(Resources.ControlIds.btnExport)),
-    )
-      .map(x => x.get)
-      .map(x => {
-        x.setUserData(atOutputTabToolbar)
-        x
-      })
-  }
-
-  def atInputTabToolbar(button: Button): Boolean = button.getUserData.asInstanceOf[String].equals(atInputTabToolbar)
-
-  private def createButtons: List[Button] = List(
-    new Button {
-      id = Resources.ControlIds.btnEditProperties
-      tooltip = new Tooltip(Resources.ToolbarButtons.editProperties)
-      graphic = getIcon("edit")
-      onAction = x => handlers.editTrack(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnPlay
-      tooltip = new Tooltip(Resources.ToolbarButtons.play)
-      graphic = getIcon("play")
-      onAction = x => handlers.playStop(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnUpload
-      tooltip = new Tooltip(Resources.ToolbarButtons.upload)
-      graphic = getIcon("upload")
-      onAction = x => handlers.upload(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnAdd
-      tooltip = new Tooltip(Resources.ToolbarButtons.add)
-      graphic = getIcon("add")
-      onAction = x => handlers.addItem(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnRemove
-      tooltip = new Tooltip(Resources.ToolbarButtons.remove)
-      graphic = getIcon("remove")
-      onAction = x => handlers.removeItem(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnClone
-      tooltip = new Tooltip(Resources.ToolbarButtons.cloneItems)
-      graphic = getIcon("clone")
-      onAction = x => handlers.cloneItem(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnCopyProperties
-      tooltip = new Tooltip(Resources.ToolbarButtons.copyProperties)
-      graphic = getIcon("copy-properties")
-      onAction = x => handlers.copyProperties(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnApplyProperties
-      tooltip = new Tooltip(Resources.ToolbarButtons.applyProperties)
-      graphic = getIcon("apply-properties")
-      onAction = x => handlers.applyProperties(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnImportFromClipboard
-      tooltip = new Tooltip(Resources.ToolbarButtons.importFromClipboard)
-      graphic = getIcon("import")
-      onAction = x => handlers.importFromClipboard(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnClear
-      tooltip = new Tooltip(Resources.ToolbarButtons.clear)
-      graphic = getIcon("clear")
-      onAction = x => handlers.clearTable(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnLoadTracks
-      tooltip = new Tooltip(Resources.ToolbarButtons.loadTracks)
-      graphic = getIcon("select-files")
-      onAction = x => handlers.loadTracks(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnExport
-      tooltip = new Tooltip(Resources.ToolbarButtons.exportItems)
-      graphic = getIcon("export")
-      onAction = x => handlers.exportItems(x)
-    },
-    new Button {
-      id = Resources.ControlIds.btnUpdate
-      tooltip = new Tooltip(Resources.ToolbarButtons.update)
-      graphic = getIcon("update")
-      onAction = x => handlers.updateDatabase(x)
-    }
+  val inputTabButtons: List[Button] = List(
+    addButton(ButtonUserData(true)),
+    removeButton(ButtonUserData(true)),
+    cloneButton(ButtonUserData(true)),
+    copyPropertiesButton(ButtonUserData(true)),
+    applyPropertiesButton(ButtonUserData(true)),
+    importFromClipboardButton(ButtonUserData(true)),
+    clearButton(ButtonUserData(true)),
+    loadTracksButton(ButtonUserData(true)),
+    editButton(ButtonUserData(true)),
+    playButton(ButtonUserData(true)),
+    uploadButton(ButtonUserData(true))
   )
+
+  val searchTabButtons: List[Button] = List(
+    editButton(ButtonUserData(false)),
+    playButton(ButtonUserData(false)),
+    updateButton(ButtonUserData(false)),
+    exportButton(ButtonUserData(false))
+  )
+
+  def atInputTabToolbar(button: Button): Boolean = button.getUserData.asInstanceOf[ButtonUserData].atInputTab
+
+  private def editButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnEditTrack
+    tooltip = new Tooltip(Resources.ToolbarButtons.editTrack)
+    graphic = getIcon("edit")
+    onAction = _ => handlers.editTrack(data.atInputTab)
+    userData = data
+  }
+
+  private def playButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnPlay
+    tooltip = new Tooltip(Resources.ToolbarButtons.play)
+    graphic = getIcon("play")
+    onAction = _ => handlers.playStop(data.atInputTab)
+    userData = data
+  }
+
+  private def uploadButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnUpload
+    tooltip = new Tooltip(Resources.ToolbarButtons.upload)
+    graphic = getIcon("upload")
+    onAction = _ => handlers.uploadItems(data.atInputTab)
+    userData = data
+  }
+
+  private def addButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnAdd
+    tooltip = new Tooltip(Resources.ToolbarButtons.add)
+    graphic = getIcon("add")
+    onAction = _ => handlers.addItem(data.atInputTab)
+    userData = data
+  }
+
+  private def removeButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnRemove
+    tooltip = new Tooltip(Resources.ToolbarButtons.remove)
+    graphic = getIcon("remove")
+    onAction = _ => handlers.removeItem(data.atInputTab)
+    userData = data
+  }
+
+  private def cloneButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnClone
+    tooltip = new Tooltip(Resources.ToolbarButtons.cloneItems)
+    graphic = getIcon("clone")
+    onAction = _ => handlers.cloneItem(data.atInputTab)
+    userData = data
+  }
+
+  private def copyPropertiesButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnCopyProperties
+    tooltip = new Tooltip(Resources.ToolbarButtons.copyProperties)
+    graphic = getIcon("copy-properties")
+    onAction = _ => handlers.copyProperties(data.atInputTab)
+    userData = data
+  }
+
+  private def applyPropertiesButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnApplyProperties
+    tooltip = new Tooltip(Resources.ToolbarButtons.applyProperties)
+    graphic = getIcon("apply-properties")
+    onAction = _ => handlers.applyProperties(data.atInputTab)
+    userData = data
+  }
+
+  private def importFromClipboardButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnImportFromClipboard
+    tooltip = new Tooltip(Resources.ToolbarButtons.importFromClipboard)
+    graphic = getIcon("import")
+    onAction = _ => handlers.importTitlesFromClipboard(data.atInputTab)
+    userData = data
+  }
+
+  private def clearButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnClear
+    tooltip = new Tooltip(Resources.ToolbarButtons.clear)
+    graphic = getIcon("clear")
+    onAction = _ => handlers.clearTable(data.atInputTab)
+    userData = data
+  }
+
+  private def loadTracksButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnLoadTracks
+    tooltip = new Tooltip(Resources.ToolbarButtons.loadTracks)
+    graphic = getIcon("select-files")
+    onAction = _ => handlers.loadTracks(data.atInputTab)
+    userData = data
+  }
+
+  private def exportButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnExport
+    tooltip = new Tooltip(Resources.ToolbarButtons.exportItems)
+    graphic = getIcon("export")
+    onAction = _ => handlers.exportItems(data.atInputTab)
+    userData = data
+  }
+
+  private def updateButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnUpdate
+    tooltip = new Tooltip(Resources.ToolbarButtons.update)
+    graphic = getIcon("update")
+    onAction = _ => handlers.updateItems(data.atInputTab)
+    userData = data
+  }
 
   private def getIcon(name: String): ImageView = {
     val url = getClass.getResource("/icons/buttons/" + name + ".png")

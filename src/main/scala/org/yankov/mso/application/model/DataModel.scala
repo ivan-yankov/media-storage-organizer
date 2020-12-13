@@ -1,5 +1,6 @@
 package org.yankov.mso.application.model
 
+import java.io.File
 import java.time.Duration
 
 object DataModel {
@@ -8,19 +9,19 @@ object DataModel {
 
   case object Singer extends ArtistMission
 
-  case object InstrumentPlayer
+  case object InstrumentPlayer extends ArtistMission
 
-  case object Composer
+  case object Composer extends ArtistMission
 
-  case object Conductor
+  case object Conductor extends ArtistMission
 
-  case object Orchestra
+  case object Orchestra extends ArtistMission
 
-  case object Choir
+  case object Choir extends ArtistMission
 
-  case object Ensemble
+  case object Ensemble extends ArtistMission
 
-  case object ChamberGroup
+  case object ChamberGroup extends ArtistMission
 
   case class Instrument(id: Int, name: String)
 
@@ -28,7 +29,7 @@ object DataModel {
 
   case class SourceType(id: Int, name: String)
 
-  case class Source(id: Int, sourceType: SourceType, signature: Option[String])
+  case class Source(id: Int, sourceType: Option[SourceType], signature: Option[String])
 
   case class Artist(id: Int, name: String, instrument: Option[Instrument], note: Option[String], missions: List[ArtistMission])
 
@@ -41,30 +42,49 @@ object DataModel {
                            conductor: Option[Artist],
                            soloist: Option[Artist],
                            duration: Duration,
-                           note: Option[String],
+                           note: String,
                            source: Option[Source],
                            ethnographicRegion: Option[EthnographicRegion],
-                           record: Array[Byte],
-                           recordFormat: String)
+                           file: Option[File],
+                           recordFormat: String) {
+    def hasValidId: Boolean = id > 0
 
-  def emptyArtist: Artist = Artist(-1, "", Option.empty, Option.empty, List())
+    def withTitle(newTitle: String): FolkloreTrack = FolkloreTrack(
+      id = id,
+      title = newTitle,
+      performer = performer,
+      accompanimentPerformer = accompanimentPerformer,
+      author = author,
+      arrangementAuthor = arrangementAuthor,
+      conductor = conductor,
+      soloist = soloist,
+      duration = duration,
+      note = note,
+      source = source,
+      ethnographicRegion = ethnographicRegion,
+      file = file,
+      recordFormat = recordFormat
+    )
 
-  def emptyEthnographicRegion: EthnographicRegion = EthnographicRegion(-1, "")
+    def withFile(newFile: Option[File]): FolkloreTrack = FolkloreTrack(
+      id = id,
+      title = title,
+      performer = performer,
+      accompanimentPerformer = accompanimentPerformer,
+      author = author,
+      arrangementAuthor = arrangementAuthor,
+      conductor = conductor,
+      soloist = soloist,
+      duration = duration,
+      note = note,
+      source = source,
+      ethnographicRegion = ethnographicRegion,
+      file = newFile,
+      recordFormat = recordFormat
+    )
+  }
 
-  def emptyFolkloreTrack: FolkloreTrack = FolkloreTrack(
-    id = -1,
-    title = "",
-    performer = Option.empty,
-    accompanimentPerformer = Option.empty,
-    author = Option.empty,
-    arrangementAuthor = Option.empty,
-    conductor = Option.empty,
-    soloist = Option.empty,
-    duration = Duration.ZERO,
-    note = Option.empty,
-    source = Option.empty,
-    ethnographicRegion = Option.empty,
-    record = Array(),
-    recordFormat = "FLAC"
-  )
+  case class Operator(label: String)
+
+  case class Variable[T](label: String)
 }

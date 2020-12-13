@@ -1,17 +1,17 @@
 package org.yankov.mso.application
 
 import org.yankov.mso.application.model.UiModel.ApplicationSettings
+import org.yankov.mso.application.ui.FxUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
-import org.yankov.mso.application.ui.table.FolkloreTrackTable
+import org.yankov.mso.application.ui.controls.FolkloreTrackTable
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
-import org.yankov.mso.application.ui.{FxUtils, Resources}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, Tab, TabPane, ToolBar}
+import scalafx.scene.control.{Tab, TabPane, ToolBar}
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
-object MediaStorageOrganizer extends JFXApp {
+object Main extends JFXApp {
   stage = new PrimaryStage {
     maximized = ApplicationSettings.isMaximized
     width = ApplicationSettings.getWindowWidth
@@ -37,14 +37,14 @@ object MediaStorageOrganizer extends JFXApp {
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
 
   private def tabPane: TabPane = {
-    VBox.setVgrow(inputTable.container, Priority.Always)
+    VBox.setVgrow(inputTable.getContainer, Priority.Always)
 
     val inputTab = new VBox {
       children = Seq(
         new ToolBar {
           items = toolbarButtons.inputTabButtons
         },
-        inputTable.container
+        inputTable.getContainer
       )
     }
 
@@ -55,19 +55,16 @@ object MediaStorageOrganizer extends JFXApp {
     new TabPane {
       tabs = Seq(
         new Tab {
-          id = Resources.ControlIds.inputTab
           text = Resources.MainForm.inputTab
           closable = false
           content = inputTab
         },
         new Tab {
-          id = Resources.ControlIds.inputArtifactsTab
           text = Resources.MainForm.inputArtifactsTab
           closable = false
 //          content = inputArtifactsTab
         },
         new Tab {
-          id = Resources.ControlIds.searchTab
           text = Resources.MainForm.searchTab
           closable = false
 //          content = searchTab

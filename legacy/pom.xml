@@ -15,7 +15,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jvm.test.argLine>-Djavax.persistence.schema-generation.database.action=drop-and-create</jvm.test.argLine>
-        <main.class>org.yankov.mso.application.MediaStorageOrganizer</main.class>
+        <main.class>org.yankov.mso.application.Main</main.class>
         <hibernate.version>5.2.14.Final</hibernate.version>
     </properties>
 

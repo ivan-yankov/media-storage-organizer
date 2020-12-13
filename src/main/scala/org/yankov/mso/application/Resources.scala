@@ -1,31 +1,13 @@
-package org.yankov.mso.application.ui
+package org.yankov.mso.application
+
+import java.time.Duration
+
+import org.yankov.mso.application.converters.DurationConverter
 
 object Resources {
-  object ControlIds {
-    val inputTab: String = "input-tab"
-    val inputArtifactsTab: String = "input-artifacts-tab"
-    val searchTab: String = "search-tab"
-
-    val btnAdd: String = "atn-add"
-    val btnRemove: String = "btn-remove"
-    val btnClone: String = "btn-clone"
-    val btnCopyProperties: String = "btn-copy-properties"
-    val btnApplyProperties: String = "btn-apply-properties"
-    val btnImportFromClipboard: String = "btn-import-from-clipboard"
-    val btnClear: String = "btn-clean"
-    val btnLoadTracks: String = "btn-load-tracks"
-    val btnEditProperties: String = "btn-edit-properties"
-    val btnPlay: String = "btn-play"
-    val btnUpload: String = "btn-upload"
-    val btnUpdate: String = "btn-update"
-    val btnExport: String = "btn-export"
-  }
-
-  object Stage {
-    val title: String = "База данни - българска народна музика"
-  }
 
   object MainForm {
+    val title: String = "База данни - българска народна музика"
     val inputTab: String = "Въвеждане на записи"
     val inputArtifactsTab: String = "Въвеждане на артефакти"
     val searchTab: String = "Справка"
@@ -53,7 +35,7 @@ object Resources {
     val importFromClipboard: String = "Въвеждане на заглавия от клипборд"
     val clear: String = "Изчистване"
     val loadTracks: String = "Избор на файлове"
-    val editProperties: String = "Редактиране"
+    val editTrack: String = "Редактиране"
     val play: String = "Възпроизвеждане"
     val stop: String = "Стоп"
     val upload: String = "Добавяне в базата данни"
@@ -76,12 +58,36 @@ object Resources {
     val note: String = "Забележка"
   }
 
-  object LogMessages {
+  object ConsoleMessages {
     val uploadStarted: String = "Запис в база данни - начало"
     val uploadCompleted: String = "Запис в база данни - край"
     val unableWriteFile: String = "Неуспешен запис на файл"
     val errorUpdateDataModel: String = "Неуспешно обновяване на данни"
     val exportStarted: String = "Експорт на файлове - начало"
     val exportCompleted: String = "Експорт на файлове - край"
+  }
+
+  object Controls {
+    val sourceType: String = "Вид източник"
+    val instrument: String = "Инструмент"
+  }
+
+  object Search {
+    val variable: String = "Категория"
+    val operator: String = "Оператор"
+    val value: String = "Стойност"
+    val search: String = "Търсене"
+    def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
+      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toString(totalDuration)}"
+    val filter: String = "Филтър"
+  }
+
+  object TrackEditor {
+    val title: String = "Редактиране на запис"
+  }
+
+  object FormButtons {
+    val ok: String = "OK"
+    val cancel = "Отказ"
   }
 }
