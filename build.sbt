@@ -7,7 +7,7 @@ scalaVersion := "2.12.4"
 val scalaFxVersion = "8.0.144-R12"
 val slfVersion = "1.7.30"
 
-mainClass in assembly := Some("org.yankov.mso.application.MediaStorageOrganizer")
+mainClass in assembly := Some("org.yankov.mso.application.Main")
 
 libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % scalaFxVersion,
