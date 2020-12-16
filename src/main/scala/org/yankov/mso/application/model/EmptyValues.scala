@@ -3,6 +3,7 @@ package org.yankov.mso.application.model
 import java.time.Duration
 
 import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.SearchModel._
 
 object EmptyValues {
   def emptyInstrument: Instrument = Instrument(-1, "")
@@ -32,7 +33,7 @@ object EmptyValues {
     recordFormat = "FLAC"
   )
 
-  def emptyOperator: Operator = Operator("")
+  def emptyOperator: Operator = Operator("", (_, _) => false)
 
-  def emptyVariable[T]: Variable[T] = Variable("")
+  def emptyVariable[T]: Variable[T] = Variable("", _ => "")
 }

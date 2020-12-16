@@ -5,6 +5,7 @@ import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.{DataModelOperations, FolkloreSearchFactory}
 import org.yankov.mso.application.converters.StringConverters._
 import org.yankov.mso.application.model.EmptyValues._
+import org.yankov.mso.application.model.SearchModel.{Operator, Variable}
 
 object FolkloreControlsFactory {
   def createSourceTypeInput(): LabeledComboBox[Option[SourceType]] = {
@@ -98,11 +99,12 @@ object FolkloreControlsFactory {
     )
   }
 
-  def createSearchVariable(value: Variable[FolkloreTrack]): LabeledComboBox[Variable[FolkloreTrack]] = {
+  def createSearchVariable(): LabeledComboBox[Variable[FolkloreTrack]] = {
+    val variables = FolkloreSearchFactory.createVariables
     LabeledComboBox[Variable[FolkloreTrack]](
       labelText = Resources.Search.variable,
-      cbItems = FolkloreSearchFactory.createVariables,
-      value = value,
+      cbItems = variables,
+      value = variables.head,
       itemToString = variableToString,
       sortItems = false,
       nullable = false,
@@ -110,11 +112,12 @@ object FolkloreControlsFactory {
     )
   }
 
-  def createSearchOperators(value: Operator): LabeledComboBox[Operator] = {
+  def createSearchOperator(): LabeledComboBox[Operator] = {
+    val operators = FolkloreSearchFactory.createOperators
     LabeledComboBox[Operator](
       labelText = Resources.Search.operator,
-      cbItems = FolkloreSearchFactory.createOperators,
-      value = value,
+      cbItems = operators,
+      value = operators.head,
       itemToString = operatorToString,
       sortItems = false,
       nullable = false,

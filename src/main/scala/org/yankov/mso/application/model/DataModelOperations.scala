@@ -12,6 +12,8 @@ object DataModelOperations {
 //    x => DataModelOperations.setRecord(x.track.id, Files.readAllBytes(x.track.file.get.toPath))
   }
 
+  def getTracks: List[FolkloreTrack] = ???
+
   def getSourceTypes: List[SourceType] = ???
 
   def getEthnographicRegions: List[EthnographicRegion] = ???

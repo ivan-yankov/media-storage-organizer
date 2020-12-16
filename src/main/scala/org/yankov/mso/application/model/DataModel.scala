@@ -83,8 +83,4 @@ object DataModel {
       recordFormat = recordFormat
     )
   }
-
-  case class Operator(label: String)
-
-  case class Variable[T](label: String)
 }

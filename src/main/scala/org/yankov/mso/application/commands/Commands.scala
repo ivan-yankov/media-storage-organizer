@@ -148,7 +148,7 @@ object Commands {
     if (selected.isDefined) edit(selected.get)
   }
 
-  def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
+  private def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
     val index = table.getSelectionModel.getSelectedIndex
     if (index < 0) Option.empty
     else Option(index)

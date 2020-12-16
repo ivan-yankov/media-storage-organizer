@@ -4,15 +4,19 @@ import java.time.Duration
 
 object DurationConverter {
   private val separator = ":"
-  private val formatTemplate = "%02d" + separator + "%02d" + separator + "%02d"
+  private val hhMMss = "%d" + separator + "%02d" + separator + "%02d"
+  private val MMss = "%02d" + separator + "%02d"
   private val hoursInDay = 24
   private val minutesInHour = 60
   private val secondsInMinute = 60
   private val secondsInHour = 60 * secondsInMinute
   private val millisInSecond = 1000
 
-  def toString(duration: Duration): String =
-    formatTemplate.format(toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration))
+  def toHourMinSecString(duration: Duration): String =
+    hhMMss.format(toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration))
+
+  def toMinSecString(duration: Duration): String =
+    MMss.format(toMinutesPart(duration), toSecondsPart(duration))
 
   def fromString(s: String): Duration = {
     if (s.isEmpty) Duration.ZERO
@@ -29,9 +33,9 @@ object DurationConverter {
     }
   }
 
-  def toHoursPart(duration: Duration): Long = duration.toHours % hoursInDay
+  private def toHoursPart(duration: Duration): Long = duration.toHours % hoursInDay
 
-  def toMinutesPart(duration: Duration): Long = duration.toMinutes % minutesInHour
+  private def toMinutesPart(duration: Duration): Long = duration.toMinutes % minutesInHour
 
-  def toSecondsPart(duration: Duration): Long = (duration.toMillis / millisInSecond) % secondsInMinute
+  private def toSecondsPart(duration: Duration): Long = (duration.toMillis / millisInSecond) % secondsInMinute
 }
