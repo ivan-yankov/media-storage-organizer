@@ -9,17 +9,26 @@ import org.yankov.mso.application.ui.FxUtils
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
 import scalafx.scene.control.{Button, SelectionMode, TableView}
 
+import scala.collection.JavaConverters._
+
 object Commands {
   private val log = LoggerFactory.getLogger(getClass)
   private val console: ConsoleService = ApplicationConsole
 
-  def updateItems[T](table: TableView[T], updateTrack: T => Unit): Unit = {
+  def updateItems[T](table: TableView[T], updateItems: List[T] => Boolean): Unit = {
     if (FxUtils.confirmOverwrite) {
-      table
+      val items = table
         .getSelectionModel
         .getSelectedItems
-        .forEach(x => updateTrack(x))
-      clearTable(table)
+        .asScala
+        .toList
+
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
+      if (updateItems(items)) {
+        console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+        clearTable(table)
+      }
+      else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
     }
   }
 
@@ -128,11 +137,19 @@ object Commands {
 
   def addItem[T](table: TableView[T], item: T): Unit = table.getItems.add(item)
 
-  def uploadItems[T](table: TableView[T], uploadItem: T => Unit): Unit = {
-    table
+  def uploadItems[T](table: TableView[T], insertItems: List[T] => Boolean): Unit = {
+    val items = table
       .items
       .getValue
-      .forEach(x => uploadItem(x))
+      .asScala
+      .toList
+
+    console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
+    if (insertItems(items)) {
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+      clearTable(table)
+    }
+    else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
   def playStop[T](table: TableView[T], play: T => Unit): Unit = {
