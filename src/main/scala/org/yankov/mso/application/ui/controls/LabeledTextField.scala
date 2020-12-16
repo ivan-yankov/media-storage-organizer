@@ -1,14 +1,16 @@
 package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.model.UiModel.Control
+import scalafx.Includes._
 import scalafx.beans.property.StringProperty
 import scalafx.scene.control.{Label, TextField}
+import scalafx.scene.input.KeyEvent
 import scalafx.scene.layout.{Pane, VBox}
 
 case class LabeledTextField(labelText: String,
                             value: String,
                             validator: Option[String => Boolean] = Option.empty) extends Control[String] {
-  private val textField = new TextField {
+  private val textField: TextField = new TextField {
     editable = true
     text = value
   }
@@ -36,4 +38,6 @@ case class LabeledTextField(labelText: String,
   override def getContainer: Pane = container
 
   override def getValue: String = textField.getText
+
+  def setOnKeyReleased(f: KeyEvent => Unit): Unit = textField.setOnKeyReleased(f)
 }

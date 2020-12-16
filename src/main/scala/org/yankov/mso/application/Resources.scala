@@ -78,7 +78,7 @@ object Resources {
     val value: String = "Стойност"
     val search: String = "Търсене"
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
-      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toString(totalDuration)}"
+      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
     val filter: String = "Филтър"
   }
 

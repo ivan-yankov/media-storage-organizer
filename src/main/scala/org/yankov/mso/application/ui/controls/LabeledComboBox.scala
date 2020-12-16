@@ -7,6 +7,7 @@ import scalafx.scene.layout._
 import scalafx.stage.Popup
 import scalafx.util.StringConverter
 
+
 import scala.collection.JavaConverters._
 
 case class LabeledComboBox[T](labelText: String,

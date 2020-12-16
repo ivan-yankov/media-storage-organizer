@@ -1,6 +1,7 @@
 package org.yankov.mso.application.converters
 
 import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.SearchModel.{Operator, Variable}
 
 object StringConverters {
   def artistToString(x: Option[Artist]): String = if (x.isDefined) x.get.name else ""
