@@ -59,10 +59,10 @@ object Resources {
   }
 
   object ConsoleMessages {
-    val uploadStarted: String = "Запис в база данни - начало"
-    val uploadCompleted: String = "Запис в база данни - край"
-    val unableWriteFile: String = "Неуспешен запис на файл"
-    val errorUpdateDataModel: String = "Неуспешно обновяване на данни"
+    val uploadStarted: String = "Обновяване на база данни - начало"
+    val uploadSuccessful: String = "Обновяване на база данни - край"
+    val uploadFailed: String = "Неуспешно обновяване на база данни"
+    val unableWriteFile: String = "Неуспешен експорт на файл"
     val exportStarted: String = "Експорт на файлове - начало"
     val exportCompleted: String = "Експорт на файлове - край"
   }

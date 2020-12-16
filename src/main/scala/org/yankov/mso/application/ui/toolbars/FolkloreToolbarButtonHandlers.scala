@@ -20,7 +20,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def updateItems(targetInputTab: Boolean): Unit = {
     Commands.updateItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => DataModelOperations.updateTrack(x.track),
+      x => DataModelOperations.updateTracks(x.map(y => y.track)),
     )
   }
 
@@ -111,7 +111,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def uploadItems(targetInputTab: Boolean): Unit = {
     Commands.uploadItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => DataModelOperations.insertTrack(x.track)
+      x => DataModelOperations.insertTracks(x.map(y => y.track))
     )
   }
 

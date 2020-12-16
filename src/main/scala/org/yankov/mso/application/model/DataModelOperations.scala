@@ -5,11 +5,12 @@ import java.nio.file.Files
 import org.yankov.mso.application.model.DataModel._
 
 object DataModelOperations {
-  def insertTrack(track: FolkloreTrack): Unit = ???
+  def insertTracks(tracks: List[FolkloreTrack]): Boolean = ???
 
-  def updateTrack(track: FolkloreTrack): Unit = {
+  def updateTracks(tracks: List[FolkloreTrack]): Boolean = {
 //    x => x.track.file.isDefined && x.track.hasValidId,
 //    x => DataModelOperations.setRecord(x.track.id, Files.readAllBytes(x.track.file.get.toPath))
+    ???
   }
 
   def getTracks: List[FolkloreTrack] = ???
