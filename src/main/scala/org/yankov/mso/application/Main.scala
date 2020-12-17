@@ -1,8 +1,9 @@
 package org.yankov.mso.application
 
+import org.slf4j.LoggerFactory
 import org.yankov.mso.application.commands.SearchEngine
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.DataModelOperations
+import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.SearchModel.Filter
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
 import org.yankov.mso.application.ui.FxUtils
@@ -35,6 +36,9 @@ object Main extends JFXApp {
     }
   }
 
+  private lazy val log = LoggerFactory.getLogger(getClass)
+
+  lazy val dataManager: DataManager = createDataManager
   lazy val inputTable: FolkloreTrackTable = FolkloreTrackTable(true)
   lazy val searchTable: FolkloreTrackTable = FolkloreTrackTable(false)
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
@@ -43,6 +47,28 @@ object Main extends JFXApp {
     () => FolkloreControlsFactory.createSearchOperator(),
     x => search(x)
   )
+
+  private def createDataManager: DataManager = {
+    getApplicationArgument(Resources.ApplicationArguments.databaseConnectionString) match {
+      case Some(value) => DataManager(value)
+      case None =>
+        log.error(s"Missing application argument [${Resources.ApplicationArguments.databaseConnectionString}]. Unable to connect database.")
+        DataManager("")
+    }
+  }
+
+  private def getApplicationArgument(argument: String): Option[String] = {
+    parameters
+      .raw
+      .find(x => x.startsWith(argument)) match {
+      case Some(value) =>
+        val c = value.split("=")
+        if (c.length == 2) Option(c(1))
+        else Option.empty
+      case None =>
+        Option.empty
+    }
+  }
 
   private def tabPane: TabPane = {
     VBox.setVgrow(inputTable.getContainer, Priority.Always)
@@ -95,7 +121,7 @@ object Main extends JFXApp {
 
   private def search(filters: List[Filter[FolkloreTrack]]): Unit = {
     val searcher = SearchEngine[FolkloreTrack](
-      DataModelOperations.getTracks,
+      dataManager.getTracks,
       (x, y) => x.id < y.id,
       x => x.duration
     )

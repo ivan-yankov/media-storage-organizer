@@ -1,10 +1,16 @@
 package org.yankov.mso.application.model
 
+import java.beans.{PropertyChangeListener, PropertyChangeSupport}
 import java.nio.file.Files
 
 import org.yankov.mso.application.model.DataModel._
 
-object DataModelOperations {
+case class DataManager(dbConnectionString: String) {
+  private val dataModelChangeSupport = new PropertyChangeSupport()
+
+  def addPropertyChangeListener(listener: PropertyChangeListener): Unit =
+    dataModelChangeSupport.addPropertyChangeListener(listener)
+
   def insertTracks(tracks: List[FolkloreTrack]): Boolean = ???
 
   def updateTracks(tracks: List[FolkloreTrack]): Boolean = {

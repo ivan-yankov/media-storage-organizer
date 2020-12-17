@@ -1,12 +1,11 @@
 package org.yankov.mso.application.ui.controls
 
-import scalafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyEvent}
 import org.yankov.mso.application.model.UiModel.Control
+import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.stage.Popup
 import scalafx.util.StringConverter
-
 
 import scala.collection.JavaConverters._
 
