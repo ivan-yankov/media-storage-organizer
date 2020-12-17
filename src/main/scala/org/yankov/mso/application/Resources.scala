@@ -6,6 +6,10 @@ import org.yankov.mso.application.converters.DurationConverter
 
 object Resources {
 
+  object ApplicationArguments {
+    val databaseConnectionString: String = "--db-connection-string"
+  }
+
   object MainForm {
     val title: String = "База данни - българска народна музика"
     val inputTab: String = "Въвеждане на записи"
@@ -89,5 +93,32 @@ object Resources {
   object FormButtons {
     val ok: String = "OK"
     val cancel = "Отказ"
+  }
+
+  object Artifacts {
+    val existingArtifacts: String = "Съществуващи артефакти"
+    val btnAddArtifact: String = "Добавяне"
+    val btnUpdateArtifact: String = "Запис"
+    val artifactExists: String = "Артефакт с такава дефиниция вече съществува"
+    val noSelectedArtifact: String = "Не е избран съществуващ артефакт"
+    val artifactAdded: String = "Артефактът е добавен"
+    val artifactUpdated: String = "Артефактът е обновен"
+  }
+
+  object ArtistArtifacts {
+    val artistName: String = "Име на артист"
+    val note: String = "Забележка"
+    val missions: String = "Роли"
+    val singer: String = "Певец"
+    val instrumentPlayer: String = "Инструменталист"
+    val composer: String = "Композитор"
+    val conductor: String = "Диригент"
+    val orchestra: String = "Оркестър"
+    val choir: String = "Хор"
+    val ensemble: String = "Ансамбъл"
+    val chamberGroup: String = "Камерна група"
+    val artistNameUndefined: String = "Не е въведено име на артист"
+    val artistInstrumentUndefined: String ="Избрана е роля 'инструменталист', но не е посочен инструмент"
+    val noArtistMissionSelected: String = "Не е избрана нито една роля"
   }
 }

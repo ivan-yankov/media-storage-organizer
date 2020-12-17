@@ -1,15 +1,17 @@
 package org.yankov.mso.application.ui.controls
 
-import org.yankov.mso.application.Resources
-import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.{DataModelOperations, FolkloreSearchFactory}
 import org.yankov.mso.application.converters.StringConverters._
+import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.EmptyValues._
+import org.yankov.mso.application.model.FolkloreSearchFactory
 import org.yankov.mso.application.model.SearchModel.{Operator, Variable}
+import org.yankov.mso.application.{Main, Resources}
 
 object FolkloreControlsFactory {
+  private val dataManager = Main.dataManager
+
   def createSourceTypeInput(): LabeledComboBox[Option[SourceType]] = {
-    val sourceTypes = DataModelOperations.getSourceTypes.map(x => Option(x))
+    val sourceTypes = dataManager.getSourceTypes.map(x => Option(x))
     LabeledComboBox[Option[SourceType]](
       labelText = Resources.Controls.sourceType,
       cbItems = sourceTypes,
@@ -82,7 +84,7 @@ object FolkloreControlsFactory {
   def createEthnographicRegion(value: Option[EthnographicRegion]): LabeledComboBox[Option[EthnographicRegion]] = {
     LabeledComboBox[Option[EthnographicRegion]](
       labelText = Resources.TableColumns.ethnographicRegion,
-      cbItems = DataModelOperations.getEthnographicRegions.map(x => Option(x)),
+      cbItems = dataManager.getEthnographicRegions.map(x => Option(x)),
       value = value,
       itemToString = ethnographicRegionToString,
       emptyValue = Option(Option(emptyEthnographicRegion))
@@ -92,7 +94,7 @@ object FolkloreControlsFactory {
   def createSource(value: Option[Source]): LabeledComboBox[Option[Source]] = {
     LabeledComboBox[Option[Source]](
       labelText = Resources.TableColumns.source,
-      cbItems = DataModelOperations.getSources.map(x => Option(x)),
+      cbItems = dataManager.getSources.map(x => Option(x)),
       value = value,
       itemToString = sourceToString,
       emptyValue = Option(Option(emptySource))
@@ -128,7 +130,7 @@ object FolkloreControlsFactory {
   def createInstrument(): LabeledComboBox[Option[Instrument]] = {
     LabeledComboBox[Option[Instrument]](
       labelText = Resources.Controls.instrument,
-      cbItems = DataModelOperations.getInstruments.map(x => Option(x)),
+      cbItems = dataManager.getInstruments.map(x => Option(x)),
       value = Option(emptyInstrument),
       itemToString = instrumentToString,
       emptyValue = Option(Option(emptyInstrument))
@@ -136,7 +138,7 @@ object FolkloreControlsFactory {
   }
 
   private def filterArtists(missions: List[ArtistMission]): List[Option[Artist]] = {
-    DataModelOperations
+    dataManager
       .getArtists
       .filter(x => x.missions.intersect(missions).nonEmpty)
       .map(x => Option(x))

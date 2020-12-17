@@ -5,7 +5,7 @@ import java.io.File
 import org.yankov.mso.application.Main
 import org.yankov.mso.application.commands.Commands
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.DataModelOperations
+import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.EmptyValues._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.media.Player
@@ -16,11 +16,12 @@ import scalafx.scene.input.{Clipboard, DataFormat}
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private var copiedProperties: Option[FolkloreTrackProperties] = Option.empty
+  private val dataManager = Main.dataManager
 
   override def updateItems(targetInputTab: Boolean): Unit = {
     Commands.updateItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => DataModelOperations.updateTracks(x.map(y => y.track)),
+      x => dataManager.updateTracks(x.map(y => y.track)),
     )
   }
 
@@ -28,7 +29,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
     Commands.exportItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
       (x, y) => createOutputFileName(x, y.track),
-      x => DataModelOperations.getRecord(x.track.id)
+      x => dataManager.getRecord(x.track.id)
     )
   }
 
@@ -111,7 +112,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def uploadItems(targetInputTab: Boolean): Unit = {
     Commands.uploadItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => DataModelOperations.insertTracks(x.map(y => y.track))
+      x => dataManager.insertTracks(x.map(y => y.track))
     )
   }
 
