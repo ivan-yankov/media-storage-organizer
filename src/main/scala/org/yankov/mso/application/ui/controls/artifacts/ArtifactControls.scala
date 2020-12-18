@@ -2,6 +2,7 @@ package org.yankov.mso.application.ui.controls.artifacts
 
 import java.beans.{PropertyChangeEvent, PropertyChangeListener}
 
+import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
 import org.yankov.mso.application.{Main, Resources}
 import scalafx.geometry.Insets
@@ -11,9 +12,9 @@ import scalafx.scene.layout.{HBox, Pane, VBox}
 abstract class ArtifactControls[T](containerId: String) extends PropertyChangeListener {
   protected def validateUserInput(): Boolean
 
-  protected def updateArtifact(artifact: T): Unit
-
   protected def createArtifact(): Boolean
+
+  protected def updateArtifact(artifact: T): Unit
 
   protected def cleanup(): Unit
 
@@ -28,6 +29,8 @@ abstract class ArtifactControls[T](containerId: String) extends PropertyChangeLi
   protected val whiteSpace: Double = 20.0
 
   protected val console: ConsoleService = ApplicationConsole
+
+  protected val dataManager: DataManager = Main.dataManager
 
   private val existingArtifactsLabel = new Label {
     text = Resources.Artifacts.existingArtifacts
@@ -80,10 +83,14 @@ abstract class ArtifactControls[T](containerId: String) extends PropertyChangeLi
     )
   }
 
+  init()
+
   override def propertyChange(propertyChangeEvent: PropertyChangeEvent): Unit = refreshExistingArtifacts()
 
-  def initialize(): Unit = {
-    Main.dataManager.addPropertyChangeListener(this)
+  def getContainer: Pane = container
+
+  private def init(): Unit = {
+    dataManager.addPropertyChangeListener(this)
 
     existingArtifacts
       .selectionModel
@@ -97,8 +104,6 @@ abstract class ArtifactControls[T](containerId: String) extends PropertyChangeLi
 
     refreshExistingArtifacts()
   }
-
-  def getContainer: Pane = container
 
   private def handleBtnAdd(): Unit = {
     if (validateUserInput()) {
@@ -118,7 +123,6 @@ abstract class ArtifactControls[T](containerId: String) extends PropertyChangeLi
       }
       else {
         updateArtifact(existingArtifacts.getItems.get(selectedIndex))
-        refreshExistingArtifacts()
         console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdated)
       }
     }

@@ -2,12 +2,11 @@ package org.yankov.mso.application.ui.controls
 
 import java.io.File
 
-import org.yankov.mso.application.model.UiModel.Control
 import org.yankov.mso.application.ui.FxUtils
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.layout.{HBox, Pane, Priority, VBox}
 
-case class FileSelector(labelText: String, file: Option[File]) extends Control[Option[File]] {
+case class FileSelector(labelText: String, file: Option[File]) {
   private val textField = new TextField {
     editable = false
     text = if (file.isDefined) file.get.getName else ""
@@ -46,9 +45,9 @@ case class FileSelector(labelText: String, file: Option[File]) extends Control[O
     }
   }
 
-  override def getContainer: Pane = container
+  def getContainer: Pane = container
 
-  override def getValue: Option[File] = {
+  def getValue: Option[File] = {
     if (textField.getUserData != null) Option(textField.getUserData.asInstanceOf[File])
     else Option.empty
   }

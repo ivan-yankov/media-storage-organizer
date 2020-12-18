@@ -6,7 +6,7 @@ import java.nio.file.Files
 import org.yankov.mso.application.model.DataModel._
 
 case class DataManager(dbConnectionString: String) {
-  private val dataModelChangeSupport = new PropertyChangeSupport()
+  private val dataModelChangeSupport = new PropertyChangeSupport(this)
 
   def addPropertyChangeListener(listener: PropertyChangeListener): Unit =
     dataModelChangeSupport.addPropertyChangeListener(listener)
@@ -23,11 +23,27 @@ case class DataManager(dbConnectionString: String) {
 
   def getSourceTypes: List[SourceType] = ???
 
+  def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = ???
+
+  def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Unit = ???
+
   def getEthnographicRegions: List[EthnographicRegion] = ???
+
+  def insertSource(source: Source): Boolean = ???
+
+  def updateSource(source: Source): Unit = ???
 
   def getSources: List[Source] = ???
 
+  def insertInstrument(instrument: Instrument): Boolean = ???
+
+  def updateInstrument(instrument: Instrument): Unit = ???
+
   def getInstruments: List[Instrument] = ???
+
+  def insertArtist(artist: Artist): Boolean = ???
+
+  def updateArtist(artist: Artist): Unit = ???
 
   def getArtists: List[Artist] = ???
 
