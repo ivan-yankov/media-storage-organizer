@@ -105,7 +105,22 @@ object Resources {
     val artifactUpdated: String = "Артефактът е обновен"
   }
 
-  object ArtistArtifacts {
+  object Sources {
+    val signature: String = "Сигнатура"
+    val signatureUndefined: String = "Не е въведена сигнатура"
+  }
+
+  object EthnographicRegions {
+    val name: String = "Название"
+    val nameUndefined: String = "Не е въведено название"
+  }
+
+  object Instruments {
+    val instrument: String = "Название"
+    val instrumentNameUndefined: String = "Не е въведено название на инструмент"
+  }
+
+  object Artists {
     val artistName: String = "Име на артист"
     val note: String = "Забележка"
     val missions: String = "Роли"
@@ -121,4 +136,13 @@ object Resources {
     val artistInstrumentUndefined: String ="Избрана е роля 'инструменталист', но не е посочен инструмент"
     val noArtistMissionSelected: String = "Не е избрана нито една роля"
   }
+
+  object ArtifactsTab {
+    val artifactType: String = "Вид артефакт"
+    val source: String = "Източник"
+    val instrument: String = "Инструмент"
+    val artist: String = "Артист"
+    val ethnographicRegion: String = "Етнографска област"
+  }
+
 }

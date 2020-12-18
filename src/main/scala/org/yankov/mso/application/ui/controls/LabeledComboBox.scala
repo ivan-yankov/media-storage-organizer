@@ -1,7 +1,7 @@
 package org.yankov.mso.application.ui.controls
 
+import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.scene.input.{KeyCode, KeyEvent}
-import org.yankov.mso.application.model.UiModel.Control
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.stage.Popup
@@ -16,7 +16,7 @@ case class LabeledComboBox[T](labelText: String,
                               isEditable: Boolean = false,
                               sortItems: Boolean = true,
                               nullable: Boolean = true,
-                              emptyValue: Option[T]) extends Control[T] {
+                              emptyValue: Option[T]) {
   private val comboBox = {
     val cb = new ComboBox[T] {
       editable = isEditable
@@ -59,11 +59,20 @@ case class LabeledComboBox[T](labelText: String,
     )
   }
 
-  override def getContainer: Pane = container
+  def getContainer: Pane = container
 
-  override def getValue: T = comboBox.getValue
+  def getValue: T = comboBox.getValue
 
-  private def setValue(value: T): Unit = comboBox.setValue(value)
+  def setValue(value: T): Unit = comboBox.setValue(value)
+
+  def setDisable(flag: Boolean): Unit = comboBox.setDisable(flag)
+
+  def setOnSelect(f: T => Unit): Unit = {
+    val listener = new ChangeListener[T] {
+      override def changed(observableValue: ObservableValue[_ <: T], oldValue: T, newValue: T): Unit = f(newValue)
+    }
+    comboBox.valueProperty().addListener(listener)
+  }
 
   private def handleFocusChanged(focused: Boolean): Unit = if (!focused) closePopup()
 

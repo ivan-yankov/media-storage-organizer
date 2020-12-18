@@ -6,18 +6,20 @@ import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.SearchModel._
 
 object EmptyValues {
-  def emptyInstrument: Instrument = Instrument(-1, "")
+  val invalidId: Int = -1
+
+  def emptyInstrument: Instrument = Instrument(invalidId, "")
 
   def emptyEthnographicRegion: EthnographicRegion = EthnographicRegion(-1, "")
 
-  def emptySourceType: SourceType = SourceType(-1, "")
+  def emptySourceType: SourceType = SourceType(invalidId, "")
 
-  def emptySource: Source = Source(-1, Option.empty, Option.empty)
+  def emptySource: Source = Source(invalidId, Option.empty, Option.empty)
 
-  def emptyArtist: Artist = Artist(-1, "", Option.empty, Option.empty, List())
+  def emptyArtist: Artist = Artist(invalidId, "", Option.empty, Option.empty, List())
 
   def emptyFolkloreTrack: FolkloreTrack = FolkloreTrack(
-    id = -1,
+    id = invalidId,
     title = "",
     performer = Option.empty,
     accompanimentPerformer = Option.empty,

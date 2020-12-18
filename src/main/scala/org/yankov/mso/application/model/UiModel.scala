@@ -57,11 +57,4 @@ object UiModel {
 
     def file: StringProperty = StringProperty(if (track.file.isDefined) track.file.get.getName else "")
   }
-
-  trait Control[T] {
-    def getContainer: Pane
-
-    def getValue: T
-  }
-
 }

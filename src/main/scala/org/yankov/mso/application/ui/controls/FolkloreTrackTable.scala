@@ -1,15 +1,15 @@
 package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.Resources
-import org.yankov.mso.application.model.UiModel.{Control, FolkloreTrackProperties}
-import FontModel.{CustomFont, NormalStyle, NormalWeight, SansSerif}
+import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.FolkloreTrackEditor
+import org.yankov.mso.application.ui.controls.FontModel.{CustomFont, NormalStyle, NormalWeight, SansSerif}
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
 import scalafx.scene.control._
 import scalafx.scene.layout.{Pane, StackPane}
 
-case class FolkloreTrackTable(inputTable: Boolean) extends Control[TableView[FolkloreTrackProperties]] {
+case class FolkloreTrackTable(inputTable: Boolean) {
   private val tableFont = CustomFont(SansSerif, NormalStyle, NormalWeight, 12)
 
   private val table: TableView[FolkloreTrackProperties] = {
@@ -135,7 +135,7 @@ case class FolkloreTrackTable(inputTable: Boolean) extends Control[TableView[Fol
       .foreach(x => x._1.setPrefWidth(x._2))
   }
 
-  override def getContainer: Pane = container
+  def getContainer: Pane = container
 
-  override def getValue: TableView[FolkloreTrackProperties] = table
+  def getValue: TableView[FolkloreTrackProperties] = table
 }

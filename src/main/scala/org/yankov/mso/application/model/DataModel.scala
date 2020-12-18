@@ -31,7 +31,11 @@ object DataModel {
 
   case class Source(id: Int, sourceType: Option[SourceType], signature: Option[String])
 
-  case class Artist(id: Int, name: String, instrument: Option[Instrument], note: Option[String], missions: List[ArtistMission])
+  case class Artist(id: Int,
+                    name: String,
+                    instrument: Option[Instrument],
+                    note: Option[String],
+                    missions: List[ArtistMission])
 
   case class FolkloreTrack(id: Int,
                            title: String,

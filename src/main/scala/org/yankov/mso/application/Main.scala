@@ -8,6 +8,7 @@ import org.yankov.mso.application.model.SearchModel.Filter
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
 import org.yankov.mso.application.ui.FxUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
+import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, FolkloreTrackTable, SearchFilterControls}
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 import scalafx.application.JFXApp
@@ -83,7 +84,7 @@ object Main extends JFXApp {
       )
     }
 
-//    val inputArtifactsTab = ???
+    val inputArtifactsTab = ArtifactsTab()
 
     val searchFilterPanels = searchFilterControls.controls.map(x => x.panel)
     val searchTab = new VBox {
@@ -108,7 +109,7 @@ object Main extends JFXApp {
         new Tab {
           text = Resources.MainForm.inputArtifactsTab
           closable = false
-//          content = inputArtifactsTab
+          content = inputArtifactsTab.getContainer
         },
         new Tab {
           text = Resources.MainForm.searchTab
