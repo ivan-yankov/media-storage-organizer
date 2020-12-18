@@ -3,7 +3,7 @@ package org.yankov.mso.application.ui.controls
 import org.yankov.mso.application.converters.StringConverters._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.EmptyValues._
-import org.yankov.mso.application.model.FolkloreSearchFactory
+import org.yankov.mso.application.model.SearchModel
 import org.yankov.mso.application.model.SearchModel.{Operator, Variable}
 import org.yankov.mso.application.{Main, Resources}
 
@@ -102,7 +102,7 @@ object FolkloreControlsFactory {
   }
 
   def createSearchVariable(): LabeledComboBox[Variable[FolkloreTrack]] = {
-    val variables = FolkloreSearchFactory.createVariables
+    val variables = SearchModel.Variables.asList
     LabeledComboBox[Variable[FolkloreTrack]](
       labelText = Resources.Search.variable,
       cbItems = variables,
@@ -115,7 +115,7 @@ object FolkloreControlsFactory {
   }
 
   def createSearchOperator(): LabeledComboBox[Operator] = {
-    val operators = FolkloreSearchFactory.createOperators
+    val operators = SearchModel.Operators.asList
     LabeledComboBox[Operator](
       labelText = Resources.Search.operator,
       cbItems = operators,

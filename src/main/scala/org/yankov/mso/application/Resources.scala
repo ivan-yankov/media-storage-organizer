@@ -156,16 +156,16 @@ object Resources {
     val soloist: String = "Солист"
     val author: String = "Автор"
     val ethnographicRegion: String = "Етнографска област"
-    val pieceNote: String = "Забележка"
+    val trackNote: String = "Забележка"
     val sourceType: String = "Тип на източник"
     val sourceSignature: String = "Сигнатура на източник"
   }
 
   object Operators {
-    val equals: String = "Идентично"
-    val notEquals: String = "Различно"
-    val contains: String = "Съдържа"
-    val notContains: String = "Не съдържа"
+    val equalsLabel: String = "Идентично"
+    val notEqualsLabel: String = "Различно"
+    val containsLabel: String = "Съдържа"
+    val notContainsLabel: String = "Не съдържа"
   }
 
 }
