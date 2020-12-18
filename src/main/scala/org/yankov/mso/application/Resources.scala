@@ -145,4 +145,27 @@ object Resources {
     val ethnographicRegion: String = "Етнографска област"
   }
 
+  object Variables {
+    val title: String = "Заглавие"
+    val performer: String = "Изпълнител"
+    val accompanimentPerformer: String = "Съпровод"
+    val arrangementAuthor: String = "Обработка"
+    val conductor: String = "Диригент"
+    val instrumentPerformance: String = "Изпълнение на инструмент"
+    val instrumentAccompaniment: String = "Съпровод на инструмент"
+    val soloist: String = "Солист"
+    val author: String = "Автор"
+    val ethnographicRegion: String = "Етнографска област"
+    val pieceNote: String = "Забележка"
+    val sourceType: String = "Тип на източник"
+    val sourceSignature: String = "Сигнатура на източник"
+  }
+
+  object Operators {
+    val equals: String = "Идентично"
+    val notEquals: String = "Различно"
+    val contains: String = "Съдържа"
+    val notContains: String = "Не съдържа"
+  }
+
 }
