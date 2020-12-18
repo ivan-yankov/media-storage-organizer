@@ -9,6 +9,26 @@ import scala.annotation.tailrec
 case class SearchEngine[T](tracks: List[T],
                            trackComparator: (T, T) => Boolean,
                            getDuration: T => Duration) {
+
+  implicit class StringAnalyzer(s: String) {
+    def normalize(): String = s.toLowerCase
+
+    def removePunctuation(): String = {
+      val symbols = List(",", ";", "-", "/", "\"")
+
+      @tailrec
+      def replace(input: String, replaceWhat: List[String], replaceWith: String): String = {
+        if (replaceWhat.isEmpty) input
+        else replace(input.replace(replaceWhat.head, replaceWith), replaceWhat.tail, replaceWith)
+      }
+
+      replace(s, symbols, " ")
+        .trim
+        // replace multiple spaces with a single space
+        .replaceAll(" +", " ")
+    }
+  }
+
   def search(filters: List[Filter[T]]): (List[T], Duration) = {
     val result = applyFilters(filters, tracks)
     (
@@ -38,22 +58,10 @@ case class SearchEngine[T](tracks: List[T],
       .foldLeft(Duration.ZERO)((x, y) => x.plus(y))
   }
 
-  private def analyze(s: String): String = {
-    removePunctuation(s)
-  }
-
-  private def removePunctuation(s: String): String = {
-    val symbols = List(",", ";", "-", "/", "\"")
-
-    @tailrec
-    def replace(input: String, replaceWhat: List[String], replaceWith: String): String = {
-      if (replaceWhat.isEmpty) input
-      else replace(input.replace(replaceWhat.head, replaceWith), replaceWhat.tail, replaceWith)
-    }
-
-    replace(s, symbols, " ")
+  private def analyze(str: String): String = {
+    str
       .trim
-      // replace multiple spaces with a single space
-      .replaceAll(" +", " ")
+      .normalize()
+      .removePunctuation()
   }
 }
