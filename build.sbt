@@ -6,13 +6,18 @@ scalaVersion := "2.12.4"
 
 val scalaFxVersion = "8.0.144-R12"
 val slfVersion = "1.7.30"
+val derbyVersion = "10.14.2.0"
 
 mainClass in assembly := Some("org.yankov.mso.application.Main")
 
 libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % scalaFxVersion,
   "org.slf4j" % "slf4j-api" % slfVersion,
-  "org.slf4j" % "slf4j-simple" % slfVersion
+  "org.slf4j" % "slf4j-simple" % slfVersion,
+
+  "org.apache.derby" % "derby" % derbyVersion,
+
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test
 )
 
 lazy val osName = System.getProperty("os.name") match {
