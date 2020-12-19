@@ -13,29 +13,19 @@ case class LabeledComboBox[T](labelText: String,
                               cbItems: List[T],
                               value: T,
                               itemToString: T => String,
-                              isEditable: Boolean = false,
                               sortItems: Boolean = true,
-                              nullable: Boolean = true,
                               emptyValue: Option[T]) {
-  private val comboBox = {
-    val cb = new ComboBox[T] {
-      editable = isEditable
-      converter = new StringConverter[T] {
-        override def fromString(s: String): T = ???
+  private val comboBox = new ComboBox[T] {
+    editable = false
+    converter = new StringConverter[T] {
+      override def fromString(s: String): T = ???
 
-        override def toString(x: T): String = itemToString(x)
-      }
-      prefWidth = 250.0
-      onKeyTyped = x => handleKeyTyped(x)
-      onKeyReleased = x => handleKeyReleased(x)
-      getItems.foreach(x => items.getValue.add(x))
+      override def toString(x: T): String = itemToString(x)
     }
-
-    cb.focusedProperty().addListener((_, _, newValue) => handleFocusChanged(newValue))
-
-    setValue(value)
-
-    cb
+    prefWidth = 250.0
+    onKeyTyped = x => handleKeyTyped(x)
+    onKeyReleased = x => handleKeyReleased(x)
+    getItems.foreach(x => items.getValue.add(x))
   }
 
   private val label = new Label {
@@ -59,11 +49,15 @@ case class LabeledComboBox[T](labelText: String,
     )
   }
 
+  init()
+
   def getContainer: Pane = container
 
   def getValue: T = comboBox.getValue
 
   def setValue(value: T): Unit = comboBox.setValue(value)
+
+  def clear(): Unit = if (emptyValue.isDefined) setValue(emptyValue.get)
 
   def setDisable(flag: Boolean): Unit = comboBox.setDisable(flag)
 
@@ -72,6 +66,11 @@ case class LabeledComboBox[T](labelText: String,
       override def changed(observableValue: ObservableValue[_ <: T], oldValue: T, newValue: T): Unit = f(newValue)
     }
     comboBox.valueProperty().addListener(listener)
+  }
+
+  private def init(): Unit = {
+    comboBox.focusedProperty().addListener((_, _, newValue) => handleFocusChanged(newValue))
+    setValue(value)
   }
 
   private def handleFocusChanged(focused: Boolean): Unit = if (!focused) closePopup()
@@ -135,8 +134,6 @@ case class LabeledComboBox[T](labelText: String,
       filterItems()
       showPopup()
     }
-    else if (event.getCode.equals(KeyCode.DELETE) && nullable && emptyValue.isDefined) {
-      setValue(emptyValue.get)
-    }
+    else if (event.getCode.equals(KeyCode.DELETE)) clear()
   }
 }

@@ -2,8 +2,8 @@ package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.StringConverters
+import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.EmptyValues
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledTextField}
 import scalafx.scene.control.{CheckBox, TitledPane}
 import scalafx.scene.layout.{HBox, Pane, VBox}
@@ -40,7 +40,7 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
       console.writeMessageWithTimestamp(Resources.Artists.noArtistMissionSelected)
       false
     }
-    else if (selectedMissions.contains(InstrumentPlayer) && instrument.getValue.isEmpty) {
+    else if (selectedMissions.contains(InstrumentPlayer) && instrument.getValue.name.isEmpty) {
       console.writeMessageWithTimestamp(Resources.Artists.artistInstrumentUndefined)
       false
     }
@@ -50,10 +50,10 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
   override protected def createArtifact(): Boolean = {
     dataManager.insertArtist(
       Artist(
-        id = EmptyValues.invalidId,
+        id = DataModel.invalidId,
         name = name.getValue,
         instrument = instrument.getValue,
-        note = if (note.getValue.nonEmpty) Option(note.getValue) else Option.empty,
+        note = note.getValue,
         missions = selectedMissions
       )
     )
@@ -66,19 +66,19 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
     name.setValue("")
     note.setValue("")
     missions.foreach(x => x._2.setSelected(false))
-    instrument.setValue(Option.empty)
+    instrument.clear()
     enableInstrument()
   }
 
   override protected def artifactToString(artifact: Artist): String =
-    StringConverters.artistToString(Option(artifact))
+    StringConverters.artistToString(artifact)
 
   override protected def getExistingArtifacts: List[Artist] =
     dataManager.getArtists
 
   override protected def onArtifactSelect(artifact: Artist): Unit = {
     name.setValue(artifact.name)
-    note.setValue(artifact.note.getOrElse(""))
+    note.setValue(artifact.note)
     missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
     instrument.setValue(artifact.instrument)
     enableInstrument()

@@ -3,7 +3,6 @@ package org.yankov.mso.application.model
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.{DurationConverter, StringConverters}
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.EmptyValues._
 import scalafx.beans.property.StringProperty
 import scalafx.scene.image.Image
 import scalafx.scene.layout.Pane
@@ -35,23 +34,23 @@ object UiModel {
 
     def title: StringProperty = StringProperty(track.title)
 
-    def performer: StringProperty = StringProperty(track.performer.getOrElse(emptyArtist).name)
+    def performer: StringProperty = StringProperty(track.performer.name)
 
-    def accompanimentPerformer: StringProperty = StringProperty(track.accompanimentPerformer.getOrElse(emptyArtist).name)
+    def accompanimentPerformer: StringProperty = StringProperty(track.accompanimentPerformer.name)
 
-    def arrangementAuthor: StringProperty = StringProperty(track.arrangementAuthor.getOrElse(emptyArtist).name)
+    def arrangementAuthor: StringProperty = StringProperty(track.arrangementAuthor.name)
 
-    def conductor: StringProperty = StringProperty(track.conductor.getOrElse(emptyArtist).name)
+    def conductor: StringProperty = StringProperty(track.conductor.name)
 
-    def author: StringProperty = StringProperty(track.author.getOrElse(emptyArtist).name)
+    def author: StringProperty = StringProperty(track.author.name)
 
-    def soloist: StringProperty = StringProperty(track.soloist.getOrElse(emptyArtist).name)
+    def soloist: StringProperty = StringProperty(track.soloist.name)
 
     def duration: StringProperty = StringProperty(DurationConverter.toMinSecString(track.duration))
 
     def source: StringProperty = StringProperty(StringConverters.sourceToString(track.source))
 
-    def ethnographicRegion: StringProperty = StringProperty(track.ethnographicRegion.getOrElse(emptyEthnographicRegion).name)
+    def ethnographicRegion: StringProperty = StringProperty(track.ethnographicRegion.name)
 
     def note: StringProperty = StringProperty(track.note)
 

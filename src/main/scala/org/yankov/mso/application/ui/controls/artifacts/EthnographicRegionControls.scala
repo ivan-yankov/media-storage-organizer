@@ -2,8 +2,8 @@ package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.StringConverters
+import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel.EthnographicRegion
-import org.yankov.mso.application.model.EmptyValues
 import org.yankov.mso.application.ui.controls.LabeledTextField
 import scalafx.scene.layout.{Pane, VBox}
 
@@ -21,7 +21,7 @@ case class EthnographicRegionControls(containerId: String) extends ArtifactContr
   override protected def createArtifact(): Boolean = {
     dataManager.insertEthnographicRegion(
       EthnographicRegion(
-        EmptyValues.invalidId,
+        DataModel.invalidId,
         ethnographicRegion.getValue
       )
     )
@@ -34,7 +34,7 @@ case class EthnographicRegionControls(containerId: String) extends ArtifactContr
     ethnographicRegion.setValue("")
 
   override protected def artifactToString(artifact: EthnographicRegion): String =
-    StringConverters.ethnographicRegionToString(Option(artifact))
+    StringConverters.ethnographicRegionToString(artifact)
 
   override protected def getExistingArtifacts: List[EthnographicRegion] =
     dataManager.getEthnographicRegions
