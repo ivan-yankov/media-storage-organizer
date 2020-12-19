@@ -7,10 +7,10 @@ import org.yankov.mso.application.model.DataModel.Instrument
 import org.yankov.mso.application.ui.controls.LabeledTextField
 import scalafx.scene.layout.{Pane, VBox}
 
-case class InstrumentControls(containerId: String) extends ArtifactControls[Instrument](containerId) {
+case class InstrumentControls() extends ArtifactControls[Instrument] {
   private val instrument = LabeledTextField(Resources.Instruments.instrument, "")
 
-  override protected def validateUserInput(): Boolean = {
+  override def validateUserInput(): Boolean = {
     if (instrument.getValue.isEmpty) {
       console.writeMessageWithTimestamp(Resources.Instruments.instrumentNameUndefined)
       false
@@ -18,7 +18,7 @@ case class InstrumentControls(containerId: String) extends ArtifactControls[Inst
     else true
   }
 
-  override protected def createArtifact(): Boolean = {
+  override def createArtifact(): Boolean = {
     dataManager.insertInstrument(
       Instrument(
         DataModel.invalidId,
@@ -27,22 +27,22 @@ case class InstrumentControls(containerId: String) extends ArtifactControls[Inst
     )
   }
 
-  override protected def updateArtifact(artifact: Instrument): Unit =
+  override def updateArtifact(artifact: Instrument): Unit =
     dataManager.updateInstrument(artifact)
 
-  override protected def cleanup(): Unit =
+  override def cleanup(): Unit =
     instrument.setValue("")
 
-  override protected def artifactToString(artifact: Instrument): String =
+  override def artifactToString(artifact: Instrument): String =
     StringConverters.instrumentToString(artifact)
 
-  override protected def getExistingArtifacts: List[Instrument] =
+  override def getExistingArtifacts: List[Instrument] =
     dataManager.getInstruments
 
-  override protected def onArtifactSelect(artifact: Instrument): Unit =
+  override def onArtifactSelect(artifact: Instrument): Unit =
     instrument.setValue(artifact.name)
 
-  override protected def createControls(): Pane = new VBox {
+  override def createControls(): Pane = new VBox {
     spacing = whiteSpace
     children.add(instrument.getContainer)
   }

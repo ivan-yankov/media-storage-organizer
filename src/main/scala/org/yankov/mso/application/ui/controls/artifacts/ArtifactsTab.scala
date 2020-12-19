@@ -37,10 +37,10 @@ case class ArtifactsTab() {
   )
 
   private val inputControls = List(
-    SourceControls(sourceId),
-    InstrumentControls(instrumentId),
-    ArtistControls(artistId),
-    EthnographicRegionControls(ethnographicRegionId)
+    ArtifactControlsContainer(SourceControls(), sourceId),
+    ArtifactControlsContainer(InstrumentControls(), instrumentId),
+    ArtifactControlsContainer(ArtistControls(), artistId),
+    ArtifactControlsContainer(EthnographicRegionControls(), ethnographicRegionId)
   )
 
   private val artifactsContainer = new StackPane {

@@ -1,137 +1,28 @@
 package org.yankov.mso.application.ui.controls.artifacts
 
-import java.beans.{PropertyChangeEvent, PropertyChangeListener}
-
+import org.yankov.mso.application.Main
 import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
-import org.yankov.mso.application.{Main, Resources}
-import scalafx.geometry.Insets
-import scalafx.scene.control.{Button, Label, ListView, SelectionMode}
-import scalafx.scene.layout.{HBox, Pane, VBox}
+import scalafx.scene.layout.Pane
 
-abstract class ArtifactControls[T](containerId: String) extends PropertyChangeListener {
-  protected def validateUserInput(): Boolean
-
-  protected def createArtifact(): Boolean
-
-  protected def updateArtifact(artifact: T): Unit
-
-  protected def cleanup(): Unit
-
-  protected def artifactToString(artifact: T): String
-
-  protected def getExistingArtifacts: List[T]
-
-  protected def onArtifactSelect(artifact: T): Unit
-
-  protected def createControls(): Pane
-
+trait ArtifactControls[T] {
   protected val whiteSpace: Double = 20.0
-
   protected val console: ConsoleService = ApplicationConsole
-
   protected val dataManager: DataManager = Main.dataManager
 
-  private val existingArtifactsLabel = new Label {
-    text = Resources.Artifacts.existingArtifacts
-  }
+  def validateUserInput(): Boolean
 
-  private val existingArtifacts = new ListView[T]
+  def createArtifact(): Boolean
 
-  private val btnAddArtifact = new Button {
-    text = Resources.Artifacts.btnAddArtifact
-    onAction = _ => handleBtnAdd()
-  }
+  def updateArtifact(artifact: T): Unit
 
-  private val btnUpdateArtifact = new Button {
-    text = Resources.Artifacts.btnUpdateArtifact
-    onAction = _ => handleBtnUpdate()
-  }
+  def cleanup(): Unit
 
-  private val existingArtifactsContainer = new VBox {
-    children = List(
-      existingArtifactsLabel,
-      existingArtifacts
-    )
-    minWidth = 350.0
-  }
+  def artifactToString(artifact: T): String
 
-  private val btnContainer = new HBox {
-    padding = Insets(20.0, 0.0, 20.0, 0.0)
-    spacing = 20.0
-    children = List(
-      btnAddArtifact,
-      btnUpdateArtifact
-    )
-  }
+  def getExistingArtifacts: List[T]
 
-  private val actionControlsContainer = new VBox {
-    children = List(
-      createControls(),
-      btnContainer
-    )
-    minWidth = 350.0
-  }
+  def onArtifactSelect(artifact: T): Unit
 
-  private val container = new HBox {
-    id = containerId
-    padding = Insets(20.0, 0.0, 20.0, 0.0)
-    spacing = 20.0
-    children = List(
-      existingArtifactsContainer,
-      actionControlsContainer
-    )
-  }
-
-  init()
-
-  override def propertyChange(propertyChangeEvent: PropertyChangeEvent): Unit = refreshExistingArtifacts()
-
-  def getContainer: Pane = container
-
-  private def init(): Unit = {
-    dataManager.addPropertyChangeListener(this)
-
-    existingArtifacts
-      .selectionModel
-      .value
-      .selectedItemProperty()
-      .addListener(_ => onArtifactSelect(existingArtifacts.getSelectionModel.getSelectedItem))
-    existingArtifacts
-      .selectionModel
-      .value
-      .setSelectionMode(SelectionMode.Single)
-
-    refreshExistingArtifacts()
-  }
-
-  private def handleBtnAdd(): Unit = {
-    if (validateUserInput()) {
-      if (createArtifact()) {
-        cleanup()
-        console.writeMessageWithTimestamp(Resources.Artifacts.artifactAdded)
-      }
-      else console.writeMessageWithTimestamp(Resources.Artifacts.artifactExists)
-    }
-  }
-
-  private def handleBtnUpdate(): Unit = {
-    if (validateUserInput()) {
-      val selectedIndex = existingArtifacts.getSelectionModel.getSelectedIndex
-      if (selectedIndex < 0) {
-        console.writeMessageWithTimestamp(Resources.Artifacts.noSelectedArtifact)
-      }
-      else {
-        updateArtifact(existingArtifacts.getItems.get(selectedIndex))
-        console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdated)
-      }
-    }
-  }
-
-  private def refreshExistingArtifacts(): Unit = {
-    existingArtifacts.getItems.clear()
-    getExistingArtifacts
-      .sortWith((x, y) => artifactToString(x).compareToIgnoreCase(artifactToString(y)) < 0)
-      .foreach(x => existingArtifacts.getItems.add(x))
-  }
+  def createControls(): Pane
 }
