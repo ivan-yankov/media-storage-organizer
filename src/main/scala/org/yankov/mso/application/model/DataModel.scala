@@ -5,6 +5,8 @@ import java.time.Duration
 
 object DataModel {
 
+  val invalidId: Int = -1
+
   trait ArtistMission
 
   case object Singer extends ArtistMission
@@ -23,34 +25,39 @@ object DataModel {
 
   case object ChamberGroup extends ArtistMission
 
-  case class Instrument(id: Int, name: String)
+  case class Instrument(id: Int = invalidId,
+                        name: String = "")
 
-  case class EthnographicRegion(id: Int, name: String)
+  case class EthnographicRegion(id: Int = invalidId,
+                                name: String = "")
 
-  case class SourceType(id: Int, name: String)
+  case class SourceType(id: Int = invalidId,
+                        name: String = "")
 
-  case class Source(id: Int, sourceType: Option[SourceType], signature: Option[String])
+  case class Source(id: Int = invalidId,
+                    sourceType: SourceType = SourceType(),
+                    signature: String = "")
 
-  case class Artist(id: Int,
-                    name: String,
-                    instrument: Option[Instrument],
-                    note: Option[String],
-                    missions: List[ArtistMission])
+  case class Artist(id: Int = invalidId,
+                    name: String = "",
+                    instrument: Instrument = Instrument(),
+                    note: String = "",
+                    missions: List[ArtistMission] = List())
 
-  case class FolkloreTrack(id: Int,
-                           title: String,
-                           performer: Option[Artist],
-                           accompanimentPerformer: Option[Artist],
-                           author: Option[Artist],
-                           arrangementAuthor: Option[Artist],
-                           conductor: Option[Artist],
-                           soloist: Option[Artist],
-                           duration: Duration,
-                           note: String,
-                           source: Option[Source],
-                           ethnographicRegion: Option[EthnographicRegion],
-                           file: Option[File],
-                           recordFormat: String) {
+  case class FolkloreTrack(id: Int = invalidId,
+                           title: String = "",
+                           performer: Artist = Artist(),
+                           accompanimentPerformer: Artist = Artist(),
+                           author: Artist = Artist(),
+                           arrangementAuthor: Artist = Artist(),
+                           conductor: Artist = Artist(),
+                           soloist: Artist = Artist(),
+                           duration: Duration = Duration.ZERO,
+                           note: String = "",
+                           source: Source = Source(),
+                           ethnographicRegion: EthnographicRegion = EthnographicRegion(),
+                           file: Option[File] = Option.empty,
+                           recordFormat: String = "FLAC") {
     def hasValidId: Boolean = id > 0
 
     def withTitle(newTitle: String): FolkloreTrack = FolkloreTrack(
@@ -87,4 +94,5 @@ object DataModel {
       recordFormat = recordFormat
     )
   }
+
 }

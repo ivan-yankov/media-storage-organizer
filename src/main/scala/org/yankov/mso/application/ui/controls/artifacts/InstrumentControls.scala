@@ -2,8 +2,8 @@ package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.StringConverters
+import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel.Instrument
-import org.yankov.mso.application.model.EmptyValues
 import org.yankov.mso.application.ui.controls.LabeledTextField
 import scalafx.scene.layout.{Pane, VBox}
 
@@ -21,7 +21,7 @@ case class InstrumentControls(containerId: String) extends ArtifactControls[Inst
   override protected def createArtifact(): Boolean = {
     dataManager.insertInstrument(
       Instrument(
-        EmptyValues.invalidId,
+        DataModel.invalidId,
         instrument.getValue
       )
     )
@@ -34,7 +34,7 @@ case class InstrumentControls(containerId: String) extends ArtifactControls[Inst
     instrument.setValue("")
 
   override protected def artifactToString(artifact: Instrument): String =
-    StringConverters.instrumentToString(Option(artifact))
+    StringConverters.instrumentToString(artifact)
 
   override protected def getExistingArtifacts: List[Instrument] =
     dataManager.getInstruments

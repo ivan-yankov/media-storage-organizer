@@ -33,7 +33,6 @@ case class ArtifactsTab() {
     value = defaultArtifact,
     itemToString = x => x,
     sortItems = false,
-    nullable = false,
     emptyValue = Option.empty
   )
 

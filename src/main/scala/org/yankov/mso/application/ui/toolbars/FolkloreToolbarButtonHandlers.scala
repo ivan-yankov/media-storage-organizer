@@ -4,13 +4,10 @@ import java.io.File
 
 import org.yankov.mso.application.Main
 import org.yankov.mso.application.commands.Commands
-import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.DataManager
-import org.yankov.mso.application.model.EmptyValues._
-import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.media.Player
-import org.yankov.mso.application.ui.{FolkloreTrackEditor, FxUtils}
-import scalafx.event.ActionEvent
+import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
+import org.yankov.mso.application.ui.FolkloreTrackEditor
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
 
@@ -36,7 +33,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def loadTracks(targetInputTab: Boolean): Unit = {
     Commands.loadItems(
       targetTable(targetInputTab),
-      x => FolkloreTrackProperties(emptyFolkloreTrack.withFile(Option(x)))
+      x => FolkloreTrackProperties(FolkloreTrack().withFile(Option(x)))
     )
   }
 
@@ -105,7 +102,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def addItem(targetInputTab: Boolean): Unit = {
     Commands.addItem(
       targetTable(targetInputTab),
-      FolkloreTrackProperties(emptyFolkloreTrack)
+      FolkloreTrackProperties(FolkloreTrack())
     )
   }
 

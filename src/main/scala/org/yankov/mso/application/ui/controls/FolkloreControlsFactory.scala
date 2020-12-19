@@ -2,7 +2,6 @@ package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.converters.StringConverters._
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.EmptyValues._
 import org.yankov.mso.application.model.SearchModel
 import org.yankov.mso.application.model.SearchModel.{Operator, Variable}
 import org.yankov.mso.application.{Main, Resources}
@@ -10,94 +9,94 @@ import org.yankov.mso.application.{Main, Resources}
 object FolkloreControlsFactory {
   private val dataManager = Main.dataManager
 
-  def createSourceTypeInput(): LabeledComboBox[Option[SourceType]] = {
-    val sourceTypes = dataManager.getSourceTypes.map(x => Option(x))
-    LabeledComboBox[Option[SourceType]](
+  def createSourceTypeInput(): LabeledComboBox[SourceType] = {
+    val sourceTypes = dataManager.getSourceTypes
+    LabeledComboBox[SourceType](
       labelText = Resources.Controls.sourceType,
       cbItems = sourceTypes,
       value = sourceTypes.head,
       itemToString = sourceTypeToString,
-      emptyValue = Option(Option(emptySourceType))
+      emptyValue = Option(SourceType())
     )
   }
 
-  def createPerformer(value: Option[Artist]): LabeledComboBox[Option[Artist]] = {
-    LabeledComboBox[Option[Artist]](
+  def createPerformer(value: Artist): LabeledComboBox[Artist] = {
+    LabeledComboBox[Artist](
       labelText = Resources.TableColumns.performer,
       cbItems = filterArtists(List(Singer, Orchestra, InstrumentPlayer, Ensemble, Choir, ChamberGroup)),
       value = value,
       itemToString = artistToString,
-      emptyValue = Option(Option(emptyArtist))
+      emptyValue = Option(Artist())
     )
   }
 
-  def createAccompanimentPerformer(value: Option[Artist]): LabeledComboBox[Option[Artist]] = {
-    LabeledComboBox[Option[Artist]](
+  def createAccompanimentPerformer(value: Artist): LabeledComboBox[Artist] = {
+    LabeledComboBox[Artist](
       labelText = Resources.TableColumns.accompanimentPerformer,
       cbItems = filterArtists(List(Orchestra, InstrumentPlayer, Ensemble, ChamberGroup)),
       value = value,
       itemToString = artistToString,
-      emptyValue = Option(Option(emptyArtist))
+      emptyValue = Option(Artist())
     )
   }
 
-  def createArrangementAuthor(value: Option[Artist]): LabeledComboBox[Option[Artist]] = {
-    LabeledComboBox[Option[Artist]](
+  def createArrangementAuthor(value: Artist): LabeledComboBox[Artist] = {
+    LabeledComboBox[Artist](
       labelText = Resources.TableColumns.arrangementAuthor,
       cbItems = filterArtists(List(Composer)),
       value = value,
       itemToString = artistToString,
-      emptyValue = Option(Option(emptyArtist))
+      emptyValue = Option(Artist())
     )
   }
 
-  def createConductor(value: Option[Artist]): LabeledComboBox[Option[Artist]] = {
-    LabeledComboBox[Option[Artist]](
+  def createConductor(value: Artist): LabeledComboBox[Artist] = {
+    LabeledComboBox[Artist](
       labelText = Resources.TableColumns.conductor,
       cbItems = filterArtists(List(Conductor)),
       value = value,
       itemToString = artistToString,
-      emptyValue = Option(Option(emptyArtist))
+      emptyValue = Option(Artist())
     )
   }
 
-  def createAuthor(value: Option[Artist]): LabeledComboBox[Option[Artist]] = {
-    LabeledComboBox[Option[Artist]](
+  def createAuthor(value: Artist): LabeledComboBox[Artist] = {
+    LabeledComboBox[Artist](
       labelText = Resources.TableColumns.author,
       cbItems = filterArtists(List(Composer)),
       value = value,
       itemToString = artistToString,
-      emptyValue = Option(Option(emptyArtist))
+      emptyValue = Option(Artist())
     )
   }
 
-  def createSoloist(value: Option[Artist]): LabeledComboBox[Option[Artist]] = {
-    LabeledComboBox[Option[Artist]](
+  def createSoloist(value: Artist): LabeledComboBox[Artist] = {
+    LabeledComboBox[Artist](
       labelText = Resources.TableColumns.soloist,
       cbItems = filterArtists(List(Singer, InstrumentPlayer)),
       value = value,
       itemToString = artistToString,
-      emptyValue = Option(Option(emptyArtist))
+      emptyValue = Option(Artist())
     )
   }
 
-  def createEthnographicRegion(value: Option[EthnographicRegion]): LabeledComboBox[Option[EthnographicRegion]] = {
-    LabeledComboBox[Option[EthnographicRegion]](
+  def createEthnographicRegion(value: EthnographicRegion): LabeledComboBox[EthnographicRegion] = {
+    LabeledComboBox[EthnographicRegion](
       labelText = Resources.TableColumns.ethnographicRegion,
-      cbItems = dataManager.getEthnographicRegions.map(x => Option(x)),
+      cbItems = dataManager.getEthnographicRegions,
       value = value,
       itemToString = ethnographicRegionToString,
-      emptyValue = Option(Option(emptyEthnographicRegion))
+      emptyValue = Option(EthnographicRegion())
     )
   }
 
-  def createSource(value: Option[Source]): LabeledComboBox[Option[Source]] = {
-    LabeledComboBox[Option[Source]](
+  def createSource(value: Source): LabeledComboBox[Source] = {
+    LabeledComboBox[Source](
       labelText = Resources.TableColumns.source,
-      cbItems = dataManager.getSources.map(x => Option(x)),
+      cbItems = dataManager.getSources,
       value = value,
       itemToString = sourceToString,
-      emptyValue = Option(Option(emptySource))
+      emptyValue = Option(Source())
     )
   }
 
@@ -109,7 +108,6 @@ object FolkloreControlsFactory {
       value = variables.head,
       itemToString = variableToString,
       sortItems = false,
-      nullable = false,
       emptyValue = Option.empty
     )
   }
@@ -122,25 +120,23 @@ object FolkloreControlsFactory {
       value = operators.head,
       itemToString = operatorToString,
       sortItems = false,
-      nullable = false,
       emptyValue = Option.empty
     )
   }
 
-  def createInstrument(): LabeledComboBox[Option[Instrument]] = {
-    LabeledComboBox[Option[Instrument]](
+  def createInstrument(): LabeledComboBox[Instrument] = {
+    LabeledComboBox[Instrument](
       labelText = Resources.Controls.instrument,
-      cbItems = dataManager.getInstruments.map(x => Option(x)),
-      value = Option(emptyInstrument),
+      cbItems = dataManager.getInstruments,
+      value = Instrument(),
       itemToString = instrumentToString,
-      emptyValue = Option(Option(emptyInstrument))
+      emptyValue = Option(Instrument())
     )
   }
 
-  private def filterArtists(missions: List[ArtistMission]): List[Option[Artist]] = {
+  private def filterArtists(missions: List[ArtistMission]): List[Artist] = {
     dataManager
       .getArtists
       .filter(x => x.missions.intersect(missions).nonEmpty)
-      .map(x => Option(x))
   }
 }

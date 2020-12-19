@@ -2,8 +2,8 @@ package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.StringConverters
+import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel.Source
-import org.yankov.mso.application.model.EmptyValues
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledTextField}
 import scalafx.scene.layout.{Pane, VBox}
 
@@ -23,9 +23,9 @@ case class SourceControls(containerId: String) extends ArtifactControls[Source](
   override protected def createArtifact(): Boolean = {
     dataManager.insertSource(
       Source(
-        EmptyValues.invalidId,
+        DataModel.invalidId,
         sourceType.getValue,
-        Option(sourceSignature.getValue)
+        sourceSignature.getValue
       )
     )
   }
@@ -37,14 +37,14 @@ case class SourceControls(containerId: String) extends ArtifactControls[Source](
     sourceSignature.setValue("")
 
   override protected def artifactToString(artifact: Source): String =
-    StringConverters.sourceToString(Option(artifact))
+    StringConverters.sourceToString(artifact)
 
   override protected def getExistingArtifacts: List[Source] =
     dataManager.getSources
 
   override protected def onArtifactSelect(artifact: Source): Unit = {
     sourceType.setValue(artifact.sourceType)
-    sourceSignature.setValue(artifact.signature.getOrElse(""))
+    sourceSignature.setValue(artifact.signature)
   }
 
   override protected def createControls(): Pane = new VBox {
