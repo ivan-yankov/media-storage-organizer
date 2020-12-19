@@ -3,6 +3,8 @@ package org.yankov.mso.application.model
 import java.io.File
 import java.time.Duration
 
+import org.yankov.mso.application.ui.Utils
+
 object DataModel {
 
   val invalidId: Int = -1
@@ -86,7 +88,7 @@ object DataModel {
       arrangementAuthor = arrangementAuthor,
       conductor = conductor,
       soloist = soloist,
-      duration = duration,
+      duration = Utils.calculateDuration(newFile),
       note = note,
       source = source,
       ethnographicRegion = ethnographicRegion,

@@ -1,14 +1,15 @@
 package org.yankov.mso.application.ui
 
 import java.io.File
+import java.time.Duration
 
 import org.yankov.mso.application.{Main, Resources}
-import scalafx.scene.control.{Alert, ButtonType, TableView}
+import scalafx.scene.control.{Alert, ButtonType}
 import scalafx.stage.{DirectoryChooser, FileChooser}
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 
-object FxUtils {
+object Utils {
   def confirmCloseApplication: Boolean = confirmDialog(Resources.Dialogs.closeApplication)
 
   def confirmOverwrite: Boolean = confirmDialog(Resources.Dialogs.overwriteRecordsInDatabase)
@@ -36,6 +37,8 @@ object FxUtils {
       if (files != null) Option(files) else Option.empty
     }
   }
+
+  def calculateDuration(file: Option[File]): Duration = ???
 
   private def confirmDialog(headerText: String): Boolean = {
     val alert = new Alert(Alert.AlertType.Confirmation)
