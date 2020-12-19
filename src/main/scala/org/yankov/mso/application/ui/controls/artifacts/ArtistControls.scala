@@ -8,7 +8,7 @@ import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledT
 import scalafx.scene.control.{CheckBox, TitledPane}
 import scalafx.scene.layout.{HBox, Pane, VBox}
 
-case class ArtistControls(containerId: String) extends ArtifactControls[Artist](containerId) {
+case class ArtistControls() extends ArtifactControls[Artist] {
   private val name = LabeledTextField(Resources.Artists.artistName, "")
 
   private val note = LabeledTextField(Resources.Artists.note, "")
@@ -31,7 +31,7 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
 
   init()
 
-  override protected def validateUserInput(): Boolean = {
+  override def validateUserInput(): Boolean = {
     if (name.getValue.isEmpty) {
       console.writeMessageWithTimestamp(Resources.Artists.artistNameUndefined)
       false
@@ -47,7 +47,7 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
     else true
   }
 
-  override protected def createArtifact(): Boolean = {
+  override def createArtifact(): Boolean = {
     dataManager.insertArtist(
       Artist(
         id = DataModel.invalidId,
@@ -59,10 +59,10 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
     )
   }
 
-  override protected def updateArtifact(artifact: Artist): Unit =
+  override def updateArtifact(artifact: Artist): Unit =
     dataManager.updateArtist(artifact)
 
-  override protected def cleanup(): Unit = {
+  override def cleanup(): Unit = {
     name.setValue("")
     note.setValue("")
     missions.foreach(x => x._2.setSelected(false))
@@ -70,13 +70,13 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
     enableInstrument()
   }
 
-  override protected def artifactToString(artifact: Artist): String =
+  override def artifactToString(artifact: Artist): String =
     StringConverters.artistToString(artifact)
 
-  override protected def getExistingArtifacts: List[Artist] =
+  override def getExistingArtifacts: List[Artist] =
     dataManager.getArtists
 
-  override protected def onArtifactSelect(artifact: Artist): Unit = {
+  override def onArtifactSelect(artifact: Artist): Unit = {
     name.setValue(artifact.name)
     note.setValue(artifact.note)
     missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
@@ -84,7 +84,7 @@ case class ArtistControls(containerId: String) extends ArtifactControls[Artist](
     enableInstrument()
   }
 
-  override protected def createControls(): Pane = new VBox {
+  override def createControls(): Pane = new VBox {
     spacing = whiteSpace
     children = List(
       name.getContainer,

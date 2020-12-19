@@ -7,10 +7,10 @@ import org.yankov.mso.application.model.DataModel.EthnographicRegion
 import org.yankov.mso.application.ui.controls.LabeledTextField
 import scalafx.scene.layout.{Pane, VBox}
 
-case class EthnographicRegionControls(containerId: String) extends ArtifactControls[EthnographicRegion](containerId) {
+case class EthnographicRegionControls() extends ArtifactControls[EthnographicRegion] {
   private val ethnographicRegion: LabeledTextField = LabeledTextField(Resources.EthnographicRegions.name, "")
 
-  override protected def validateUserInput(): Boolean = {
+  override def validateUserInput(): Boolean = {
     if (ethnographicRegion.getValue.isEmpty) {
       console.writeMessageWithTimestamp(Resources.EthnographicRegions.nameUndefined)
       false
@@ -18,7 +18,7 @@ case class EthnographicRegionControls(containerId: String) extends ArtifactContr
     else true
   }
 
-  override protected def createArtifact(): Boolean = {
+  override def createArtifact(): Boolean = {
     dataManager.insertEthnographicRegion(
       EthnographicRegion(
         DataModel.invalidId,
@@ -27,22 +27,22 @@ case class EthnographicRegionControls(containerId: String) extends ArtifactContr
     )
   }
 
-  override protected def updateArtifact(artifact: EthnographicRegion): Unit =
+  override def updateArtifact(artifact: EthnographicRegion): Unit =
     dataManager.updateEthnographicRegion(artifact)
 
-  override protected def cleanup(): Unit =
+  override def cleanup(): Unit =
     ethnographicRegion.setValue("")
 
-  override protected def artifactToString(artifact: EthnographicRegion): String =
+  override def artifactToString(artifact: EthnographicRegion): String =
     StringConverters.ethnographicRegionToString(artifact)
 
-  override protected def getExistingArtifacts: List[EthnographicRegion] =
+  override def getExistingArtifacts: List[EthnographicRegion] =
     dataManager.getEthnographicRegions
 
-  override protected def onArtifactSelect(artifact: EthnographicRegion): Unit =
+  override def onArtifactSelect(artifact: EthnographicRegion): Unit =
     ethnographicRegion.setValue(artifact.name)
 
-  override protected def createControls(): Pane = new VBox {
+  override def createControls(): Pane = new VBox {
     spacing = whiteSpace
     children.add(ethnographicRegion.getContainer)
   }

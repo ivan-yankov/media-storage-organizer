@@ -7,12 +7,12 @@ import org.yankov.mso.application.model.DataModel.Source
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledTextField}
 import scalafx.scene.layout.{Pane, VBox}
 
-case class SourceControls(containerId: String) extends ArtifactControls[Source](containerId) {
+case class SourceControls() extends ArtifactControls[Source] {
   private val sourceType = FolkloreControlsFactory.createSourceTypeInput()
 
   private val sourceSignature = LabeledTextField(Resources.Sources.signature, "")
 
-  override protected def validateUserInput(): Boolean = {
+  override def validateUserInput(): Boolean = {
     if (sourceSignature.getValue.isEmpty) {
       console.writeMessageWithTimestamp(Resources.Sources.signatureUndefined)
       false
@@ -20,7 +20,7 @@ case class SourceControls(containerId: String) extends ArtifactControls[Source](
     else true
   }
 
-  override protected def createArtifact(): Boolean = {
+  override def createArtifact(): Boolean = {
     dataManager.insertSource(
       Source(
         DataModel.invalidId,
@@ -30,24 +30,24 @@ case class SourceControls(containerId: String) extends ArtifactControls[Source](
     )
   }
 
-  override protected def updateArtifact(artifact: Source): Unit =
+  override def updateArtifact(artifact: Source): Unit =
     dataManager.updateSource(artifact)
 
-  override protected def cleanup(): Unit =
+  override def cleanup(): Unit =
     sourceSignature.setValue("")
 
-  override protected def artifactToString(artifact: Source): String =
+  override def artifactToString(artifact: Source): String =
     StringConverters.sourceToString(artifact)
 
-  override protected def getExistingArtifacts: List[Source] =
+  override def getExistingArtifacts: List[Source] =
     dataManager.getSources
 
-  override protected def onArtifactSelect(artifact: Source): Unit = {
+  override def onArtifactSelect(artifact: Source): Unit = {
     sourceType.setValue(artifact.sourceType)
     sourceSignature.setValue(artifact.signature)
   }
 
-  override protected def createControls(): Pane = new VBox {
+  override def createControls(): Pane = new VBox {
     spacing = whiteSpace
     children.add(sourceType.getContainer)
     children.add(sourceSignature.getContainer)
