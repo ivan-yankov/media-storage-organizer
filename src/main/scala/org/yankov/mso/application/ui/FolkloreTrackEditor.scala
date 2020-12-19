@@ -1,6 +1,5 @@
 package org.yankov.mso.application.ui
 
-import org.yankov.mso.application.media.MediaUtils
 import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
@@ -120,7 +119,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
       arrangementAuthor = arrangementAuthor.getValue,
       conductor = conductor.getValue,
       soloist = soloist.getValue,
-      duration = MediaUtils.calculateDuration(fileSelector.getValue),
+      duration = Utils.calculateDuration(fileSelector.getValue),
       note = note.getValue,
       source = source.getValue,
       ethnographicRegion = ethnographicRegion.getValue,

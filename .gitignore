@@ -1,5 +1,4 @@
 target
-test*
 launch
 *.iml
 *.log
@@ -10,3 +9,5 @@ launch
 .project
 .classpath
 .bsp
+testdb/
+*.flac

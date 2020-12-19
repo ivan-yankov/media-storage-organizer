@@ -6,7 +6,7 @@ import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.SearchModel.Filter
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
-import org.yankov.mso.application.ui.FxUtils
+import org.yankov.mso.application.ui.Utils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, FolkloreTrackTable, SearchFilterControls}
@@ -27,7 +27,7 @@ object Main extends JFXApp {
     x = ApplicationSettings.getX
     y = ApplicationSettings.getY
 
-    onCloseRequest = event => if (!FxUtils.confirmCloseApplication) event.consume()
+    onCloseRequest = event => if (!Utils.confirmCloseApplication) event.consume()
 
     scene = new Scene {
       root = new BorderPane {
