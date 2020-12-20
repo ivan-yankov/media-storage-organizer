@@ -6,6 +6,7 @@ import java.sql.Connection
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.DatabaseModel._
 
 case class DataManager(dbConnectionString: String) {
   private val log = LoggerFactory.getLogger(getClass)
@@ -44,7 +45,20 @@ case class DataManager(dbConnectionString: String) {
 
   def getInstruments: List[Instrument] = ???
 
-  def insertArtist(artist: Artist): Boolean = ???
+  def insertArtist(artist: Artist): Boolean = {???
+//    connect match {
+//      case Some(connection) =>
+//        QueryExecutor(connection)
+//          .insertItem(
+//            schema,
+//            TblArtist.name,
+//            List(TblArtist.colId, TblArtist.colName, TblArtist.colNote, TblArtist.colInstrumentId),
+//            List()
+//          )
+//      case None =>
+//        false
+//    }
+  }
 
   def updateArtist(artist: Artist): Unit = ???
 
