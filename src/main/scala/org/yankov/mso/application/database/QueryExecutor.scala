@@ -142,29 +142,78 @@ case class QueryExecutor(connection: Connection) {
     if (criteria.nonEmpty) criteria.map(x => s" ${x.name} ${x.column}${x.operator}?").mkString else ""
 
   private def setStatementValue(s: PreparedStatement, i: Int, x: SqlValue): Unit = x match {
-    case IntSqlValue(value) => s.setInt(i, value)
-    case LongSqlValue(value) => s.setLong(i, value)
-    case DoubleSqlValue(value) => s.setDouble(i, value)
-    case BooleanSqlValue(value) => s.setBoolean(i, value)
-    case BytesSqlValue(value) => s.setBytes(i, value.value.toArray)
-    case StringSqlValue(value) => s.setString(i, value)
+    case IntSqlValue(value) => s.setInt(i, value.get)
+    case LongSqlValue(value) => s.setLong(i, value.get)
+    case DoubleSqlValue(value) => s.setDouble(i, value.get)
+    case BooleanSqlValue(value) => s.setBoolean(i, value.get)
+    case BytesSqlValue(value) => s.setBytes(i, value.get.toArray)
+    case StringSqlValue(value) => s.setString(i, value.get)
   }
 
-  private def getResultValue(result: ResultSet, columnName: String, columnType: Int): SqlValue = columnType match {
-    case Types.INTEGER => IntSqlValue(result.getInt(columnName))
-    case Types.BIGINT => LongSqlValue(result.getLong(columnName))
-    case Types.FLOAT => DoubleSqlValue(result.getDouble(columnName))
-    case Types.DOUBLE => DoubleSqlValue(result.getDouble(columnName))
-    case Types.BIT => BooleanSqlValue(result.getBoolean(columnName))
-    case Types.BOOLEAN => BooleanSqlValue(result.getBoolean(columnName))
-    case Types.BINARY => BytesSqlValue(Bytes(result.getBytes(columnName).toList))
-    case Types.VARBINARY => BytesSqlValue(Bytes(result.getBytes(columnName).toList))
-    case Types.LONGVARBINARY => BytesSqlValue(Bytes(result.getBytes(columnName).toList))
-    case Types.BLOB => BytesSqlValue(Bytes(result.getBytes(columnName).toList))
-    case Types.CHAR => StringSqlValue(result.getString(columnName))
-    case Types.VARCHAR => StringSqlValue(result.getString(columnName))
-    case Types.LONGVARCHAR => StringSqlValue(result.getString(columnName))
-    case Types.CLOB => StringSqlValue(result.getString(columnName))
+  private def getResultValue(result: ResultSet, columnName: String, columnType: Int): SqlValue = {
+    def getInt: Option[Int] = {
+      try {
+        val r = result.getInt(columnName)
+        if (result.wasNull()) Option.empty else Option(r)
+      } catch {
+        case _: NullPointerException => Option.empty
+      }
+    }
+    def getLong: Option[Long] = {
+      try {
+        val r = result.getLong(columnName)
+        if (result.wasNull()) Option.empty else Option(r)
+      } catch {
+        case _: NullPointerException => Option.empty
+      }
+    }
+    def getDouble: Option[Double] = {
+      try {
+        val r = result.getDouble(columnName)
+        if (result.wasNull()) Option.empty else Option(r)
+      } catch {
+        case _: NullPointerException => Option.empty
+      }
+    }
+    def getBoolean: Option[Boolean] = {
+      try {
+        val r = result.getBoolean(columnName)
+        if (result.wasNull()) Option.empty else Option(r)
+      } catch {
+        case _: NullPointerException => Option.empty
+      }
+    }
+    def getBytes: Option[Bytes] = {
+      try {
+        Option(result.getBytes(columnName).toList)
+      } catch {
+        case _: NullPointerException => Option.empty
+      }
+    }
+    def getString: Option[String] = {
+      try {
+        Option(result.getString(columnName))
+      } catch {
+        case _: NullPointerException => Option.empty
+      }
+    }
+
+    columnType match {
+      case Types.INTEGER => IntSqlValue(getInt)
+      case Types.BIGINT => LongSqlValue(getLong)
+      case Types.FLOAT => DoubleSqlValue(getDouble)
+      case Types.DOUBLE => DoubleSqlValue(getDouble)
+      case Types.BIT => BooleanSqlValue(getBoolean)
+      case Types.BOOLEAN => BooleanSqlValue(getBoolean)
+      case Types.BINARY => BytesSqlValue(getBytes)
+      case Types.VARBINARY => BytesSqlValue(getBytes)
+      case Types.LONGVARBINARY => BytesSqlValue(getBytes)
+      case Types.BLOB => BytesSqlValue(getBytes)
+      case Types.CHAR => StringSqlValue(getString)
+      case Types.VARCHAR => StringSqlValue(getString)
+      case Types.LONGVARCHAR => StringSqlValue(getString)
+      case Types.CLOB => StringSqlValue(getString)
+    }
   }
 
   private def addRow(s: PreparedStatement, values: List[SqlValue]): Unit = {

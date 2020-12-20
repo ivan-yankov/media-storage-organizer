@@ -1,5 +1,11 @@
 package org.yankov.mso.application.model
 
-class DatabaseModel {
+object DatabaseModel {
+  case class DbArtist(id: Int,
+                      name: Option[String],
+                      note: Option[String],
+                      instrumentId: Option[Int])
 
+  case class DbArtistMissions(artistId: Int,
+                              missions: Option[String])
 }

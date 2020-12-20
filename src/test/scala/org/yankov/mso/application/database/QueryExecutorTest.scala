@@ -121,7 +121,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("BOOLEAN_COL", DerbySqlTypes.boolean),
       ColumnDefinition("BYTES_COL", DerbySqlTypes.bytes),
       ColumnDefinition("STRING_COL", DerbySqlTypes.string),
-      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256)),
+      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
     executor.createSchema(schema).isRight shouldBe true
@@ -129,31 +129,31 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val data = List(
       List(
-        IntSqlValue(1),
-        LongSqlValue(1),
-        DoubleSqlValue(1.0),
-        BooleanSqlValue(true),
-        BytesSqlValue(Bytes(List(1, 2, 3).map(x => x.toByte))),
-        StringSqlValue("string 1"),
-        StringSqlValue("string 11")
+        IntSqlValue(Option(1)),
+        LongSqlValue(Option(1)),
+        DoubleSqlValue(Option(1.0)),
+        BooleanSqlValue(Option(true)),
+        BytesSqlValue(Option("bytes-1".getBytes.toList)),
+        StringSqlValue(Option("string 1")),
+        StringSqlValue(Option("string 11"))
       ),
       List(
-        IntSqlValue(2),
-        LongSqlValue(2),
-        DoubleSqlValue(2.0),
-        BooleanSqlValue(false),
-        BytesSqlValue(Bytes(List(4, 5, 6).map(x => x.toByte))),
-        StringSqlValue("string 2"),
-        StringSqlValue("string 22")
+        IntSqlValue(Option(2)),
+        LongSqlValue(Option(2)),
+        DoubleSqlValue(Option(2.0)),
+        BooleanSqlValue(Option(false)),
+        BytesSqlValue(Option("bytes-2".getBytes.toList)),
+        StringSqlValue(Option("string 2")),
+        StringSqlValue(Option("string 22"))
       ),
       List(
-        IntSqlValue(3),
-        LongSqlValue(3),
-        DoubleSqlValue(3.0),
-        BooleanSqlValue(false),
-        BytesSqlValue(Bytes(List(7, 8, 9).map(x => x.toByte))),
-        StringSqlValue("string 3"),
-        StringSqlValue("string 33")
+        IntSqlValue(Option(3)),
+        LongSqlValue(Option(3)),
+        DoubleSqlValue(Option(3.0)),
+        BooleanSqlValue(Option(false)),
+        BytesSqlValue(Option("bytes-3".getBytes.toList)),
+        StringSqlValue(Option("string 3")),
+        StringSqlValue(Option("string 33"))
       )
     )
 
@@ -176,7 +176,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("BOOLEAN_COL", DerbySqlTypes.boolean),
       ColumnDefinition("BYTES_COL", DerbySqlTypes.bytes),
       ColumnDefinition("STRING_COL", DerbySqlTypes.string),
-      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256)),
+      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
     executor.createSchema(schema).isRight shouldBe true
@@ -184,31 +184,31 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val data = List(
       List(
-        IntSqlValue(1),
-        LongSqlValue(1),
-        DoubleSqlValue(1.0),
-        BooleanSqlValue(true),
-        BytesSqlValue(Bytes(List(1, 2, 3).map(x => x.toByte))),
-        StringSqlValue("string 1"),
-        StringSqlValue("string 11")
+        IntSqlValue(Option(1)),
+        LongSqlValue(Option(1)),
+        DoubleSqlValue(Option(1.0)),
+        BooleanSqlValue(Option(true)),
+        BytesSqlValue(Option("bytes-1".getBytes.toList)),
+        StringSqlValue(Option("string 1")),
+        StringSqlValue(Option("string 11"))
       ),
       List(
-        IntSqlValue(2),
-        LongSqlValue(2),
-        DoubleSqlValue(2.0),
-        BooleanSqlValue(false),
-        BytesSqlValue(Bytes(List(4, 5, 6).map(x => x.toByte))),
-        StringSqlValue("string 2"),
-        StringSqlValue("string 22")
+        IntSqlValue(Option(2)),
+        LongSqlValue(Option(2)),
+        DoubleSqlValue(Option(2.0)),
+        BooleanSqlValue(Option(false)),
+        BytesSqlValue(Option("bytes-2".getBytes.toList)),
+        StringSqlValue(Option("string 2")),
+        StringSqlValue(Option("string 22"))
       ),
       List(
-        IntSqlValue(3),
-        LongSqlValue(3),
-        DoubleSqlValue(3.0),
-        BooleanSqlValue(false),
-        BytesSqlValue(Bytes(List(7, 8, 9).map(x => x.toByte))),
-        StringSqlValue("string 3"),
-        StringSqlValue("string 33")
+        IntSqlValue(Option(3)),
+        LongSqlValue(Option(3)),
+        DoubleSqlValue(Option(3.0)),
+        BooleanSqlValue(Option(false)),
+        BytesSqlValue(Option("bytes-3".getBytes.toList)),
+        StringSqlValue(Option("string 3")),
+        StringSqlValue(Option("string 33"))
       )
     )
 
@@ -219,8 +219,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       tableName = table,
       columns = List(),
       criteria = List(
-        WhereClause("ID", "=", IntSqlValue(1)),
-        OrClause("ID", "=", IntSqlValue(3))
+        WhereClause("ID", "=", IntSqlValue(Option(1))),
+        OrClause("ID", "=", IntSqlValue(Option(3)))
       )
     )
     result.isRight shouldBe true
@@ -239,7 +239,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("BOOLEAN_COL", DerbySqlTypes.boolean),
       ColumnDefinition("BYTES_COL", DerbySqlTypes.bytes),
       ColumnDefinition("STRING_COL", DerbySqlTypes.string),
-      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256)),
+      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
     executor.createSchema(schema).isRight shouldBe true
@@ -247,31 +247,31 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val data = List(
       List(
-        IntSqlValue(1),
-        LongSqlValue(1),
-        DoubleSqlValue(1.0),
-        BooleanSqlValue(true),
-        BytesSqlValue(Bytes(List(1, 2, 3).map(x => x.toByte))),
-        StringSqlValue("string 1"),
-        StringSqlValue("string 11")
+        IntSqlValue(Option(1)),
+        LongSqlValue(Option(1)),
+        DoubleSqlValue(Option(1.0)),
+        BooleanSqlValue(Option(true)),
+        BytesSqlValue(Option("bytes-1".getBytes.toList)),
+        StringSqlValue(Option("string 1")),
+        StringSqlValue(Option("string 11"))
       ),
       List(
-        IntSqlValue(2),
-        LongSqlValue(2),
-        DoubleSqlValue(2.0),
-        BooleanSqlValue(false),
-        BytesSqlValue(Bytes(List(4, 5, 6).map(x => x.toByte))),
-        StringSqlValue("string 2"),
-        StringSqlValue("string 22")
+        IntSqlValue(Option(2)),
+        LongSqlValue(Option(2)),
+        DoubleSqlValue(Option(2.0)),
+        BooleanSqlValue(Option(false)),
+        BytesSqlValue(Option("bytes-2".getBytes.toList)),
+        StringSqlValue(Option("string 2")),
+        StringSqlValue(Option("string 22"))
       ),
       List(
-        IntSqlValue(3),
-        LongSqlValue(3),
-        DoubleSqlValue(3.0),
-        BooleanSqlValue(false),
-        BytesSqlValue(Bytes(List(7, 8, 9).map(x => x.toByte))),
-        StringSqlValue("string 3"),
-        StringSqlValue("string 33")
+        IntSqlValue(Option(3)),
+        LongSqlValue(Option(3)),
+        DoubleSqlValue(Option(3.0)),
+        BooleanSqlValue(Option(false)),
+        BytesSqlValue(Option("bytes-3".getBytes.toList)),
+        StringSqlValue(Option("string 3")),
+        StringSqlValue(Option("string 33"))
       )
     )
 
@@ -279,16 +279,16 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val expectedData = List(
       List(
-        LongSqlValue(1),
-        DoubleSqlValue(1.0)
+        LongSqlValue(Option(1)),
+        DoubleSqlValue(Option(1.0))
       ),
       List(
-        LongSqlValue(2),
-        DoubleSqlValue(2.0)
+        LongSqlValue(Option(2)),
+        DoubleSqlValue(Option(2.0))
       ),
       List(
-        LongSqlValue(3),
-        DoubleSqlValue(3.0)
+        LongSqlValue(Option(3)),
+        DoubleSqlValue(Option(3.0))
       )
     )
 
@@ -318,19 +318,19 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val data = List(
       List(
-        IntSqlValue(1),
-        StringSqlValue("string 1"),
-        DoubleSqlValue(1.0)
+        IntSqlValue(Option(1)),
+        StringSqlValue(Option("string 1")),
+        DoubleSqlValue(Option(1.0))
       ),
       List(
-        IntSqlValue(2),
-        StringSqlValue("string 2"),
-        DoubleSqlValue(2.0)
+        IntSqlValue(Option(2)),
+        StringSqlValue(Option("string 2")),
+        DoubleSqlValue(Option(2.0))
       ),
       List(
-        IntSqlValue(3),
-        StringSqlValue("string 3"),
-        DoubleSqlValue(3.0)
+        IntSqlValue(Option(3)),
+        StringSqlValue(Option("string 3")),
+        DoubleSqlValue(Option(3.0))
       )
     )
 
@@ -338,34 +338,34 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val expectedData = List(
       List(
-        IntSqlValue(1),
-        StringSqlValue("string 11"),
-        DoubleSqlValue(1.0)
+        IntSqlValue(Option(1)),
+        StringSqlValue(Option("string 11")),
+        DoubleSqlValue(Option(1.0))
       ),
       List(
-        IntSqlValue(2),
-        StringSqlValue("string 2"),
-        DoubleSqlValue(2.0)
+        IntSqlValue(Option(2)),
+        StringSqlValue(Option("string 2")),
+        DoubleSqlValue(Option(2.0))
       ),
       List(
-        IntSqlValue(3),
-        StringSqlValue("string 33"),
-        DoubleSqlValue(3.0)
+        IntSqlValue(Option(3)),
+        StringSqlValue(Option("string 33")),
+        DoubleSqlValue(Option(3.0))
       )
     )
 
     executor.update(
       schema,
       table,
-      Map("VAL1" -> StringSqlValue("string 11")),
-      List(WhereClause("ID", "=", IntSqlValue(1)))
+      Map("VAL1" -> StringSqlValue(Option("string 11"))),
+      List(WhereClause("ID", "=", IntSqlValue(Option(1))))
     )
 
     executor.update(
       schema,
       table,
-      Map("VAL1" -> StringSqlValue("string 33")),
-      List(WhereClause("ID", "=", IntSqlValue(3)))
+      Map("VAL1" -> StringSqlValue(Option("string 33"))),
+      List(WhereClause("ID", "=", IntSqlValue(Option(3))))
     )
 
     val result = executor.select(schema, table)
@@ -389,19 +389,19 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val data = List(
       List(
-        IntSqlValue(1),
-        StringSqlValue("string 1"),
-        DoubleSqlValue(1.0)
+        IntSqlValue(Option(1)),
+        StringSqlValue(Option("string 1")),
+        DoubleSqlValue(Option(1.0))
       ),
       List(
-        IntSqlValue(2),
-        StringSqlValue("string 2"),
-        DoubleSqlValue(2.0)
+        IntSqlValue(Option(2)),
+        StringSqlValue(Option("string 2")),
+        DoubleSqlValue(Option(2.0))
       ),
       List(
-        IntSqlValue(3),
-        StringSqlValue("string 3"),
-        DoubleSqlValue(3.0)
+        IntSqlValue(Option(3)),
+        StringSqlValue(Option("string 3")),
+        DoubleSqlValue(Option(3.0))
       )
     )
 
@@ -409,22 +409,65 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val expectedData = List(
       List(
-        IntSqlValue(1),
-        StringSqlValue("string 1"),
-        DoubleSqlValue(1.0)
+        IntSqlValue(Option(1)),
+        StringSqlValue(Option("string 1")),
+        DoubleSqlValue(Option(1.0))
       ),
       List(
-        IntSqlValue(3),
-        StringSqlValue("string 3"),
-        DoubleSqlValue(3.0)
+        IntSqlValue(Option(3)),
+        StringSqlValue(Option("string 3")),
+        DoubleSqlValue(Option(3.0))
       )
     )
 
-    executor.delete(schema, table, List(WhereClause("ID", "=", IntSqlValue(2))))
+    executor.delete(schema, table, List(WhereClause("ID", "=", IntSqlValue(Option(2)))))
 
     val result = executor.select(schema, table)
     result.isRight shouldBe true
     result.getOrElse() shouldBe expectedData
+  }
+
+  "insert and select all rows, all columns with null values should succeed" in {
+    val executor = QueryExecutor(createDatabase("test-insert-select-all-rows-all-columns-handle-null"))
+
+    val schema = "SCM"
+    val table = "TBL"
+    val columns = List(
+      ColumnDefinition("ID", DerbySqlTypes.int, DerbySqlConstraints.primaryKey),
+      ColumnDefinition("INT_COL", DerbySqlTypes.int),
+      ColumnDefinition("LONG_COL", DerbySqlTypes.long),
+      ColumnDefinition("DOUBLE_COL", DerbySqlTypes.double),
+      ColumnDefinition("BOOLEAN_COL", DerbySqlTypes.boolean),
+      ColumnDefinition("BYTES_COL", DerbySqlTypes.bytes),
+      ColumnDefinition("STRING_COL", DerbySqlTypes.string),
+      ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
+    )
+
+    executor.createSchema(schema).isRight shouldBe true
+    executor.createTable(schema, table, columns).isRight shouldBe true
+
+    val data = List(
+      List(
+        IntSqlValue(Option(1))
+      )
+    )
+
+    executor.insert(schema, table, List("id"), data).isRight shouldBe true
+
+    val result = executor.select(schema, table)
+    result.isRight shouldBe true
+    result.getOrElse() shouldBe List(
+      List(
+        IntSqlValue(Option(1)),
+        IntSqlValue(Option.empty),
+        LongSqlValue(Option.empty),
+        DoubleSqlValue(Option.empty),
+        BooleanSqlValue(Option.empty),
+        BytesSqlValue(Option.empty),
+        StringSqlValue(Option.empty),
+        StringSqlValue(Option.empty),
+      )
+    )
   }
 
   private def createDatabase(name: String): Connection = {

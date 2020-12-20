@@ -7,7 +7,7 @@ import org.yankov.mso.application.converters.DurationConverter
 object Resources {
 
   object ApplicationArguments {
-    val databaseConnectionString: String = "--db-connection-string"
+    val databaseDirectory: String = "--db-dir"
   }
 
   object MainForm {
