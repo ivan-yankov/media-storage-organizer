@@ -6,11 +6,11 @@ import org.yankov.mso.application.database.SqlModel._
 
 import scala.annotation.tailrec
 
-case class QueryExecutor(connection: Connection) {
+object DatabaseManager {
   private val columnName = "COLUMN_NAME"
   private val dataType = "DATA_TYPE"
 
-  def createSchema(name: String): Either[Throwable, Unit] = {
+  def createSchema(connection: Connection, name: String): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"CREATE SCHEMA $name").execute()
       Right()
@@ -19,7 +19,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def createTable(schemaName: String, tableName: String, columns: List[ColumnDefinition]): Either[Throwable, Unit] = {
+  def createTable(connection: Connection, schemaName: String, tableName: String, columns: List[ColumnDefinition]): Either[Throwable, Unit] = {
     try {
       val fields = columns
         .map(x => columnToString(x))
@@ -31,7 +31,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def dropTable(schemaName: String, tableName: String): Either[Throwable, Unit] = {
+  def dropTable(connection: Connection, schemaName: String, tableName: String): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"DROP TABLE $schemaName.$tableName").execute()
       Right()
@@ -40,7 +40,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def addColumn(schemaName: String, tableName: String, column: ColumnDefinition): Either[Throwable, Unit] = {
+  def addColumn(connection: Connection, schemaName: String, tableName: String, column: ColumnDefinition): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"ALTER TABLE $schemaName.$tableName ADD ${columnToString(column)}").execute()
       Right()
@@ -49,7 +49,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def dropColumn(schemaName: String, tableName: String, columnName: String): Either[Throwable, Unit] = {
+  def dropColumn(connection: Connection, schemaName: String, tableName: String, columnName: String): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"ALTER TABLE $schemaName.$tableName DROP $columnName").execute()
       Right()
@@ -58,7 +58,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def insert(schemaName: String, tableName: String, columns: List[String], data: List[SqlValue]): Either[Throwable, Unit] = {
+  def insert(connection: Connection, schemaName: String, tableName: String, columns: List[String], data: List[SqlValue]): Either[Throwable, Unit] = {
     try {
       val presented = columns
         .zip(data)
@@ -76,7 +76,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def select(schemaName: String, tableName: String, columns: List[String] = List(), criteria: List[Clause] = List()): Either[Throwable, List[List[SqlValue]]] = {
+  def select(connection: Connection, schemaName: String, tableName: String, columns: List[String] = List(), criteria: List[Clause] = List()): Either[Throwable, List[List[SqlValue]]] = {
     try {
       val s = connection.prepareStatement(selectQuery(schemaName, tableName, columns, criteria))
       setStatementParameters(criteria.map(x => x.value), s, 1)
@@ -86,7 +86,7 @@ case class QueryExecutor(connection: Connection) {
       def iterate(acc: List[List[SqlValue]]): List[List[SqlValue]] = {
         if (!result.next()) acc
         else {
-          val row = getRow(result, schemaName, tableName, columns)
+          val row = getRow(connection, result, schemaName, tableName, columns)
           iterate(acc ++ List(row))
         }
       }
@@ -98,7 +98,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def update(schemaName: String, tableName: String, data: Map[String, SqlValue], criteria: List[Clause]): Either[Throwable, Unit] = {
+  def update(connection: Connection, schemaName: String, tableName: String, data: Map[String, SqlValue], criteria: List[Clause]): Either[Throwable, Unit] = {
     try {
       val s = connection.prepareStatement(updateQuery(schemaName, tableName, data.keys.toList, criteria))
       setStatementParameters(data.values.toList, s, 1)
@@ -110,7 +110,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def delete(schemaName: String, tableName: String, criteria: List[Clause]): Either[Throwable, Unit] = {
+  def delete(connection: Connection, schemaName: String, tableName: String, criteria: List[Clause]): Either[Throwable, Unit] = {
     try {
       val s = connection.prepareStatement(s"DELETE FROM $schemaName.$tableName${criteriaQuery(criteria)}")
       setStatementParameters(criteria.map(x => x.value), s, 1)
@@ -225,7 +225,7 @@ case class QueryExecutor(connection: Connection) {
       .foreach(x => setStatementValue(s, x._1, x._2))
   }
 
-  private def getRow(result: ResultSet, schemaName: String, tableName: String, columns: List[String]): List[SqlValue] = {
+  private def getRow(connection: Connection, result: ResultSet, schemaName: String, tableName: String, columns: List[String]): List[SqlValue] = {
     val allTableColumnsResultSet = connection.getMetaData.getColumns(null, schemaName, tableName, null)
 
     @tailrec

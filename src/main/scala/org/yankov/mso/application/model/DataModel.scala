@@ -9,6 +9,10 @@ object DataModel {
 
   val invalidId: Int = -1
 
+  def isValidId(id: Int): Boolean = id > 0
+
+  def asIdOption(id: Int): Option[Int] = if (isValidId(id)) Option(id) else Option.empty
+
   trait ArtistMission
 
   case object Singer extends ArtistMission
@@ -26,6 +30,28 @@ object DataModel {
   case object Ensemble extends ArtistMission
 
   case object ChamberGroup extends ArtistMission
+
+  def artistMissionToString(mission: ArtistMission): String = mission match {
+    case Singer => DatabaseModel.ArtistMissions.singer
+    case InstrumentPlayer => DatabaseModel.ArtistMissions.instrumentPlayer
+    case Composer => DatabaseModel.ArtistMissions.composer
+    case Conductor => DatabaseModel.ArtistMissions.conductor
+    case Orchestra => DatabaseModel.ArtistMissions.orchestra
+    case Choir => DatabaseModel.ArtistMissions.choir
+    case Ensemble => DatabaseModel.ArtistMissions.ensemble
+    case ChamberGroup => DatabaseModel.ArtistMissions.chamberGroup
+  }
+
+  def artistMissionFromString(mission: String): ArtistMission = mission match {
+    case DatabaseModel.ArtistMissions.singer => Singer
+    case DatabaseModel.ArtistMissions.instrumentPlayer => InstrumentPlayer
+    case DatabaseModel.ArtistMissions.composer => Composer
+    case DatabaseModel.ArtistMissions.conductor => Conductor
+    case DatabaseModel.ArtistMissions.orchestra => Orchestra
+    case DatabaseModel.ArtistMissions.choir => Choir
+    case DatabaseModel.ArtistMissions.ensemble => Ensemble
+    case DatabaseModel.ArtistMissions.chamberGroup => ChamberGroup
+  }
 
   case class Instrument(id: Int = invalidId,
                         name: String = "")
@@ -60,7 +86,6 @@ object DataModel {
                            ethnographicRegion: EthnographicRegion = EthnographicRegion(),
                            file: Option[File] = Option.empty,
                            recordFormat: String = "FLAC") {
-    def hasValidId: Boolean = id > 0
 
     def withTitle(newTitle: String): FolkloreTrack = FolkloreTrack(
       id = id,

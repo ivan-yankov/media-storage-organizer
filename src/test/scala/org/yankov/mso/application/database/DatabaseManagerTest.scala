@@ -5,11 +5,11 @@ import java.sql.{Connection, Types}
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import org.yankov.mso.application.database.SqlModel._
 
-class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
+class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll {
   override def beforeAll(): Unit = System.setSecurityManager(null)
 
   "create schema, create table and drop table should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-schema-table"))
+    val connection = createDatabase("test-schema-table")
 
     val schema = "SCM"
     val table = "TBL"
@@ -18,27 +18,26 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VAL", DerbySqlTypes.double)
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
-    val tables = executor.connection.getMetaData.getTables(null, schema, null, Array("TABLE"))
+    val tables = connection.getMetaData.getTables(null, schema, null, Array("TABLE"))
     tables.next() shouldBe true
     tables.getString("TABLE_SCHEM") shouldBe schema
     tables.getString("TABLE_NAME") shouldBe table
 
-    executor.dropTable(schema, table).isRight shouldBe true
+    DatabaseManager.dropTable(connection, schema, table).isRight shouldBe true
 
-    executor
-      .connection
+    connection
       .getMetaData
       .getTables(null, schema, null, Array("TABLE"))
       .next() shouldBe false
 
-    executor.connection.close()
+    connection.close()
   }
 
   "add column should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-add-column"))
+    val connection = createDatabase("test-add-column")
 
     val schema = "SCM"
     val table = "TBL"
@@ -47,10 +46,10 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VAL", DerbySqlTypes.double)
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
-    val tableColumns = executor.connection.getMetaData.getColumns(null, schema, table, null)
+    val tableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     tableColumns.next() shouldBe true
     tableColumns.getString("COLUMN_NAME") shouldBe "ID"
     tableColumns.getInt("DATA_TYPE") shouldBe Types.INTEGER
@@ -59,9 +58,14 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     tableColumns.getInt("DATA_TYPE") shouldBe Types.DOUBLE
     tableColumns.next() shouldBe false
 
-    executor.addColumn(schema, table, ColumnDefinition("ADDED_COLUMN", DerbySqlTypes.varchar(256))).isRight shouldBe true
+    DatabaseManager.addColumn(
+      connection,
+      schema,
+      table,
+      ColumnDefinition("ADDED_COLUMN", DerbySqlTypes.varchar(256))
+    ).isRight shouldBe true
 
-    val newTableColumns = executor.connection.getMetaData.getColumns(null, schema, table, null)
+    val newTableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     newTableColumns.next() shouldBe true
     newTableColumns.getString("COLUMN_NAME") shouldBe "ID"
     newTableColumns.getInt("DATA_TYPE") shouldBe Types.INTEGER
@@ -73,11 +77,11 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     newTableColumns.getInt("DATA_TYPE") shouldBe Types.VARCHAR
     newTableColumns.next() shouldBe false
 
-    executor.connection.close()
+    connection.close()
   }
 
   "drop column should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-drop-column"))
+    val connection = createDatabase("test-drop-column")
 
     val schema = "SCM"
     val table = "TBL"
@@ -86,10 +90,10 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VAL", DerbySqlTypes.double)
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
-    val tableColumns = executor.connection.getMetaData.getColumns(null, schema, table, null)
+    val tableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     tableColumns.next() shouldBe true
     tableColumns.getString("COLUMN_NAME") shouldBe "ID"
     tableColumns.getInt("DATA_TYPE") shouldBe Types.INTEGER
@@ -98,19 +102,19 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     tableColumns.getInt("DATA_TYPE") shouldBe Types.DOUBLE
     tableColumns.next() shouldBe false
 
-    executor.dropColumn(schema, table, "VAL").isRight shouldBe true
+    DatabaseManager.dropColumn(connection, schema, table, "VAL").isRight shouldBe true
 
-    val newTableColumns = executor.connection.getMetaData.getColumns(null, schema, table, null)
+    val newTableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     newTableColumns.next() shouldBe true
     newTableColumns.getString("COLUMN_NAME") shouldBe "ID"
     newTableColumns.getInt("DATA_TYPE") shouldBe Types.INTEGER
     newTableColumns.next() shouldBe false
 
-    executor.connection.close()
+    connection.close()
   }
 
   "insert and select all rows, all columns should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-insert-select-all-rows-all-columns"))
+    val connection = createDatabase("test-insert-select-all-rows-all-columns")
 
     val schema = "SCM"
     val table = "TBL"
@@ -124,8 +128,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -155,17 +159,17 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       StringSqlValue(Option("string 33"))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
-    val result = executor.select(schema, table)
+    val result = DatabaseManager.select(connection, schema, table)
     result.isRight shouldBe true
     result.right.get shouldBe List(r1, r2, r3)
   }
 
   "insert and select some rows, all columns should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-insert-select-some-rows-all-columns"))
+    val connection = createDatabase("test-insert-select-some-rows-all-columns")
 
     val schema = "SCM"
     val table = "TBL"
@@ -179,8 +183,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -210,11 +214,12 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       StringSqlValue(Option("string 33"))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
-    val result = executor.select(
+    val result = DatabaseManager.select(
+      connection,
       schemaName = schema,
       tableName = table,
       columns = List(),
@@ -228,7 +233,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
   }
 
   "insert and select all rows, some columns should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-insert-select-all-rows-some-columns"))
+    val connection = createDatabase("test-insert-select-all-rows-some-columns")
 
     val schema = "SCM"
     val table = "TBL"
@@ -242,8 +247,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -273,9 +278,9 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       StringSqlValue(Option("string 33"))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -292,7 +297,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       )
     )
 
-    val result = executor.select(
+    val result = DatabaseManager.select(
+      connection,
       schemaName = schema,
       tableName = table,
       columns = List("LONG_COL", "DOUBLE_COL"),
@@ -303,7 +309,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
   }
 
   "update should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-update"))
+    val connection = createDatabase("test-update")
 
     val schema = "SCM"
     val table = "TBL"
@@ -313,8 +319,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VAL2", DerbySqlTypes.double)
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -332,9 +338,9 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       DoubleSqlValue(Option(3.0))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -354,27 +360,29 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       )
     )
 
-    executor.update(
+    DatabaseManager.update(
+      connection,
       schema,
       table,
       Map("VAL1" -> StringSqlValue(Option("string 11"))),
       List(WhereClause("ID", "=", IntSqlValue(Option(1))))
     )
 
-    executor.update(
+    DatabaseManager.update(
+      connection,
       schema,
       table,
       Map("VAL1" -> StringSqlValue(Option("string 33"))),
       List(WhereClause("ID", "=", IntSqlValue(Option(3))))
     )
 
-    val result = executor.select(schema, table)
+    val result = DatabaseManager.select(connection, schema, table)
     result.isRight shouldBe true
     result.right.get shouldBe expectedData
   }
 
   "delete should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-delete"))
+    val connection = createDatabase("test-delete")
 
     val schema = "SCM"
     val table = "TBL"
@@ -384,8 +392,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VAL2", DerbySqlTypes.double)
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -403,9 +411,9 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       DoubleSqlValue(Option(3.0))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -420,15 +428,15 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       )
     )
 
-    executor.delete(schema, table, List(WhereClause("ID", "=", IntSqlValue(Option(2)))))
+    DatabaseManager.delete(connection, schema, table, List(WhereClause("ID", "=", IntSqlValue(Option(2)))))
 
-    val result = executor.select(schema, table)
+    val result = DatabaseManager.select(connection, schema, table)
     result.isRight shouldBe true
     result.right.get shouldBe expectedData
   }
 
   "insert and select all rows, all columns with null values should succeed" in {
-    val executor = QueryExecutor(createDatabase("test-insert-select-all-rows-all-columns-handle-null"))
+    val connection = createDatabase("test-insert-select-all-rows-all-columns-handle-null")
 
     val schema = "SCM"
     val table = "TBL"
@@ -443,8 +451,8 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       ColumnDefinition("VARCHAR_COL", DerbySqlTypes.varchar(256))
     )
 
-    executor.createSchema(schema).isRight shouldBe true
-    executor.createTable(schema, table, columns).isRight shouldBe true
+    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
+    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(IntSqlValue(Option(1)))
     val r2 = List(
@@ -458,10 +466,10 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       StringSqlValue(Option.empty)
     )
 
-    executor.insert(schema, table, List("id"), r1).isRight shouldBe true
-    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, List("id"), r1).isRight shouldBe true
+    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
 
-    val result = executor.select(schema, table)
+    val result = DatabaseManager.select(connection, schema, table)
     result.isRight shouldBe true
     result.getOrElse() shouldBe List(
       List(

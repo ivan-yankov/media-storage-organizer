@@ -2,6 +2,17 @@ package org.yankov.mso.application.model
 
 object DatabaseModel {
 
+  object ArtistMissions {
+    val singer: String = "SINGER"
+    val instrumentPlayer: String = "INSTRUMENT_PLAYER"
+    val composer: String = "COMPOSER"
+    val conductor: String = "CONDUCTOR"
+    val orchestra: String = "ORCHESTRA"
+    val choir: String = "CHOIR"
+    val ensemble: String = "ENSEMBLE"
+    val chamberGroup: String = "CHAMBER_GROUP"
+  }
+
   val schema: String = "ADMIN"
 
   object TblArtist {

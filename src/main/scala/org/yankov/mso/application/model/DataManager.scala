@@ -4,11 +4,17 @@ import java.beans.{PropertyChangeListener, PropertyChangeSupport}
 import java.sql.Connection
 
 import org.slf4j.LoggerFactory
+import org.yankov.mso.application.database.SqlModel._
 import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
+import org.yankov.mso.application.model.SqlFunctions._
 
-case class DataManager(dbConnectionString: String) {
+case class DataManager(dbConnectionString: String,
+                       dbCache: DatabaseCache = DatabaseCache(),
+                       sqlInsert: SqlInsert = DatabaseManager.insert) {
+  dbCache.refresh()
+
   private val log = LoggerFactory.getLogger(getClass)
   private val dataModelChangeSupport = new PropertyChangeSupport(this)
 
@@ -45,19 +51,46 @@ case class DataManager(dbConnectionString: String) {
 
   def getInstruments: List[Instrument] = ???
 
-  def insertArtist(artist: Artist): Boolean = {???
-//    connect match {
-//      case Some(connection) =>
-//        QueryExecutor(connection)
-//          .insertItem(
-//            schema,
-//            TblArtist.name,
-//            List(TblArtist.colId, TblArtist.colName, TblArtist.colNote, TblArtist.colInstrumentId),
-//            List()
-//          )
-//      case None =>
-//        false
-//    }
+  def insertArtist(artist: Artist): Boolean = {
+    connect match {
+      case Some(connection) =>
+        val artistId = dbCache.getNextArtistId
+        sqlInsert(
+          connection,
+          schema,
+          TblArtist.name,
+          List(TblArtist.colId, TblArtist.colName, TblArtist.colNote, TblArtist.colInstrumentId),
+          List(
+            IntSqlValue(Option(artistId)),
+            StringSqlValue(if (artist.name.nonEmpty) Option(artist.name) else Option.empty),
+            StringSqlValue(if (artist.note.nonEmpty) Option(artist.note) else Option.empty),
+            IntSqlValue(asIdOption(artist.instrument.id))
+          )
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to insert artist", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            val result = artist
+              .missions
+              .map(x => DataModel.artistMissionToString(x))
+              .map(x =>
+                sqlInsert(
+                  connection,
+                  schema,
+                  TblArtistMissions.name,
+                  List(TblArtistMissions.colArtistId, TblArtistMissions.colMissions),
+                  List(IntSqlValue(Option(artistId)), StringSqlValue(Option(x)))
+                )
+              )
+              .forall(x => x.isRight)
+            disconnect(connection)
+            result
+        }
+      case None =>
+        false
+    }
   }
 
   def updateArtist(artist: Artist): Unit = ???
