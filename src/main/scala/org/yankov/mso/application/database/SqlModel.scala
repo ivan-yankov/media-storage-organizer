@@ -1,7 +1,8 @@
 package org.yankov.mso.application.database
 
 object SqlModel {
-  case class Bytes(value: List[Byte])
+
+  type Bytes = List[Byte]
 
   object DerbySqlTypes {
     val short: String = "INTEGER"
@@ -28,17 +29,22 @@ object SqlModel {
 
   trait Clause {
     def name: String
+
     def column: String
+
     def operator: String
+
     def value: SqlValue
   }
 
   case class WhereClause(column: String, operator: String, value: SqlValue) extends Clause {
     override def name: String = "WHERE"
   }
+
   case class AndClause(column: String, operator: String, value: SqlValue) extends Clause {
     override def name: String = "AND"
   }
+
   case class OrClause(column: String, operator: String, value: SqlValue) extends Clause {
     override def name: String = "OR"
   }
@@ -46,46 +52,47 @@ object SqlModel {
   trait SqlValue {
     private def msg(x: String) = s"Value is not [$x]"
 
-    def asInt: Int = this match {
+    def asIntOption: Option[Int] = this match {
       case IntSqlValue(value) => value
       case _ => throw new UnsupportedOperationException(msg("Int"))
     }
 
-    def asLong: Long = this match {
+    def asLongOption: Option[Long] = this match {
       case LongSqlValue(value) => value
       case _ => throw new UnsupportedOperationException(msg("Long"))
     }
 
-    def asDouble: Double = this match {
+    def asDoubleOption: Option[Double] = this match {
       case DoubleSqlValue(value) => value
       case _ => throw new UnsupportedOperationException(msg("Double"))
     }
 
-    def asBoolean: Boolean = this match {
+    def asBooleanOption: Option[Boolean] = this match {
       case BooleanSqlValue(value) => value
       case _ => throw new UnsupportedOperationException(msg("Boolean"))
     }
 
-    def asBytes: Bytes = this match {
+    def asBytesOption: Option[Bytes] = this match {
       case BytesSqlValue(value) => value
       case _ => throw new UnsupportedOperationException(msg("Bytes"))
     }
 
-    def asString: String = this match {
+    def asStringOption: Option[String] = this match {
       case StringSqlValue(value) => value
       case _ => throw new UnsupportedOperationException(msg("String"))
     }
   }
 
-  case class IntSqlValue(value: Int) extends SqlValue
+  case class IntSqlValue(value: Option[Int]) extends SqlValue
 
-  case class LongSqlValue(value: Long) extends SqlValue
+  case class LongSqlValue(value: Option[Long]) extends SqlValue
 
-  case class DoubleSqlValue(value: Double) extends SqlValue
+  case class DoubleSqlValue(value: Option[Double]) extends SqlValue
 
-  case class BooleanSqlValue(value: Boolean) extends SqlValue
+  case class BooleanSqlValue(value: Option[Boolean]) extends SqlValue
 
-  case class BytesSqlValue(value: Bytes) extends SqlValue
+  case class BytesSqlValue(value: Option[Bytes]) extends SqlValue
 
-  case class StringSqlValue(value: String) extends SqlValue
+  case class StringSqlValue(value: Option[String]) extends SqlValue
+
 }

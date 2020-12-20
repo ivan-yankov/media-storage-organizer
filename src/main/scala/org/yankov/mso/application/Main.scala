@@ -2,6 +2,7 @@ package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.commands.SearchEngine
+import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.SearchModel.Filter
@@ -50,10 +51,12 @@ object Main extends JFXApp {
   )
 
   private def createDataManager: DataManager = {
-    getApplicationArgument(Resources.ApplicationArguments.databaseConnectionString) match {
-      case Some(value) => DataManager(value)
+    getApplicationArgument(Resources.ApplicationArguments.databaseDirectory) match {
+      case Some(value) =>
+        val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, value, Map())
+        DataManager(connectionString)
       case None =>
-        log.error(s"Missing application argument [${Resources.ApplicationArguments.databaseConnectionString}]. Unable to connect database.")
+        log.error(s"Missing application argument [${Resources.ApplicationArguments.databaseDirectory}]. Unable to connect database.")
         DataManager("")
     }
   }
