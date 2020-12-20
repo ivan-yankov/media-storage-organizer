@@ -17,7 +17,8 @@ libraryDependencies ++= Seq(
 
   "org.apache.derby" % "derby" % derbyVersion,
 
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test,
+  "org.scalamock" %% "scalamock" % "4.4.0" % Test
 )
 
 lazy val osName = System.getProperty("os.name") match {
