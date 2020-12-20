@@ -50,37 +50,46 @@ object SqlModel {
   }
 
   trait SqlValue {
-    private def msg(x: String) = s"Value is not [$x]"
-
     def asIntOption: Option[Int] = this match {
       case IntSqlValue(value) => value
-      case _ => throw new UnsupportedOperationException(msg("Int"))
+      case _ => Option.empty
     }
 
     def asLongOption: Option[Long] = this match {
       case LongSqlValue(value) => value
-      case _ => throw new UnsupportedOperationException(msg("Long"))
+      case _ => Option.empty
     }
 
     def asDoubleOption: Option[Double] = this match {
       case DoubleSqlValue(value) => value
-      case _ => throw new UnsupportedOperationException(msg("Double"))
+      case _ => Option.empty
     }
 
     def asBooleanOption: Option[Boolean] = this match {
       case BooleanSqlValue(value) => value
-      case _ => throw new UnsupportedOperationException(msg("Boolean"))
+      case _ => Option.empty
     }
 
     def asBytesOption: Option[Bytes] = this match {
       case BytesSqlValue(value) => value
-      case _ => throw new UnsupportedOperationException(msg("Bytes"))
+      case _ => Option.empty
     }
 
     def asStringOption: Option[String] = this match {
       case StringSqlValue(value) => value
-      case _ => throw new UnsupportedOperationException(msg("String"))
+      case _ => Option.empty
     }
+
+    def isEmpty: Boolean = {
+      asIntOption.isEmpty &&
+        asLongOption.isEmpty &&
+        asDoubleOption.isEmpty &&
+        asBooleanOption.isEmpty &&
+        asBytesOption.isEmpty &&
+        asStringOption.isEmpty
+    }
+
+    def nonEmpty: Boolean = !isEmpty
   }
 
   case class IntSqlValue(value: Option[Int]) extends SqlValue

@@ -58,18 +58,18 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  def insert(schemaName: String, tableName: String, columns: List[String], data: List[List[SqlValue]]): Either[Throwable, Unit] = {
+  def insert(schemaName: String, tableName: String, columns: List[String], data: List[SqlValue]): Either[Throwable, Unit] = {
     try {
-      val s = connection.prepareStatement(insertQuery(schemaName, tableName, columns))
+      val presented = columns
+        .zip(data)
+        .filter(x => x._2.nonEmpty)
 
-      data.foreach(x => {
-        addRow(s, x)
-        s.addBatch()
-      })
+      val s = connection.prepareStatement(insertQuery(schemaName, tableName, presented.map(x => x._1)))
 
-      val result = s.executeBatch()
-      val ok = result.size == data.size && result.forall(x => x == 1 || x == Statement.SUCCESS_NO_INFO)
-      if (ok) Right()
+      setRow(s, presented.map(x => x._2))
+
+      val result = s.executeUpdate()
+      if (result == 1) Right()
       else throw new SQLException("Insert was not successful.")
     } catch {
       case e: SQLException => Left(e)
@@ -216,7 +216,7 @@ case class QueryExecutor(connection: Connection) {
     }
   }
 
-  private def addRow(s: PreparedStatement, values: List[SqlValue]): Unit = {
+  private def setRow(s: PreparedStatement, values: List[SqlValue]): Unit = {
     values
       .indices
       .toList

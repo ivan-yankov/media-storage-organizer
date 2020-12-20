@@ -127,41 +127,41 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     executor.createSchema(schema).isRight shouldBe true
     executor.createTable(schema, table, columns).isRight shouldBe true
 
-    val data = List(
-      List(
-        IntSqlValue(Option(1)),
-        LongSqlValue(Option(1)),
-        DoubleSqlValue(Option(1.0)),
-        BooleanSqlValue(Option(true)),
-        BytesSqlValue(Option("bytes-1".getBytes.toList)),
-        StringSqlValue(Option("string 1")),
-        StringSqlValue(Option("string 11"))
-      ),
-      List(
-        IntSqlValue(Option(2)),
-        LongSqlValue(Option(2)),
-        DoubleSqlValue(Option(2.0)),
-        BooleanSqlValue(Option(false)),
-        BytesSqlValue(Option("bytes-2".getBytes.toList)),
-        StringSqlValue(Option("string 2")),
-        StringSqlValue(Option("string 22"))
-      ),
-      List(
-        IntSqlValue(Option(3)),
-        LongSqlValue(Option(3)),
-        DoubleSqlValue(Option(3.0)),
-        BooleanSqlValue(Option(false)),
-        BytesSqlValue(Option("bytes-3".getBytes.toList)),
-        StringSqlValue(Option("string 3")),
-        StringSqlValue(Option("string 33"))
-      )
+    val r1 = List(
+      IntSqlValue(Option(1)),
+      LongSqlValue(Option(1)),
+      DoubleSqlValue(Option(1.0)),
+      BooleanSqlValue(Option(true)),
+      BytesSqlValue(Option("bytes-1".getBytes.toList)),
+      StringSqlValue(Option("string 1")),
+      StringSqlValue(Option("string 11"))
+    )
+    val r2 = List(
+      IntSqlValue(Option(2)),
+      LongSqlValue(Option(2)),
+      DoubleSqlValue(Option(2.0)),
+      BooleanSqlValue(Option(false)),
+      BytesSqlValue(Option("bytes-2".getBytes.toList)),
+      StringSqlValue(Option("string 2")),
+      StringSqlValue(Option("string 22"))
+    )
+    val r3 = List(
+      IntSqlValue(Option(3)),
+      LongSqlValue(Option(3)),
+      DoubleSqlValue(Option(3.0)),
+      BooleanSqlValue(Option(false)),
+      BytesSqlValue(Option("bytes-3".getBytes.toList)),
+      StringSqlValue(Option("string 3")),
+      StringSqlValue(Option("string 33"))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), data).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val result = executor.select(schema, table)
     result.isRight shouldBe true
-    result.getOrElse() shouldBe data
+    result.right.get shouldBe List(r1, r2, r3)
   }
 
   "insert and select some rows, all columns should succeed" in {
@@ -182,37 +182,37 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     executor.createSchema(schema).isRight shouldBe true
     executor.createTable(schema, table, columns).isRight shouldBe true
 
-    val data = List(
-      List(
-        IntSqlValue(Option(1)),
-        LongSqlValue(Option(1)),
-        DoubleSqlValue(Option(1.0)),
-        BooleanSqlValue(Option(true)),
-        BytesSqlValue(Option("bytes-1".getBytes.toList)),
-        StringSqlValue(Option("string 1")),
-        StringSqlValue(Option("string 11"))
-      ),
-      List(
-        IntSqlValue(Option(2)),
-        LongSqlValue(Option(2)),
-        DoubleSqlValue(Option(2.0)),
-        BooleanSqlValue(Option(false)),
-        BytesSqlValue(Option("bytes-2".getBytes.toList)),
-        StringSqlValue(Option("string 2")),
-        StringSqlValue(Option("string 22"))
-      ),
-      List(
-        IntSqlValue(Option(3)),
-        LongSqlValue(Option(3)),
-        DoubleSqlValue(Option(3.0)),
-        BooleanSqlValue(Option(false)),
-        BytesSqlValue(Option("bytes-3".getBytes.toList)),
-        StringSqlValue(Option("string 3")),
-        StringSqlValue(Option("string 33"))
-      )
+    val r1 = List(
+      IntSqlValue(Option(1)),
+      LongSqlValue(Option(1)),
+      DoubleSqlValue(Option(1.0)),
+      BooleanSqlValue(Option(true)),
+      BytesSqlValue(Option("bytes-1".getBytes.toList)),
+      StringSqlValue(Option("string 1")),
+      StringSqlValue(Option("string 11"))
+    )
+    val r2 = List(
+      IntSqlValue(Option(2)),
+      LongSqlValue(Option(2)),
+      DoubleSqlValue(Option(2.0)),
+      BooleanSqlValue(Option(false)),
+      BytesSqlValue(Option("bytes-2".getBytes.toList)),
+      StringSqlValue(Option("string 2")),
+      StringSqlValue(Option("string 22"))
+    )
+    val r3 = List(
+      IntSqlValue(Option(3)),
+      LongSqlValue(Option(3)),
+      DoubleSqlValue(Option(3.0)),
+      BooleanSqlValue(Option(false)),
+      BytesSqlValue(Option("bytes-3".getBytes.toList)),
+      StringSqlValue(Option("string 3")),
+      StringSqlValue(Option("string 33"))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), data).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val result = executor.select(
       schemaName = schema,
@@ -224,7 +224,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       )
     )
     result.isRight shouldBe true
-    result.getOrElse() shouldBe List(data.head, data.reverse.head)
+    result.right.get shouldBe List(r1, r3)
   }
 
   "insert and select all rows, some columns should succeed" in {
@@ -245,37 +245,37 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     executor.createSchema(schema).isRight shouldBe true
     executor.createTable(schema, table, columns).isRight shouldBe true
 
-    val data = List(
-      List(
-        IntSqlValue(Option(1)),
-        LongSqlValue(Option(1)),
-        DoubleSqlValue(Option(1.0)),
-        BooleanSqlValue(Option(true)),
-        BytesSqlValue(Option("bytes-1".getBytes.toList)),
-        StringSqlValue(Option("string 1")),
-        StringSqlValue(Option("string 11"))
-      ),
-      List(
-        IntSqlValue(Option(2)),
-        LongSqlValue(Option(2)),
-        DoubleSqlValue(Option(2.0)),
-        BooleanSqlValue(Option(false)),
-        BytesSqlValue(Option("bytes-2".getBytes.toList)),
-        StringSqlValue(Option("string 2")),
-        StringSqlValue(Option("string 22"))
-      ),
-      List(
-        IntSqlValue(Option(3)),
-        LongSqlValue(Option(3)),
-        DoubleSqlValue(Option(3.0)),
-        BooleanSqlValue(Option(false)),
-        BytesSqlValue(Option("bytes-3".getBytes.toList)),
-        StringSqlValue(Option("string 3")),
-        StringSqlValue(Option("string 33"))
-      )
+    val r1 = List(
+      IntSqlValue(Option(1)),
+      LongSqlValue(Option(1)),
+      DoubleSqlValue(Option(1.0)),
+      BooleanSqlValue(Option(true)),
+      BytesSqlValue(Option("bytes-1".getBytes.toList)),
+      StringSqlValue(Option("string 1")),
+      StringSqlValue(Option("string 11"))
+    )
+    val r2 = List(
+      IntSqlValue(Option(2)),
+      LongSqlValue(Option(2)),
+      DoubleSqlValue(Option(2.0)),
+      BooleanSqlValue(Option(false)),
+      BytesSqlValue(Option("bytes-2".getBytes.toList)),
+      StringSqlValue(Option("string 2")),
+      StringSqlValue(Option("string 22"))
+    )
+    val r3 = List(
+      IntSqlValue(Option(3)),
+      LongSqlValue(Option(3)),
+      DoubleSqlValue(Option(3.0)),
+      BooleanSqlValue(Option(false)),
+      BytesSqlValue(Option("bytes-3".getBytes.toList)),
+      StringSqlValue(Option("string 3")),
+      StringSqlValue(Option("string 33"))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), data).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -299,7 +299,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
       criteria = List()
     )
     result.isRight shouldBe true
-    result.getOrElse() shouldBe expectedData
+    result.right.get shouldBe expectedData
   }
 
   "update should succeed" in {
@@ -316,25 +316,25 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     executor.createSchema(schema).isRight shouldBe true
     executor.createTable(schema, table, columns).isRight shouldBe true
 
-    val data = List(
-      List(
-        IntSqlValue(Option(1)),
-        StringSqlValue(Option("string 1")),
-        DoubleSqlValue(Option(1.0))
-      ),
-      List(
-        IntSqlValue(Option(2)),
-        StringSqlValue(Option("string 2")),
-        DoubleSqlValue(Option(2.0))
-      ),
-      List(
-        IntSqlValue(Option(3)),
-        StringSqlValue(Option("string 3")),
-        DoubleSqlValue(Option(3.0))
-      )
+    val r1 = List(
+      IntSqlValue(Option(1)),
+      StringSqlValue(Option("string 1")),
+      DoubleSqlValue(Option(1.0))
+    )
+    val r2 = List(
+      IntSqlValue(Option(2)),
+      StringSqlValue(Option("string 2")),
+      DoubleSqlValue(Option(2.0))
+    )
+    val r3 = List(
+      IntSqlValue(Option(3)),
+      StringSqlValue(Option("string 3")),
+      DoubleSqlValue(Option(3.0))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), data).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -370,7 +370,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val result = executor.select(schema, table)
     result.isRight shouldBe true
-    result.getOrElse() shouldBe expectedData
+    result.right.get shouldBe expectedData
   }
 
   "delete should succeed" in {
@@ -387,25 +387,25 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     executor.createSchema(schema).isRight shouldBe true
     executor.createTable(schema, table, columns).isRight shouldBe true
 
-    val data = List(
-      List(
-        IntSqlValue(Option(1)),
-        StringSqlValue(Option("string 1")),
-        DoubleSqlValue(Option(1.0))
-      ),
-      List(
-        IntSqlValue(Option(2)),
-        StringSqlValue(Option("string 2")),
-        DoubleSqlValue(Option(2.0))
-      ),
-      List(
-        IntSqlValue(Option(3)),
-        StringSqlValue(Option("string 3")),
-        DoubleSqlValue(Option(3.0))
-      )
+    val r1 = List(
+      IntSqlValue(Option(1)),
+      StringSqlValue(Option("string 1")),
+      DoubleSqlValue(Option(1.0))
+    )
+    val r2 = List(
+      IntSqlValue(Option(2)),
+      StringSqlValue(Option("string 2")),
+      DoubleSqlValue(Option(2.0))
+    )
+    val r3 = List(
+      IntSqlValue(Option(3)),
+      StringSqlValue(Option("string 3")),
+      DoubleSqlValue(Option(3.0))
     )
 
-    executor.insert(schema, table, columns.map(x => x.name), data).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -424,7 +424,7 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     val result = executor.select(schema, table)
     result.isRight shouldBe true
-    result.getOrElse() shouldBe expectedData
+    result.right.get shouldBe expectedData
   }
 
   "insert and select all rows, all columns with null values should succeed" in {
@@ -446,19 +446,36 @@ class QueryExecutorTest extends WordSpec with Matchers with BeforeAndAfterAll {
     executor.createSchema(schema).isRight shouldBe true
     executor.createTable(schema, table, columns).isRight shouldBe true
 
-    val data = List(
-      List(
-        IntSqlValue(Option(1))
-      )
+    val r1 = List(IntSqlValue(Option(1)))
+    val r2 = List(
+      IntSqlValue(Option(2)),
+      IntSqlValue(Option.empty),
+      LongSqlValue(Option.empty),
+      DoubleSqlValue(Option.empty),
+      BooleanSqlValue(Option.empty),
+      BytesSqlValue(Option.empty),
+      StringSqlValue(Option.empty),
+      StringSqlValue(Option.empty)
     )
 
-    executor.insert(schema, table, List("id"), data).isRight shouldBe true
+    executor.insert(schema, table, List("id"), r1).isRight shouldBe true
+    executor.insert(schema, table, columns.map(x => x.name), r2).isRight shouldBe true
 
     val result = executor.select(schema, table)
     result.isRight shouldBe true
     result.getOrElse() shouldBe List(
       List(
         IntSqlValue(Option(1)),
+        IntSqlValue(Option.empty),
+        LongSqlValue(Option.empty),
+        DoubleSqlValue(Option.empty),
+        BooleanSqlValue(Option.empty),
+        BytesSqlValue(Option.empty),
+        StringSqlValue(Option.empty),
+        StringSqlValue(Option.empty),
+      ),
+      List(
+        IntSqlValue(Option(2)),
         IntSqlValue(Option.empty),
         LongSqlValue(Option.empty),
         DoubleSqlValue(Option.empty),
