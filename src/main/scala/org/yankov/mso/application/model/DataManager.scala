@@ -39,7 +39,33 @@ case class DataManager(dbConnectionString: String,
 
   def getEthnographicRegions: List[EthnographicRegion] = ???
 
-  def insertSource(source: Source): Boolean = ???
+  def insertSource(source: Source): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlInsert(
+          connection,
+          schema,
+          Tables.source,
+          Tables.sourceColumns,
+          List(
+            IntSqlValue(Option(dbCache.getNextSourceId)),
+            StringSqlValue(if (source.signature.nonEmpty) Option(source.signature) else Option.empty),
+            IntSqlValue(asIdOption(source.sourceType.id))
+          )
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to insert artist", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            dbCache.refresh()
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def updateSource(source: Source): Unit = ???
 
@@ -58,8 +84,8 @@ case class DataManager(dbConnectionString: String,
         sqlInsert(
           connection,
           schema,
-          TblArtist.name,
-          List(TblArtist.colId, TblArtist.colName, TblArtist.colNote, TblArtist.colInstrumentId),
+          Tables.artist,
+          Tables.artistColumns,
           List(
             IntSqlValue(Option(artistId)),
             StringSqlValue(if (artist.name.nonEmpty) Option(artist.name) else Option.empty),
@@ -79,13 +105,14 @@ case class DataManager(dbConnectionString: String,
                 sqlInsert(
                   connection,
                   schema,
-                  TblArtistMissions.name,
-                  List(TblArtistMissions.colArtistId, TblArtistMissions.colMissions),
+                  Tables.artistMissions,
+                  Tables.artistMissionsColumns,
                   List(IntSqlValue(Option(artistId)), StringSqlValue(Option(x)))
                 )
               )
               .forall(x => x.isRight)
             disconnect(connection)
+            dbCache.refresh()
             result
         }
       case None =>

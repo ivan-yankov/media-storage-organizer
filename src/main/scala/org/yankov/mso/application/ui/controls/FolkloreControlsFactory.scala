@@ -16,7 +16,7 @@ object FolkloreControlsFactory {
       cbItems = sourceTypes,
       value = sourceTypes.head,
       itemToString = sourceTypeToString,
-      emptyValue = Option(SourceType())
+      emptyValue = Option.empty
     )
   }
 
