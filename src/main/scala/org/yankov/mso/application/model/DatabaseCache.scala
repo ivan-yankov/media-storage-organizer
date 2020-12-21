@@ -4,4 +4,6 @@ case class DatabaseCache() {
   def refresh(): Unit = ???
 
   def getNextArtistId: Int = ???
+
+  def getNextSourceId: Int = ???
 }

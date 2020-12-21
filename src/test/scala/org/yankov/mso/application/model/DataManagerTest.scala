@@ -14,7 +14,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
     "empty should succeed" in {
       val mocks = Mocks()
 
-      (mocks.dbCache.refresh _).expects().returns(()).once()
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
 
       (mocks.dbCache.getNextArtistId _).expects().returns(1).once()
 
@@ -52,7 +52,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
 
       val mocks = Mocks()
 
-      (mocks.dbCache.refresh _).expects().returns(()).once()
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
 
       (mocks.dbCache.getNextArtistId _).expects().returns(1).once()
 
@@ -194,6 +194,60 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           missions
         )
       ) shouldBe true
+    }
+  }
+
+  "insert source" - {
+    "empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextSourceId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "SOURCE",
+          List("ID", "SIGNATURE", "TYPE_ID"),
+          List(
+            IntSqlValue(Option(1)),
+            StringSqlValue(Option.empty),
+            IntSqlValue(Option.empty)
+          )
+        ).returns(Right())
+        .once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      dataManager.insertSource(Source()) shouldBe true
+    }
+
+    "non-empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextSourceId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "SOURCE",
+          List("ID", "SIGNATURE", "TYPE_ID"),
+          List(
+            IntSqlValue(Option(1)),
+            StringSqlValue(Option("signature")),
+            IntSqlValue(Option(3))
+          )
+        ).returns(Right())
+        .once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      dataManager.insertSource(Source(1, SourceType(3, "source-type"), "signature")) shouldBe true
     }
   }
 }

@@ -2,6 +2,32 @@ package org.yankov.mso.application.model
 
 object DatabaseModel {
 
+  val schema: String = "ADMIN"
+
+  object Tables {
+    val artist: String = "ARTIST"
+    val artistMissions: String = "ARTIST_MISSIONS"
+    val source: String = "SOURCE"
+
+    val artistColumns: List[String] = List(
+      "ID",
+      "NAME",
+      "NOTE",
+      "INSTRUMENT_ID"
+    )
+
+    val artistMissionsColumns: List[String] = List(
+      "ARTIST_ID",
+      "MISSIONS"
+    )
+
+    val sourceColumns: List[String] = List(
+      "ID",
+      "SIGNATURE",
+      "TYPE_ID"
+    )
+  }
+
   object ArtistMissions {
     val singer: String = "SINGER"
     val instrumentPlayer: String = "INSTRUMENT_PLAYER"
@@ -11,22 +37,6 @@ object DatabaseModel {
     val choir: String = "CHOIR"
     val ensemble: String = "ENSEMBLE"
     val chamberGroup: String = "CHAMBER_GROUP"
-  }
-
-  val schema: String = "ADMIN"
-
-  object TblArtist {
-    val name: String = "ARTIST"
-    val colId: String = "ID"
-    val colName: String = "NAME"
-    val colNote: String = "NOTE"
-    val colInstrumentId: String = "INSTRUMENT_ID"
-  }
-
-  object TblArtistMissions {
-    val name: String = "ARTIST_MISSIONS"
-    val colArtistId: String = "ARTIST_ID"
-    val colMissions: String = "MISSIONS"
   }
 
   case class DbArtist(id: Int,
