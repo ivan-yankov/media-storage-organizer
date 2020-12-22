@@ -27,8 +27,8 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ID", "NAME", "NOTE", "INSTRUMENT_ID"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option.empty),
-            StringSqlValue(Option.empty),
+            VarcharSqlValue(Option.empty),
+            VarcharSqlValue(Option.empty),
             IntSqlValue(Option.empty)
           )
         ).returns(Right())
@@ -65,8 +65,8 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ID", "NAME", "NOTE", "INSTRUMENT_ID"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("name")),
-            StringSqlValue(Option("note")),
+            VarcharSqlValue(Option("name")),
+            VarcharSqlValue(Option("note")),
             IntSqlValue(Option(10))
           )
         ).returns(Right())
@@ -81,7 +81,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("SINGER")),
+            VarcharSqlValue(Option("SINGER")),
           )
         ).returns(Right())
         .once()
@@ -95,7 +95,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("INSTRUMENT_PLAYER")),
+            VarcharSqlValue(Option("INSTRUMENT_PLAYER")),
           )
         ).returns(Right())
         .once()
@@ -109,7 +109,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("COMPOSER")),
+            VarcharSqlValue(Option("COMPOSER")),
           )
         ).returns(Right())
         .once()
@@ -123,7 +123,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("CONDUCTOR")),
+            VarcharSqlValue(Option("CONDUCTOR")),
           )
         ).returns(Right())
         .once()
@@ -137,7 +137,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("ORCHESTRA")),
+            VarcharSqlValue(Option("ORCHESTRA")),
           )
         ).returns(Right())
         .once()
@@ -151,7 +151,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("CHOIR")),
+            VarcharSqlValue(Option("CHOIR")),
           )
         ).returns(Right())
         .once()
@@ -165,7 +165,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("ENSEMBLE")),
+            VarcharSqlValue(Option("ENSEMBLE")),
           )
         ).returns(Right())
         .once()
@@ -179,7 +179,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ARTIST_ID", "MISSIONS"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("CHAMBER_GROUP")),
+            VarcharSqlValue(Option("CHAMBER_GROUP")),
           )
         ).returns(Right())
         .once()
@@ -214,7 +214,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ID", "SIGNATURE", "TYPE_ID"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option.empty),
+            VarcharSqlValue(Option.empty),
             IntSqlValue(Option.empty)
           )
         ).returns(Right())
@@ -240,7 +240,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           List("ID", "SIGNATURE", "TYPE_ID"),
           List(
             IntSqlValue(Option(1)),
-            StringSqlValue(Option("signature")),
+            VarcharSqlValue(Option("signature")),
             IntSqlValue(Option(3))
           )
         ).returns(Right())

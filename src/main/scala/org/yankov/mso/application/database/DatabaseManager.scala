@@ -98,11 +98,11 @@ object DatabaseManager {
     }
   }
 
-  def update(connection: Connection, schemaName: String, tableName: String, data: Map[String, SqlValue], criteria: List[Clause]): Either[Throwable, Unit] = {
+  def update(connection: Connection, schemaName: String, tableName: String, columns: List[String], data: List[SqlValue], criteria: List[Clause]): Either[Throwable, Unit] = {
     try {
-      val s = connection.prepareStatement(updateQuery(schemaName, tableName, data.keys.toList, criteria))
-      setStatementParameters(data.values.toList, s, 1)
-      setStatementParameters(criteria.map(x => x.value), s, data.values.size + 1)
+      val s = connection.prepareStatement(updateQuery(schemaName, tableName, columns, criteria))
+      setStatementParameters(data, s, 1)
+      setStatementParameters(criteria.map(x => x.value), s, data.size + 1)
       s.executeUpdate()
       Right()
     } catch {
@@ -121,7 +121,7 @@ object DatabaseManager {
     }
   }
 
-  private def columnToString(column: ColumnDefinition): String = s"${column.name} ${column.sqlType} ${column.constraint}"
+  private def columnToString(column: ColumnDefinition): String = s"${column.name} ${column.sqlType.stringRepresentation} ${column.constraint}"
 
   private def insertQuery(schemaName: String, tableName: String, columns: List[String]): String = {
     val placeholders = columns.map(_ => "?").mkString(",")
@@ -141,13 +141,25 @@ object DatabaseManager {
   private def criteriaQuery(criteria: List[Clause]): String =
     if (criteria.nonEmpty) criteria.map(x => s" ${x.name} ${x.column}${x.operator}?").mkString else ""
 
-  private def setStatementValue(s: PreparedStatement, i: Int, x: SqlValue): Unit = x match {
-    case IntSqlValue(value) => s.setInt(i, value.get)
-    case LongSqlValue(value) => s.setLong(i, value.get)
-    case DoubleSqlValue(value) => s.setDouble(i, value.get)
-    case BooleanSqlValue(value) => s.setBoolean(i, value.get)
-    case BytesSqlValue(value) => s.setBytes(i, value.get.toArray)
-    case StringSqlValue(value) => s.setString(i, value.get)
+  private def setStatementValue(s: PreparedStatement, i: Int, x: SqlValue): Unit = {
+    if (x.isEmpty) {
+      x match {
+        case BytesSqlValue(_) => s.setBytes(i, List().toArray)
+        case StringSqlValue(_) => s.setString(i, "")
+        case _ => s.setNull(i, x.sqlType.javaTypeCode)
+      }
+    }
+    else {
+      x match {
+        case IntSqlValue(value) => s.setInt(i, value.get)
+        case LongSqlValue(value) => s.setLong(i, value.get)
+        case DoubleSqlValue(value) => s.setDouble(i, value.get)
+        case BooleanSqlValue(value) => s.setBoolean(i, value.get)
+        case BytesSqlValue(value) => s.setBytes(i, value.get.toArray)
+        case VarcharSqlValue(value) => s.setString(i, value.get)
+        case StringSqlValue(value) => s.setString(i, value.get)
+      }
+    }
   }
 
   private def getResultValue(result: ResultSet, columnName: String, columnType: Int): SqlValue = {
@@ -209,9 +221,9 @@ object DatabaseManager {
       case Types.VARBINARY => BytesSqlValue(getBytes)
       case Types.LONGVARBINARY => BytesSqlValue(getBytes)
       case Types.BLOB => BytesSqlValue(getBytes)
-      case Types.CHAR => StringSqlValue(getString)
-      case Types.VARCHAR => StringSqlValue(getString)
-      case Types.LONGVARCHAR => StringSqlValue(getString)
+      case Types.CHAR => VarcharSqlValue(getString)
+      case Types.VARCHAR => VarcharSqlValue(getString)
+      case Types.LONGVARCHAR => VarcharSqlValue(getString)
       case Types.CLOB => StringSqlValue(getString)
     }
   }

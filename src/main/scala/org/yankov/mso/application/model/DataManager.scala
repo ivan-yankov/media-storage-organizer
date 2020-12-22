@@ -49,7 +49,7 @@ case class DataManager(dbConnectionString: String,
           Tables.sourceColumns,
           List(
             IntSqlValue(Option(dbCache.getNextSourceId)),
-            StringSqlValue(if (source.signature.nonEmpty) Option(source.signature) else Option.empty),
+            VarcharSqlValue(if (source.signature.nonEmpty) Option(source.signature) else Option.empty),
             IntSqlValue(asIdOption(source.sourceType.id))
           )
         ) match {
@@ -88,8 +88,8 @@ case class DataManager(dbConnectionString: String,
           Tables.artistColumns,
           List(
             IntSqlValue(Option(artistId)),
-            StringSqlValue(if (artist.name.nonEmpty) Option(artist.name) else Option.empty),
-            StringSqlValue(if (artist.note.nonEmpty) Option(artist.note) else Option.empty),
+            VarcharSqlValue(if (artist.name.nonEmpty) Option(artist.name) else Option.empty),
+            VarcharSqlValue(if (artist.note.nonEmpty) Option(artist.note) else Option.empty),
             IntSqlValue(asIdOption(artist.instrument.id))
           )
         ) match {
@@ -107,7 +107,7 @@ case class DataManager(dbConnectionString: String,
                   schema,
                   Tables.artistMissions,
                   Tables.artistMissionsColumns,
-                  List(IntSqlValue(Option(artistId)), StringSqlValue(Option(x)))
+                  List(IntSqlValue(Option(artistId)), VarcharSqlValue(Option(x)))
                 )
               )
               .forall(x => x.isRight)

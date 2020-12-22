@@ -1,20 +1,24 @@
 package org.yankov.mso.application.database
 
+import java.sql.Types
+
 object SqlModel {
 
   type Bytes = List[Byte]
 
-  object DerbySqlTypes {
-    val short: String = "INTEGER"
-    val int: String = "INTEGER"
-    val long: String = "BIGINT"
-    val float: String = "DOUBLE"
-    val double: String = "DOUBLE"
-    val boolean: String = "BOOLEAN"
-    val bytes: String = "BLOB"
-    val string: String = "CLOB"
+  case class SqlType(stringRepresentation: String, javaTypeCode: Int)
 
-    def varchar(size: Int): String = s"VARCHAR($size)"
+  object SqlTypes {
+    val short: SqlType = SqlType("INTEGER", Types.INTEGER)
+    val int: SqlType = SqlType("INTEGER", Types.INTEGER)
+    val long: SqlType = SqlType("BIGINT", Types.BIGINT)
+    val float: SqlType = SqlType("DOUBLE", Types.DOUBLE)
+    val double: SqlType = SqlType("DOUBLE", Types.DOUBLE)
+    val boolean: SqlType = SqlType("BOOLEAN", Types.BOOLEAN)
+    val bytes: SqlType = SqlType("BLOB", Types.BLOB)
+    val string: SqlType = SqlType("CLOB", Types.CLOB)
+
+    def varchar(size: Int = 256): SqlType = SqlType(s"VARCHAR($size)", Types.VARCHAR)
   }
 
   object DerbySqlConstraints {
@@ -25,7 +29,7 @@ object SqlModel {
     val check: String = "CHECK"
   }
 
-  case class ColumnDefinition(name: String, sqlType: String, constraint: String = "")
+  case class ColumnDefinition(name: String, sqlType: SqlType, constraint: String = "")
 
   trait Clause {
     def name: String
@@ -76,6 +80,7 @@ object SqlModel {
     }
 
     def asStringOption: Option[String] = this match {
+      case VarcharSqlValue(value) => value
       case StringSqlValue(value) => value
       case _ => Option.empty
     }
@@ -90,18 +95,36 @@ object SqlModel {
     }
 
     def nonEmpty: Boolean = !isEmpty
+
+    def sqlType: SqlType
   }
 
-  case class IntSqlValue(value: Option[Int]) extends SqlValue
+  case class IntSqlValue(value: Option[Int]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.int
+  }
 
-  case class LongSqlValue(value: Option[Long]) extends SqlValue
+  case class LongSqlValue(value: Option[Long]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.long
+  }
 
-  case class DoubleSqlValue(value: Option[Double]) extends SqlValue
+  case class DoubleSqlValue(value: Option[Double]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.double
+  }
 
-  case class BooleanSqlValue(value: Option[Boolean]) extends SqlValue
+  case class BooleanSqlValue(value: Option[Boolean]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.boolean
+  }
 
-  case class BytesSqlValue(value: Option[Bytes]) extends SqlValue
+  case class BytesSqlValue(value: Option[Bytes]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.bytes
+  }
 
-  case class StringSqlValue(value: Option[String]) extends SqlValue
+  case class StringSqlValue(value: Option[String]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.string
+  }
+
+  case class VarcharSqlValue(value: Option[String]) extends SqlValue {
+    def sqlType: SqlType = SqlTypes.varchar()
+  }
 
 }
