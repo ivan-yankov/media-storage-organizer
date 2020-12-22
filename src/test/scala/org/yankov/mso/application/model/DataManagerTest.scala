@@ -250,4 +250,108 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       dataManager.insertSource(Source(1, SourceType(3, "source-type"), "signature")) shouldBe true
     }
   }
+
+  "insert instrument" - {
+    "empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextInstrumentId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "INSTRUMENT",
+          List("ID", "NAME"),
+          List(
+            IntSqlValue(Option(1)),
+            VarcharSqlValue(Option.empty),
+          )
+        ).returns(Right())
+        .once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      dataManager.insertInstrument(Instrument()) shouldBe true
+    }
+
+    "non-empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextInstrumentId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "INSTRUMENT",
+          List("ID", "NAME"),
+          List(
+            IntSqlValue(Option(1)),
+            VarcharSqlValue(Option("instrument")),
+          )
+        ).returns(Right())
+        .once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      dataManager.insertInstrument(Instrument(1, "instrument")) shouldBe true
+    }
+  }
+
+  "insert ethnographic region" - {
+    "empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextEthnographicRegionId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "ETHNOGRAPHIC_REGION",
+          List("ID", "NAME"),
+          List(
+            IntSqlValue(Option(1)),
+            VarcharSqlValue(Option.empty),
+          )
+        ).returns(Right())
+        .once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      dataManager.insertEthnographicRegion(EthnographicRegion()) shouldBe true
+    }
+
+    "non-empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextEthnographicRegionId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "ETHNOGRAPHIC_REGION",
+          List("ID", "NAME"),
+          List(
+            IntSqlValue(Option(1)),
+            VarcharSqlValue(Option("ethnographic-region")),
+          )
+        ).returns(Right())
+        .once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      dataManager.insertEthnographicRegion(EthnographicRegion(1, "ethnographic-region")) shouldBe true
+    }
+  }
 }

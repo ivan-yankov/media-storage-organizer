@@ -33,7 +33,32 @@ case class DataManager(dbConnectionString: String,
 
   def getSourceTypes: List[SourceType] = ???
 
-  def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = ???
+  def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlInsert(
+          connection,
+          schema,
+          Tables.ethnographicRegion,
+          Tables.ethnographicRegionColumns,
+          List(
+            IntSqlValue(Option(dbCache.getNextEthnographicRegionId)),
+            VarcharSqlValue(if (ethnographicRegion.name.nonEmpty) Option(ethnographicRegion.name) else Option.empty)
+          )
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to insert ethnographic region", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            dbCache.refresh()
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Unit = ???
 
@@ -71,7 +96,32 @@ case class DataManager(dbConnectionString: String,
 
   def getSources: List[Source] = ???
 
-  def insertInstrument(instrument: Instrument): Boolean = ???
+  def insertInstrument(instrument: Instrument): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlInsert(
+          connection,
+          schema,
+          Tables.instrument,
+          Tables.instrumentColumns,
+          List(
+            IntSqlValue(Option(dbCache.getNextInstrumentId)),
+            VarcharSqlValue(if (instrument.name.nonEmpty) Option(instrument.name) else Option.empty)
+          )
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to insert instrument", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            dbCache.refresh()
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def updateInstrument(instrument: Instrument): Unit = ???
 

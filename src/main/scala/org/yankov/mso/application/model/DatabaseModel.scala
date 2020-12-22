@@ -8,6 +8,8 @@ object DatabaseModel {
     val artist: String = "ARTIST"
     val artistMissions: String = "ARTIST_MISSIONS"
     val source: String = "SOURCE"
+    val instrument: String = "INSTRUMENT"
+    val ethnographicRegion: String = "ETHNOGRAPHIC_REGION"
 
     val artistColumns: List[String] = List(
       "ID",
@@ -25,6 +27,16 @@ object DatabaseModel {
       "ID",
       "SIGNATURE",
       "TYPE_ID"
+    )
+
+    val instrumentColumns: List[String] = List(
+      "ID",
+      "NAME"
+    )
+
+    val ethnographicRegionColumns: List[String] = List(
+      "ID",
+      "NAME"
     )
   }
 
