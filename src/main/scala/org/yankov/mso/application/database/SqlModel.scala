@@ -18,7 +18,7 @@ object SqlModel {
     val bytes: SqlType = SqlType("BLOB", Types.BLOB)
     val string: SqlType = SqlType("CLOB", Types.CLOB)
 
-    def varchar(size: Int = 256): SqlType = SqlType(s"VARCHAR($size)", Types.VARCHAR)
+    def varchar(size: Int = 255): SqlType = SqlType(s"VARCHAR($size)", Types.VARCHAR)
   }
 
   object DerbySqlConstraints {
