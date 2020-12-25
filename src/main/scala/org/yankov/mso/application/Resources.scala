@@ -69,6 +69,8 @@ object Resources {
     val unableWriteFile: String = "Неуспешен експорт на файл"
     val exportStarted: String = "Експорт на файлове - начало"
     val exportCompleted: String = "Експорт на файлове - край"
+    def uploadTrackSuccessful(title: String): String = s"Успешен запис на [$title]"
+    def uploadTrackFailed(title: String): String = s"Грешка при запис на [$title]"
   }
 
   object Controls {

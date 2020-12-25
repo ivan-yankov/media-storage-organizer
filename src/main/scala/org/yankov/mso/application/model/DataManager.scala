@@ -1,9 +1,11 @@
 package org.yankov.mso.application.model
 
 import java.beans.{PropertyChangeListener, PropertyChangeSupport}
+import java.nio.file.Files
 import java.sql.Connection
 
 import org.slf4j.LoggerFactory
+import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.SqlModel._
 import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
@@ -12,7 +14,8 @@ import org.yankov.mso.application.model.SqlFunctions._
 
 case class DataManager(dbConnectionString: String,
                        dbCache: DatabaseCache = DatabaseCache(),
-                       sqlInsert: SqlInsert = DatabaseManager.insert) {
+                       sqlInsert: SqlInsert = DatabaseManager.insert,
+                       sqlUpdate: SqlUpdate = DatabaseManager.update) {
   dbCache.refresh()
 
   private val log = LoggerFactory.getLogger(getClass)
@@ -21,7 +24,61 @@ case class DataManager(dbConnectionString: String,
   def addPropertyChangeListener(listener: PropertyChangeListener): Unit =
     dataModelChangeSupport.addPropertyChangeListener(listener)
 
-  def insertTracks(tracks: List[FolkloreTrack]): Boolean = ???
+  def insertTracks(tracks: List[FolkloreTrack],
+                   onTrackComplete: (FolkloreTrack, Boolean) => Unit,
+                   loadRecord: FolkloreTrack => Array[Byte] = x => Files.readAllBytes(x.file.get.toPath)): Boolean = {
+    def insertTrack(track: FolkloreTrack): Boolean = {
+      val trackId = dbCache.getNextTrackId
+      connect match {
+        case Some(connection) =>
+          sqlInsert(
+            connection,
+            schema,
+            Tables.folkloreTrack,
+            Tables.folkloreTrackColumns,
+            List(
+              IntSqlValue(Option(trackId)),
+              VarcharSqlValue(Option(DurationConverter.toHourMinSecString(track.duration))),
+              VarcharSqlValue(asStringOption(track.note)),
+              VarcharSqlValue(asStringOption(track.title)),
+              IntSqlValue(asIdOption(track.accompanimentPerformer.id)),
+              IntSqlValue(asIdOption(track.arrangementAuthor.id)),
+              IntSqlValue(asIdOption(track.author.id)),
+              IntSqlValue(asIdOption(track.conductor.id)),
+              IntSqlValue(asIdOption(track.performer.id)),
+              IntSqlValue(asIdOption(track.soloist.id)),
+              IntSqlValue(asIdOption(track.source.id)),
+              IntSqlValue(asIdOption(track.ethnographicRegion.id)),
+              VarcharSqlValue(asStringOption(track.recordFormat))
+            )
+          ) match {
+            case Left(throwable) =>
+              log.error("Unable to insert track", throwable)
+              disconnect(connection)
+              false
+            case Right(_) =>
+              if (track.file.isDefined)
+                updateRecord(trackId, loadRecord(track))
+              disconnect(connection)
+              true
+          }
+        case None =>
+          false
+      }
+    }
+
+    val result = tracks
+      .map(x => {
+        val r = insertTrack(x)
+        onTrackComplete(x, r)
+        r
+      })
+      .forall(x => x)
+
+    dbCache.refresh()
+
+    result
+  }
 
   def updateTracks(tracks: List[FolkloreTrack]): Boolean = {
     //    x => x.track.file.isDefined && x.track.hasValidId,
@@ -43,7 +100,7 @@ case class DataManager(dbConnectionString: String,
           Tables.ethnographicRegionColumns,
           List(
             IntSqlValue(Option(dbCache.getNextEthnographicRegionId)),
-            VarcharSqlValue(if (ethnographicRegion.name.nonEmpty) Option(ethnographicRegion.name) else Option.empty)
+            VarcharSqlValue(asStringOption(ethnographicRegion.name))
           )
         ) match {
           case Left(throwable) =>
@@ -74,7 +131,7 @@ case class DataManager(dbConnectionString: String,
           Tables.sourceColumns,
           List(
             IntSqlValue(Option(dbCache.getNextSourceId)),
-            VarcharSqlValue(if (source.signature.nonEmpty) Option(source.signature) else Option.empty),
+            VarcharSqlValue(asStringOption(source.signature)),
             IntSqlValue(asIdOption(source.sourceType.id))
           )
         ) match {
@@ -106,7 +163,7 @@ case class DataManager(dbConnectionString: String,
           Tables.instrumentColumns,
           List(
             IntSqlValue(Option(dbCache.getNextInstrumentId)),
-            VarcharSqlValue(if (instrument.name.nonEmpty) Option(instrument.name) else Option.empty)
+            VarcharSqlValue(asStringOption(instrument.name))
           )
         ) match {
           case Left(throwable) =>
@@ -138,8 +195,8 @@ case class DataManager(dbConnectionString: String,
           Tables.artistColumns,
           List(
             IntSqlValue(Option(artistId)),
-            VarcharSqlValue(if (artist.name.nonEmpty) Option(artist.name) else Option.empty),
-            VarcharSqlValue(if (artist.note.nonEmpty) Option(artist.note) else Option.empty),
+            VarcharSqlValue(asStringOption(artist.name)),
+            VarcharSqlValue(asStringOption(artist.note)),
             IntSqlValue(asIdOption(artist.instrument.id))
           )
         ) match {
@@ -176,7 +233,29 @@ case class DataManager(dbConnectionString: String,
 
   def getRecord(id: Int): Array[Byte] = ???
 
-  private def updateRecord(id: Int, record: Array[Byte]): Unit = ???
+  private def updateRecord(id: Int, record: Array[Byte]): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlUpdate(
+          connection,
+          schema,
+          Tables.folkloreTrack,
+          List(Tables.folkloreTrackRecordColumn),
+          List(BytesSqlValue(Option(record.toList))),
+          List(WhereClause(Tables.folkloreTrackIdColumn, "=", IntSqlValue(Option(id))))
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to update track record", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   private def connect: Option[Connection] = {
     DatabaseConnection.connect(dbConnectionString) match {
@@ -189,4 +268,6 @@ case class DataManager(dbConnectionString: String,
   }
 
   private def disconnect(connection: Connection): Unit = DatabaseConnection.close(connection)
+
+  private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 }

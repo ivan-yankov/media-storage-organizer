@@ -10,6 +10,7 @@ object DatabaseModel {
     val source: String = "SOURCE"
     val instrument: String = "INSTRUMENT"
     val ethnographicRegion: String = "ETHNOGRAPHIC_REGION"
+    val folkloreTrack: String = "FOLKLORE_TRACK"
 
     val artistColumns: List[String] = List(
       "ID",
@@ -37,6 +38,24 @@ object DatabaseModel {
     val ethnographicRegionColumns: List[String] = List(
       "ID",
       "NAME"
+    )
+
+    val folkloreTrackIdColumn: String = "ID"
+    val folkloreTrackRecordColumn: String = "RECORD"
+    val folkloreTrackColumns: List[String] = List(
+      folkloreTrackIdColumn,
+      "DURATION",
+      "NOTE",
+      "TITLE",
+      "ACCOMPANIMENTPERFORMER_ID",
+      "ARRANGEMENTAUTHOR_ID",
+      "AUTHOR_ID",
+      "CONDUCTOR_ID",
+      "PERFORMER_ID",
+      "SOLOIST_ID",
+      "SOURCE_ID",
+      "ETHNOGRAPHICREGION_ID",
+      "RECORD_FORMAT"
     )
   }
 

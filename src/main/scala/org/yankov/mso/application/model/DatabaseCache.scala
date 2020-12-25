@@ -10,4 +10,6 @@ case class DatabaseCache() {
   def getNextInstrumentId: Int = ???
 
   def getNextEthnographicRegionId: Int = ???
+
+  def getNextTrackId: Int = ???
 }

@@ -2,18 +2,20 @@ package org.yankov.mso.application.ui.toolbars
 
 import java.io.File
 
-import org.yankov.mso.application.Main
+import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.commands.Commands
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.FolkloreTrackEditor
+import org.yankov.mso.application.ui.console.ApplicationConsole
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private var copiedProperties: Option[FolkloreTrackProperties] = Option.empty
   private val dataManager = Main.dataManager
+  private val console = ApplicationConsole
 
   override def updateItems(targetInputTab: Boolean): Unit = {
     Commands.updateItems[FolkloreTrackProperties](
@@ -109,7 +111,13 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def uploadItems(targetInputTab: Boolean): Unit = {
     Commands.uploadItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => dataManager.insertTracks(x.map(y => y.track))
+      x => dataManager.insertTracks(
+        x.map(y => y.track),
+        (x, y) => console.writeMessageWithTimestamp(
+          if (y) Resources.ConsoleMessages.uploadTrackSuccessful(x.title)
+          else Resources.ConsoleMessages.uploadTrackFailed(x.title)
+        )
+      )
     )
   }
 

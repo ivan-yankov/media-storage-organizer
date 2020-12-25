@@ -1,9 +1,12 @@
 package org.yankov.mso.application.model
 
+import java.io.File
+import java.time.Duration
+
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FreeSpec, Matchers}
-import org.yankov.mso.application.database._
 import org.yankov.mso.application.database.SqlModel._
+import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
 
 class DataManagerTest extends FreeSpec with Matchers with MockFactory {
@@ -352,6 +355,158 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
 
       val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
       dataManager.insertEthnographicRegion(EthnographicRegion(1, "ethnographic-region")) shouldBe true
+    }
+  }
+
+  "insert tracks" - {
+    "empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextTrackId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "FOLKLORE_TRACK",
+          List(
+            "ID",
+            "DURATION",
+            "NOTE",
+            "TITLE",
+            "ACCOMPANIMENTPERFORMER_ID",
+            "ARRANGEMENTAUTHOR_ID",
+            "AUTHOR_ID",
+            "CONDUCTOR_ID",
+            "PERFORMER_ID",
+            "SOLOIST_ID",
+            "SOURCE_ID",
+            "ETHNOGRAPHICREGION_ID",
+            "RECORD_FORMAT"
+          ),
+          List(
+            IntSqlValue(Option(1)),
+            VarcharSqlValue(Option("0:00:00")),
+            VarcharSqlValue(Option.empty),
+            VarcharSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            IntSqlValue(Option.empty),
+            VarcharSqlValue(Option("FLAC"))
+          )
+        ).returns(Right())
+        .once()
+
+      mocks
+        .sqlUpdate
+        .expects(
+          *,
+          "ADMIN",
+          "FOLKLORE_TRACK",
+          List("RECORD"),
+          *,
+          List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+        ).returns(Right())
+        .never()
+
+      val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
+      onTrackComplete.expects(*, true).returns().once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert, mocks.sqlUpdate)
+      dataManager.insertTracks(List(FolkloreTrack()), onTrackComplete) shouldBe true
+    }
+
+    "non-empty should succeed" in {
+      val mocks = Mocks()
+
+      (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+      (mocks.dbCache.getNextTrackId _).expects().returns(1).once()
+
+      mocks
+        .sqlInsert
+        .expects(
+          *,
+          "ADMIN",
+          "FOLKLORE_TRACK",
+          List(
+            "ID",
+            "DURATION",
+            "NOTE",
+            "TITLE",
+            "ACCOMPANIMENTPERFORMER_ID",
+            "ARRANGEMENTAUTHOR_ID",
+            "AUTHOR_ID",
+            "CONDUCTOR_ID",
+            "PERFORMER_ID",
+            "SOLOIST_ID",
+            "SOURCE_ID",
+            "ETHNOGRAPHICREGION_ID",
+            "RECORD_FORMAT"
+          ),
+          List(
+            IntSqlValue(Option(1)),
+            VarcharSqlValue(Option("0:01:00")),
+            VarcharSqlValue(Option("note")),
+            VarcharSqlValue(Option("title")),
+            IntSqlValue(Option(10)),
+            IntSqlValue(Option(11)),
+            IntSqlValue(Option(12)),
+            IntSqlValue(Option(13)),
+            IntSqlValue(Option(14)),
+            IntSqlValue(Option(15)),
+            IntSqlValue(Option(16)),
+            IntSqlValue(Option(17)),
+            VarcharSqlValue(Option("FLAC"))
+          )
+        ).returns(Right())
+        .once()
+
+      mocks
+        .sqlUpdate
+        .expects(
+          *,
+          "ADMIN",
+          "FOLKLORE_TRACK",
+          List("RECORD"),
+          *,
+          List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+        ).returns(Right())
+        .once()
+
+      val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
+      onTrackComplete.expects(*, true).returns().once()
+
+      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert, mocks.sqlUpdate)
+      dataManager.insertTracks(
+        List(
+          FolkloreTrack(
+            id = -1,
+            duration = Duration.ofSeconds(60),
+            note = "note",
+            title = "title",
+            accompanimentPerformer = Artist(10, "accompaniment-performer"),
+            arrangementAuthor = Artist(11, "arrangement-author"),
+            author = Artist(12, "author"),
+            conductor = Artist(13, "conductor"),
+            performer = Artist(14, "performer"),
+            soloist = Artist(15, "soloist"),
+            source = Source(16),
+            ethnographicRegion = EthnographicRegion(17),
+            file = Option(new File("/path/to/the/file"))
+          )
+        ),
+        onTrackComplete,
+        _ => "bytes".getBytes
+      ) shouldBe true
     }
   }
 }
