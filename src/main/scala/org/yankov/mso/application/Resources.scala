@@ -8,6 +8,11 @@ object Resources {
 
   object ApplicationArguments {
     val databaseDirectory: String = "--db-dir"
+    val mediaDir: String = "--media-dir"
+  }
+
+  object Media {
+    val flacExtension: String = ".flac"
   }
 
   object MainForm {

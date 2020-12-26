@@ -123,8 +123,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
       note = note.getValue,
       source = source.getValue,
       ethnographicRegion = ethnographicRegion.getValue,
-      file = fileSelector.getValue,
-      recordFormat = track.recordFormat
+      file = fileSelector.getValue
     )
 
     table.getItems.set(trackIndex, FolkloreTrackProperties(newTrack))

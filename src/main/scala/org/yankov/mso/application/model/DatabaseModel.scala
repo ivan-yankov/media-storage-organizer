@@ -40,10 +40,8 @@ object DatabaseModel {
       "NAME"
     )
 
-    val folkloreTrackIdColumn: String = "ID"
-    val folkloreTrackRecordColumn: String = "RECORD"
     val folkloreTrackColumns: List[String] = List(
-      folkloreTrackIdColumn,
+      "ID",
       "DURATION",
       "NOTE",
       "TITLE",
@@ -54,8 +52,7 @@ object DatabaseModel {
       "PERFORMER_ID",
       "SOLOIST_ID",
       "SOURCE_ID",
-      "ETHNOGRAPHICREGION_ID",
-      "RECORD_FORMAT"
+      "ETHNOGRAPHICREGION_ID"
     )
   }
 

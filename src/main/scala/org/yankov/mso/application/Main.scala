@@ -51,26 +51,26 @@ object Main extends JFXApp {
   )
 
   private def createDataManager: DataManager = {
-    getApplicationArgument(Resources.ApplicationArguments.databaseDirectory) match {
-      case Some(value) =>
-        val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, value, Map())
-        DataManager(connectionString)
-      case None =>
-        log.error(s"Missing application argument [${Resources.ApplicationArguments.databaseDirectory}]. Unable to connect database.")
-        DataManager("")
-    }
+    val dbDir = getApplicationArgument(Resources.ApplicationArguments.databaseDirectory)
+    val mediaDir = getApplicationArgument(Resources.ApplicationArguments.mediaDir)
+    val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())
+    DataManager(connectionString, mediaDir)
   }
 
-  private def getApplicationArgument(argument: String): Option[String] = {
+  private def getApplicationArgument(argument: String, defaultValue: String = ""): String = {
     parameters
       .raw
       .find(x => x.startsWith(argument)) match {
       case Some(value) =>
-        val c = value.split("=")
-        if (c.length == 2) Option(c(1))
-        else Option.empty
+        val items = value.split("=")
+        if (items.length == 2) items(1)
+        else {
+          log.error(s"Missing application argument [$argument].")
+          defaultValue
+        }
       case None =>
-        Option.empty
+        log.error(s"Missing application argument [$argument].")
+        defaultValue
     }
   }
 

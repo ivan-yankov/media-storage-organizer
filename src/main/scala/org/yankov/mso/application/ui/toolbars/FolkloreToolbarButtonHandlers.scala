@@ -71,8 +71,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
         note = copiedTrack.note,
         source = copiedTrack.source,
         ethnographicRegion = copiedTrack.ethnographicRegion,
-        file = selectedProperties.track.file,
-        recordFormat = copiedTrack.recordFormat
+        file = selectedProperties.track.file
       )
       FolkloreTrackProperties(newTrack)
     }
@@ -152,7 +151,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       track.id + "_" +
       track.title + "_" +
       track.performer + "_" +
-      track.source + "." +
-      track.recordFormat.toLowerCase
+      track.source +
+      Resources.Media.flacExtension
   }
 }
