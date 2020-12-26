@@ -1,2 +1,2 @@
 source var.sh
-java -Xms2G -Xmx6G -jar target/scala-2.12/media-storage-organizer-assembly-$VERSION.jar --db-dir $TEST_DB
+java -Xms2G -Xmx6G -jar target/scala-2.12/media-storage-organizer-assembly-$VERSION.jar --db-dir $TEST_DB $TEST_MEDIA
