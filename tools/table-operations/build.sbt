@@ -1,4 +1,4 @@
-name := "merge-tables"
+name := "table-operations"
 
 version := "0.1"
 

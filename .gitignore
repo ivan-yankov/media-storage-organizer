@@ -9,5 +9,5 @@ launch
 .project
 .classpath
 .bsp
-testdb/
+test-data/
 *.flac
