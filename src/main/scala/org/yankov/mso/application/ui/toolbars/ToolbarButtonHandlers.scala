@@ -19,6 +19,8 @@ trait ToolbarButtonHandlers {
 
   def removeItem(targetInputTab: Boolean): Unit
 
+  def deleteItem(targetInputTab: Boolean): Unit
+
   def addItem(targetInputTab: Boolean): Unit
 
   def uploadItems(targetInputTab: Boolean): Unit

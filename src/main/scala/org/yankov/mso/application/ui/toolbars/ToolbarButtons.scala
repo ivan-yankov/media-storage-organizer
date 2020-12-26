@@ -7,6 +7,7 @@ import scalafx.scene.image.{Image, ImageView}
 object ButtonIds {
   val btnAdd: String = "atn-add"
   val btnRemove: String = "btn-remove"
+  val btnDelete: String = "btn-delete"
   val btnClone: String = "btn-clone"
   val btnCopyProperties: String = "btn-copy-properties"
   val btnApplyProperties: String = "btn-apply-properties"
@@ -43,6 +44,7 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     editButton(ButtonUserData(false)),
     playButton(ButtonUserData(false)),
     updateButton(ButtonUserData(false)),
+    deleteButton(ButtonUserData(false)),
     exportButton(ButtonUserData(false))
   )
 
@@ -85,6 +87,14 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     tooltip = new Tooltip(Resources.ToolbarButtons.remove)
     graphic = getIcon("remove")
     onAction = _ => handlers.removeItem(data.atInputTab)
+    userData = data
+  }
+
+  private def deleteButton(data: ButtonUserData): Button = new Button {
+    id = ButtonIds.btnDelete
+    tooltip = new Tooltip(Resources.ToolbarButtons.delete)
+    graphic = getIcon("remove")
+    onAction = _ => handlers.deleteItem(data.atInputTab)
     userData = data
   }
 

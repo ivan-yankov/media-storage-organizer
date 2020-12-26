@@ -7,7 +7,7 @@ import org.yankov.mso.application.commands.Commands
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
-import org.yankov.mso.application.ui.FolkloreTrackEditor
+import org.yankov.mso.application.ui.{FolkloreTrackEditor, Utils}
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
@@ -99,6 +99,18 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def removeItem(targetInputTab: Boolean): Unit = Commands.removeItem(targetTable(targetInputTab))
+
+  override def deleteItem(targetInputTab: Boolean): Unit = {
+    Commands.deleteItem[FolkloreTrackProperties](
+      targetTable(targetInputTab),
+      x => {
+        if (Utils.confirmDeleteFromDatabase(x.track.id)) {
+          if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(x.track.id))
+          else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(x.track.id))
+        }
+      }
+    )
+  }
 
   override def addItem(targetInputTab: Boolean): Unit = {
     Commands.addItem(

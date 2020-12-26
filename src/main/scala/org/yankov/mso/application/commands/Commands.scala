@@ -135,6 +135,17 @@ object Commands {
     }
   }
 
+  def deleteItem[T](table: TableView[T], deleteFromDatabase: T => Unit): Unit = {
+    val index = getTableSelectedIndex(table)
+    if (index.isDefined) {
+      val item = table
+        .items
+        .getValue
+        .get(index.get)
+      deleteFromDatabase(item)
+    }
+  }
+
   def addItem[T](table: TableView[T], item: T): Unit = table.getItems.add(item)
 
   def uploadItems[T](table: TableView[T], insertItems: List[T] => Boolean): Unit = {

@@ -33,11 +33,13 @@ object Resources {
     val areYouSure: String = "Сигурни ли сте?"
     val yes: String = "Да"
     val no: String = "Не"
+    def deleteTrackFromDatabase(id: Int): String = s"Запис с идентификатор [$id] ще бъде изтрит от базата данни."
   }
 
   object ToolbarButtons {
     val add: String = "Добавяне"
-    val remove: String = "Премахване"
+    val remove: String = "Премахване от таблицата"
+    val delete: String = "Изтриване от базата данни"
     val cloneItems: String = "Клониране"
     val copyProperties: String = "Копиране на атрибути"
     val applyProperties: String = "Поставяне на атрибути"
@@ -76,6 +78,8 @@ object Resources {
     val exportCompleted: String = "Експорт на файлове - край"
     def uploadTrackSuccessful(title: String): String = s"Успешен запис на [$title]"
     def uploadTrackFailed(title: String): String = s"Грешка при запис на [$title]"
+    def deleteTrackSuccessful(id: Int): String = s"Успешно изтрит запис с идентификатор [$id]"
+    def deleteTrackFailed(id: Int): String = s"Грешка при изтриване на запис с идентификатор [$id]"
   }
 
   object Controls {

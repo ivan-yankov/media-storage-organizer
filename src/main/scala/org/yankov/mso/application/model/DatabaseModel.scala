@@ -4,6 +4,8 @@ object DatabaseModel {
 
   val schema: String = "ADMIN"
 
+  val id: String = "ID"
+
   object Tables {
     val artist: String = "ARTIST"
     val artistMissions: String = "ARTIST_MISSIONS"
@@ -13,7 +15,7 @@ object DatabaseModel {
     val folkloreTrack: String = "FOLKLORE_TRACK"
 
     val artistColumns: List[String] = List(
-      "ID",
+      id,
       "NAME",
       "NOTE",
       "INSTRUMENT_ID"
@@ -25,23 +27,23 @@ object DatabaseModel {
     )
 
     val sourceColumns: List[String] = List(
-      "ID",
+      id,
       "SIGNATURE",
       "TYPE_ID"
     )
 
     val instrumentColumns: List[String] = List(
-      "ID",
+      id,
       "NAME"
     )
 
     val ethnographicRegionColumns: List[String] = List(
-      "ID",
+      id,
       "NAME"
     )
 
     val folkloreTrackColumns: List[String] = List(
-      "ID",
+      id,
       "DURATION",
       "NOTE",
       "TITLE",

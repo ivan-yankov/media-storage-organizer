@@ -19,6 +19,7 @@ case class DataManager(dbConnectionString: String,
                        dbCache: DatabaseCache = DatabaseCache(),
                        sqlInsert: SqlInsert = DatabaseManager.insert,
                        sqlUpdate: SqlUpdate = DatabaseManager.update,
+                       sqlDelete: SqlDelete = DatabaseManager.delete,
                        readRecord: File => Array[Byte] = x => Files.readAllBytes(x.toPath),
                        writeRecord: (File, Array[Byte]) => Unit = (x, y) => Files.write(x.toPath, y),
                        deleteRecord: File => Unit = x => Files.deleteIfExists(x.toPath)) {
@@ -90,6 +91,30 @@ case class DataManager(dbConnectionString: String,
   }
 
   def getTracks: List[FolkloreTrack] = ???
+
+  def deleteTrack(track: FolkloreTrack): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlDelete(
+          connection,
+          schema,
+          Tables.folkloreTrack,
+          List(WhereClause(id, "=", IntSqlValue(Option(track.id))))
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to delete track", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            deleteRecord(storageFileName(track.id))
+            dbCache.refresh()
+            disconnect(connection)
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def getSourceTypes: List[SourceType] = ???
 
