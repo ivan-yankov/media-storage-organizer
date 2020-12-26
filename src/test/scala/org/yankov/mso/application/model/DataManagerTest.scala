@@ -1,7 +1,6 @@
 package org.yankov.mso.application.model
 
 import java.io.File
-import java.nio.file.Paths
 import java.time.Duration
 
 import org.scalamock.scalatest.MockFactory
@@ -404,18 +403,6 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      mocks
-        .sqlUpdate
-        .expects(
-          *,
-          "ADMIN",
-          "FOLKLORE_TRACK",
-          List("RECORD"),
-          *,
-          List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-        ).returns(Right())
-        .never()
-
       val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
       onTrackComplete.expects(*, true).returns().once()
 
@@ -474,18 +461,6 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      mocks
-        .sqlUpdate
-        .expects(
-          *,
-          "ADMIN",
-          "FOLKLORE_TRACK",
-          List("RECORD"),
-          *,
-          List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-        ).returns(Right())
-        .once()
-
       val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
       onTrackComplete.expects(*, true).returns().once()
 
@@ -498,13 +473,13 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       writeFile.expects(new File("/media/1.flac"), bytes).returns().once()
 
       val dataManager = DataManager(
-        connectionString,
-        "/media",
-        mocks.dbCache,
-        mocks.sqlInsert,
-        mocks.sqlUpdate,
-        readFile,
-        writeFile
+        dbConnectionString = connectionString,
+        mediaDir = "/media",
+        dbCache = mocks.dbCache,
+        sqlInsert = mocks.sqlInsert,
+        sqlUpdate = mocks.sqlUpdate,
+        readRecord = readFile,
+        writeRecord = writeFile
       )
       dataManager.insertTracks(
         List(
@@ -527,5 +502,33 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         onTrackComplete
       ) shouldBe true
     }
+  }
+
+  "delete track should succeed" in {
+    val mocks = Mocks()
+
+    (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+    mocks
+      .sqlDelete
+      .expects(
+        *,
+        "ADMIN",
+        "FOLKLORE_TRACK",
+        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    val deleteFile = mockFunction[File, Unit]
+    deleteFile.expects(new File("/media/1.flac")).returns().once()
+
+    val dataManager = DataManager(
+      dbConnectionString = connectionString,
+      mediaDir = "/media",
+      dbCache = mocks.dbCache,
+      sqlDelete = mocks.sqlDelete,
+      deleteRecord = deleteFile
+    )
+    dataManager.deleteTrack(FolkloreTrack(id = 1)) shouldBe true
   }
 }
