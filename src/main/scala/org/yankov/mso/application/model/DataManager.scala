@@ -1,10 +1,12 @@
 package org.yankov.mso.application.model
 
 import java.beans.{PropertyChangeListener, PropertyChangeSupport}
-import java.nio.file.Files
+import java.io.File
+import java.nio.file.{Files, Paths}
 import java.sql.Connection
 
 import org.slf4j.LoggerFactory
+import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.SqlModel._
 import org.yankov.mso.application.database._
@@ -13,9 +15,13 @@ import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.model.SqlFunctions._
 
 case class DataManager(dbConnectionString: String,
+                       mediaDir: String,
                        dbCache: DatabaseCache = DatabaseCache(),
                        sqlInsert: SqlInsert = DatabaseManager.insert,
-                       sqlUpdate: SqlUpdate = DatabaseManager.update) {
+                       sqlUpdate: SqlUpdate = DatabaseManager.update,
+                       readRecord: File => Array[Byte] = x => Files.readAllBytes(x.toPath),
+                       writeRecord: (File, Array[Byte]) => Unit = (x, y) => Files.write(x.toPath, y),
+                       deleteRecord: File => Unit = x => Files.deleteIfExists(x.toPath)) {
   dbCache.refresh()
 
   private val log = LoggerFactory.getLogger(getClass)
@@ -25,8 +31,7 @@ case class DataManager(dbConnectionString: String,
     dataModelChangeSupport.addPropertyChangeListener(listener)
 
   def insertTracks(tracks: List[FolkloreTrack],
-                   onTrackComplete: (FolkloreTrack, Boolean) => Unit,
-                   loadRecord: FolkloreTrack => Array[Byte] = x => Files.readAllBytes(x.file.get.toPath)): Boolean = {
+                   onTrackComplete: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def insertTrack(track: FolkloreTrack): Boolean = {
       val trackId = dbCache.getNextTrackId
       connect match {
@@ -48,8 +53,7 @@ case class DataManager(dbConnectionString: String,
               IntSqlValue(asIdOption(track.performer.id)),
               IntSqlValue(asIdOption(track.soloist.id)),
               IntSqlValue(asIdOption(track.source.id)),
-              IntSqlValue(asIdOption(track.ethnographicRegion.id)),
-              VarcharSqlValue(asStringOption(track.recordFormat))
+              IntSqlValue(asIdOption(track.ethnographicRegion.id))
             )
           ) match {
             case Left(throwable) =>
@@ -57,8 +61,7 @@ case class DataManager(dbConnectionString: String,
               disconnect(connection)
               false
             case Right(_) =>
-              if (track.file.isDefined)
-                updateRecord(trackId, loadRecord(track))
+              if (track.file.isDefined) writeRecord(storageFileName(trackId), readRecord(track.file.get))
               disconnect(connection)
               true
           }
@@ -233,30 +236,6 @@ case class DataManager(dbConnectionString: String,
 
   def getRecord(id: Int): Array[Byte] = ???
 
-  private def updateRecord(id: Int, record: Array[Byte]): Boolean = {
-    connect match {
-      case Some(connection) =>
-        sqlUpdate(
-          connection,
-          schema,
-          Tables.folkloreTrack,
-          List(Tables.folkloreTrackRecordColumn),
-          List(BytesSqlValue(Option(record.toList))),
-          List(WhereClause(Tables.folkloreTrackIdColumn, "=", IntSqlValue(Option(id))))
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to update track record", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            true
-        }
-      case None =>
-        false
-    }
-  }
-
   private def connect: Option[Connection] = {
     DatabaseConnection.connect(dbConnectionString) match {
       case Left(throwable) =>
@@ -270,4 +249,7 @@ case class DataManager(dbConnectionString: String,
   private def disconnect(connection: Connection): Unit = DatabaseConnection.close(connection)
 
   private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
+
+  private def storageFileName(trackId: Int): File =
+    Paths.get(mediaDir, trackId + Resources.Media.flacExtension).toFile
 }

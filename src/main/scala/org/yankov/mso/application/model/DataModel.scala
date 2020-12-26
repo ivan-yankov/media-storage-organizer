@@ -84,8 +84,7 @@ object DataModel {
                            note: String = "",
                            source: Source = Source(),
                            ethnographicRegion: EthnographicRegion = EthnographicRegion(),
-                           file: Option[File] = Option.empty,
-                           recordFormat: String = "FLAC") {
+                           file: Option[File] = Option.empty) {
 
     def withTitle(newTitle: String): FolkloreTrack = FolkloreTrack(
       id = id,
@@ -100,8 +99,7 @@ object DataModel {
       note = note,
       source = source,
       ethnographicRegion = ethnographicRegion,
-      file = file,
-      recordFormat = recordFormat
+      file = file
     )
 
     def withFile(newFile: Option[File]): FolkloreTrack = FolkloreTrack(
@@ -117,8 +115,7 @@ object DataModel {
       note = note,
       source = source,
       ethnographicRegion = ethnographicRegion,
-      file = newFile,
-      recordFormat = recordFormat
+      file = newFile
     )
   }
 

@@ -1,6 +1,7 @@
 package org.yankov.mso.application.model
 
 import java.io.File
+import java.nio.file.Paths
 import java.time.Duration
 
 import org.scalamock.scalatest.MockFactory
@@ -37,7 +38,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertArtist(Artist()) shouldBe true
     }
 
@@ -187,7 +188,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertArtist(
         Artist(
           -1,
@@ -223,7 +224,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertSource(Source()) shouldBe true
     }
 
@@ -249,7 +250,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertSource(Source(1, SourceType(3, "source-type"), "signature")) shouldBe true
     }
   }
@@ -276,7 +277,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertInstrument(Instrument()) shouldBe true
     }
 
@@ -301,7 +302,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertInstrument(Instrument(1, "instrument")) shouldBe true
     }
   }
@@ -328,7 +329,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertEthnographicRegion(EthnographicRegion()) shouldBe true
     }
 
@@ -353,7 +354,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert)
+      val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
       dataManager.insertEthnographicRegion(EthnographicRegion(1, "ethnographic-region")) shouldBe true
     }
   }
@@ -384,8 +385,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             "PERFORMER_ID",
             "SOLOIST_ID",
             "SOURCE_ID",
-            "ETHNOGRAPHICREGION_ID",
-            "RECORD_FORMAT"
+            "ETHNOGRAPHICREGION_ID"
           ),
           List(
             IntSqlValue(Option(1)),
@@ -399,8 +399,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option.empty),
             IntSqlValue(Option.empty),
             IntSqlValue(Option.empty),
-            IntSqlValue(Option.empty),
-            VarcharSqlValue(Option("FLAC"))
+            IntSqlValue(Option.empty)
           )
         ).returns(Right())
         .once()
@@ -420,7 +419,14 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
       onTrackComplete.expects(*, true).returns().once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert, mocks.sqlUpdate)
+
+      val dataManager = DataManager(
+        connectionString,
+        "/media",
+        mocks.dbCache,
+        mocks.sqlInsert,
+        mocks.sqlUpdate
+      )
       dataManager.insertTracks(List(FolkloreTrack()), onTrackComplete) shouldBe true
     }
 
@@ -449,8 +455,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             "PERFORMER_ID",
             "SOLOIST_ID",
             "SOURCE_ID",
-            "ETHNOGRAPHICREGION_ID",
-            "RECORD_FORMAT"
+            "ETHNOGRAPHICREGION_ID"
           ),
           List(
             IntSqlValue(Option(1)),
@@ -464,8 +469,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(14)),
             IntSqlValue(Option(15)),
             IntSqlValue(Option(16)),
-            IntSqlValue(Option(17)),
-            VarcharSqlValue(Option("FLAC"))
+            IntSqlValue(Option(17))
           )
         ).returns(Right())
         .once()
@@ -485,7 +489,23 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
       onTrackComplete.expects(*, true).returns().once()
 
-      val dataManager = DataManager(connectionString, mocks.dbCache, mocks.sqlInsert, mocks.sqlUpdate)
+      val bytes = "record".getBytes
+
+      val readFile = mockFunction[File, Array[Byte]]
+      readFile.expects(new File("/path/to/the/file/input.flac")).returns(bytes).once()
+
+      val writeFile = mockFunction[File, Array[Byte], Unit]
+      writeFile.expects(new File("/media/1.flac"), bytes).returns().once()
+
+      val dataManager = DataManager(
+        connectionString,
+        "/media",
+        mocks.dbCache,
+        mocks.sqlInsert,
+        mocks.sqlUpdate,
+        readFile,
+        writeFile
+      )
       dataManager.insertTracks(
         List(
           FolkloreTrack(
@@ -501,11 +521,10 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             soloist = Artist(15, "soloist"),
             source = Source(16),
             ethnographicRegion = EthnographicRegion(17),
-            file = Option(new File("/path/to/the/file"))
+            file = Option(new File("/path/to/the/file/input.flac"))
           )
         ),
-        onTrackComplete,
-        _ => "bytes".getBytes
+        onTrackComplete
       ) shouldBe true
     }
   }
