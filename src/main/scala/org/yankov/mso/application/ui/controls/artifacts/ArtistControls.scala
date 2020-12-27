@@ -59,7 +59,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     )
   }
 
-  override def updateArtifact(artifact: Artist): Unit =
+  override def updateArtifact(artifact: Artist): Boolean =
     dataManager.updateArtist(artifact)
 
   override def cleanup(): Unit = {

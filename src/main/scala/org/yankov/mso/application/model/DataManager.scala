@@ -27,6 +27,7 @@ case class DataManager(dbConnectionString: String,
 
   private val log = LoggerFactory.getLogger(getClass)
   private val dataModelChangeSupport = new PropertyChangeSupport(this)
+  private val equal = "="
 
   def addPropertyChangeListener(listener: PropertyChangeListener): Unit =
     dataModelChangeSupport.addPropertyChangeListener(listener)
@@ -99,7 +100,7 @@ case class DataManager(dbConnectionString: String,
           connection,
           schema,
           Tables.folkloreTrack,
-          List(WhereClause(id, "=", IntSqlValue(Option(track.id))))
+          List(WhereClause(id, equal, IntSqlValue(Option(track.id))))
         ) match {
           case Left(throwable) =>
             log.error("Unable to delete track", throwable)
@@ -145,7 +146,30 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Unit = ???
+  def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlUpdate(
+          connection,
+          schema,
+          Tables.ethnographicRegion,
+          Tables.ethnographicRegionColumns.filter(x => !x.equals(id)),
+          List(VarcharSqlValue(asStringOption(ethnographicRegion.name))),
+          List(WhereClause(id, equal, IntSqlValue(asIdOption(ethnographicRegion.id))))
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to update ethnographic region", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            dbCache.refresh()
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def getEthnographicRegions: List[EthnographicRegion] = ???
 
@@ -177,7 +201,30 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def updateSource(source: Source): Unit = ???
+  def updateSource(source: Source): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlUpdate(
+          connection,
+          schema,
+          Tables.source,
+          Tables.sourceColumns.filter(x => !x.equals(id)),
+          List(VarcharSqlValue(asStringOption(source.signature)), IntSqlValue(asIdOption(source.sourceType.id))),
+          List(WhereClause(id, equal, IntSqlValue(asIdOption(source.id))))
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to update source", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            dbCache.refresh()
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def getSources: List[Source] = ???
 
@@ -208,7 +255,30 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def updateInstrument(instrument: Instrument): Unit = ???
+  def updateInstrument(instrument: Instrument): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlUpdate(
+          connection,
+          schema,
+          Tables.instrument,
+          Tables.instrumentColumns.filter(x => !x.equals(id)),
+          List(VarcharSqlValue(asStringOption(instrument.name))),
+          List(WhereClause(id, equal, IntSqlValue(asIdOption(instrument.id))))
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to update instrument", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            disconnect(connection)
+            dbCache.refresh()
+            true
+        }
+      case None =>
+        false
+    }
+  }
 
   def getInstruments: List[Instrument] = ???
 
@@ -242,7 +312,7 @@ case class DataManager(dbConnectionString: String,
                   schema,
                   Tables.artistMissions,
                   Tables.artistMissionsColumns,
-                  List(IntSqlValue(Option(artistId)), VarcharSqlValue(Option(x)))
+                  List(IntSqlValue(Option(artistId)), VarcharSqlValue(asStringOption(x)))
                 )
               )
               .forall(x => x.isRight)
@@ -255,7 +325,53 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def updateArtist(artist: Artist): Unit = ???
+  def updateArtist(artist: Artist): Boolean = {
+    connect match {
+      case Some(connection) =>
+        sqlUpdate(
+          connection,
+          schema,
+          Tables.artist,
+          Tables.artistColumns.filter(x => !x.equals(id)),
+          List(
+            VarcharSqlValue(asStringOption(artist.name)),
+            VarcharSqlValue(asStringOption(artist.note)),
+            IntSqlValue(asIdOption(artist.instrument.id)),
+          ),
+          List(WhereClause(id, equal, IntSqlValue(asIdOption(artist.id))))
+        ) match {
+          case Left(throwable) =>
+            log.error("Unable to update instrument", throwable)
+            disconnect(connection)
+            false
+          case Right(_) =>
+            sqlDelete(
+              connection,
+              schema,
+              Tables.artistMissions,
+              List(WhereClause(Tables.artistId, equal, IntSqlValue(asIdOption(artist.id))))
+            )
+            val result = artist
+              .missions
+              .map(x => DataModel.artistMissionToString(x))
+              .map(x =>
+                sqlInsert(
+                  connection,
+                  schema,
+                  Tables.artistMissions,
+                  Tables.artistMissionsColumns,
+                  List(IntSqlValue(asIdOption(artist.id)), VarcharSqlValue(asStringOption(x)))
+                )
+              )
+              .forall(x => x.isRight)
+            disconnect(connection)
+            dbCache.refresh()
+            result
+        }
+      case None =>
+        false
+    }
+  }
 
   def getArtists: List[Artist] = ???
 

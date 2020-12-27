@@ -114,6 +114,7 @@ object Resources {
     val noSelectedArtifact: String = "Не е избран съществуващ артефакт"
     val artifactAdded: String = "Артефактът е добавен"
     val artifactUpdated: String = "Артефактът е обновен"
+    val artifactUpdateFailed: String = "Грешка при обновяване на артефакт"
   }
 
   object Sources {

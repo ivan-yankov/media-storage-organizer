@@ -30,7 +30,7 @@ case class SourceControls() extends ArtifactControls[Source] {
     )
   }
 
-  override def updateArtifact(artifact: Source): Unit =
+  override def updateArtifact(artifact: Source): Boolean =
     dataManager.updateSource(artifact)
 
   override def cleanup(): Unit =
