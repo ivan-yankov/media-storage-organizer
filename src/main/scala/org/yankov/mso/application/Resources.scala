@@ -76,8 +76,10 @@ object Resources {
     val unableWriteFile: String = "Неуспешен експорт на файл"
     val exportStarted: String = "Експорт на файлове - начало"
     val exportCompleted: String = "Експорт на файлове - край"
-    def uploadTrackSuccessful(title: String): String = s"Успешен запис на [$title]"
-    def uploadTrackFailed(title: String): String = s"Грешка при запис на [$title]"
+    def insertTrackSuccessful(title: String): String = s"Успешно добавяне на запис [$title]"
+    def insertTrackFailed(title: String): String = s"Грешка при добавяне на запис [$title]"
+    def updateTrackSuccessful(title: String): String = s"Успешно обновяване на запис [$title]"
+    def updateTrackFailed(title: String): String = s"Грешка при обновяване на запис [$title]"
     def deleteTrackSuccessful(id: Int): String = s"Успешно изтрит запис с идентификатор [$id]"
     def deleteTrackFailed(id: Int): String = s"Грешка при изтриване на запис с идентификатор [$id]"
   }

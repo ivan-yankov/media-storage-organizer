@@ -32,8 +32,7 @@ case class DataManager(dbConnectionString: String,
   def addPropertyChangeListener(listener: PropertyChangeListener): Unit =
     dataModelChangeSupport.addPropertyChangeListener(listener)
 
-  def insertTracks(tracks: List[FolkloreTrack],
-                   onTrackComplete: (FolkloreTrack, Boolean) => Unit): Boolean = {
+  def insertTracks(tracks: List[FolkloreTrack], onTrackInserted: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def insertTrack(track: FolkloreTrack): Boolean = {
       val trackId = dbCache.getNextTrackId
       connect match {
@@ -75,7 +74,7 @@ case class DataManager(dbConnectionString: String,
     val result = tracks
       .map(x => {
         val r = insertTrack(x)
-        onTrackComplete(x, r)
+        onTrackInserted(x, r)
         r
       })
       .forall(x => x)
@@ -85,10 +84,58 @@ case class DataManager(dbConnectionString: String,
     result
   }
 
-  def updateTracks(tracks: List[FolkloreTrack]): Boolean = {
-    //    x => x.track.file.isDefined && x.track.hasValidId,
-    //    x => DataModelOperations.setRecord(x.track.id, Files.readAllBytes(x.track.file.get.toPath))
-    ???
+  def updateTracks(tracks: List[FolkloreTrack], onTrackUpdated: (FolkloreTrack, Boolean) => Unit): Boolean = {
+    def updateTrack(track: FolkloreTrack): Boolean = {
+      connect match {
+        case Some(connection) =>
+          sqlUpdate(
+            connection,
+            schema,
+            Tables.folkloreTrack,
+            Tables.folkloreTrackColumns.filter(x => !x.equals(id)),
+            List(
+              VarcharSqlValue(Option(DurationConverter.toHourMinSecString(track.duration))),
+              VarcharSqlValue(asStringOption(track.note)),
+              VarcharSqlValue(asStringOption(track.title)),
+              IntSqlValue(asIdOption(track.accompanimentPerformer.id)),
+              IntSqlValue(asIdOption(track.arrangementAuthor.id)),
+              IntSqlValue(asIdOption(track.author.id)),
+              IntSqlValue(asIdOption(track.conductor.id)),
+              IntSqlValue(asIdOption(track.performer.id)),
+              IntSqlValue(asIdOption(track.soloist.id)),
+              IntSqlValue(asIdOption(track.source.id)),
+              IntSqlValue(asIdOption(track.ethnographicRegion.id))
+            ),
+            List(WhereClause(id, equal, IntSqlValue(asIdOption(track.id))))
+          ) match {
+            case Left(throwable) =>
+              log.error("Unable to update track", throwable)
+              disconnect(connection)
+              false
+            case Right(_) =>
+              if (track.file.isDefined) {
+                deleteRecord(storageFileName(track.id))
+                writeRecord(storageFileName(track.id), readRecord(track.file.get))
+              }
+              disconnect(connection)
+              true
+          }
+        case None =>
+          false
+      }
+    }
+
+    val result = tracks
+      .map(x => {
+        val r = updateTrack(x)
+        onTrackUpdated(x, r)
+        r
+      })
+      .forall(x => x)
+
+    dbCache.refresh()
+
+    result
   }
 
   def getTracks: List[FolkloreTrack] = ???

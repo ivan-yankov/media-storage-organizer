@@ -403,8 +403,8 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
-      onTrackComplete.expects(*, true).returns().once()
+      val onTrackInserted = mockFunction[FolkloreTrack, Boolean, Unit]
+      onTrackInserted.expects(*, true).returns().once()
 
 
       val dataManager = DataManager(
@@ -414,7 +414,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         mocks.sqlInsert,
         mocks.sqlUpdate
       )
-      dataManager.insertTracks(List(FolkloreTrack()), onTrackComplete) shouldBe true
+      dataManager.insertTracks(List(FolkloreTrack()), onTrackInserted) shouldBe true
     }
 
     "non-empty should succeed" in {
@@ -461,8 +461,8 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         ).returns(Right())
         .once()
 
-      val onTrackComplete = mockFunction[FolkloreTrack, Boolean, Unit]
-      onTrackComplete.expects(*, true).returns().once()
+      val onTrackInserted = mockFunction[FolkloreTrack, Boolean, Unit]
+      onTrackInserted.expects(*, true).returns().once()
 
       val bytes = "record".getBytes
 
@@ -499,7 +499,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             file = Option(new File("/path/to/the/file/input.flac"))
           )
         ),
-        onTrackComplete
+        onTrackInserted
       ) shouldBe true
     }
   }
@@ -780,6 +780,93 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         "note",
         missions
       )
+    ) shouldBe true
+  }
+
+  "update tracks should succeed" in {
+    val mocks = Mocks()
+
+    (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+    mocks
+      .sqlUpdate
+      .expects(
+        *,
+        "ADMIN",
+        "FOLKLORE_TRACK",
+        List(
+          "DURATION",
+          "NOTE",
+          "TITLE",
+          "ACCOMPANIMENTPERFORMER_ID",
+          "ARRANGEMENTAUTHOR_ID",
+          "AUTHOR_ID",
+          "CONDUCTOR_ID",
+          "PERFORMER_ID",
+          "SOLOIST_ID",
+          "SOURCE_ID",
+          "ETHNOGRAPHICREGION_ID"
+        ),
+        List(
+          VarcharSqlValue(Option("0:01:00")),
+          VarcharSqlValue(Option("note")),
+          VarcharSqlValue(Option("title")),
+          IntSqlValue(Option(10)),
+          IntSqlValue(Option(11)),
+          IntSqlValue(Option(12)),
+          IntSqlValue(Option(13)),
+          IntSqlValue(Option(14)),
+          IntSqlValue(Option(15)),
+          IntSqlValue(Option(16)),
+          IntSqlValue(Option(17))
+        ),
+        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    val onTrackUpdated = mockFunction[FolkloreTrack, Boolean, Unit]
+    onTrackUpdated.expects(*, true).returns().once()
+
+    val bytes = "record".getBytes
+
+    val readFile = mockFunction[File, Array[Byte]]
+    readFile.expects(new File("/path/to/the/file/input.flac")).returns(bytes).once()
+
+    val deleteFile = mockFunction[File, Unit]
+    deleteFile.expects(new File("/media/1.flac")).returns().once()
+
+    val writeFile = mockFunction[File, Array[Byte], Unit]
+    writeFile.expects(new File("/media/1.flac"), bytes).returns().once()
+
+    val dataManager = DataManager(
+      dbConnectionString = connectionString,
+      mediaDir = "/media",
+      dbCache = mocks.dbCache,
+      sqlInsert = mocks.sqlInsert,
+      sqlUpdate = mocks.sqlUpdate,
+      readRecord = readFile,
+      writeRecord = writeFile,
+      deleteRecord = deleteFile
+    )
+    dataManager.updateTracks(
+      List(
+        FolkloreTrack(
+          id = 1,
+          duration = Duration.ofSeconds(60),
+          note = "note",
+          title = "title",
+          accompanimentPerformer = Artist(10, "accompaniment-performer"),
+          arrangementAuthor = Artist(11, "arrangement-author"),
+          author = Artist(12, "author"),
+          conductor = Artist(13, "conductor"),
+          performer = Artist(14, "performer"),
+          soloist = Artist(15, "soloist"),
+          source = Source(16),
+          ethnographicRegion = EthnographicRegion(17),
+          file = Option(new File("/path/to/the/file/input.flac"))
+        )
+      ),
+      onTrackUpdated
     ) shouldBe true
   }
 }
