@@ -3,11 +3,11 @@ package org.yankov.mso.application.model
 import java.beans.{PropertyChangeListener, PropertyChangeSupport}
 import java.io.File
 import java.nio.file.{Files, Paths}
-import java.sql.Connection
 
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.DurationConverter
+import org.yankov.mso.application.database.DbUtils._
 import org.yankov.mso.application.database.SqlModel._
 import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
@@ -16,7 +16,7 @@ import org.yankov.mso.application.model.SqlFunctions._
 
 case class DataManager(dbConnectionString: String,
                        mediaDir: String,
-                       dbCache: DatabaseCache = DatabaseCache(),
+                       dbCache: DatabaseCache,
                        sqlInsert: SqlInsert = DatabaseManager.insert,
                        sqlUpdate: SqlUpdate = DatabaseManager.update,
                        sqlDelete: SqlDelete = DatabaseManager.delete,
@@ -35,7 +35,7 @@ case class DataManager(dbConnectionString: String,
   def insertTracks(tracks: List[FolkloreTrack], onTrackInserted: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def insertTrack(track: FolkloreTrack): Boolean = {
       val trackId = dbCache.getNextTrackId
-      connect match {
+      connect(dbConnectionString) match {
         case Some(connection) =>
           sqlInsert(
             connection,
@@ -86,7 +86,7 @@ case class DataManager(dbConnectionString: String,
 
   def updateTracks(tracks: List[FolkloreTrack], onTrackUpdated: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def updateTrack(track: FolkloreTrack): Boolean = {
-      connect match {
+      connect(dbConnectionString) match {
         case Some(connection) =>
           sqlUpdate(
             connection,
@@ -141,7 +141,7 @@ case class DataManager(dbConnectionString: String,
   def getTracks: List[FolkloreTrack] = ???
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlDelete(
           connection,
@@ -167,7 +167,7 @@ case class DataManager(dbConnectionString: String,
   def getSourceTypes: List[SourceType] = ???
 
   def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlInsert(
           connection,
@@ -194,7 +194,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -221,7 +221,7 @@ case class DataManager(dbConnectionString: String,
   def getEthnographicRegions: List[EthnographicRegion] = ???
 
   def insertSource(source: Source): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlInsert(
           connection,
@@ -249,7 +249,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateSource(source: Source): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -276,7 +276,7 @@ case class DataManager(dbConnectionString: String,
   def getSources: List[Source] = ???
 
   def insertInstrument(instrument: Instrument): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlInsert(
           connection,
@@ -303,7 +303,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateInstrument(instrument: Instrument): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -330,7 +330,7 @@ case class DataManager(dbConnectionString: String,
   def getInstruments: List[Instrument] = ???
 
   def insertArtist(artist: Artist): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         val artistId = dbCache.getNextArtistId
         sqlInsert(
@@ -373,7 +373,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateArtist(artist: Artist): Boolean = {
-    connect match {
+    connect(dbConnectionString) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -423,18 +423,6 @@ case class DataManager(dbConnectionString: String,
   def getArtists: List[Artist] = ???
 
   def getRecord(id: Int): Array[Byte] = ???
-
-  private def connect: Option[Connection] = {
-    DatabaseConnection.connect(dbConnectionString) match {
-      case Left(throwable) =>
-        log.error("Unable to connect database", throwable)
-        Option.empty
-      case Right(connection) =>
-        Option(connection)
-    }
-  }
-
-  private def disconnect(connection: Connection): Unit = DatabaseConnection.close(connection)
 
   private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 

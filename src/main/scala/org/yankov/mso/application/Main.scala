@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.yankov.mso.application.commands.SearchEngine
 import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.DataManager
+import org.yankov.mso.application.model.{DataManager, DatabaseCache}
 import org.yankov.mso.application.model.SearchModel.Filter
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
 import org.yankov.mso.application.ui.Utils
@@ -54,7 +54,7 @@ object Main extends JFXApp {
     val dbDir = getApplicationArgument(Resources.ApplicationArguments.databaseDirectory)
     val mediaDir = getApplicationArgument(Resources.ApplicationArguments.mediaDir)
     val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())
-    DataManager(connectionString, mediaDir)
+    DataManager(connectionString, mediaDir, DatabaseCache(connectionString))
   }
 
   private def getApplicationArgument(argument: String, defaultValue: String = ""): String = {
