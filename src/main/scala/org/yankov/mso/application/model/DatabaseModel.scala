@@ -9,6 +9,7 @@ object DatabaseModel {
   object Tables {
     val artist: String = "ARTIST"
     val artistMissions: String = "ARTIST_MISSIONS"
+    val sourceType: String = "SOURCE_TYPE"
     val source: String = "SOURCE"
     val instrument: String = "INSTRUMENT"
     val ethnographicRegion: String = "ETHNOGRAPHIC_REGION"
@@ -25,6 +26,11 @@ object DatabaseModel {
     val artistMissionsColumns: List[String] = List(
       artistId,
       "MISSIONS"
+    )
+
+    val sourceTypeColumns: List[String] = List(
+      id,
+      "NAME"
     )
 
     val sourceColumns: List[String] = List(
@@ -75,7 +81,27 @@ object DatabaseModel {
                       note: Option[String],
                       instrumentId: Option[Int])
 
-  case class DbArtistMissions(artistId: Int,
-                              missions: Option[String])
+  case class DbArtistMissions(artistId: Int, missions: Option[String])
+
+  case class DbEthnographicRegion(id: Int, name: Option[String])
+
+  case class DbInstrument(id: Int, name: Option[String])
+
+  case class DbSourceType(id: Int, name: Option[String])
+
+  case class DbSource(id: Int, signature: Option[String], typeId: Option[Int])
+
+  case class DbFolkloreTrack(id: Int,
+                             duration: Option[String],
+                             note: Option[String],
+                             title: Option[String],
+                             accompanimentPerformerId: Option[Int],
+                             arrangementAuthorId: Option[Int],
+                             authorId: Option[Int],
+                             conductorId: Option[Int],
+                             performerId: Option[Int],
+                             soloistId: Option[Int],
+                             sourceId: Option[Int],
+                             ethnographicRegionId: Option[Int])
 
 }
