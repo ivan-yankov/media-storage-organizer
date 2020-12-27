@@ -14,7 +14,7 @@ trait ArtifactControls[T] {
 
   def createArtifact(): Boolean
 
-  def updateArtifact(artifact: T): Unit
+  def updateArtifact(artifact: T): Boolean
 
   def cleanup(): Unit
 

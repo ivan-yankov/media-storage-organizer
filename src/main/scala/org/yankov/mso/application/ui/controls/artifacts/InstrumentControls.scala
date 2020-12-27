@@ -27,7 +27,7 @@ case class InstrumentControls() extends ArtifactControls[Instrument] {
     )
   }
 
-  override def updateArtifact(artifact: Instrument): Unit =
+  override def updateArtifact(artifact: Instrument): Boolean =
     dataManager.updateInstrument(artifact)
 
   override def cleanup(): Unit =

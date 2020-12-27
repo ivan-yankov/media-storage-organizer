@@ -21,8 +21,9 @@ object DatabaseModel {
       "INSTRUMENT_ID"
     )
 
+    val artistId: String = "ARTIST_ID"
     val artistMissionsColumns: List[String] = List(
-      "ARTIST_ID",
+      artistId,
       "MISSIONS"
     )
 

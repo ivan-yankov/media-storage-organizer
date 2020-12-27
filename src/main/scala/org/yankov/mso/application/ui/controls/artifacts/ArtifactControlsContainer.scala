@@ -103,8 +103,9 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
         console.writeMessageWithTimestamp(Resources.Artifacts.noSelectedArtifact)
       }
       else {
-        artifactControls.updateArtifact(existingArtifacts.getItems.get(selectedIndex))
-        console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdated)
+        val r = artifactControls.updateArtifact(existingArtifacts.getItems.get(selectedIndex))
+        if (r) console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdated)
+        else console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdateFailed)
       }
     }
   }

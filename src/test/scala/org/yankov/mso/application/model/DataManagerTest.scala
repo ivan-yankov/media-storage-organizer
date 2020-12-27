@@ -531,4 +531,255 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
     )
     dataManager.deleteTrack(FolkloreTrack(id = 1)) shouldBe true
   }
+
+  "update ethnographic region should succeed" in {
+    val mocks = Mocks()
+
+    (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+    mocks
+      .sqlUpdate
+      .expects(
+        *,
+        "ADMIN",
+        "ETHNOGRAPHIC_REGION",
+        List("NAME"),
+        List(VarcharSqlValue(Option("ethnographic-region"))),
+        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    val dataManager = DataManager(
+      dbConnectionString = connectionString,
+      mediaDir = "",
+      dbCache = mocks.dbCache,
+      sqlUpdate = mocks.sqlUpdate
+    )
+    dataManager.updateEthnographicRegion(EthnographicRegion(1, "ethnographic-region")) shouldBe true
+  }
+
+  "update source should succeed" in {
+    val mocks = Mocks()
+
+    (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+    mocks
+      .sqlUpdate
+      .expects(
+        *,
+        "ADMIN",
+        "SOURCE",
+        List("SIGNATURE", "TYPE_ID"),
+        List(VarcharSqlValue(Option("source")), IntSqlValue(Option(10))),
+        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    val dataManager = DataManager(
+      dbConnectionString = connectionString,
+      mediaDir = "",
+      dbCache = mocks.dbCache,
+      sqlUpdate = mocks.sqlUpdate
+    )
+    dataManager.updateSource(Source(1, SourceType(10), "source")) shouldBe true
+  }
+
+  "update instrument should succeed" in {
+    val mocks = Mocks()
+
+    (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+    mocks
+      .sqlUpdate
+      .expects(
+        *,
+        "ADMIN",
+        "INSTRUMENT",
+        List("NAME"),
+        List(VarcharSqlValue(Option("instrument"))),
+        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    val dataManager = DataManager(
+      dbConnectionString = connectionString,
+      mediaDir = "",
+      dbCache = mocks.dbCache,
+      sqlUpdate = mocks.sqlUpdate
+    )
+    dataManager.updateInstrument(Instrument(1, "instrument")) shouldBe true
+  }
+
+  "update artist should succeed" in {
+    val missions = List(
+      Singer,
+      InstrumentPlayer,
+      Composer,
+      Conductor,
+      Orchestra,
+      Choir,
+      Ensemble,
+      ChamberGroup
+    )
+
+    val mocks = Mocks()
+
+    (mocks.dbCache.refresh _).expects().returns(()).twice()
+
+    mocks
+      .sqlUpdate
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST",
+        List("NAME", "NOTE", "INSTRUMENT_ID"),
+        List(
+          VarcharSqlValue(Option("name")),
+          VarcharSqlValue(Option("note")),
+          IntSqlValue(Option(10))
+        ),
+        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlDelete
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List(WhereClause("ARTIST_ID", "=", IntSqlValue(Option(1))))
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("SINGER")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("INSTRUMENT_PLAYER")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("COMPOSER")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("CONDUCTOR")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("ORCHESTRA")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("CHOIR")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("ENSEMBLE")),
+        )
+      ).returns(Right())
+      .once()
+
+    mocks
+      .sqlInsert
+      .expects(
+        *,
+        "ADMIN",
+        "ARTIST_MISSIONS",
+        List("ARTIST_ID", "MISSIONS"),
+        List(
+          IntSqlValue(Option(1)),
+          VarcharSqlValue(Option("CHAMBER_GROUP")),
+        )
+      ).returns(Right())
+      .once()
+
+    val dataManager = DataManager(
+      dbConnectionString = connectionString,
+      mediaDir = "",
+      dbCache = mocks.dbCache,
+      sqlInsert = mocks.sqlInsert,
+      sqlUpdate = mocks.sqlUpdate,
+      sqlDelete = mocks.sqlDelete
+    )
+    dataManager.updateArtist(
+      Artist(
+        1,
+        "name",
+        Instrument(10, "instrument"),
+        "note",
+        missions
+      )
+    ) shouldBe true
+  }
 }

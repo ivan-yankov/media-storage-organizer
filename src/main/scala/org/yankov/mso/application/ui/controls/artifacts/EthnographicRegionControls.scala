@@ -27,7 +27,7 @@ case class EthnographicRegionControls() extends ArtifactControls[EthnographicReg
     )
   }
 
-  override def updateArtifact(artifact: EthnographicRegion): Unit =
+  override def updateArtifact(artifact: EthnographicRegion): Boolean =
     dataManager.updateEthnographicRegion(artifact)
 
   override def cleanup(): Unit =
