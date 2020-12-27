@@ -20,7 +20,13 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def updateItems(targetInputTab: Boolean): Unit = {
     Commands.updateItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => dataManager.updateTracks(x.map(y => y.track)),
+      x => dataManager.updateTracks(
+        x.map(y => y.track),
+        (x, y) => console.writeMessageWithTimestamp(
+          if (y) Resources.ConsoleMessages.insertTrackSuccessful(x.title)
+          else Resources.ConsoleMessages.insertTrackFailed(x.title)
+        )
+      )
     )
   }
 
@@ -125,8 +131,8 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       x => dataManager.insertTracks(
         x.map(y => y.track),
         (x, y) => console.writeMessageWithTimestamp(
-          if (y) Resources.ConsoleMessages.uploadTrackSuccessful(x.title)
-          else Resources.ConsoleMessages.uploadTrackFailed(x.title)
+          if (y) Resources.ConsoleMessages.insertTrackSuccessful(x.title)
+          else Resources.ConsoleMessages.insertTrackFailed(x.title)
         )
       )
     )
