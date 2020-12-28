@@ -138,7 +138,25 @@ case class DataManager(dbConnectionString: String,
     result
   }
 
-  def getTracks: List[FolkloreTrack] = ???
+  def getTracks: List[FolkloreTrack] = {
+    dbCache
+      .getCache
+      .folkloreTracks
+      .map(x => FolkloreTrack(
+        id = x.id,
+        title = x.title.getOrElse(""),
+        performer = getArtist(x.performerId),
+        accompanimentPerformer = getArtist(x.accompanimentPerformerId),
+        author = getArtist(x.authorId),
+        arrangementAuthor = getArtist(x.arrangementAuthorId),
+        conductor = getArtist(x.conductorId),
+        soloist = getArtist(x.soloistId),
+        duration = DurationConverter.fromString(x.duration.getOrElse("")),
+        note = x.note.getOrElse(""),
+        source = getSource(x.sourceId),
+        ethnographicRegion = getEthnographicRegion(x.ethnographicRegionId)
+      ))
+  }
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
     connect(dbConnectionString) match {
@@ -164,7 +182,12 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def getSourceTypes: List[SourceType] = ???
+  def getSourceTypes: List[SourceType] = {
+    dbCache
+      .getCache
+      .sourceTypes
+      .map(x => SourceType(id = x.id, name = x.name.getOrElse("")))
+  }
 
   def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
     connect(dbConnectionString) match {
@@ -218,7 +241,12 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def getEthnographicRegions: List[EthnographicRegion] = ???
+  def getEthnographicRegions: List[EthnographicRegion] = {
+    dbCache
+      .getCache
+      .ethnographicRegions
+      .map(x => EthnographicRegion(id = x.id, name = x.name.getOrElse("")))
+  }
 
   def insertSource(source: Source): Boolean = {
     connect(dbConnectionString) match {
@@ -273,7 +301,12 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def getSources: List[Source] = ???
+  def getSources: List[Source] = {
+    dbCache
+      .getCache
+      .sources
+      .map(x => Source(id = x.id, sourceType = getSourceType(x.typeId), signature = x.signature.getOrElse("")))
+  }
 
   def insertInstrument(instrument: Instrument): Boolean = {
     connect(dbConnectionString) match {
@@ -327,7 +360,12 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def getInstruments: List[Instrument] = ???
+  def getInstruments: List[Instrument] = {
+    dbCache
+      .getCache
+      .instruments
+      .map(x => Instrument(id = x.id, name = x.name.getOrElse("")))
+  }
 
   def insertArtist(artist: Artist): Boolean = {
     connect(dbConnectionString) match {
@@ -420,12 +458,132 @@ case class DataManager(dbConnectionString: String,
     }
   }
 
-  def getArtists: List[Artist] = ???
+  def getArtists: List[Artist] = {
+    dbCache
+      .getCache
+      .artists
+      .map(x => extractArtist(x))
+  }
 
-  def getRecord(id: Int): Array[Byte] = ???
+  def getRecord(id: Int): Array[Byte] = {
+    if (isValidId(id)) readRecord(storageFileName(id))
+    else Array()
+  }
 
   private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 
   private def storageFileName(trackId: Int): File =
     Paths.get(mediaDir, trackId + Resources.Media.flacExtension).toFile
+
+  private def getArtist(idOption: Option[Int]): Artist = {
+    idOption match {
+      case Some(id) =>
+        dbCache
+          .getCache
+          .artists
+          .find(x => x.id.equals(id)) match {
+          case Some(dbArtist) =>
+            extractArtist(dbArtist)
+          case None =>
+            Artist()
+        }
+      case None =>
+        Artist()
+    }
+  }
+
+  private def extractArtist(dbArtist: DbArtist): Artist = {
+    Artist(
+      id = dbArtist.id,
+      name = dbArtist.name.getOrElse(""),
+      instrument = getInstrument(dbArtist.instrumentId),
+      note = dbArtist.note.getOrElse(""),
+      missions = dbCache
+        .getCache
+        .artistMissions
+        .filter(x => x.artistId.equals(dbArtist.id))
+        .map(x => artistMissionFromString(x.missions.get))
+    )
+  }
+
+  private def getInstrument(idOption: Option[Int]): Instrument = {
+    idOption match {
+      case Some(id) =>
+        dbCache
+          .getCache
+          .instruments
+          .find(x => x.id.equals(id)) match {
+          case Some(dbInstrument) =>
+            Instrument(
+              id = dbInstrument.id,
+              name = dbInstrument.name.getOrElse("")
+            )
+          case None =>
+            Instrument()
+        }
+      case None =>
+        Instrument()
+    }
+  }
+
+  private def getSource(idOption: Option[Int]): Source = {
+    idOption match {
+      case Some(id) =>
+        dbCache
+          .getCache
+          .sources
+          .find(x => x.id.equals(id)) match {
+          case Some(dbSource) =>
+            Source(
+              id = dbSource.id,
+              sourceType = getSourceType(dbSource.typeId),
+              signature = dbSource.signature.getOrElse("")
+            )
+          case None =>
+            Source()
+        }
+      case None =>
+        Source()
+    }
+  }
+
+  private def getSourceType(idOption: Option[Int]): SourceType = {
+    idOption match {
+      case Some(id) =>
+        dbCache
+          .getCache
+          .sourceTypes
+          .find(x => x.id.equals(id)) match {
+          case Some(dbSourceType) =>
+            SourceType(
+              id = dbSourceType.id,
+              name = dbSourceType.name.getOrElse("")
+            )
+          case None =>
+            SourceType()
+        }
+      case None =>
+        SourceType()
+    }
+  }
+
+  private def getEthnographicRegion(idOption: Option[Int]): EthnographicRegion = {
+    idOption match {
+      case Some(id) =>
+        dbCache
+          .getCache
+          .ethnographicRegions
+          .find(x => x.id.equals(id)) match {
+          case Some(dbEthnographicRegion) =>
+            EthnographicRegion(
+              id = dbEthnographicRegion.id,
+              name = dbEthnographicRegion.name.getOrElse("")
+            )
+          case None =>
+            EthnographicRegion()
+        }
+      case None =>
+        EthnographicRegion()
+    }
+  }
 }

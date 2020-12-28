@@ -23,9 +23,9 @@ case class DatabaseCache(dbConnectionString: String,
 
   private val log = LoggerFactory.getLogger(getClass)
 
-  def refresh(): Unit = {
-    cache = getCache
-  }
+  def getCache: Cache = cache
+
+  def refresh(): Unit = cache = loadCache
 
   def getNextArtistId: Int = getNextId(cache.artists.map(x => x.id))
 
@@ -39,7 +39,7 @@ case class DatabaseCache(dbConnectionString: String,
 
   def getNextId(ids: List[Int]): Int = ids.max + 1
 
-  private def getCache: Cache = {
+  private def loadCache: Cache = {
     connect(dbConnectionString) match {
       case Some(connection) =>
         val artists = getCollection(
