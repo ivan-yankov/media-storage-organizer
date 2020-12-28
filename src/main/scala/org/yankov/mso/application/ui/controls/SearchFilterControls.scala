@@ -16,16 +16,16 @@ case class SearchFilterControls[T](variableCreator: () => LabeledComboBox[Variab
                             value: LabeledTextField,
                             panel: TitledPane)
 
+  private val btnSearch = new Button {
+    text = Resources.Search.search
+    onAction = _ => search(createFilters)
+  }
+
   val controls: List[FilterControls] = List(
     createControls(1),
     createControls(2),
     createControls(3)
   )
-
-  private val btnSearch = new Button {
-    text = Resources.Search.search
-    onAction = _ => search(createFilters)
-  }
 
   private def createControls(number: Int): FilterControls = {
     val variable = variableCreator()
