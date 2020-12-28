@@ -127,6 +127,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
     )
 
     table.getItems.set(trackIndex, FolkloreTrackProperties(newTrack))
+    stage.close()
   }
 
   private def handleCancel(): Unit = stage.close()
