@@ -124,13 +124,12 @@ object Main extends JFXApp {
   }
 
   private def search(filters: List[Filter[FolkloreTrack]]): Unit = {
-    val searcher = SearchEngine[FolkloreTrack](
+    val (tracks, totalDuration) = SearchEngine.search[FolkloreTrack](
       dataManager.getTracks,
+      filters,
       (x, y) => x.id < y.id,
       x => x.duration
     )
-
-    val (tracks, totalDuration) = searcher.search(filters)
     searchTable.getValue.getItems.clear()
     tracks.foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
 

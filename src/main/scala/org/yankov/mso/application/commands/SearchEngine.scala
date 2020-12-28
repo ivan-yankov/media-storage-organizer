@@ -6,9 +6,7 @@ import org.yankov.mso.application.model.SearchModel.Filter
 
 import scala.annotation.tailrec
 
-case class SearchEngine[T](tracks: List[T],
-                           trackComparator: (T, T) => Boolean,
-                           getDuration: T => Duration) {
+object SearchEngine {
 
   implicit class StringAnalyzer(s: String) {
     def normalize(): String = s.toLowerCase
@@ -29,33 +27,29 @@ case class SearchEngine[T](tracks: List[T],
     }
   }
 
-  def search(filters: List[Filter[T]]): (List[T], Duration) = {
+  def search[T](tracks: List[T], filters: List[Filter[T]], trackComparator: (T, T) => Boolean, getDuration: T => Duration): (List[T], Duration) = {
     val result = applyFilters(filters, tracks)
     (
       result.sortWith(trackComparator),
-      calculateTotalDuration(result)
+      tracks
+        .map(x => getDuration(x))
+        .foldLeft(Duration.ZERO)((x, y) => x.plus(y))
     )
   }
 
   @tailrec
-  private def applyFilters(filters: List[Filter[T]], tracks: List[T]): List[T] = {
+  private def applyFilters[T](filters: List[Filter[T]], tracks: List[T]): List[T] = {
     if (filters.isEmpty) tracks
     else applyFilters(filters.tail, applyFilter(tracks, filters.head))
   }
 
-  private def applyFilter(tracks: List[T], filter: Filter[T]): List[T] = {
+  private def applyFilter[T](tracks: List[T], filter: Filter[T]): List[T] = {
     if (filter.value.isEmpty) tracks
     else tracks.filter(x => {
       val searchValue = analyze(filter.value)
       val trackValue = analyze(filter.variable.valueProvider(x))
-      filter.operator.predicate(searchValue, trackValue)
+      filter.operator.predicate(trackValue, searchValue)
     })
-  }
-
-  private def calculateTotalDuration(tracks: List[T]): Duration = {
-    tracks
-      .map(x => getDuration(x))
-      .foldLeft(Duration.ZERO)((x, y) => x.plus(y))
   }
 
   private def analyze(str: String): String = {
