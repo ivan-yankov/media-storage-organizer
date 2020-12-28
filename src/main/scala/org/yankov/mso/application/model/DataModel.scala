@@ -86,6 +86,22 @@ object DataModel {
                            ethnographicRegion: EthnographicRegion = EthnographicRegion(),
                            file: Option[File] = Option.empty) {
 
+    def withId(newId: Int): FolkloreTrack = FolkloreTrack(
+      id = newId,
+      title = title,
+      performer = performer,
+      accompanimentPerformer = accompanimentPerformer,
+      author = author,
+      arrangementAuthor = arrangementAuthor,
+      conductor = conductor,
+      soloist = soloist,
+      duration = duration,
+      note = note,
+      source = source,
+      ethnographicRegion = ethnographicRegion,
+      file = file
+    )
+
     def withTitle(newTitle: String): FolkloreTrack = FolkloreTrack(
       id = id,
       title = newTitle,
