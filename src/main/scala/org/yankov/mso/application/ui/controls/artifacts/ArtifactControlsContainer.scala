@@ -6,8 +6,10 @@ import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
 import org.yankov.mso.application.{Main, Resources}
 import scalafx.geometry.Insets
+import scalafx.scene.control.cell.TextFieldListCell
 import scalafx.scene.control.{Button, Label, ListView, SelectionMode}
 import scalafx.scene.layout.{HBox, Pane, VBox}
+import scalafx.util.StringConverter
 
 case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], containerId: String) extends PropertyChangeListener {
   private val console: ConsoleService = ApplicationConsole
@@ -17,7 +19,18 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
     text = Resources.Artifacts.existingArtifacts
   }
 
-  private val existingArtifacts = new ListView[T]
+  private val existingArtifacts = new ListView[T] {
+    cellFactory = x => {
+      val cell = new TextFieldListCell[T]()
+      val converter = new StringConverter[T] {
+        override def fromString(s: String): T = ???
+
+        override def toString(x: T): String = artifactControls.artifactToString(x)
+      }
+      cell.setConverter(converter)
+      cell
+    }
+  }
 
   private val btnAddArtifact = new Button {
     text = Resources.Artifacts.btnAddArtifact
