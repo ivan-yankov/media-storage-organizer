@@ -1,6 +1,7 @@
 package org.yankov.mso.application.ui.toolbars
 
 import java.io.File
+import java.nio.file.Files
 
 import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.commands.Commands
@@ -141,7 +142,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def playStop(targetInputTab: Boolean): Unit = {
     Commands.playStop[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => Player.play(x.track)
+      x => {
+        if (targetInputTab && x.track.file.isDefined) Player.play(Files.readAllBytes(x.track.file.get.toPath))
+        else Player.play(dataManager.getRecord(x.track.id))
+      }
     )
   }
 
