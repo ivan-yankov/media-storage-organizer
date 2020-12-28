@@ -388,7 +388,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           ),
           List(
             IntSqlValue(Option(1)),
-            VarcharSqlValue(Option("0:00:00")),
+            VarcharSqlValue(Option("00:00:00")),
             VarcharSqlValue(Option.empty),
             VarcharSqlValue(Option.empty),
             IntSqlValue(Option.empty),
@@ -446,7 +446,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           ),
           List(
             IntSqlValue(Option(1)),
-            VarcharSqlValue(Option("0:01:00")),
+            VarcharSqlValue(Option("00:01:00")),
             VarcharSqlValue(Option("note")),
             VarcharSqlValue(Option("title")),
             IntSqlValue(Option(10)),
@@ -808,7 +808,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           "ETHNOGRAPHICREGION_ID"
         ),
         List(
-          VarcharSqlValue(Option("0:01:00")),
+          VarcharSqlValue(Option("00:01:00")),
           VarcharSqlValue(Option("note")),
           VarcharSqlValue(Option("title")),
           IntSqlValue(Option(10)),
