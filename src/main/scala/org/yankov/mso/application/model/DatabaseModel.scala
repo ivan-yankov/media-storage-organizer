@@ -3,7 +3,6 @@ package org.yankov.mso.application.model
 object DatabaseModel {
 
   val schema: String = "ADMIN"
-
   val id: String = "ID"
 
   object Tables {
