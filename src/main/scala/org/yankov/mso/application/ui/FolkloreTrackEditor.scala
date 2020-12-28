@@ -1,7 +1,7 @@
 package org.yankov.mso.application.ui
 
 import org.yankov.mso.application.{Main, Resources}
-import org.yankov.mso.application.model.DataModel.FolkloreTrack
+import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.controls.FolkloreControlsFactory._
 import org.yankov.mso.application.ui.controls.{FileSelector, LabeledTextField}
@@ -87,7 +87,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
 
   private val stage = {
     val st = new Stage {
-      title = Resources.TrackEditor.title
+      title = if (isValidId(track.id)) Resources.TrackEditor.title + s"[${track.id}]" else Resources.TrackEditor.title
       scene = new Scene {
         root = {
           new StackPane {
