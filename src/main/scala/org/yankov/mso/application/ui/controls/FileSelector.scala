@@ -10,6 +10,7 @@ case class FileSelector(labelText: String, file: Option[File]) {
   private val textField = new TextField {
     editable = false
     text = if (file.isDefined) file.get.getName else ""
+    userData = file.orNull
   }
 
   private val container: Pane = {
