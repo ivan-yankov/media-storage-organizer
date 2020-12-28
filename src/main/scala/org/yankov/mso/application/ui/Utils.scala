@@ -3,6 +3,8 @@ package org.yankov.mso.application.ui
 import java.io.File
 import java.time.Duration
 
+import org.jaudiotagger.audio.AudioFileIO
+import org.slf4j.LoggerFactory
 import org.yankov.mso.application.{Main, Resources}
 import scalafx.scene.control.{Alert, ButtonType}
 import scalafx.stage.{DirectoryChooser, FileChooser}
@@ -10,6 +12,8 @@ import scalafx.stage.{DirectoryChooser, FileChooser}
 import scala.collection.JavaConverters._
 
 object Utils {
+  private val log = LoggerFactory.getLogger(getClass)
+
   def confirmCloseApplication: Boolean = confirmDialog(Resources.Dialogs.closeApplication)
 
   def confirmOverwrite: Boolean = confirmDialog(Resources.Dialogs.overwriteRecordsInDatabase)
@@ -40,7 +44,23 @@ object Utils {
     }
   }
 
-  def calculateDuration(file: Option[File]): Duration = ???
+  def calculateDuration(fileOption: Option[File]): Duration = {
+    fileOption match {
+      case Some(file) =>
+        try {
+          val audioFile = AudioFileIO.read(file)
+          val header = audioFile.getAudioHeader
+          val lengthInSec = header.getTrackLength
+          Duration.ofSeconds(lengthInSec)
+        } catch {
+          case e: Exception =>
+            log.error("Unable to calculate audio file duration.", e)
+            Duration.ZERO
+        }
+      case None =>
+        Duration.ZERO
+    }
+  }
 
   private def confirmDialog(headerText: String): Boolean = {
     val alert = new Alert(Alert.AlertType.Confirmation)

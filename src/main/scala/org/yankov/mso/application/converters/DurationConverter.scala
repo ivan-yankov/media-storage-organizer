@@ -4,7 +4,8 @@ import java.time.Duration
 
 object DurationConverter {
   private val separator = ":"
-  private val hhMMss = "%d" + separator + "%02d" + separator + "%02d"
+  private val hMMss = "%d" + separator + "%02d" + separator + "%02d"
+  private val hhMMss = "%02d" + separator + "%02d" + separator + "%02d"
   private val MMss = "%02d" + separator + "%02d"
   private val hoursInDay = 24
   private val minutesInHour = 60
@@ -12,8 +13,10 @@ object DurationConverter {
   private val secondsInHour = 60 * secondsInMinute
   private val millisInSecond = 1000
 
-  def toHourMinSecString(duration: Duration): String =
-    hhMMss.format(toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration))
+  def toHourMinSecString(duration: Duration, withLeadingZero: Boolean): String = {
+    val f = if (withLeadingZero) hhMMss else hMMss
+    f.format(toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration))
+  }
 
   def toMinSecString(duration: Duration): String =
     MMss.format(toMinutesPart(duration), toSecondsPart(duration))
