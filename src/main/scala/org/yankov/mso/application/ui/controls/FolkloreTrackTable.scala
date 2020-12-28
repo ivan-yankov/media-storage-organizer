@@ -24,7 +24,7 @@ case class FolkloreTrackTable(inputTable: Boolean) {
 
       rowFactory = _ => new TableRow[FolkloreTrackProperties] {
         onMouseClicked = event =>
-          if (event.getClickCount == 2) FolkloreTrackEditor(table, table.getSelectionModel.getSelectedIndex)
+          if (event.getClickCount == 2) FolkloreTrackEditor(table, table.getSelectionModel.getSelectedIndex).open()
       }
     }
 
