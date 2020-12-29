@@ -37,7 +37,7 @@ case class DatabaseCache(dbConnectionString: String,
 
   def getNextTrackId: Int = getNextId(cache.folkloreTracks.map(x => x.id))
 
-  def getNextId(ids: List[Int]): Int = ids.max + 1
+  def getNextId(ids: List[Int]): Int = if (ids.nonEmpty) ids.max + 1 else 1
 
   private def loadCache: Cache = {
     connect(dbConnectionString) match {

@@ -14,5 +14,5 @@ object Player {
     player.open()
   }
 
-  def close(): Unit = player.close()
+  def close(): Unit = if (player != null) player.close()
 }

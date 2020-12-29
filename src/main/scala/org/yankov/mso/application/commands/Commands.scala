@@ -71,7 +71,7 @@ object Commands {
   }
 
   def importTitlesFromClipboard[T](table: TableView[T], data: String, withTitle: (T, String) => T): Unit = {
-    val titles = data.split(System.lineSeparator())
+    val titles = data.split(System.lineSeparator()).filter(x => x.nonEmpty)
     Range(0, table.getItems.size())
       .map(x => table.getItems.set(x, withTitle(table.getItems.get(x), titles(x))))
   }
