@@ -5,7 +5,6 @@ import org.yankov.mso.application.converters.{DurationConverter, StringConverter
 import org.yankov.mso.application.model.DataModel._
 import scalafx.beans.property.StringProperty
 import scalafx.scene.image.Image
-import scalafx.scene.layout.Pane
 import scalafx.stage.Screen
 
 object UiModel {
