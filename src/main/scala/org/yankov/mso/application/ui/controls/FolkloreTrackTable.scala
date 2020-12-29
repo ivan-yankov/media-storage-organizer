@@ -86,11 +86,6 @@ case class FolkloreTrackTable(inputTable: Boolean) {
         cellValueFactory = {
           _.value.duration
         }
-        cellFactory = _ => new TableCell[FolkloreTrackProperties, String] {
-          item.onChange { (_, _, _) =>
-            alignment = Pos.BaselineRight
-          }
-        }
       },
       new TableColumn[FolkloreTrackProperties, String] {
         text = Resources.TableColumns.source
