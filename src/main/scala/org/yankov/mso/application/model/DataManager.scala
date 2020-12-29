@@ -63,6 +63,7 @@ case class DataManager(dbConnectionString: String,
               false
             case Right(_) =>
               if (track.file.isDefined) writeRecord(storageFileName(trackId), readRecord(track.file.get))
+              dbCache.refresh()
               disconnect(connection)
               true
           }
@@ -78,8 +79,6 @@ case class DataManager(dbConnectionString: String,
         r
       })
       .forall(x => x)
-
-    dbCache.refresh()
 
     result
   }
@@ -117,6 +116,7 @@ case class DataManager(dbConnectionString: String,
                 deleteRecord(storageFileName(track.id))
                 writeRecord(storageFileName(track.id), readRecord(track.file.get))
               }
+              dbCache.refresh()
               disconnect(connection)
               true
           }
@@ -132,8 +132,6 @@ case class DataManager(dbConnectionString: String,
         r
       })
       .forall(x => x)
-
-    dbCache.refresh()
 
     result
   }
