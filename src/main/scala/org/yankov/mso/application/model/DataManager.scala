@@ -470,10 +470,10 @@ case class DataManager(dbConnectionString: String,
     else Array()
   }
 
-  private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
-
-  private def storageFileName(trackId: Int): File =
+  def storageFileName(trackId: Int): File =
     Paths.get(mediaDir, trackId + Resources.Media.flacExtension).toFile
+
+  private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 
   private def getArtist(idOption: Option[Int]): Artist = {
     idOption match {

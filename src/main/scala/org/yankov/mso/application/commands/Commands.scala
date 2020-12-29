@@ -66,9 +66,7 @@ object Commands {
   }
 
   def clearTable(table: TableView[_]): Unit = {
-    if (Player.isPlaying) {
-      Player.stop()
-    }
+    Player.close()
     table.getItems.clear()
   }
 
@@ -163,12 +161,9 @@ object Commands {
     else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
-  def playStop[T](table: TableView[T], play: T => Unit): Unit = {
-    if (Player.isPlaying) Player.stop()
-    else {
-      val index = getTableSelectedIndex(table)
-      if (index.isDefined) play(table.getItems.get(index.get))
-    }
+  def play[T](table: TableView[T], play: T => Unit): Unit = {
+    val index = getTableSelectedIndex(table)
+    if (index.isDefined) play(table.getItems.get(index.get))
   }
 
   def editTrack(table: TableView[_], edit: Int => Unit): Unit = {

@@ -1,15 +1,14 @@
 package org.yankov.mso.application.ui.toolbars
 
 import java.io.File
-import java.nio.file.Files
 
-import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.commands.Commands
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
-import org.yankov.mso.application.ui.{FolkloreTrackEditor, Utils}
 import org.yankov.mso.application.ui.console.ApplicationConsole
+import org.yankov.mso.application.ui.{FolkloreTrackEditor, Utils}
+import org.yankov.mso.application.{Main, Resources}
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
 
@@ -139,13 +138,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
     )
   }
 
-  override def playStop(targetInputTab: Boolean): Unit = {
-    Commands.playStop[FolkloreTrackProperties](
+  override def play(targetInputTab: Boolean): Unit = {
+    Commands.play[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => {
-        if (targetInputTab && x.track.file.isDefined) Player.play(Files.readAllBytes(x.track.file.get.toPath))
-        else Player.play(dataManager.getRecord(x.track.id))
-      }
+      x => Player.play(x.track, dataManager.storageFileName)
     )
   }
 

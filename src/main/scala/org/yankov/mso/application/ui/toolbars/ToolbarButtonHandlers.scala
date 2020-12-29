@@ -25,7 +25,7 @@ trait ToolbarButtonHandlers {
 
   def uploadItems(targetInputTab: Boolean): Unit
 
-  def playStop(targetInputTab: Boolean): Unit
+  def play(targetInputTab: Boolean): Unit
 
   def editTrack(targetInputTab: Boolean): Unit
 }

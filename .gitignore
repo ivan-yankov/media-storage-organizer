@@ -11,3 +11,4 @@ launch
 .bsp
 test-data/
 *.flac
+*.wav

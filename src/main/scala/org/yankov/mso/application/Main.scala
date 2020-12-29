@@ -50,14 +50,7 @@ object Main extends JFXApp {
     x => search(x)
   )
 
-  private def createDataManager: DataManager = {
-    val dbDir = getApplicationArgument(Resources.ApplicationArguments.databaseDirectory)
-    val mediaDir = getApplicationArgument(Resources.ApplicationArguments.mediaDir)
-    val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())
-    DataManager(connectionString, mediaDir, DatabaseCache(connectionString))
-  }
-
-  private def getApplicationArgument(argument: String, defaultValue: String = ""): String = {
+  def getApplicationArgument(argument: String, defaultValue: String = ""): String = {
     parameters
       .raw
       .find(x => x.startsWith(argument)) match {
@@ -72,6 +65,13 @@ object Main extends JFXApp {
         log.error(s"Missing application argument [$argument].")
         defaultValue
     }
+  }
+
+  private def createDataManager: DataManager = {
+    val dbDir = getApplicationArgument(Resources.ApplicationArguments.databaseDirectory)
+    val mediaDir = getApplicationArgument(Resources.ApplicationArguments.mediaDir)
+    val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())
+    DataManager(connectionString, mediaDir, DatabaseCache(connectionString))
   }
 
   private def tabPane: TabPane = {
