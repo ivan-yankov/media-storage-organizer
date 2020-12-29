@@ -25,4 +25,6 @@ trait ArtifactControls[T] {
   def onArtifactSelect(artifact: T): Unit
 
   def createControls(): Pane
+
+  def artifactExists: Boolean
 }

@@ -46,4 +46,7 @@ case class InstrumentControls() extends ArtifactControls[Instrument] {
     spacing = whiteSpace
     children.add(instrument.getContainer)
   }
+
+  override def artifactExists: Boolean =
+    getExistingArtifacts.exists(x => x.name.equalsIgnoreCase(instrument.getValue))
 }
