@@ -52,4 +52,7 @@ case class SourceControls() extends ArtifactControls[Source] {
     children.add(sourceType.getContainer)
     children.add(sourceSignature.getContainer)
   }
+
+  override def artifactExists: Boolean =
+    getExistingArtifacts.exists(x => x.sourceType.name.equalsIgnoreCase(sourceType.getValue.name) && x.signature.equalsIgnoreCase(sourceSignature.getValue))
 }

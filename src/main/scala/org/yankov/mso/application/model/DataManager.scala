@@ -26,11 +26,7 @@ case class DataManager(dbConnectionString: String,
   dbCache.refresh()
 
   private val log = LoggerFactory.getLogger(getClass)
-  private val dataModelChangeSupport = new PropertyChangeSupport(this)
   private val equal = "="
-
-  def addPropertyChangeListener(listener: PropertyChangeListener): Unit =
-    dataModelChangeSupport.addPropertyChangeListener(listener)
 
   def insertTracks(tracks: List[FolkloreTrack], onTrackInserted: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def insertTrack(track: FolkloreTrack): Boolean = {

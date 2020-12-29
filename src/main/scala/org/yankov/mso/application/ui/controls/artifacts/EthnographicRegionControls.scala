@@ -46,4 +46,7 @@ case class EthnographicRegionControls() extends ArtifactControls[EthnographicReg
     spacing = whiteSpace
     children.add(ethnographicRegion.getContainer)
   }
+
+  override def artifactExists: Boolean =
+    getExistingArtifacts.exists(x => x.name.equalsIgnoreCase(ethnographicRegion.getValue))
 }

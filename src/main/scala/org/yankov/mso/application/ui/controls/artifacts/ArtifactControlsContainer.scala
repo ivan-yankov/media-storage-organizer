@@ -11,7 +11,7 @@ import scalafx.scene.control.{Button, Label, ListView, SelectionMode}
 import scalafx.scene.layout.{HBox, Pane, VBox}
 import scalafx.util.StringConverter
 
-case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], containerId: String) extends PropertyChangeListener {
+case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], containerId: String) {
   private val console: ConsoleService = ApplicationConsole
   private val dataManager: DataManager = Main.dataManager
 
@@ -79,13 +79,9 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
 
   init()
 
-  override def propertyChange(propertyChangeEvent: PropertyChangeEvent): Unit = refreshExistingArtifacts()
-
   def getContainer: Pane = container
 
   private def init(): Unit = {
-    dataManager.addPropertyChangeListener(this)
-
     existingArtifacts
       .selectionModel
       .value
@@ -101,12 +97,13 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
 
   private def handleBtnAdd(): Unit = {
     if (artifactControls.validateUserInput()) {
-      if (artifactControls.createArtifact()) {
+      if (artifactControls.artifactExists) console.writeMessageWithTimestamp(Resources.Artifacts.artifactExists)
+      else if (artifactControls.createArtifact()) {
         artifactControls.cleanup()
         console.writeMessageWithTimestamp(Resources.Artifacts.artifactAdded)
       }
-      else console.writeMessageWithTimestamp(Resources.Artifacts.artifactExists)
     }
+    refreshExistingArtifacts()
   }
 
   private def handleBtnUpdate(): Unit = {
@@ -121,6 +118,7 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
         else console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdateFailed)
       }
     }
+    refreshExistingArtifacts()
   }
 
   private def refreshExistingArtifacts(): Unit = {
