@@ -5,6 +5,8 @@ export TEST_DIR=./test-data
 
 export PROD_DB=$PROD_DIR/database
 export PROD_MEDIA=$PROD_DIR/media
+export PROD_TMP=$PROD_DIR/tmp
 
 export TEST_DB=$TEST_DIR/database
 export TEST_MEDIA=$TEST_DIR/media
+export TEST_TMP=$TEST_DIR/tmp

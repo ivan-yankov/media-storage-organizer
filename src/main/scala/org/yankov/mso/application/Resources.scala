@@ -9,10 +9,14 @@ object Resources {
   object ApplicationArguments {
     val databaseDirectory: String = "--db-dir"
     val mediaDir: String = "--media-dir"
+    val tmpDir: String = "--tmp-dir"
   }
 
   object Media {
     val flacExtension: String = ".flac"
+    val playPause: String = "Възпроизвеждане / Пауза"
+    val stop: String = "Стоп"
+    val close: String = "Затваряне"
   }
 
   object MainForm {

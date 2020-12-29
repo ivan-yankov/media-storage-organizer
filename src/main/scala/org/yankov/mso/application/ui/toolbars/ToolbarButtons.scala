@@ -62,7 +62,7 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     id = ButtonIds.btnPlay
     tooltip = new Tooltip(Resources.ToolbarButtons.play)
     graphic = getIcon("play")
-    onAction = _ => handlers.playStop(data.atInputTab)
+    onAction = _ => handlers.play(data.atInputTab)
     userData = data
   }
 
@@ -119,6 +119,7 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     tooltip = new Tooltip(Resources.ToolbarButtons.applyProperties)
     graphic = getIcon("apply-properties")
     onAction = _ => handlers.applyProperties(data.atInputTab)
+    disable = true
     userData = data
   }
 
