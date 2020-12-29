@@ -79,10 +79,10 @@ object Commands {
   }
 
   def applyProperties[T](table: TableView[T], applyPropertiesButton: Button, copiedProperties: Option[T], createProperties: Int => T): Unit = {
-    val selected = table.getSelectionModel.getSelectedIndices
+    val selected = table.getSelectionModel.getSelectedIndices.asScala.toList
 
-    if (copiedProperties.isDefined && !selected.isEmpty) {
-      selected.forEach(x => table.getItems.set(x, createProperties(x)))
+    if (copiedProperties.isDefined && selected.nonEmpty) {
+      selected.foreach(x => table.getItems.set(x, createProperties(x)))
 
       applyPropertiesButton.setDisable(true)
 
