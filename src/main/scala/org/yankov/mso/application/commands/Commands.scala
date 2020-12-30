@@ -15,7 +15,7 @@ object Commands {
   private val log = LoggerFactory.getLogger(getClass)
   private val console: ConsoleService = ApplicationConsole
 
-  def updateItems[T](table: TableView[T], updateItems: List[T] => Boolean): Unit = {
+  def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {
     if (Utils.confirmOverwrite) {
       val items = table
         .getSelectionModel
@@ -24,7 +24,7 @@ object Commands {
         .toList
 
       console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
-      if (updateItems(items)) {
+      if (update(items)) {
         console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
         clearTable(table)
       }
@@ -141,6 +141,7 @@ object Commands {
         .getValue
         .get(index.get)
       deleteFromDatabase(item)
+      clearTable(table)
     }
   }
 

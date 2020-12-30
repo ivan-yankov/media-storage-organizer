@@ -1,6 +1,5 @@
 package org.yankov.mso.application.model
 
-import java.beans.{PropertyChangeListener, PropertyChangeSupport}
 import java.io.File
 import java.nio.file.{Files, Paths}
 

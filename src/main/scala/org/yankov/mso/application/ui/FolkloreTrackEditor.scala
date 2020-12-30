@@ -1,5 +1,7 @@
 package org.yankov.mso.application.ui
 
+import java.time.Duration
+
 import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
@@ -119,7 +121,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
       arrangementAuthor = arrangementAuthor.getValue,
       conductor = conductor.getValue,
       soloist = soloist.getValue,
-      duration = Utils.calculateDuration(fileSelector.getValue),
+      duration = getDuration,
       note = note.getValue,
       source = source.getValue,
       ethnographicRegion = ethnographicRegion.getValue,
@@ -131,4 +133,9 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
   }
 
   private def handleCancel(): Unit = stage.close()
+
+  private def getDuration: Duration = {
+    if (isValidId(track.id)) Utils.calculateDuration(Option(Main.dataManager.storageFileName(track.id)))
+    else Utils.calculateDuration(fileSelector.getValue)
+  }
 }
