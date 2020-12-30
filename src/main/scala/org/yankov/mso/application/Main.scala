@@ -1,12 +1,12 @@
 package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.commands.SearchEngine
 import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.{DataManager, DatabaseCache}
-import org.yankov.mso.application.model.SearchModel.Filter
+import org.yankov.mso.application.search.SearchModel.Filter
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
+import org.yankov.mso.application.search.SearchEngine
 import org.yankov.mso.application.ui.Utils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
@@ -68,6 +68,9 @@ object Main extends JFXApp {
   }
 
   private def createDataManager: DataManager = {
+    System.setSecurityManager(null)
+    Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
+
     val dbDir = getApplicationArgument(Resources.ApplicationArguments.databaseDirectory)
     val mediaDir = getApplicationArgument(Resources.ApplicationArguments.mediaDir)
     val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())

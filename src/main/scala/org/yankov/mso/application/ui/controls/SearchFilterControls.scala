@@ -2,7 +2,7 @@ package org.yankov.mso.application.ui.controls
 
 import javafx.scene.input.KeyCode
 import org.yankov.mso.application.Resources
-import org.yankov.mso.application.model.SearchModel._
+import org.yankov.mso.application.search.SearchModel._
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.{Button, TitledPane}
 import scalafx.scene.layout.{HBox, Priority}

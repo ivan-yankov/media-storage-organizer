@@ -1,8 +1,8 @@
-package org.yankov.mso.application.commands
+package org.yankov.mso.application.search
 
 import java.time.Duration
 
-import org.yankov.mso.application.model.SearchModel.Filter
+import org.yankov.mso.application.search.SearchModel.Filter
 
 import scala.annotation.tailrec
 

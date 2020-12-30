@@ -1,12 +1,15 @@
 export VERSION='2.0'
 
-export PROD_DIR=/media/ivan-yankov/9df430e5-1b64-45cf-8c51-42d3d37e89fe/folklore/data
-export TEST_DIR=./test-data
+export PROD_ROOT=/media/ivan-yankov/9df430e5-1b64-45cf-8c51-42d3d37e89fe/folklore
+export TEST_ROOT=./
 
-export PROD_DB=$PROD_DIR/database
-export PROD_MEDIA=$PROD_DIR/media
-export PROD_TMP=$PROD_DIR/tmp
+export PROD_DATA=$PROD_ROOT/data
+export TEST_DATA=$TEST_ROOT/test-data
 
-export TEST_DB=$TEST_DIR/database
-export TEST_MEDIA=$TEST_DIR/media
-export TEST_TMP=$TEST_DIR/tmp
+export PROD_DB=$PROD_DATA/database
+export PROD_MEDIA=$PROD_DATA/media
+export PROD_TMP=$PROD_ROOT/tmp
+
+export TEST_DB=$TEST_DATA/database
+export TEST_MEDIA=$TEST_DATA/media
+export TEST_TMP=$TEST_ROOT/tmp

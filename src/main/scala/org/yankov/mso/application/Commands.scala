@@ -1,15 +1,14 @@
-package org.yankov.mso.application.commands
+package org.yankov.mso.application
 
 import java.io.{File, FileOutputStream, IOException}
 
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.Resources
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.ui.Utils
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
 import scalafx.scene.control.{Button, SelectionMode, TableView}
 
-import scala.collection.JavaConverters._
+import collection.JavaConverters._
 
 object Commands {
   private val log = LoggerFactory.getLogger(getClass)

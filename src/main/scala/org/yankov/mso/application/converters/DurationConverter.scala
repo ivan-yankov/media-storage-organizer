@@ -7,7 +7,6 @@ object DurationConverter {
   private val hMMss = "%d" + separator + "%02d" + separator + "%02d"
   private val hhMMss = "%02d" + separator + "%02d" + separator + "%02d"
   private val MMss = "%02d" + separator + "%02d"
-  private val hoursInDay = 24
   private val minutesInHour = 60
   private val secondsInMinute = 60
   private val secondsInHour = 60 * secondsInMinute
@@ -15,7 +14,7 @@ object DurationConverter {
 
   def toHourMinSecString(duration: Duration, withLeadingZero: Boolean): String = {
     val f = if (withLeadingZero) hhMMss else hMMss
-    f.format(toHoursPart(duration), toMinutesPart(duration), toSecondsPart(duration))
+    f.format(duration.toHours, toMinutesPart(duration), toSecondsPart(duration))
   }
 
   def toMinSecString(duration: Duration): String =
@@ -35,8 +34,6 @@ object DurationConverter {
       Duration.ofSeconds(seconds)
     }
   }
-
-  private def toHoursPart(duration: Duration): Long = duration.toHours % hoursInDay
 
   private def toMinutesPart(duration: Duration): Long = duration.toMinutes % minutesInHour
 
