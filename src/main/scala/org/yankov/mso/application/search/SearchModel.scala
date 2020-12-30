@@ -1,7 +1,7 @@
-package org.yankov.mso.application.model
+package org.yankov.mso.application.search
 
+import org.yankov.mso.application.Resources.Operators.{containsLabel, equalsLabel, notContainsLabel, notEqualsLabel}
 import org.yankov.mso.application.Resources.Variables._
-import org.yankov.mso.application.Resources.Operators._
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 
 object SearchModel {

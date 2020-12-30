@@ -2,14 +2,13 @@ package org.yankov.mso.application.ui.toolbars
 
 import java.io.File
 
-import org.yankov.mso.application.commands.Commands
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, Utils}
-import org.yankov.mso.application.{Main, Resources}
+import org.yankov.mso.application.{Commands, Main, Resources}
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
 

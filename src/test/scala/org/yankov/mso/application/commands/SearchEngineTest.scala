@@ -4,9 +4,10 @@ import java.time.Duration
 
 import org.scalatest.{FreeSpec, Matchers}
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.SearchModel.Operators._
-import org.yankov.mso.application.model.SearchModel.Variables._
-import org.yankov.mso.application.model.SearchModel._
+import org.yankov.mso.application.search.SearchEngine
+import org.yankov.mso.application.search.SearchModel.Operators._
+import org.yankov.mso.application.search.SearchModel.Variables._
+import org.yankov.mso.application.search.SearchModel._
 
 class SearchEngineTest extends FreeSpec with Matchers {
   private val comparator: (FolkloreTrack, FolkloreTrack) => Boolean = (x, y) => x.id < y.id

@@ -2,8 +2,8 @@ package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.converters.StringConverters._
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.SearchModel
-import org.yankov.mso.application.model.SearchModel.{Operator, Variable}
+import org.yankov.mso.application.search.SearchModel.{Operator, Variable}
+import org.yankov.mso.application.search.SearchModel
 import org.yankov.mso.application.{Main, Resources}
 
 object FolkloreControlsFactory {
