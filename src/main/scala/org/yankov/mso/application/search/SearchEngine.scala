@@ -31,7 +31,7 @@ object SearchEngine {
     val result = applyFilters(filters, tracks)
     (
       result.sortWith(trackComparator),
-      tracks
+      result
         .map(x => getDuration(x))
         .foldLeft(Duration.ZERO)((x, y) => x.plus(y))
     )
