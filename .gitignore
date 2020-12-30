@@ -1,5 +1,4 @@
 target
-test*
 launch
 *.iml
 *.log
@@ -9,3 +8,7 @@ launch
 .settings
 .project
 .classpath
+.bsp
+test-data/
+*.flac
+*.wav
