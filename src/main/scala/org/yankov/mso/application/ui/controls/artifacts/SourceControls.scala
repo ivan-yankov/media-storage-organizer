@@ -31,7 +31,13 @@ case class SourceControls() extends ArtifactControls[Source] {
   }
 
   override def updateArtifact(artifact: Source): Boolean =
-    dataManager.updateSource(artifact)
+    dataManager.updateSource(
+      Source(
+        artifact.id,
+        sourceType.getValue,
+        sourceSignature.getValue
+      )
+    )
 
   override def cleanup(): Unit =
     sourceSignature.setValue("")
@@ -43,8 +49,10 @@ case class SourceControls() extends ArtifactControls[Source] {
     dataManager.getSources
 
   override def onArtifactSelect(artifact: Source): Unit = {
-    sourceType.setValue(artifact.sourceType)
-    sourceSignature.setValue(artifact.signature)
+    if (artifact != null) {
+      sourceType.setValue(artifact.sourceType)
+      sourceSignature.setValue(artifact.signature)
+    }
   }
 
   override def createControls(): Pane = new VBox {

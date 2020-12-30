@@ -60,7 +60,15 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   }
 
   override def updateArtifact(artifact: Artist): Boolean =
-    dataManager.updateArtist(artifact)
+    dataManager.updateArtist(
+      Artist(
+        id = artifact.id,
+        name = name.getValue,
+        instrument = instrument.getValue,
+        note = note.getValue,
+        missions = selectedMissions
+      )
+    )
 
   override def cleanup(): Unit = {
     name.setValue("")
@@ -77,11 +85,13 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     dataManager.getArtists
 
   override def onArtifactSelect(artifact: Artist): Unit = {
-    name.setValue(artifact.name)
-    note.setValue(artifact.note)
-    missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
-    instrument.setValue(artifact.instrument)
-    enableInstrument()
+    if (artifact != null) {
+      name.setValue(artifact.name)
+      note.setValue(artifact.note)
+      missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
+      instrument.setValue(artifact.instrument)
+      enableInstrument()
+    }
   }
 
   override def createControls(): Pane = new VBox {
@@ -112,5 +122,5 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     missions.filter(x => x._2.isSelected).map(x => x._1)
 
   private def enableInstrument(): Unit =
-    instrument.setDisable(selectedMissions.contains(InstrumentPlayer))
+    instrument.setDisable(!selectedMissions.contains(InstrumentPlayer))
 }
