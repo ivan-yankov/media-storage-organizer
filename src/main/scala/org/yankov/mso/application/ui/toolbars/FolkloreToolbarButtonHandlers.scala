@@ -23,8 +23,8 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       x => dataManager.updateTracks(
         x.map(y => y.track),
         (x, y) => console.writeMessageWithTimestamp(
-          if (y) Resources.ConsoleMessages.insertTrackSuccessful(x.title)
-          else Resources.ConsoleMessages.insertTrackFailed(x.title)
+          if (y) Resources.ConsoleMessages.updateTrackSuccessful(x.title)
+          else Resources.ConsoleMessages.updateTrackFailed(x.title)
         )
       )
     )
