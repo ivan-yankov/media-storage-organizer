@@ -18,8 +18,7 @@ object Commands {
   def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {
     if (Utils.confirmOverwrite) {
       val items = table
-        .getSelectionModel
-        .getSelectedItems
+        .getItems
         .asScala
         .toList
 
@@ -141,7 +140,7 @@ object Commands {
         .getValue
         .get(index.get)
       deleteFromDatabase(item)
-      clearTable(table)
+      table.getItems.remove(item)
     }
   }
 

@@ -3,6 +3,7 @@ package org.yankov.mso.application.ui.toolbars
 import java.io.File
 
 import org.yankov.mso.application.commands.Commands
+import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
@@ -41,7 +42,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def loadTracks(targetInputTab: Boolean): Unit = {
     Commands.loadItems(
       targetTable(targetInputTab),
-      x => FolkloreTrackProperties(FolkloreTrack().withFile(Option(x)))
+      x => FolkloreTrackProperties(FolkloreTrack().withFile(Option(x)).withDuration(Utils.calculateDuration(Option(x))))
     )
   }
 
@@ -168,8 +169,8 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       File.separator +
       track.id + "_" +
       track.title + "_" +
-      track.performer + "_" +
-      track.source +
+      StringConverters.artistToString(track.performer) + "_" +
+      StringConverters.sourceToString(track.source) +
       Resources.Media.flacExtension
   }
 }

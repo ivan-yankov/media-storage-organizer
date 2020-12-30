@@ -85,8 +85,8 @@ case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int =
 
   private def source: String = {
     clearCache()
-    if (isValidId(track.id)) FlacDecoder.decode(storageFileName(track.id).toPath, tmpFile)
-    else if (track.file.isDefined) FlacDecoder.decode(track.file.get.toPath, tmpFile)
+    if (track.file.isDefined) FlacDecoder.decode(track.file.get.toPath, tmpFile)
+    else if (isValidId(track.id)) FlacDecoder.decode(storageFileName(track.id).toPath, tmpFile)
     tmpFile.toUri.toString
   }
 

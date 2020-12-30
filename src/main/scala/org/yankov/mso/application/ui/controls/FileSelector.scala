@@ -6,11 +6,11 @@ import org.yankov.mso.application.ui.Utils
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.layout.{HBox, Pane, Priority, VBox}
 
-case class FileSelector(labelText: String, file: Option[File]) {
+case class FileSelector(labelText: String) {
+  private var file: Option[File] = Option.empty
+
   private val textField = new TextField {
     editable = false
-    text = if (file.isDefined) file.get.getName else ""
-    userData = file.orNull
   }
 
   private val container: Pane = {
@@ -25,8 +25,11 @@ case class FileSelector(labelText: String, file: Option[File]) {
       onAction = _ => {
         val selection = Utils.selectFlacFiles(true)
         if (selection.isDefined) {
-          textField.setUserData(selection.get.head)
-          textField.setText(selection.get.head.getName)
+          file = {
+            if (selection.isDefined && selection.nonEmpty) Option(selection.get.head)
+            else Option.empty
+          }
+          setText()
         }
       }
     }
@@ -48,8 +51,9 @@ case class FileSelector(labelText: String, file: Option[File]) {
 
   def getContainer: Pane = container
 
-  def getValue: Option[File] = {
-    if (textField.getUserData != null) Option(textField.getUserData.asInstanceOf[File])
-    else Option.empty
-  }
+  def setFile(file: Option[File]): Unit = this.file = file
+
+  def getFile: Option[File] = file
+
+  private def setText(): Unit = textField.setText(if (file.isDefined) file.get.getName else "")
 }

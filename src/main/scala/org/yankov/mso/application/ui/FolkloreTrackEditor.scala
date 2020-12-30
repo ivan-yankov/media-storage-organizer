@@ -24,7 +24,8 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
   private val ethnographicRegion = createEthnographicRegion(track.ethnographicRegion)
   private val source = createSource(track.source)
   private val note = LabeledTextField(Resources.TableColumns.note, track.note)
-  private val fileSelector = FileSelector(Resources.TableColumns.file, track.file)
+  private val fileSelector = FileSelector(Resources.TableColumns.file)
+  fileSelector.setFile(track.file)
 
   private val margins = Insets(25.0)
   private val horizontalSpace = 25.0
@@ -125,7 +126,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
       note = note.getValue,
       source = source.getValue,
       ethnographicRegion = ethnographicRegion.getValue,
-      file = fileSelector.getValue
+      file = fileSelector.getFile
     )
 
     table.getItems.set(trackIndex, FolkloreTrackProperties(newTrack))
@@ -135,7 +136,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
   private def handleCancel(): Unit = stage.close()
 
   private def getDuration: Duration = {
-    if (isValidId(track.id)) Utils.calculateDuration(Option(Main.dataManager.storageFileName(track.id)))
-    else Utils.calculateDuration(fileSelector.getValue)
+    if (fileSelector.getFile.isDefined) Utils.calculateDuration(Option(fileSelector.getFile.get))
+    else track.duration
   }
 }

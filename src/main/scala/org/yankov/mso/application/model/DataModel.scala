@@ -127,11 +127,27 @@ object DataModel {
       arrangementAuthor = arrangementAuthor,
       conductor = conductor,
       soloist = soloist,
-      duration = Utils.calculateDuration(newFile),
+      duration = duration,
       note = note,
       source = source,
       ethnographicRegion = ethnographicRegion,
       file = newFile
+    )
+
+    def withDuration(newDuration: Duration): FolkloreTrack = FolkloreTrack(
+      id = id,
+      title = title,
+      performer = performer,
+      accompanimentPerformer = accompanimentPerformer,
+      author = author,
+      arrangementAuthor = arrangementAuthor,
+      conductor = conductor,
+      soloist = soloist,
+      duration = newDuration,
+      note = note,
+      source = source,
+      ethnographicRegion = ethnographicRegion,
+      file = file
     )
   }
 
