@@ -28,7 +28,7 @@ case class InstrumentControls() extends ArtifactControls[Instrument] {
   }
 
   override def updateArtifact(artifact: Instrument): Boolean =
-    dataManager.updateInstrument(artifact)
+    dataManager.updateInstrument(Instrument(artifact.id, instrument.getValue))
 
   override def cleanup(): Unit =
     instrument.setValue("")
@@ -40,7 +40,7 @@ case class InstrumentControls() extends ArtifactControls[Instrument] {
     dataManager.getInstruments
 
   override def onArtifactSelect(artifact: Instrument): Unit =
-    instrument.setValue(artifact.name)
+    if (artifact != null) instrument.setValue(artifact.name)
 
   override def createControls(): Pane = new VBox {
     spacing = whiteSpace

@@ -28,7 +28,7 @@ case class EthnographicRegionControls() extends ArtifactControls[EthnographicReg
   }
 
   override def updateArtifact(artifact: EthnographicRegion): Boolean =
-    dataManager.updateEthnographicRegion(artifact)
+    dataManager.updateEthnographicRegion(EthnographicRegion(artifact.id, ethnographicRegion.getValue))
 
   override def cleanup(): Unit =
     ethnographicRegion.setValue("")
@@ -40,7 +40,7 @@ case class EthnographicRegionControls() extends ArtifactControls[EthnographicReg
     dataManager.getEthnographicRegions
 
   override def onArtifactSelect(artifact: EthnographicRegion): Unit =
-    ethnographicRegion.setValue(artifact.name)
+    if (artifact != null) ethnographicRegion.setValue(artifact.name)
 
   override def createControls(): Pane = new VBox {
     spacing = whiteSpace
