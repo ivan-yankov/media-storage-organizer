@@ -14,6 +14,8 @@ import scalafx.scene.media.{Media, MediaPlayer, MediaView}
 import scalafx.stage.{Modality, Stage}
 
 case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int => File, tmpDir: String) {
+  Files.createDirectories(Paths.get(tmpDir))
+
   private val tmpFile = Paths.get(tmpDir, "play.wav")
 
   private val buttonWidth = 250.0
