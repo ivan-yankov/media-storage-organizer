@@ -22,7 +22,7 @@ object Resources {
   object MainForm {
     val title: String = "База данни - българска народна музика"
     val inputTab: String = "Въвеждане на записи"
-    val inputArtifactsTab: String = "Въвеждане на артефакти"
+    val inputArtifactsTab: String = "Артефакти"
     val searchTab: String = "Справка"
   }
 

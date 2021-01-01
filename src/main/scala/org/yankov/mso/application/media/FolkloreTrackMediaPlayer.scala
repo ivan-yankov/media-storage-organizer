@@ -24,6 +24,7 @@ case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int =
 
   private val mediaPlayer = new MediaPlayer(media)
   mediaPlayer.setAutoPlay(true)
+  mediaPlayer.setVolume(1.0)
 
   private val mediaView = new MediaView(mediaPlayer)
 
