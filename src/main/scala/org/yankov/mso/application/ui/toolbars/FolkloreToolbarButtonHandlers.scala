@@ -168,8 +168,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       File.separator +
       track.id + "_" +
       track.title + "_" +
-      StringConverters.artistToString(track.performer) + "_" +
-      StringConverters.sourceToString(track.source) +
+      StringConverters.artistToString(track.performer) +
       Resources.Media.flacExtension
   }
 }
