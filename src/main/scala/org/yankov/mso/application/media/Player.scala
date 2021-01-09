@@ -9,7 +9,7 @@ object Player {
   private var player: FolkloreTrackMediaPlayer = _
 
   def play(track: FolkloreTrack, storageFileName: Int => File): Unit = {
-    val tmpDir = Main.getApplicationArgument(Resources.ApplicationArguments.tmpDir, "./tmp")
+    val tmpDir = Main.getApplicationArgument(Resources.ApplicationArgumentKeys.tmpDir, "./tmp")
     player = FolkloreTrackMediaPlayer(track, storageFileName, tmpDir)
     player.open()
   }
