@@ -109,11 +109,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def deleteItem(targetInputTab: Boolean): Unit = {
     Commands.deleteItem[FolkloreTrackProperties](
       targetTable(targetInputTab),
+      x => Utils.confirmDeleteFromDatabase(x.track.id),
       x => {
-        if (Utils.confirmDeleteFromDatabase(x.track.id)) {
-          if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(x.track.id))
-          else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(x.track.id))
-        }
+        if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(x.track.id))
+        else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(x.track.id))
       }
     )
   }
