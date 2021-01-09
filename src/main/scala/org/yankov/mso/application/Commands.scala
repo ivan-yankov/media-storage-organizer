@@ -131,15 +131,17 @@ object Commands {
     }
   }
 
-  def deleteItem[T](table: TableView[T], deleteFromDatabase: T => Unit): Unit = {
+  def deleteItem[T](table: TableView[T], confirm: T => Boolean, deleteFromDatabase: T => Unit): Unit = {
     val index = getTableSelectedIndex(table)
     if (index.isDefined) {
       val item = table
         .items
         .getValue
         .get(index.get)
-      deleteFromDatabase(item)
-      table.getItems.remove(item)
+      if (confirm(item)) {
+        deleteFromDatabase(item)
+        table.getItems.remove(item)
+      }
     }
   }
 
