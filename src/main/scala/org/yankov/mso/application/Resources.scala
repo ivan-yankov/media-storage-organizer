@@ -6,10 +6,16 @@ import org.yankov.mso.application.converters.DurationConverter
 
 object Resources {
 
-  object ApplicationArguments {
+  object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaDir: String = "--media-dir"
     val tmpDir: String = "--tmp-dir"
+    val findDuplicates: String = "--find-duplicates"
+  }
+
+  object ApplicationArgumentValues {
+    val findDuplicatesExact: String = "exact"
+    val findDuplicatesTitlePerformer: String = "title-performer"
   }
 
   object Media {
