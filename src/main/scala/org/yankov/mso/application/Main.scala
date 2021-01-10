@@ -52,7 +52,7 @@ object Main extends JFXApp {
 
   onStart()
 
-  def getApplicationArgument(argument: String, defaultValue: String = ""): String = {
+  def getApplicationArgument(argument: String, defaultValue: String = "", required: Boolean = true): String = {
     parameters
       .raw
       .find(x => x.startsWith(argument)) match {
@@ -60,21 +60,22 @@ object Main extends JFXApp {
         val items = value.split("=")
         if (items.length == 2) items(1)
         else {
-          log.error(s"Missing application argument [$argument].")
+          log.error(s"Value for application argument [$argument] no found.")
           defaultValue
         }
       case None =>
-        log.error(s"Missing application argument [$argument].")
+        if (required) log.error(s"Missing application argument [$argument].")
         defaultValue
     }
   }
 
   private def onStart(): Unit = {
-    getApplicationArgument(Resources.ApplicationArgumentKeys.findDuplicates) match {
+    getApplicationArgument(Resources.ApplicationArgumentKeys.findDuplicates, required = false) match {
       case Resources.ApplicationArgumentValues.findDuplicatesExact =>
         setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer + "|" + x.duration.getSeconds.toString))
       case Resources.ApplicationArgumentValues.findDuplicatesTitlePerformer =>
         setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer))
+      case _ => ()
     }
   }
 
