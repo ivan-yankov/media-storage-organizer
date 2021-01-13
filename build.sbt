@@ -9,6 +9,7 @@ val slfVersion = "1.7.30"
 val derbyVersion = "10.14.2.0"
 val jaudioTaggerVersion = "2.0.3"
 val jFlacVersion = "1.5.2"
+val http4sVersion = "0.20.10"
 
 mainClass in assembly := Some("org.yankov.mso.application.Main")
 
@@ -19,6 +20,11 @@ libraryDependencies ++= Seq(
   // logging
   "org.slf4j" % "slf4j-api" % slfVersion,
   "org.slf4j" % "slf4j-simple" % slfVersion,
+
+  // http
+  "org.http4s" %% "http4s-dsl" % http4sVersion,
+  "org.http4s" %% "http4s-blaze-server" % http4sVersion,
+  "org.http4s" %% "http4s-blaze-client" % http4sVersion,
 
   // database
   "org.apache.derby" % "derby" % derbyVersion,

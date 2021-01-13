@@ -9,13 +9,14 @@ object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaDir: String = "--media-dir"
-    val tmpDir: String = "--tmp-dir"
+    val mediaServerPort: String = "--media-server-port"
     val findDuplicates: String = "--find-duplicates"
   }
 
   object ApplicationArgumentValues {
     val findDuplicatesExact: String = "exact"
     val findDuplicatesTitlePerformer: String = "title-performer"
+    val mediaServerPort: String = "5432"
   }
 
   object Media {
@@ -23,6 +24,7 @@ object Resources {
     val playPause: String = "Възпроизвеждане / Пауза"
     val stop: String = "Стоп"
     val close: String = "Затваряне"
+    val audioHttpApi: String = "wav-audio-bytes"
   }
 
   object MainForm {
