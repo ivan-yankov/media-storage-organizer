@@ -24,6 +24,7 @@ object Resources {
     val playPause: String = "Възпроизвеждане / Пауза"
     val stop: String = "Стоп"
     val close: String = "Затваряне"
+    val host: String = "localhost"
     val audioHttpApi: String = "wav-audio-bytes"
   }
 
