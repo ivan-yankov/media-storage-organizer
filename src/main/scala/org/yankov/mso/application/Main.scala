@@ -30,9 +30,10 @@ object Main extends JFXApp {
     y = ApplicationSettings.getY
 
     onCloseRequest = event => {
-      if (!Utils.confirmCloseApplication) {
-        event.consume()
+      if (Utils.confirmCloseApplication) {
+        MediaServer.stop()
       }
+      else event.consume()
     }
 
     scene = new Scene {
@@ -83,7 +84,7 @@ object Main extends JFXApp {
       case _ => ()
     }
 
-    new Thread(() => MediaServer.main(Array())).start()
+    new Thread(() => MediaServer.start()).start()
   }
 
   private def createDataManager: DataManager = {
