@@ -2,10 +2,11 @@ package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.database._
+import org.yankov.mso.application.media.MediaServer
 import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
 import org.yankov.mso.application.model.{DataManager, DatabaseCache}
 import org.yankov.mso.application.search.SearchModel.Filter
-import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
 import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
 import org.yankov.mso.application.ui.Utils
 import org.yankov.mso.application.ui.console.ApplicationConsole
@@ -28,7 +29,11 @@ object Main extends JFXApp {
     x = ApplicationSettings.getX
     y = ApplicationSettings.getY
 
-    onCloseRequest = event => if (!Utils.confirmCloseApplication) event.consume()
+    onCloseRequest = event => {
+      if (!Utils.confirmCloseApplication) {
+        event.consume()
+      }
+    }
 
     scene = new Scene {
       root = new BorderPane {
@@ -77,6 +82,8 @@ object Main extends JFXApp {
         setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer))
       case _ => ()
     }
+
+    new Thread(() => MediaServer.main(Array())).start()
   }
 
   private def createDataManager: DataManager = {

@@ -1,11 +1,6 @@
 package org.yankov.mso.application.media
 
-import java.io.File
-import java.nio.file.{Files, Paths}
-
 import org.yankov.mso.application._
-import org.yankov.mso.application.media.decode.FlacDecoder
-import org.yankov.mso.application.model.DataModel._
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button
@@ -13,11 +8,7 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.scene.media.{Media, MediaPlayer, MediaView}
 import scalafx.stage.{Modality, Stage}
 
-case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int => File, tmpDir: String) {
-  Files.createDirectories(Paths.get(tmpDir))
-
-  private val tmpFile = Paths.get(tmpDir, "play.wav")
-
+case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
   private val buttonWidth = 250.0
 
   private val media = new Media(source)
@@ -59,17 +50,14 @@ case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int =
 
   private val stage = {
     val st = new Stage {
-      title = track.title
+      title = trackTitle
       scene = new Scene {
         root = new VBox {
           children.add(mediaView)
           children.add(buttons)
         }
       }
-      onCloseRequest = _ => {
-        mediaPlayer.stop()
-        clearCache()
-      }
+      onCloseRequest = _ => mediaPlayer.stop()
     }
 
     st.initOwner(Main.stage)
@@ -82,15 +70,7 @@ case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int =
 
   def close(): Unit = {
     mediaPlayer.stop()
-    clearCache()
     stage.close()
-  }
-
-  private def source: String = {
-    clearCache()
-    if (track.file.isDefined) FlacDecoder.decode(track.file.get.toPath, tmpFile)
-    else if (isValidId(track.id)) FlacDecoder.decode(storageFileName(track.id).toPath, tmpFile)
-    tmpFile.toUri.toString
   }
 
   private def handlePlayPause(): Unit = {
@@ -101,6 +81,4 @@ case class FolkloreTrackMediaPlayer(track: FolkloreTrack, storageFileName: Int =
       mediaPlayer.pause()
     }
   }
-
-  private def clearCache(): Unit = Files.deleteIfExists(tmpFile)
 }

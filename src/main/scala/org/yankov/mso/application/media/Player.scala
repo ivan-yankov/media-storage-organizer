@@ -1,16 +1,34 @@
 package org.yankov.mso.application.media
 
-import java.io.File
+import org.yankov.mso.application.Main.getApplicationArgument
+import org.yankov.mso.application.{AudioService, Resources}
+import org.yankov.mso.application.media.decode.FlacDecoder
+import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 
-import org.yankov.mso.application.{Main, Resources}
-import org.yankov.mso.application.model.DataModel.FolkloreTrack
+import java.io.File
+import java.nio.file.Files
 
 object Player {
   private var player: FolkloreTrackMediaPlayer = _
 
   def play(track: FolkloreTrack, storageFileName: Int => File): Unit = {
-    val tmpDir = Main.getApplicationArgument(Resources.ApplicationArgumentKeys.tmpDir, "./tmp")
-    player = FolkloreTrackMediaPlayer(track, storageFileName, tmpDir)
+    val port = getApplicationArgument(
+      Resources.ApplicationArgumentKeys.mediaServerPort,
+      Resources.ApplicationArgumentValues.mediaServerPort,
+      required = false
+    )
+
+    val url = s"http://localhost:$port/${Resources.Media.audioHttpApi}"
+
+    val data: Option[Array[Byte]] = {
+      if (track.file.isDefined) FlacDecoder.decode(Files.readAllBytes(track.file.get.toPath))
+      else if (isValidId(track.id)) FlacDecoder.decode(Files.readAllBytes(storageFileName(track.id).toPath))
+      else Option.empty
+    }
+
+    AudioService.setAudioData(data.getOrElse(Array()))
+
+    player = FolkloreTrackMediaPlayer(url, track.title)
     player.open()
   }
 
