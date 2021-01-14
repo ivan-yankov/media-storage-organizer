@@ -6,7 +6,7 @@ import org.yankov.mso.application.media.MediaServer
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
 import org.yankov.mso.application.model.{DataManager, DatabaseCache}
-import org.yankov.mso.application.search.SearchModel.Filter
+import org.yankov.mso.application.search.SearchModel.SearchParameters
 import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
 import org.yankov.mso.application.ui.Utils
 import org.yankov.mso.application.ui.console.ApplicationConsole
@@ -52,7 +52,7 @@ object Main extends JFXApp {
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
   lazy val searchFilterControls: SearchFilterControls[FolkloreTrack] = SearchFilterControls(
     () => FolkloreControlsFactory.createSearchVariable(),
-    () => FolkloreControlsFactory.createSearchOperator(),
+    () => FolkloreControlsFactory.createSearchFilter(),
     x => search(x)
   )
 
@@ -146,10 +146,10 @@ object Main extends JFXApp {
     }
   }
 
-  private def search(filters: List[Filter[FolkloreTrack]]): Unit = {
+  private def search(searchParameters: List[SearchParameters[FolkloreTrack]]): Unit = {
     val (tracks, totalDuration) = SearchEngine.search[FolkloreTrack](
       dataManager.getTracks,
-      filters,
+      searchParameters,
       (x, y) => x.id < y.id,
       x => x.duration
     )

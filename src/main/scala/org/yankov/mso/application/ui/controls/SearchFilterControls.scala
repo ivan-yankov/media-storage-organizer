@@ -8,17 +8,17 @@ import scalafx.scene.control.{Button, TitledPane}
 import scalafx.scene.layout.{HBox, Priority}
 
 case class SearchFilterControls[T](variableCreator: () => LabeledComboBox[Variable[T]],
-                                   operatorCreator: () => LabeledComboBox[Operator],
-                                   search: List[Filter[T]] => Unit) {
+                                   filterCreator: () => LabeledComboBox[Filter[T]],
+                                   search: List[SearchParameters[T]] => Unit) {
 
   case class FilterControls(variable: LabeledComboBox[Variable[T]],
-                            operator: LabeledComboBox[Operator],
+                            filter: LabeledComboBox[Filter[T]],
                             value: LabeledTextField,
                             panel: TitledPane)
 
   private val btnSearch = new Button {
     text = Resources.Search.search
-    onAction = _ => search(createFilters)
+    onAction = _ => doSearch()
   }
 
   val controls: List[FilterControls] = List(
@@ -29,9 +29,9 @@ case class SearchFilterControls[T](variableCreator: () => LabeledComboBox[Variab
 
   private def createControls(number: Int): FilterControls = {
     val variable = variableCreator()
-    val operator = operatorCreator()
+    val filter = filterCreator()
     val value = LabeledTextField(Resources.Search.value, "")
-    value.setOnKeyReleased(x => if (x.getCode.equals(KeyCode.ENTER)) search(createFilters))
+    value.setOnKeyReleased(x => if (x.getCode.equals(KeyCode.ENTER)) doSearch())
     HBox.setHgrow(value.getContainer, Priority.Always)
 
     val searchContainer = new HBox {
@@ -39,7 +39,7 @@ case class SearchFilterControls[T](variableCreator: () => LabeledComboBox[Variab
       spacing = 25.0
       alignment = Pos.BottomLeft
       children.add(variable.getContainer)
-      children.add(operator.getContainer)
+      children.add(filter.getContainer)
       children.add(value.getContainer)
     }
 
@@ -51,17 +51,9 @@ case class SearchFilterControls[T](variableCreator: () => LabeledComboBox[Variab
       content = searchContainer
     }
 
-    FilterControls(variable, operator, value, panel)
+    FilterControls(variable, filter, value, panel)
   }
 
-  private def createFilters: List[Filter[T]] = {
-    controls
-      .map(
-        x => Filter(
-          variable = x.variable.getValue,
-          operator = x.operator.getValue,
-          value = x.value.getValue
-        )
-      )
-  }
+  private def doSearch(): Unit =
+    search(controls.map(x => SearchParameters(x.variable.getValue, x.filter.getValue, x.value.getValue)))
 }

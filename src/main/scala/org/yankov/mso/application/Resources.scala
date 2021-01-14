@@ -104,12 +104,11 @@ object Resources {
 
   object Search {
     val variable: String = "Категория"
-    val operator: String = "Оператор"
+    val filter: String = "Филтър"
     val value: String = "Стойност"
     val search: String = "Търсене"
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration, withLeadingZero = false)}"
-    val filter: String = "Филтър"
   }
 
   object TrackEditor {

@@ -3,29 +3,26 @@ package org.yankov.mso.application.search
 import org.yankov.mso.application.Resources.Operators.{containsLabel, equalsLabel, notContainsLabel, notEqualsLabel}
 import org.yankov.mso.application.Resources.Variables._
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
+import org.yankov.mso.application.search.TextAnalyzer._
 
 object SearchModel {
 
-  case class Operator(label: String, predicate: (String, String) => Boolean)
-
-  case class Variable[T](label: String, valueProvider: T => String)
-
-  case class Filter[T](variable: Variable[T], operator: Operator, value: String)
+  case class Variable[T](label: String, valueProvider: T => String, searchIndex: List[SearchIndexElement])
 
   object Variables {
-    val varTitle: Variable[FolkloreTrack] = Variable[FolkloreTrack](title, x => x.title)
-    val varPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](performer, x => x.performer.name)
-    val varAccompanimentPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](accompanimentPerformer, x => x.accompanimentPerformer.name)
-    val varArrangementAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](arrangementAuthor, x => x.arrangementAuthor.name)
-    val varConductor: Variable[FolkloreTrack] = Variable[FolkloreTrack](conductor, x => x.conductor.name)
-    val varInstrumentPerformance: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentPerformance, x => x.performer.instrument.name)
-    val varInstrumentAccompaniment: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentAccompaniment, x => x.accompanimentPerformer.instrument.name)
-    val varSoloist: Variable[FolkloreTrack] = Variable[FolkloreTrack](soloist, x => x.soloist.name)
-    val varAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](author, x => x.author.name)
-    val varEthnographicRegion: Variable[FolkloreTrack] = Variable[FolkloreTrack](ethnographicRegion, x => x.ethnographicRegion.name)
-    val varTrackNote: Variable[FolkloreTrack] = Variable[FolkloreTrack](trackNote, x => x.note)
-    val varSourceType: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name)
-    val varSourceSignature: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceSignature, x => x.source.signature)
+    val varTitle: Variable[FolkloreTrack] = Variable[FolkloreTrack](title, x => x.title, getSearchIndexes.titleIndex)
+    val varPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](performer, x => x.performer.name, getSearchIndexes.performerIndex)
+    val varAccompanimentPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](accompanimentPerformer, x => x.accompanimentPerformer.name, getSearchIndexes.accompanimentPerformerIndex)
+    val varArrangementAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](arrangementAuthor, x => x.arrangementAuthor.name, getSearchIndexes.arrangementAuthorIndex)
+    val varConductor: Variable[FolkloreTrack] = Variable[FolkloreTrack](conductor, x => x.conductor.name, getSearchIndexes.conductorIndex)
+    val varInstrumentPerformance: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentPerformance, x => x.performer.instrument.name, getSearchIndexes.instrumentPerformanceIndex)
+    val varInstrumentAccompaniment: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentAccompaniment, x => x.accompanimentPerformer.instrument.name, getSearchIndexes.instrumentAccompanimentIndex)
+    val varSoloist: Variable[FolkloreTrack] = Variable[FolkloreTrack](soloist, x => x.soloist.name, getSearchIndexes.soloistIndex)
+    val varAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](author, x => x.author.name, getSearchIndexes.authorIndex)
+    val varEthnographicRegion: Variable[FolkloreTrack] = Variable[FolkloreTrack](ethnographicRegion, x => x.ethnographicRegion.name, getSearchIndexes.ethnographicRegionIndex)
+    val varTrackNote: Variable[FolkloreTrack] = Variable[FolkloreTrack](trackNote, x => x.note, getSearchIndexes.noteIndex)
+    val varSourceType: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name, getSearchIndexes.sourceTypeIndex)
+    val varSourceSignature: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceSignature, x => x.source.signature, getSearchIndexes.sourceSignatureIndex)
 
     def asList: List[Variable[FolkloreTrack]] = List(
       varTitle,
@@ -42,20 +39,43 @@ object SearchModel {
       varSourceType,
       varSourceSignature
     )
+
+    private def getSearchIndexes: SearchIndexes = SearchIndexesInstance.getInstance
   }
 
-  object Operators {
-    val opEquals: Operator = Operator(equalsLabel, (x, y) => x.equalsIgnoreCase(y))
-    val opNotEquals: Operator = Operator(notEqualsLabel, (x, y) => !x.equalsIgnoreCase(y))
-    val opContains: Operator = Operator(containsLabel, (x, y) => x.contains(y))
-    val opNotContains: Operator = Operator(notContainsLabel, (x, y) => !x.contains(y))
+  case class Filter[T](label: String, execute: (Variable[T], String, List[T]) => List[T])
 
-    def asList: List[Operator] = List(
-      opContains,
-      opNotContains,
-      opEquals,
-      opNotEquals
+  object Filters {
+    val filterEquals: Filter[FolkloreTrack] = Filter(
+      equalsLabel,
+      (variable, value, tracks) => tracks.filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+    )
+
+    val filterNotEquals: Filter[FolkloreTrack] = Filter(
+      notEqualsLabel,
+      (variable, value, tracks) => tracks.filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+    )
+
+    val filterContains: Filter[FolkloreTrack] = Filter(
+      containsLabel,
+      (variable, value, tracks) => tracks.filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+    )
+
+    val filterNotContains: Filter[FolkloreTrack] = Filter(
+      notContainsLabel,
+      (variable, value, tracks) => tracks.filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+    )
+
+    def asList: List[Filter[FolkloreTrack]] = List(
+      filterContains,
+      filterNotContains,
+      filterEquals,
+      filterNotEquals
     )
   }
+
+  case class SearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)
+
+  case class SearchIndexElement(term: String, ids: List[Int])
 
 }

@@ -2,8 +2,8 @@ package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.converters.StringConverters._
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.search.SearchModel.{Operator, Variable}
 import org.yankov.mso.application.search.SearchModel
+import org.yankov.mso.application.search.SearchModel.{Filter, Variable}
 import org.yankov.mso.application.{Main, Resources}
 
 object FolkloreControlsFactory {
@@ -112,13 +112,13 @@ object FolkloreControlsFactory {
     )
   }
 
-  def createSearchOperator(): LabeledComboBox[Operator] = {
-    val operators = SearchModel.Operators.asList
-    LabeledComboBox[Operator](
-      labelText = Resources.Search.operator,
+  def createSearchFilter(): LabeledComboBox[Filter[FolkloreTrack]] = {
+    val operators = SearchModel.Filters.asList
+    LabeledComboBox[Filter[FolkloreTrack]](
+      labelText = Resources.Search.filter,
       cbItems = operators,
       value = operators.head,
-      itemToString = operatorToString,
+      itemToString = filterToString,
       sortItems = false,
       emptyValue = Option.empty
     )
