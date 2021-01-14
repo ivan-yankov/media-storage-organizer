@@ -150,7 +150,6 @@ object Main extends JFXApp {
     val (tracks, totalDuration) = SearchEngine.search[FolkloreTrack](
       dataManager.getTracks,
       searchParameters,
-      (x, y) => x.id < y.id,
       x => x.duration
     )
     searchTable.getValue.getItems.clear()

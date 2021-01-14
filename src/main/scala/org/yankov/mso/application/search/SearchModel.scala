@@ -48,22 +48,34 @@ object SearchModel {
   object Filters {
     val filterEquals: Filter[FolkloreTrack] = Filter(
       equalsLabel,
-      (variable, value, tracks) => tracks.filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+      (variable, value, tracks) =>
+        tracks
+          .filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+          .sortWith(idComparator)
     )
 
     val filterNotEquals: Filter[FolkloreTrack] = Filter(
       notEqualsLabel,
-      (variable, value, tracks) => tracks.filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+      (variable, value, tracks) =>
+        tracks
+          .filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+          .sortWith(idComparator)
     )
 
     val filterContains: Filter[FolkloreTrack] = Filter(
       containsLabel,
-      (variable, value, tracks) => tracks.filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+      (variable, value, tracks) =>
+        tracks
+          .filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+          .sortWith(idComparator)
     )
 
     val filterNotContains: Filter[FolkloreTrack] = Filter(
       notContainsLabel,
-      (variable, value, tracks) => tracks.filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+      (variable, value, tracks) =>
+        tracks
+          .filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+          .sortWith(idComparator)
     )
 
     def asList: List[Filter[FolkloreTrack]] = List(
@@ -72,6 +84,8 @@ object SearchModel {
       filterEquals,
       filterNotEquals
     )
+
+    private def idComparator: (FolkloreTrack, FolkloreTrack) => Boolean = (x, y) => x.id < y.id
   }
 
   case class SearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)

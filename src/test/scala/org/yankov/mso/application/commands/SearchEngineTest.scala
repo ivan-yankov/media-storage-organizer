@@ -10,7 +10,6 @@ import org.yankov.mso.application.search.SearchModel.Variables._
 import org.yankov.mso.application.search.SearchModel._
 
 class SearchEngineTest extends FreeSpec with Matchers {
-  private val comparator: (FolkloreTrack, FolkloreTrack) => Boolean = (x, y) => x.id < y.id
   private val getDuration: FolkloreTrack => Duration = x => x.duration
 
   "search" - {
@@ -54,7 +53,7 @@ class SearchEngineTest extends FreeSpec with Matchers {
 
     "contains title" in {
       val filters = List(SearchParameters(varTitle, filterContains, "недке хубава"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, filters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, filters, getDuration)
       found shouldBe List(t1)
     }
 
@@ -64,7 +63,6 @@ class SearchEngineTest extends FreeSpec with Matchers {
       val (found, _) = SearchEngine.search[FolkloreTrack](
         tracksWithIds,
         parameters,
-        comparator,
         getDuration
       )
       found shouldBe tracksWithIds.tail
@@ -72,49 +70,49 @@ class SearchEngineTest extends FreeSpec with Matchers {
 
     "equals title" in {
       val parameters = List(SearchParameters(varTitle, filterEquals, "стани ми майчо откачи"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t4)
     }
 
     "not equals title" in {
       val parameters = List(SearchParameters(varTitle, filterNotEquals, "ръченица"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe tracks.reverse.tail.reverse
     }
 
     "contains performer" in {
       val parameters = List(SearchParameters(varPerformer, filterContains, "анс"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t3, t4)
     }
 
     "contains arrangement author" in {
       val parameters = List(SearchParameters(varArrangementAuthor, filterContains, "кюрк"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t4, t5)
     }
 
     "contains accompaniment performer" in {
       val parameters = List(SearchParameters(varAccompanimentPerformer, filterContains, "орк"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t1, t2)
     }
 
     "contains instrument performance" in {
       val parameters = List(SearchParameters(varInstrumentPerformance, filterContains, "кавал"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t5)
     }
 
     "contains source type" in {
       val parameters = List(SearchParameters(varSourceType, filterContains, "лента"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t1, t5)
     }
 
     "contains source signature" in {
       val parameters = List(SearchParameters(varSourceSignature, filterContains, "07"))
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t3)
     }
 
@@ -123,7 +121,7 @@ class SearchEngineTest extends FreeSpec with Matchers {
         SearchParameters(varPerformer, filterContains, "анс"),
         SearchParameters(varSoloist, filterContains, "надежда")
       )
-      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, comparator, getDuration)
+      val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t4)
     }
   }

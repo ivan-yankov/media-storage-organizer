@@ -6,10 +6,10 @@ import java.time.Duration
 import scala.annotation.tailrec
 
 object SearchEngine {
-  def search[T](tracks: List[T], searchParameters: List[SearchParameters[T]], comparator: (T, T) => Boolean, getDuration: T => Duration): (List[T], Duration) = {
+  def search[T](tracks: List[T], searchParameters: List[SearchParameters[T]], getDuration: T => Duration): (List[T], Duration) = {
     val result = applyFilters(searchParameters, tracks)
     (
-      result.sortWith(comparator),
+      result,
       result
         .map(x => getDuration(x))
         .foldLeft(Duration.ZERO)((x, y) => x.plus(y))
