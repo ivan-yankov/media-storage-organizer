@@ -1,8 +1,9 @@
-package org.yankov.mso.application
+package org.yankov.mso.application.media
 
 import cats.effect.IO
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
+import org.yankov.mso.application.Resources
 
 object AudioService extends Http4sDsl[IO] {
   private var audioData: Array[Byte] = Array()

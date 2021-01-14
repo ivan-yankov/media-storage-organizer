@@ -5,7 +5,7 @@ import org.http4s.HttpApp
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.yankov.mso.application.Main.getApplicationArgument
-import org.yankov.mso.application.{AudioService, Resources}
+import org.yankov.mso.application.Resources
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
