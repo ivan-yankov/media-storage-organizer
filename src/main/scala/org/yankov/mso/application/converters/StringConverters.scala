@@ -1,7 +1,7 @@
 package org.yankov.mso.application.converters
 
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.search.SearchModel.{Operator, Variable}
+import org.yankov.mso.application.search.SearchModel.{Filter, Variable}
 
 object StringConverters {
   def artistToString(x: Artist): String = x.name
@@ -17,7 +17,7 @@ object StringConverters {
 
   def sourceTypeToString(x: SourceType): String = x.name
 
-  def operatorToString(x: Operator): String = x.label
+  def filterToString(x: Filter[_]): String = x.label
 
   def variableToString(x: Variable[_]): String = x.label
 }

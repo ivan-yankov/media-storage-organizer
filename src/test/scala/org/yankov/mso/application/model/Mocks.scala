@@ -17,4 +17,5 @@ case class Mocks() extends MockFactory {
     mockFunction[Connection, String, String, List[Clause], Either[Throwable, Unit]]
 
   val dbCache: DatabaseCache = mock[DatabaseCache]
+  (dbCache.getCache _).expects().returns(Cache()).anyNumberOfTimes()
 }

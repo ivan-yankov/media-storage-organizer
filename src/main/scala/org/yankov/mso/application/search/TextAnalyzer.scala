@@ -1,6 +1,8 @@
 package org.yankov.mso.application.search
 
+import java.nio.file.{Files, Paths}
 import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 
 object TextAnalyzer {
 
@@ -23,10 +25,20 @@ object TextAnalyzer {
     }
   }
 
+  private val stopWordsBgPath = Paths.get(getClass.getResource("/stop-words-bg.txt").toURI)
+  private val stopWordsBg = Files.readAllLines(stopWordsBgPath).asScala.toList.filter(x => x.nonEmpty)
+
   def analyze(string: String): String = {
     string
       .normalize()
       .removePunctuation()
       .trim
+  }
+
+  def indexAnalyze(string: String): List[String] = {
+    analyze(string)
+      .split(" ")
+      .toList
+      .filterNot(x => stopWordsBg.contains(x))
   }
 }

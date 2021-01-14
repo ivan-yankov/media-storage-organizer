@@ -2,7 +2,6 @@ package org.yankov.mso.application.model
 
 import java.io.File
 import java.nio.file.{Files, Paths}
-
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.DurationConverter
@@ -12,6 +11,7 @@ import org.yankov.mso.application.database._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.model.SqlFunctions._
+import org.yankov.mso.application.search.{SearchIndexes, SearchIndexesInstance}
 
 case class DataManager(dbConnectionString: String,
                        mediaDir: String,
@@ -22,7 +22,7 @@ case class DataManager(dbConnectionString: String,
                        readRecord: File => Array[Byte] = x => Files.readAllBytes(x.toPath),
                        writeRecord: (File, Array[Byte]) => Unit = (x, y) => Files.write(x.toPath, y),
                        deleteRecord: File => Unit = x => Files.deleteIfExists(x.toPath)) {
-  dbCache.refresh()
+  refreshCacheAndIndex()
 
   private val log = LoggerFactory.getLogger(getClass)
   private val equal = "="
@@ -58,7 +58,7 @@ case class DataManager(dbConnectionString: String,
               false
             case Right(_) =>
               if (track.file.isDefined) writeRecord(storageFileName(trackId), readRecord(track.file.get))
-              dbCache.refresh()
+              refreshCacheAndIndex()
               disconnect(connection)
               true
           }
@@ -111,7 +111,7 @@ case class DataManager(dbConnectionString: String,
                 deleteRecord(storageFileName(track.id))
                 writeRecord(storageFileName(track.id), readRecord(track.file.get))
               }
-              dbCache.refresh()
+              refreshCacheAndIndex()
               disconnect(connection)
               true
           }
@@ -166,7 +166,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             deleteRecord(storageFileName(track.id))
-            dbCache.refresh()
+            refreshCacheAndIndex()
             disconnect(connection)
             true
         }
@@ -201,7 +201,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             true
         }
       case None =>
@@ -226,7 +226,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             true
         }
       case None =>
@@ -261,7 +261,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             true
         }
       case None =>
@@ -286,7 +286,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             true
         }
       case None =>
@@ -320,7 +320,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             true
         }
       case None =>
@@ -345,7 +345,7 @@ case class DataManager(dbConnectionString: String,
             false
           case Right(_) =>
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             true
         }
       case None =>
@@ -395,7 +395,7 @@ case class DataManager(dbConnectionString: String,
               )
               .forall(x => x.isRight)
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             result
         }
       case None =>
@@ -443,7 +443,7 @@ case class DataManager(dbConnectionString: String,
               )
               .forall(x => x.isRight)
             disconnect(connection)
-            dbCache.refresh()
+            refreshCacheAndIndex()
             result
         }
       case None =>
@@ -578,5 +578,10 @@ case class DataManager(dbConnectionString: String,
       case None =>
         EthnographicRegion()
     }
+  }
+
+  private def refreshCacheAndIndex(): Unit = {
+    dbCache.refresh()
+    SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
   }
 }
