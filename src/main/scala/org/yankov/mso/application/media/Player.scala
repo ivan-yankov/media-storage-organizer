@@ -1,7 +1,7 @@
 package org.yankov.mso.application.media
 
 import org.yankov.mso.application.Main.getApplicationArgument
-import org.yankov.mso.application.{AudioService, Resources}
+import org.yankov.mso.application.Resources
 import org.yankov.mso.application.media.decode.FlacDecoder
 import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 
