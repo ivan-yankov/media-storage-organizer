@@ -123,6 +123,7 @@ object SearchModel {
     )
 
     def asList: List[Filter[FolkloreTrack]] = List(
+      filterFuzzySearch,
       filterContains,
       filterNotContains,
       filterEquals,
