@@ -7,7 +7,7 @@ import org.yankov.mso.application.search.TextAnalyzer._
 
 object SearchModel {
 
-  private val maxFuzzySearchResults = 30
+  private val levenshteinTolerance = 1
 
   case class Variable[T](label: String, valueProvider: T => String, searchIndex: List[SearchIndexElement])
 
@@ -83,13 +83,8 @@ object SearchModel {
     val filterFuzzySearch: Filter[FolkloreTrack] = Filter(
       fuzzySearchLabel,
       (variable, value, tracks) => {
-        def levenshteinMatch(a: String, b: String): Boolean = {
-          val d = {
-            if (a.split(" ").length > 1 && b.split(" ").length > 1) 2
-            else 1
-          }
-          levenshteinDistance(a, b) <= d
-        }
+        def fuzzyContains(term: String, terms: List[String]): Boolean =
+          terms.exists(x => levenshteinDistance(x, term) <= levenshteinTolerance)
 
         val analyzedValue = analyze(value)
         val exactMatches = tracks
@@ -97,37 +92,33 @@ object SearchModel {
         val containsMatches = tracks
           .diff(exactMatches)
           .filter(x => analyze(variable.valueProvider(x)).contains(analyzedValue))
-        val levenshteinMatches = tracks
-          .diff(exactMatches)
-          .diff(containsMatches)
-          .filter(x => levenshteinMatch(analyze(variable.valueProvider(x)), analyzedValue))
 
         val indexAnalyzedValue = indexAnalyze(value)
-
-        val ids = variable.searchIndex.filter(x => indexAnalyzedValue.contains(x.term)).map(x => x.ids)
+        val ids = variable
+          .searchIndex
+          .filter(x => fuzzyContains(x.term, indexAnalyzedValue))
+          .map(x => x.ids)
         val idsFound = ids
           .flatten
           .distinct
           .map(x => (x, ids.count(y => y.contains(x))))
           .sortWith((x, y) => x._2 > y._2)
           .map(x => x._1)
-
         val fuzzyMatches = tracks
           .diff(exactMatches)
           .diff(containsMatches)
-          .diff(levenshteinMatches)
           .filter(x => idsFound.contains(x.id))
 
-        (exactMatches ++ containsMatches ++ levenshteinMatches ++ fuzzyMatches).take(maxFuzzySearchResults)
+        exactMatches ++ containsMatches ++ fuzzyMatches
       }
     )
 
     def asList: List[Filter[FolkloreTrack]] = List(
-      filterFuzzySearch,
       filterContains,
       filterNotContains,
       filterEquals,
-      filterNotEquals
+      filterNotEquals,
+      filterFuzzySearch
     )
 
     private def idComparator: (FolkloreTrack, FolkloreTrack) => Boolean = (x, y) => x.id < y.id
