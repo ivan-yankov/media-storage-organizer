@@ -582,6 +582,7 @@ case class DataManager(dbConnectionString: String,
 
   private def refreshCacheAndIndex(): Unit = {
     dbCache.refresh()
-    SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
+    val tracks = getTracks
+    SearchIndexesInstance.setInstance(SearchIndexes(tracks))
   }
 }

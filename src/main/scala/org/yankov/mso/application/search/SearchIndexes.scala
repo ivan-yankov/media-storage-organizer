@@ -25,10 +25,13 @@ case class SearchIndexes(tracks: List[FolkloreTrack]) {
         .map(x => x.id)
     }
 
-    tracks
+    val result = tracks
       .map(x => valueProvider(x))
+      .filter(x => x.nonEmpty)
+      .distinct
       .flatMap(x => TextAnalyzer.indexAnalyze(x))
       .map(x => SearchIndexElement(x, findIds(x)))
+    result
   }
 }
 

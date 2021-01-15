@@ -1,5 +1,8 @@
 package org.yankov.mso.application.search
 
+import org.yankov.mso.application.IOUtils
+
+import java.io.{BufferedReader, FileInputStream, InputStreamReader}
 import java.nio.file.{Files, Paths}
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
@@ -25,8 +28,7 @@ object TextAnalyzer {
     }
   }
 
-  private val stopWordsBgPath = Paths.get(getClass.getResource("/stop-words-bg.txt").toURI)
-  private val stopWordsBg = Files.readAllLines(stopWordsBgPath).asScala.toList.filter(x => x.nonEmpty)
+  private val stopWordsBg = IOUtils.readTextFile("/stop-words-bg.txt")
 
   def analyze(string: String): String = {
     string
