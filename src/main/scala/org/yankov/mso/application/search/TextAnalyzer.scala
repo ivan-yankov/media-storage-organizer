@@ -44,14 +44,16 @@ object TextAnalyzer {
       .filterNot(x => stopWordsBg.contains(x))
   }
 
-  def levenshteinDistance(a: String, b: String): Int = {
-    def lev(x: String, y: String): Int = {
-      if (y.isEmpty) x.length
-      else if (x.isEmpty) y.length
-      else if (x.head.equals(y.head)) lev(x.tail, y.tail)
-      else List(lev(x.tail, y), lev(x, y.tail), lev(x.tail, y.tail)).min + 1
-    }
-    if (a.equals(b)) 0
-    else lev(a, b)
+  def levenshteinDistance(s1: String, s2: String): Int = {
+    val dist = Array.tabulate(s2.length + 1, s1.length + 1) { (j, i) => if (j == 0) i else if (i == 0) j else 0 }
+
+    def minimum(i: Int*): Int = i.min
+
+    for {j <- dist.indices.tail
+         i <- dist(0).indices.tail} dist(j)(i) =
+      if (s2(j - 1) == s1(i - 1)) dist(j - 1)(i - 1)
+      else minimum(dist(j - 1)(i) + 1, dist(j)(i - 1) + 1, dist(j - 1)(i - 1) + 1)
+
+    dist(s2.length)(s1.length)
   }
 }

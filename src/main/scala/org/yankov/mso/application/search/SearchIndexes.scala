@@ -2,6 +2,7 @@ package org.yankov.mso.application.search
 
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.SearchModel.SearchIndexElement
+import org.yankov.mso.application.search.TextAnalyzer._
 
 case class SearchIndexes(tracks: List[FolkloreTrack]) {
   val titleIndex: List[SearchIndexElement] = buildIndex(x => x.title)
@@ -19,17 +20,21 @@ case class SearchIndexes(tracks: List[FolkloreTrack]) {
   val sourceSignatureIndex: List[SearchIndexElement] = buildIndex(x => x.source.signature)
 
   private def buildIndex(valueProvider: FolkloreTrack => String): List[SearchIndexElement] = {
+    val analyzedValues = tracks
+      .map(x => (x.id, valueProvider(x)))
+      .map(x => (x._1, indexAnalyze(x._2)))
+
     def findIds(term: String): List[Int] = {
-      tracks
-        .filter(x => valueProvider(x).contains(term))
-        .map(x => x.id)
+      val result = analyzedValues
+        .filter(x => x._2.contains(term))
+        .map(x => x._1)
+      result
     }
 
-    val result = tracks
-      .map(x => valueProvider(x))
+    val result = analyzedValues
+      .flatMap(x => x._2)
       .filter(x => x.nonEmpty)
       .distinct
-      .flatMap(x => TextAnalyzer.indexAnalyze(x))
       .map(x => SearchIndexElement(x, findIds(x)))
     result
   }
