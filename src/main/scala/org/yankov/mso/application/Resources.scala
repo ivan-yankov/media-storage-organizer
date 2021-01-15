@@ -187,7 +187,8 @@ object Resources {
     val sourceSignature: String = "Сигнатура на източник"
   }
 
-  object Operators {
+  object Filters {
+    val fuzzySearchLabel: String = "Гъвкаво търсене"
     val equalsLabel: String = "Идентично"
     val notEqualsLabel: String = "Различно"
     val containsLabel: String = "Съдържа"
