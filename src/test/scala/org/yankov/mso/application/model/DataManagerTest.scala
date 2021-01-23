@@ -34,7 +34,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             VarcharSqlValue(Option.empty),
             IntSqlValue(Option.empty)
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -72,7 +72,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             VarcharSqlValue(Option("note")),
             IntSqlValue(Option(10))
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -86,7 +86,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("SINGER")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -100,7 +100,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("INSTRUMENT_PLAYER")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -114,7 +114,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("COMPOSER")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -128,7 +128,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("CONDUCTOR")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -142,7 +142,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("ORCHESTRA")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -156,7 +156,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("CHOIR")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -170,7 +170,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("ENSEMBLE")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       mocks
@@ -184,7 +184,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("CHAMBER_GROUP")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -220,7 +220,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             VarcharSqlValue(Option.empty),
             IntSqlValue(Option.empty)
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -246,7 +246,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             VarcharSqlValue(Option("signature")),
             IntSqlValue(Option(3))
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -273,7 +273,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option.empty),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -298,7 +298,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("instrument")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -325,7 +325,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option.empty),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -350,7 +350,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(1)),
             VarcharSqlValue(Option("ethnographic-region")),
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val dataManager = DataManager(connectionString, "", mocks.dbCache, mocks.sqlInsert)
@@ -400,7 +400,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option.empty),
             IntSqlValue(Option.empty)
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val onTrackInserted = mockFunction[FolkloreTrack, Boolean, Unit]
@@ -458,7 +458,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
             IntSqlValue(Option(16)),
             IntSqlValue(Option(17))
           )
-        ).returns(Right())
+        ).returns(Right(()))
         .once()
 
       val onTrackInserted = mockFunction[FolkloreTrack, Boolean, Unit]
@@ -516,7 +516,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         "ADMIN",
         "FOLKLORE_TRACK",
         List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     val deleteFile = mockFunction[File, Unit]
@@ -546,7 +546,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         List("NAME"),
         List(VarcharSqlValue(Option("ethnographic-region"))),
         List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     val dataManager = DataManager(
@@ -572,7 +572,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         List("SIGNATURE", "TYPE_ID"),
         List(VarcharSqlValue(Option("source")), IntSqlValue(Option(10))),
         List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     val dataManager = DataManager(
@@ -598,7 +598,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         List("NAME"),
         List(VarcharSqlValue(Option("instrument"))),
         List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     val dataManager = DataManager(
@@ -639,7 +639,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(10))
         ),
         List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -649,7 +649,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         "ADMIN",
         "ARTIST_MISSIONS",
         List(WhereClause("ARTIST_ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -663,7 +663,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("SINGER")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -677,7 +677,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("INSTRUMENT_PLAYER")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -691,7 +691,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("COMPOSER")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -705,7 +705,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("CONDUCTOR")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -719,7 +719,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("ORCHESTRA")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -733,7 +733,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("CHOIR")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -747,7 +747,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("ENSEMBLE")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     mocks
@@ -761,7 +761,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(1)),
           VarcharSqlValue(Option("CHAMBER_GROUP")),
         )
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     val dataManager = DataManager(
@@ -821,7 +821,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
           IntSqlValue(Option(17))
         ),
         List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-      ).returns(Right())
+      ).returns(Right(()))
       .once()
 
     val onTrackUpdated = mockFunction[FolkloreTrack, Boolean, Unit]

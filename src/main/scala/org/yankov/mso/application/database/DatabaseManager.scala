@@ -13,7 +13,7 @@ object DatabaseManager {
   def createSchema(connection: Connection, name: String): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"CREATE SCHEMA $name").execute()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
@@ -25,7 +25,7 @@ object DatabaseManager {
         .map(x => columnToString(x))
         .mkString(", ")
       connection.prepareStatement(s"CREATE TABLE $schemaName.$tableName($fields)").execute()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
@@ -34,7 +34,7 @@ object DatabaseManager {
   def dropTable(connection: Connection, schemaName: String, tableName: String): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"DROP TABLE $schemaName.$tableName").execute()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
@@ -43,7 +43,7 @@ object DatabaseManager {
   def addColumn(connection: Connection, schemaName: String, tableName: String, column: ColumnDefinition): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"ALTER TABLE $schemaName.$tableName ADD ${columnToString(column)}").execute()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
@@ -52,7 +52,7 @@ object DatabaseManager {
   def dropColumn(connection: Connection, schemaName: String, tableName: String, columnName: String): Either[Throwable, Unit] = {
     try {
       connection.prepareStatement(s"ALTER TABLE $schemaName.$tableName DROP $columnName").execute()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
@@ -69,7 +69,7 @@ object DatabaseManager {
       setRow(s, presented.map(x => x._2))
 
       val result = s.executeUpdate()
-      if (result == 1) Right()
+      if (result == 1) Right(())
       else throw new SQLException("Insert was not successful.")
     } catch {
       case e: SQLException => Left(e)
@@ -104,7 +104,7 @@ object DatabaseManager {
       setStatementParameters(data, s, 1)
       setStatementParameters(criteria.map(x => x.value), s, data.size + 1)
       s.executeUpdate()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
@@ -115,7 +115,7 @@ object DatabaseManager {
       val s = connection.prepareStatement(s"DELETE FROM $schemaName.$tableName${criteriaQuery(criteria)}")
       setStatementParameters(criteria.map(x => x.value), s, 1)
       s.execute()
-      Right()
+      Right(())
     } catch {
       case e: SQLException => Left(e)
     }
