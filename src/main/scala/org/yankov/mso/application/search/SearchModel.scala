@@ -50,34 +50,50 @@ object SearchModel {
   object Filters {
     val filterEquals: Filter[FolkloreTrack] = Filter(
       equalsLabel,
-      (variable, value, tracks) =>
-        tracks
-          .filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
-          .sortWith(idComparator)
+      (variable, value, tracks) => {
+        if (value.nonEmpty) {
+          tracks
+            .filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+            .sortWith(idComparator)
+        }
+        else tracks.sortWith(idComparator)
+      }
     )
 
     val filterNotEquals: Filter[FolkloreTrack] = Filter(
       notEqualsLabel,
-      (variable, value, tracks) =>
-        tracks
-          .filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
-          .sortWith(idComparator)
+      (variable, value, tracks) => {
+        if (value.nonEmpty) {
+          tracks
+            .filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+            .sortWith(idComparator)
+        }
+        else tracks.sortWith(idComparator)
+      }
     )
 
     val filterContains: Filter[FolkloreTrack] = Filter(
       containsLabel,
-      (variable, value, tracks) =>
-        tracks
-          .filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
-          .sortWith(idComparator)
+      (variable, value, tracks) => {
+        if (value.nonEmpty) {
+          tracks
+            .filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+            .sortWith(idComparator)
+        }
+        else tracks.sortWith(idComparator)
+      }
     )
 
     val filterNotContains: Filter[FolkloreTrack] = Filter(
       notContainsLabel,
-      (variable, value, tracks) =>
-        tracks
-          .filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
-          .sortWith(idComparator)
+      (variable, value, tracks) => {
+        if (value.nonEmpty) {
+          tracks
+            .filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+            .sortWith(idComparator)
+        }
+        else tracks.sortWith(idComparator)
+      }
     )
 
     val filterFuzzySearch: Filter[FolkloreTrack] = Filter(

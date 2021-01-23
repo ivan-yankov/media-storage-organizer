@@ -22,8 +22,6 @@ object SearchEngine {
     else applyFilters(searchParameters.tail, applyFilter(tracks, searchParameters.head))
   }
 
-  private def applyFilter[T](tracks: List[T], searchParameters: SearchParameters[T]): List[T] = {
-    if (searchParameters.value.isEmpty) tracks
-    else searchParameters.filter.execute(searchParameters.variable, searchParameters.value, tracks)
-  }
+  private def applyFilter[T](tracks: List[T], searchParameters: SearchParameters[T]): List[T] =
+    searchParameters.filter.execute(searchParameters.variable, searchParameters.value, tracks)
 }
