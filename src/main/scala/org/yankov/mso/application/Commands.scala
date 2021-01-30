@@ -14,17 +14,6 @@ object Commands {
   private val log = LoggerFactory.getLogger(getClass)
   private val console: ConsoleService = ApplicationConsole
 
-  def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {
-    val items = table
-      .getItems
-      .asScala
-      .toList
-
-    console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
-    if (update(items)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
-    else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
-  }
-
   def exportItems[T](table: TableView[T], directory: File, createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
     console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
     table
@@ -42,7 +31,6 @@ object Commands {
             console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableWriteFile} [$outputFileName]")
         }
       })
-    console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)
   }
 
   def loadItems[T](table: TableView[T], createItem: File => T): Unit = {
@@ -133,10 +121,7 @@ object Commands {
       .toList
 
     console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
-    if (insertItems(items)) {
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
-      clearTable(table)
-    }
+    if (insertItems(items)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
     else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 

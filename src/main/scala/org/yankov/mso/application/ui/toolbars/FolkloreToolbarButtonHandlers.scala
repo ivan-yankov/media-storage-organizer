@@ -12,6 +12,7 @@ import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
 
 import java.io.File
+import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -23,33 +24,43 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def updateItems(targetInputTab: Boolean): Unit = {
     if (Utils.confirmOverwrite) {
       val table = targetTable(targetInputTab)
-      runAsync(() => {
-        Commands.updateItems[FolkloreTrackProperties](
-          table,
-          x => dataManager.updateTracks(
-            x.map(y => y.track),
+      runAsync(
+        () => {
+          val items = table
+            .getItems
+            .asScala
+            .toList
+
+          console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
+          val success = dataManager.updateTracks(
+            items.map(y => y.track),
             (x, y) => console.writeMessageWithTimestamp(
               if (y) Resources.ConsoleMessages.updateTrackSuccessful(x.title)
               else Resources.ConsoleMessages.updateTrackFailed(x.title)
             )
           )
-        )
-        Commands.clearTable(table)
-      })
+          if (success) console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+          else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
+        },
+        () => Commands.clearTable(table)
+      )
     }
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
     val directory = Utils.selectDirectory
     if (directory.isDefined) {
-      runAsync(() => {
-        Commands.exportItems[FolkloreTrackProperties](
-          targetTable(targetInputTab),
-          directory.get,
-          (x, y) => createOutputFileName(x, y.track),
-          x => dataManager.getRecord(x.track.id)
-        )
-      })
+      runAsync(
+        () => {
+          Commands.exportItems[FolkloreTrackProperties](
+            targetTable(targetInputTab),
+            directory.get,
+            (x, y) => createOutputFileName(x, y.track),
+            x => dataManager.getRecord(x.track.id)
+          )
+        },
+        () => console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)
+      )
     }
   }
 
@@ -131,13 +142,14 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
         .get(index.get)
 
       if (Utils.confirmDeleteFromDatabase(item.track.id)) {
-        runAsync(() => {
-          if (dataManager.deleteTrack(item.track)) {
-            console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(item.track.id))
-            table.getItems.remove(item)
-          }
-          else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(item.track.id))
-        })
+        runAsync(
+          () => {
+            val success = dataManager.deleteTrack(item.track)
+            if (success) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(item.track.id))
+            else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(item.track.id))
+          },
+          () => table.getItems.remove(item)
+        )
       }
     }
   }
@@ -150,18 +162,22 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def uploadItems(targetInputTab: Boolean): Unit = {
-    runAsync(() => {
-      Commands.uploadItems[FolkloreTrackProperties](
-        targetTable(targetInputTab),
-        x => dataManager.insertTracks(
-          x.map(y => y.track),
-          (x, y) => console.writeMessageWithTimestamp(
-            if (y) Resources.ConsoleMessages.insertTrackSuccessful(x.title)
-            else Resources.ConsoleMessages.insertTrackFailed(x.title)
+    val table = targetTable(targetInputTab)
+    runAsync(
+      () => {
+        Commands.uploadItems[FolkloreTrackProperties](
+          table,
+          x => dataManager.insertTracks(
+            x.map(y => y.track),
+            (x, y) => console.writeMessageWithTimestamp(
+              if (y) Resources.ConsoleMessages.insertTrackSuccessful(x.title)
+              else Resources.ConsoleMessages.insertTrackFailed(x.title)
+            )
           )
         )
-      )
-    })
+      },
+      () => Commands.clearTable(table)
+    )
   }
 
   override def play(targetInputTab: Boolean): Unit = {
@@ -198,12 +214,15 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       Resources.Media.flacExtension
   }
 
-  private def runAsync(f: () => Unit): Unit = {
+  private def runAsync(f: () => Unit, onComplete: () => Unit): Unit = {
     val cursor = Main.stage.getScene.getCursor
     Main.stage.getScene.setCursor(Cursor.Wait)
     val future = Future {
       f()
     }
-    future.onComplete(_ => Main.stage.getScene.setCursor(cursor))
+    future.onComplete(_ => {
+      onComplete()
+      Main.stage.getScene.setCursor(cursor)
+    })
   }
 }
