@@ -15,19 +15,17 @@ object Commands {
   private val console: ConsoleService = ApplicationConsole
 
   def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {
-    if (Utils.confirmOverwrite) {
-      val items = table
-        .getItems
-        .asScala
-        .toList
+    val items = table
+      .getItems
+      .asScala
+      .toList
 
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
-      if (update(items)) {
-        console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
-        clearTable(table)
-      }
-      else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
+    console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
+    if (update(items)) {
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+      clearTable(table)
     }
+    else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
   def exportItems[T](table: TableView[T], createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {

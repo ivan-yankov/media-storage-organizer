@@ -21,18 +21,20 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private val console = ApplicationConsole
 
   override def updateItems(targetInputTab: Boolean): Unit = {
-    runAsync(() => {
-      Commands.updateItems[FolkloreTrackProperties](
-        targetTable(targetInputTab),
-        x => dataManager.updateTracks(
-          x.map(y => y.track),
-          (x, y) => console.writeMessageWithTimestamp(
-            if (y) Resources.ConsoleMessages.updateTrackSuccessful(x.title)
-            else Resources.ConsoleMessages.updateTrackFailed(x.title)
+    if (Utils.confirmOverwrite) {
+      runAsync(() => {
+        Commands.updateItems[FolkloreTrackProperties](
+          targetTable(targetInputTab),
+          x => dataManager.updateTracks(
+            x.map(y => y.track),
+            (x, y) => console.writeMessageWithTimestamp(
+              if (y) Resources.ConsoleMessages.updateTrackSuccessful(x.title)
+              else Resources.ConsoleMessages.updateTrackFailed(x.title)
+            )
           )
         )
-      )
-    })
+      })
+    }
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
