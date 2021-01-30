@@ -40,13 +40,17 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
-    runAsync(() => {
-      Commands.exportItems[FolkloreTrackProperties](
-        targetTable(targetInputTab),
-        (x, y) => createOutputFileName(x, y.track),
-        x => dataManager.getRecord(x.track.id)
-      )
-    })
+    val directory = Utils.selectDirectory
+    if (directory.isDefined) {
+      runAsync(() => {
+        Commands.exportItems[FolkloreTrackProperties](
+          targetTable(targetInputTab),
+          directory.get,
+          (x, y) => createOutputFileName(x, y.track),
+          x => dataManager.getRecord(x.track.id)
+        )
+      })
+    }
   }
 
   override def loadTracks(targetInputTab: Boolean): Unit = {

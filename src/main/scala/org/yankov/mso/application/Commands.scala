@@ -25,27 +25,24 @@ object Commands {
     else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
-  def exportItems[T](table: TableView[T], createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
-    val directory = Utils.selectDirectory
-    if (directory.isDefined) {
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
-      table
-        .getSelectionModel
-        .getSelectedItems
-        .forEach(x => {
-          val outputFileName = createOutputFileName(directory.get, x)
-          try {
-            val out = new FileOutputStream(outputFileName)
-            out.write(getRecord(x))
-            out.close()
-          } catch {
-            case e: IOException =>
-              log.error(s"Unable to write file [$outputFileName]", e)
-              console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableWriteFile} [$outputFileName]")
-          }
-        })
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)
-    }
+  def exportItems[T](table: TableView[T], directory: File, createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
+    console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
+    table
+      .getSelectionModel
+      .getSelectedItems
+      .forEach(x => {
+        val outputFileName = createOutputFileName(directory, x)
+        try {
+          val out = new FileOutputStream(outputFileName)
+          out.write(getRecord(x))
+          out.close()
+        } catch {
+          case e: IOException =>
+            log.error(s"Unable to write file [$outputFileName]", e)
+            console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableWriteFile} [$outputFileName]")
+        }
+      })
+    console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)
   }
 
   def loadItems[T](table: TableView[T], createItem: File => T): Unit = {
