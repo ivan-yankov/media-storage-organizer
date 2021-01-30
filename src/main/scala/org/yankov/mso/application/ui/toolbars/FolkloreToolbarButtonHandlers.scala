@@ -7,6 +7,7 @@ import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, Utils}
 import org.yankov.mso.application.{Commands, Main, Resources}
+import scalafx.application.Platform
 import scalafx.scene.Cursor
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
@@ -222,7 +223,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
     }
     future.onComplete(_ => {
       onComplete()
-      Main.stage.getScene.setCursor(cursor)
+      Platform.runLater(() => Main.stage.getScene.setCursor(cursor))
     })
   }
 }
