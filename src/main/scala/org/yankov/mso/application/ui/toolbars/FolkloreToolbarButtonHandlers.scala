@@ -22,9 +22,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
 
   override def updateItems(targetInputTab: Boolean): Unit = {
     if (Utils.confirmOverwrite) {
+      val table = targetTable(targetInputTab)
       runAsync(() => {
         Commands.updateItems[FolkloreTrackProperties](
-          targetTable(targetInputTab),
+          table,
           x => dataManager.updateTracks(
             x.map(y => y.track),
             (x, y) => console.writeMessageWithTimestamp(
@@ -33,6 +34,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
             )
           )
         )
+        Commands.clearTable(table)
       })
     }
   }
@@ -116,14 +118,24 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def removeItem(targetInputTab: Boolean): Unit = Commands.removeItem(targetTable(targetInputTab))
 
   override def deleteItem(targetInputTab: Boolean): Unit = {
-    Commands.deleteItem[FolkloreTrackProperties](
-      targetTable(targetInputTab),
-      x => Utils.confirmDeleteFromDatabase(x.track.id),
-      x => {
-        if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(x.track.id))
-        else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(x.track.id))
+    val table = targetTable(targetInputTab)
+    val index = Commands.getTableSelectedIndex(table)
+    if (index.isDefined) {
+      val item = table
+        .items
+        .getValue
+        .get(index.get)
+
+      if (Utils.confirmDeleteFromDatabase(item.track.id)) {
+        runAsync(() => {
+          if (dataManager.deleteTrack(item.track)) {
+            console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(item.track.id))
+            table.getItems.remove(item)
+          }
+          else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(item.track.id))
+        })
       }
-    )
+    }
   }
 
   override def addItem(targetInputTab: Boolean): Unit = {

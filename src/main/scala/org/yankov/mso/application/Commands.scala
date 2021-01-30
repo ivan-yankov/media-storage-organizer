@@ -21,10 +21,7 @@ object Commands {
       .toList
 
     console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
-    if (update(items)) {
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
-      clearTable(table)
-    }
+    if (update(items)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
     else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
@@ -129,20 +126,6 @@ object Commands {
     }
   }
 
-  def deleteItem[T](table: TableView[T], confirm: T => Boolean, deleteFromDatabase: T => Unit): Unit = {
-    val index = getTableSelectedIndex(table)
-    if (index.isDefined) {
-      val item = table
-        .items
-        .getValue
-        .get(index.get)
-      if (confirm(item)) {
-        deleteFromDatabase(item)
-        table.getItems.remove(item)
-      }
-    }
-  }
-
   def addItem[T](table: TableView[T], item: T): Unit = table.getItems.add(item)
 
   def uploadItems[T](table: TableView[T], insertItems: List[T] => Boolean): Unit = {
@@ -170,7 +153,7 @@ object Commands {
     if (selected.isDefined) edit(selected.get)
   }
 
-  private def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
+  def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
     val index = table.getSelectionModel.getSelectedIndex
     if (index < 0) Option.empty
     else Option(index)
