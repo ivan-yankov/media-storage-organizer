@@ -34,8 +34,8 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
             )
           )
         )
+        Commands.clearTable(table)
       })
-      Commands.clearTable(table)
     }
   }
 
