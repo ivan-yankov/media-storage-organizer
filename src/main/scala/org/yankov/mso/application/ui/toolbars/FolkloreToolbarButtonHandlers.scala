@@ -222,8 +222,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       f()
     }
     future.onComplete(_ => {
-      onComplete()
-      Platform.runLater(() => Main.stage.getScene.setCursor(cursor))
+      Platform.runLater(() => {
+        onComplete()
+        Main.stage.getScene.setCursor(cursor)
+      })
     })
   }
 }
