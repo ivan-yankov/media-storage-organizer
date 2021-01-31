@@ -14,23 +14,43 @@ object Commands {
   private val log = LoggerFactory.getLogger(getClass)
   private val console: ConsoleService = ApplicationConsole
 
-  def exportItems[T](table: TableView[T], directory: File, createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
-    console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
-    table
-      .getSelectionModel
-      .getSelectedItems
-      .forEach(x => {
-        val outputFileName = createOutputFileName(directory, x)
-        try {
-          val out = new FileOutputStream(outputFileName)
-          out.write(getRecord(x))
-          out.close()
-        } catch {
-          case e: IOException =>
-            log.error(s"Unable to write file [$outputFileName]", e)
-            console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableWriteFile} [$outputFileName]")
-        }
-      })
+  def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {
+    if (Utils.confirmOverwrite) {
+      val items = table
+        .getItems
+        .asScala
+        .toList
+
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
+      if (update(items)) {
+        console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+        clearTable(table)
+      }
+      else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
+    }
+  }
+
+  def exportItems[T](table: TableView[T], createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
+    val directory = Utils.selectDirectory
+    if (directory.isDefined) {
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
+      table
+        .getSelectionModel
+        .getSelectedItems
+        .forEach(x => {
+          val outputFileName = createOutputFileName(directory.get, x)
+          try {
+            val out = new FileOutputStream(outputFileName)
+            out.write(getRecord(x))
+            out.close()
+          } catch {
+            case e: IOException =>
+              log.error(s"Unable to write file [$outputFileName]", e)
+              console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableWriteFile} [$outputFileName]")
+          }
+        })
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)
+    }
   }
 
   def loadItems[T](table: TableView[T], createItem: File => T): Unit = {
@@ -111,6 +131,20 @@ object Commands {
     }
   }
 
+  def deleteItem[T](table: TableView[T], confirm: T => Boolean, deleteFromDatabase: T => Unit): Unit = {
+    val index = getTableSelectedIndex(table)
+    if (index.isDefined) {
+      val item = table
+        .items
+        .getValue
+        .get(index.get)
+      if (confirm(item)) {
+        deleteFromDatabase(item)
+        table.getItems.remove(item)
+      }
+    }
+  }
+
   def addItem[T](table: TableView[T], item: T): Unit = table.getItems.add(item)
 
   def uploadItems[T](table: TableView[T], insertItems: List[T] => Boolean): Unit = {
@@ -121,7 +155,10 @@ object Commands {
       .toList
 
     console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
-    if (insertItems(items)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+    if (insertItems(items)) {
+      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
+      clearTable(table)
+    }
     else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
@@ -135,7 +172,7 @@ object Commands {
     if (selected.isDefined) edit(selected.get)
   }
 
-  def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
+  private def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
     val index = table.getSelectionModel.getSelectedIndex
     if (index < 0) Option.empty
     else Option(index)
