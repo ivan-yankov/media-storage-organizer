@@ -219,7 +219,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
     val cursor = Main.stage.getScene.getCursor
     Main.stage.getScene.setCursor(Cursor.Wait)
     val future = Future {
-      f()
+      Platform.runLater(() => f())
     }
     future.onComplete(_ => {
       Platform.runLater(() => {
