@@ -163,11 +163,16 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   private def createOutputFileName(dir: File, track: FolkloreTrack): String = {
-    dir.getAbsolutePath +
+    val result = dir.getAbsolutePath +
       File.separator +
       track.id + "_" +
       track.title + "_" +
       StringConverters.artistToString(track.performer) +
       Resources.Media.flacExtension
+
+    result
+      .replace("\"", "")
+      .replace("\\", "")
+      .replace("/", "")
   }
 }
