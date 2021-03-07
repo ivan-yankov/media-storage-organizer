@@ -170,9 +170,6 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       StringConverters.artistToString(track.performer) +
       Resources.Media.flacExtension
 
-    result
-      .replace("\"", "")
-      .replace("\\", "")
-      .replace("/", "")
+    result.replace("\"", "")
   }
 }
