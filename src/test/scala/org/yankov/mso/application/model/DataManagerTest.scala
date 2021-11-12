@@ -473,7 +473,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       writeFile.expects(new File("/media/1.flac"), bytes).returns().once()
 
       val dataManager = DataManager(
-        dbConnectionString = connectionString,
+        dbRootDir = connectionString,
         mediaDir = "/media",
         dbCache = mocks.dbCache,
         sqlInsert = mocks.sqlInsert,
@@ -523,7 +523,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
     deleteFile.expects(new File("/media/1.flac")).returns().once()
 
     val dataManager = DataManager(
-      dbConnectionString = connectionString,
+      dbRootDir = connectionString,
       mediaDir = "/media",
       dbCache = mocks.dbCache,
       sqlDelete = mocks.sqlDelete,
@@ -550,7 +550,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       .once()
 
     val dataManager = DataManager(
-      dbConnectionString = connectionString,
+      dbRootDir = connectionString,
       mediaDir = "",
       dbCache = mocks.dbCache,
       sqlUpdate = mocks.sqlUpdate
@@ -576,7 +576,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       .once()
 
     val dataManager = DataManager(
-      dbConnectionString = connectionString,
+      dbRootDir = connectionString,
       mediaDir = "",
       dbCache = mocks.dbCache,
       sqlUpdate = mocks.sqlUpdate
@@ -602,7 +602,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       .once()
 
     val dataManager = DataManager(
-      dbConnectionString = connectionString,
+      dbRootDir = connectionString,
       mediaDir = "",
       dbCache = mocks.dbCache,
       sqlUpdate = mocks.sqlUpdate
@@ -765,7 +765,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       .once()
 
     val dataManager = DataManager(
-      dbConnectionString = connectionString,
+      dbRootDir = connectionString,
       mediaDir = "",
       dbCache = mocks.dbCache,
       sqlInsert = mocks.sqlInsert,
@@ -839,7 +839,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
     writeFile.expects(new File("/media/1.flac"), bytes).returns().once()
 
     val dataManager = DataManager(
-      dbConnectionString = connectionString,
+      dbRootDir = connectionString,
       mediaDir = "/media",
       dbCache = mocks.dbCache,
       sqlInsert = mocks.sqlInsert,

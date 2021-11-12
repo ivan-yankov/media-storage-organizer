@@ -1,24 +1,16 @@
 package org.yankov.mso.application.model
 
 import java.sql.Connection
-
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.database.DatabaseManager
-import org.yankov.mso.application.database.DbUtils._
-import org.yankov.mso.application.database.SqlModel.SqlValue
+import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.model.SqlFunctions._
 
-case class Cache(artists: List[DbArtist] = List(),
-                 artistMissions: List[DbArtistMissions] = List(),
-                 ethnographicRegions: List[DbEthnographicRegion] = List(),
-                 folkloreTracks: List[DbFolkloreTrack] = List(),
-                 instruments: List[DbInstrument] = List(),
-                 sources: List[DbSource] = List(),
-                 sourceTypes: List[DbSourceType] = List())
+case class Cache(artists: List[Artist] = List(),
+                 sources: List[Source] = List(),
+                 folkloreTracks: List[FolkloreTrack] = List())
 
-case class DatabaseCache(dbConnectionString: String,
-                         sqlSelect: SqlSelect = DatabaseManager.select) {
+case class DatabaseCache(dbRootDir: String) {
   private var cache: Cache = _
 
   private val log = LoggerFactory.getLogger(getClass)
@@ -26,18 +18,6 @@ case class DatabaseCache(dbConnectionString: String,
   def getCache: Cache = cache
 
   def refresh(): Unit = cache = loadCache
-
-  def getNextArtistId: Int = getNextId(cache.artists.map(x => x.id))
-
-  def getNextSourceId: Int = getNextId(cache.sources.map(x => x.id))
-
-  def getNextInstrumentId: Int = getNextId(cache.instruments.map(x => x.id))
-
-  def getNextEthnographicRegionId: Int = getNextId(cache.ethnographicRegions.map(x => x.id))
-
-  def getNextTrackId: Int = getNextId(cache.folkloreTracks.map(x => x.id))
-
-  def getNextId(ids: List[Int]): Int = if (ids.nonEmpty) ids.max + 1 else 1
 
   private def loadCache: Cache = {
     connect(dbConnectionString) match {
