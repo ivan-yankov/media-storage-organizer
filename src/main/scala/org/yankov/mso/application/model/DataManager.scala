@@ -1,18 +1,15 @@
 package org.yankov.mso.application.model
 
-import io.circe.Encoder
-import io.circe.generic.semiauto.deriveEncoder
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.DurationConverter
-import org.yankov.mso.application.database.DatabaseManager
-import org.yankov.mso.application.database.DatabaseManager._
+import org.yankov.mso.application.database.Database
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.search.{SearchIndexes, SearchIndexesInstance}
 
 import java.io.File
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Paths}
 import java.util.UUID
 
 case class DataManager(dbRootDir: String,
@@ -25,6 +22,8 @@ case class DataManager(dbRootDir: String,
 
   private val log = LoggerFactory.getLogger(getClass)
   private val equal = "="
+
+  private val database = Database(dbRootDir)
 
   implicit class FolkloreTrackAsDbEntry(track: FolkloreTrack) {
     def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
@@ -46,7 +45,7 @@ case class DataManager(dbRootDir: String,
   def insertTracks(tracks: List[FolkloreTrack], onTrackInserted: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def insertTrack(track: FolkloreTrack): Boolean = {
       val trackId = generateId
-      insert(dbRootDir, track.withId(trackId).asDbEntry) match {
+      database.insert(track.withId(trackId).asDbEntry) match {
         case Left(error) =>
           log.error(error)
           false

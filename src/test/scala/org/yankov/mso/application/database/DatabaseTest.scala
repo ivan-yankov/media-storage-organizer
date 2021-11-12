@@ -5,7 +5,7 @@ import java.sql.{Connection, Types}
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import org.yankov.mso.application.database.SqlModel._
 
-class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll {
+class DatabaseTest extends WordSpec with Matchers with BeforeAndAfterAll {
   override def beforeAll(): Unit = System.setSecurityManager(null)
 
   "create schema, create table and drop table should succeed" in {
@@ -18,15 +18,15 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VAL", SqlTypes.double)
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val tables = connection.getMetaData.getTables(null, schema, null, Array("TABLE"))
     tables.next() shouldBe true
     tables.getString("TABLE_SCHEM") shouldBe schema
     tables.getString("TABLE_NAME") shouldBe table
 
-    DatabaseManager.dropTable(connection, schema, table).isRight shouldBe true
+    Database.dropTable(connection, schema, table).isRight shouldBe true
 
     connection
       .getMetaData
@@ -46,8 +46,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VAL", SqlTypes.double)
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val tableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     tableColumns.next() shouldBe true
@@ -58,7 +58,7 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
     tableColumns.getInt("DATA_TYPE") shouldBe Types.DOUBLE
     tableColumns.next() shouldBe false
 
-    DatabaseManager.addColumn(
+    Database.addColumn(
       connection,
       schema,
       table,
@@ -90,8 +90,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VAL", SqlTypes.double)
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val tableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     tableColumns.next() shouldBe true
@@ -102,7 +102,7 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
     tableColumns.getInt("DATA_TYPE") shouldBe Types.DOUBLE
     tableColumns.next() shouldBe false
 
-    DatabaseManager.dropColumn(connection, schema, table, "VAL").isRight shouldBe true
+    Database.dropColumn(connection, schema, table, "VAL").isRight shouldBe true
 
     val newTableColumns = connection.getMetaData.getColumns(null, schema, table, null)
     newTableColumns.next() shouldBe true
@@ -128,8 +128,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VARCHAR_COL", SqlTypes.varchar())
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -159,11 +159,11 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       VarcharSqlValue(Option("string 33"))
     )
 
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
-    val result = DatabaseManager.select(connection, schema, table)
+    val result = Database.select(connection, schema, table)
     result.isRight shouldBe true
     result.right.get shouldBe List(r1, r2, r3)
   }
@@ -183,8 +183,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VARCHAR_COL", SqlTypes.varchar())
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -214,11 +214,11 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       VarcharSqlValue(Option("string 33"))
     )
 
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
-    val result = DatabaseManager.select(
+    val result = Database.select(
       connection,
       schemaName = schema,
       tableName = table,
@@ -247,8 +247,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VARCHAR_COL", SqlTypes.varchar())
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -278,9 +278,9 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       VarcharSqlValue(Option("string 33"))
     )
 
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -297,7 +297,7 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       )
     )
 
-    val result = DatabaseManager.select(
+    val result = Database.select(
       connection,
       schemaName = schema,
       tableName = table,
@@ -324,8 +324,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VARCHAR_COL", SqlTypes.varchar())
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(IntSqlValue(Option(1)))
     val r2 = List(
@@ -339,10 +339,10 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       VarcharSqlValue(Option.empty)
     )
 
-    DatabaseManager.insert(connection, schema, table, List("id"), r1).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    Database.insert(connection, schema, table, List("id"), r1).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
 
-    val result = DatabaseManager.select(connection, schema, table)
+    val result = Database.select(connection, schema, table)
     result.isRight shouldBe true
     result.getOrElse() shouldBe List(
       List(
@@ -384,8 +384,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VARCHAR_COL", SqlTypes.varchar())
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -418,11 +418,11 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       VarcharSqlValue(Option("string 33"))
     )
 
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
-    DatabaseManager.update(
+    Database.update(
       connection,
       schema,
       table,
@@ -438,7 +438,7 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ),
       List(WhereClause("ID", "=", IntSqlValue(Option(2))))
     )
-    DatabaseManager.update(
+    Database.update(
       connection,
       schema,
       table,
@@ -455,7 +455,7 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       List(WhereClause("ID", "=", IntSqlValue(Option(3))))
     )
 
-    val result = DatabaseManager.select(connection, schema, table)
+    val result = Database.select(connection, schema, table)
     result.isRight shouldBe true
     result.right.get shouldBe List(
       r1,
@@ -493,8 +493,8 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       ColumnDefinition("VAL2", SqlTypes.double)
     )
 
-    DatabaseManager.createSchema(connection, schema).isRight shouldBe true
-    DatabaseManager.createTable(connection, schema, table, columns).isRight shouldBe true
+    Database.createSchema(connection, schema).isRight shouldBe true
+    Database.createTable(connection, schema, table, columns).isRight shouldBe true
 
     val r1 = List(
       IntSqlValue(Option(1)),
@@ -512,9 +512,9 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       DoubleSqlValue(Option(3.0))
     )
 
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
-    DatabaseManager.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r1).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r2).isRight shouldBe true
+    Database.insert(connection, schema, table, columns.map(x => x.name), r3).isRight shouldBe true
 
     val expectedData = List(
       List(
@@ -529,9 +529,9 @@ class DatabaseManagerTest extends WordSpec with Matchers with BeforeAndAfterAll 
       )
     )
 
-    DatabaseManager.delete(connection, schema, table, List(WhereClause("ID", "=", IntSqlValue(Option(2)))))
+    Database.delete(connection, schema, table, List(WhereClause("ID", "=", IntSqlValue(Option(2)))))
 
-    val result = DatabaseManager.select(connection, schema, table)
+    val result = Database.select(connection, schema, table)
     result.isRight shouldBe true
     result.right.get shouldBe expectedData
   }
