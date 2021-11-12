@@ -28,12 +28,9 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-blaze-client" % http4sVersion,
 
   // database
-  "org.apache.derby" % "derby" % derbyVersion,
-
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
   "io.circe" %% "circe-literal" % circeVersion,
-
 
   //audio
   // https://mvnrepository.com/artifact/org/jaudiotagger

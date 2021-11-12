@@ -2,7 +2,7 @@ package org.yankov.mso.application.model
 
 import java.sql.Connection
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.database.DatabaseManager
+import org.yankov.mso.application.database.Database
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 

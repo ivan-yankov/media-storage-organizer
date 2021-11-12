@@ -1,9 +1,17 @@
 package org.yankov.mso.application.model
 
-import io.circe.Encoder
-import io.circe.generic.semiauto.deriveEncoder
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 
 object DatabaseModel {
+  trait DataSource
+
+  case object ArtistsDataSource extends DataSource
+
+  case object SourcesDataSource extends DataSource
+
+  case object TracksDataSource extends DataSource
+
   trait DbEntry
 
   case class DbArtist(id: String,
@@ -29,6 +37,11 @@ object DatabaseModel {
                              ethnographicRegionId: Option[String]) extends DbEntry
 
   implicit val dbArtistEncoder: Encoder[DbArtist] = deriveEncoder[DbArtist]
+  implicit val dbArtistDecoder: Decoder[DbArtist] = deriveDecoder[DbArtist]
+
   implicit val dbSourceEncoder: Encoder[DbSource] = deriveEncoder[DbSource]
+  implicit val dbSourceDecoder: Decoder[DbSource] = deriveDecoder[DbSource]
+
   implicit val dbFolkloreTrackEncoder: Encoder[DbFolkloreTrack] = deriveEncoder[DbFolkloreTrack]
+  implicit val dbFolkloreTrackDecoder: Decoder[DbFolkloreTrack] = deriveDecoder[DbFolkloreTrack]
 }
