@@ -1,24 +1,23 @@
 package org.yankov.mso.application.model
 
-import java.io.File
-import java.nio.file.{Files, Paths}
+import io.circe.Encoder
+import io.circe.generic.semiauto.deriveEncoder
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.DurationConverter
-import org.yankov.mso.application.database.DbUtils._
-import org.yankov.mso.application.database.SqlModel._
-import org.yankov.mso.application.database._
+import org.yankov.mso.application.database.DatabaseManager
+import org.yankov.mso.application.database.DatabaseManager._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.model.SqlFunctions._
 import org.yankov.mso.application.search.{SearchIndexes, SearchIndexesInstance}
 
-case class DataManager(dbConnectionString: String,
+import java.io.File
+import java.nio.file.{Files, Path, Paths}
+import java.util.UUID
+
+case class DataManager(dbRootDir: String,
                        mediaDir: String,
                        dbCache: DatabaseCache,
-                       sqlInsert: SqlInsert = DatabaseManager.insert,
-                       sqlUpdate: SqlUpdate = DatabaseManager.update,
-                       sqlDelete: SqlDelete = DatabaseManager.delete,
                        readRecord: File => Array[Byte] = x => Files.readAllBytes(x.toPath),
                        writeRecord: (File, Array[Byte]) => Unit = (x, y) => Files.write(x.toPath, y),
                        deleteRecord: File => Unit = x => Files.deleteIfExists(x.toPath)) {
@@ -27,60 +26,49 @@ case class DataManager(dbConnectionString: String,
   private val log = LoggerFactory.getLogger(getClass)
   private val equal = "="
 
+  implicit class FolkloreTrackAsDbEntry(track: FolkloreTrack) {
+    def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
+      id = track.id,
+      duration = Option(DurationConverter.toHourMinSecString(track.duration, withLeadingZero = true)),
+      note = asStringOption(track.note),
+      title = asStringOption(track.title),
+      accompanimentPerformerId = asStringOption(track.accompanimentPerformer.id),
+      arrangementAuthorId = asStringOption(track.arrangementAuthor.id),
+      authorId = asStringOption(track.author.id),
+      conductorId = asStringOption(track.conductor.id),
+      performerId = asStringOption(track.performer.id),
+      soloistId = asStringOption(track.soloist.id),
+      sourceId = asStringOption(track.source.id),
+      ethnographicRegionId = asStringOption(track.ethnographicRegion)
+    )
+  }
+
   def insertTracks(tracks: List[FolkloreTrack], onTrackInserted: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def insertTrack(track: FolkloreTrack): Boolean = {
-      val trackId = dbCache.getNextTrackId
-      connect(dbConnectionString) match {
-        case Some(connection) =>
-          sqlInsert(
-            connection,
-            schema,
-            Tables.folkloreTrack,
-            Tables.folkloreTrackColumns,
-            List(
-              IntSqlValue(Option(trackId)),
-              VarcharSqlValue(Option(DurationConverter.toHourMinSecString(track.duration, withLeadingZero = true))),
-              VarcharSqlValue(asStringOption(track.note)),
-              VarcharSqlValue(asStringOption(track.title)),
-              IntSqlValue(asIdOption(track.accompanimentPerformer.id)),
-              IntSqlValue(asIdOption(track.arrangementAuthor.id)),
-              IntSqlValue(asIdOption(track.author.id)),
-              IntSqlValue(asIdOption(track.conductor.id)),
-              IntSqlValue(asIdOption(track.performer.id)),
-              IntSqlValue(asIdOption(track.soloist.id)),
-              IntSqlValue(asIdOption(track.source.id)),
-              IntSqlValue(asIdOption(track.ethnographicRegion.id))
-            )
-          ) match {
-            case Left(throwable) =>
-              log.error("Unable to insert track", throwable)
-              disconnect(connection)
-              false
-            case Right(_) =>
-              if (track.file.isDefined) writeRecord(storageFileName(trackId), readRecord(track.file.get))
-              refreshCacheAndIndex()
-              disconnect(connection)
-              true
-          }
-        case None =>
+      val trackId = generateId
+      insert(dbRootDir, track.withId(trackId).asDbEntry) match {
+        case Left(error) =>
+          log.error(error)
           false
+        case Right(_) =>
+          if (track.file.isDefined) writeRecord(storageFileName(trackId), readRecord(track.file.get))
+          refreshCacheAndIndex()
+          true
       }
     }
 
-    val result = tracks
-      .map(x => {
+    tracks.map(
+      x => {
         val r = insertTrack(x)
         onTrackInserted(x, r)
         r
-      })
-      .forall(x => x)
-
-    result
+      }
+    ).forall(x => x)
   }
 
   def updateTracks(tracks: List[FolkloreTrack], onTrackUpdated: (FolkloreTrack, Boolean) => Unit): Boolean = {
     def updateTrack(track: FolkloreTrack): Boolean = {
-      connect(dbConnectionString) match {
+      connect(dbRootDir) match {
         case Some(connection) =>
           sqlUpdate(
             connection,
@@ -152,7 +140,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlDelete(
           connection,
@@ -179,11 +167,11 @@ case class DataManager(dbConnectionString: String,
     dbCache
       .getCache
       .sourceTypes
-      .map(x => SourceType(id = x.id, name = x.name.getOrElse("")))
+      .map(x => SourceT$(id = x.id, name = x.name.getOrElse("")))
   }
 
   def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlInsert(
           connection,
@@ -210,7 +198,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -242,7 +230,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def insertSource(source: Source): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlInsert(
           connection,
@@ -270,7 +258,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateSource(source: Source): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -302,7 +290,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def insertInstrument(instrument: Instrument): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlInsert(
           connection,
@@ -329,7 +317,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateInstrument(instrument: Instrument): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -361,7 +349,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def insertArtist(artist: Artist): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         val artistId = dbCache.getNextArtistId
         sqlInsert(
@@ -404,7 +392,7 @@ case class DataManager(dbConnectionString: String,
   }
 
   def updateArtist(artist: Artist): Boolean = {
-    connect(dbConnectionString) match {
+    connect(dbRootDir) match {
       case Some(connection) =>
         sqlUpdate(
           connection,
@@ -463,7 +451,7 @@ case class DataManager(dbConnectionString: String,
     else Array()
   }
 
-  def storageFileName(trackId: Int): File =
+  def storageFileName(trackId: String): File =
     Paths.get(mediaDir, trackId + Resources.Media.flacExtension).toFile
 
   private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
@@ -548,15 +536,15 @@ case class DataManager(dbConnectionString: String,
           .sourceTypes
           .find(x => x.id.equals(id)) match {
           case Some(dbSourceType) =>
-            SourceType(
+            SourceT$(
               id = dbSourceType.id,
               name = dbSourceType.name.getOrElse("")
             )
           case None =>
-            SourceType()
+            SourceT$()
         }
       case None =>
-        SourceType()
+        SourceT$()
     }
   }
 
@@ -584,4 +572,6 @@ case class DataManager(dbConnectionString: String,
     dbCache.refresh()
     SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
   }
+
+  private def generateId: String = UUID.randomUUID().toString
 }

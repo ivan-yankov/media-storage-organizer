@@ -1,7 +1,6 @@
 package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.database._
 import org.yankov.mso.application.media.MediaServer
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}

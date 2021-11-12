@@ -3,76 +3,33 @@ package org.yankov.mso.application.model
 import java.io.File
 import java.time.Duration
 
-import org.yankov.mso.application.ui.Utils
-
 object DataModel {
+  def isValidId(id: String): Boolean = id.nonEmpty
 
-  val invalidId: Int = -1
+  def invalidId: String = ""
 
-  def isValidId(id: Int): Boolean = id > 0
-
-  def asIdOption(id: Int): Option[Int] = if (isValidId(id)) Option(id) else Option.empty
-
-  trait ArtistMission
-
-  case object Singer extends ArtistMission
-
-  case object InstrumentPlayer extends ArtistMission
-
-  case object Composer extends ArtistMission
-
-  case object Conductor extends ArtistMission
-
-  case object Orchestra extends ArtistMission
-
-  case object Choir extends ArtistMission
-
-  case object Ensemble extends ArtistMission
-
-  case object ChamberGroup extends ArtistMission
-
-  def artistMissionToString(mission: ArtistMission): String = mission match {
-    case Singer => DatabaseModel.ArtistMissions.singer
-    case InstrumentPlayer => DatabaseModel.ArtistMissions.instrumentPlayer
-    case Composer => DatabaseModel.ArtistMissions.composer
-    case Conductor => DatabaseModel.ArtistMissions.conductor
-    case Orchestra => DatabaseModel.ArtistMissions.orchestra
-    case Choir => DatabaseModel.ArtistMissions.choir
-    case Ensemble => DatabaseModel.ArtistMissions.ensemble
-    case ChamberGroup => DatabaseModel.ArtistMissions.chamberGroup
+  object ArtistMissions {
+    val singer: String = "singer"
+    val instrumentPlayer: String = "instrumentPlayer"
+    val composer: String = "composer"
+    val conductor: String = "conductor"
+    val orchestra: String = "orchestra"
+    val choir: String = "choir"
+    val ensemble: String = "ensemble"
+    val chamberGroup: String = "chamberGroup"
   }
 
-  def artistMissionFromString(mission: String): ArtistMission = mission match {
-    case DatabaseModel.ArtistMissions.singer => Singer
-    case DatabaseModel.ArtistMissions.instrumentPlayer => InstrumentPlayer
-    case DatabaseModel.ArtistMissions.composer => Composer
-    case DatabaseModel.ArtistMissions.conductor => Conductor
-    case DatabaseModel.ArtistMissions.orchestra => Orchestra
-    case DatabaseModel.ArtistMissions.choir => Choir
-    case DatabaseModel.ArtistMissions.ensemble => Ensemble
-    case DatabaseModel.ArtistMissions.chamberGroup => ChamberGroup
-  }
-
-  case class Instrument(id: Int = invalidId,
-                        name: String = "")
-
-  case class EthnographicRegion(id: Int = invalidId,
-                                name: String = "")
-
-  case class SourceType(id: Int = invalidId,
-                        name: String = "")
-
-  case class Source(id: Int = invalidId,
-                    sourceType: SourceType = SourceType(),
+  case class Source(id: String = invalidId,
+                    sourceType: String = "",
                     signature: String = "")
 
-  case class Artist(id: Int = invalidId,
+  case class Artist(id: String = invalidId,
                     name: String = "",
-                    instrument: Instrument = Instrument(),
+                    instrument: String = "",
                     note: String = "",
-                    missions: List[ArtistMission] = List())
+                    missions: List[String] = List())
 
-  case class FolkloreTrack(id: Int = invalidId,
+  case class FolkloreTrack(id: String = invalidId,
                            title: String = "",
                            performer: Artist = Artist(),
                            accompanimentPerformer: Artist = Artist(),
@@ -83,10 +40,10 @@ object DataModel {
                            duration: Duration = Duration.ZERO,
                            note: String = "",
                            source: Source = Source(),
-                           ethnographicRegion: EthnographicRegion = EthnographicRegion(),
+                           ethnographicRegion: String = "",
                            file: Option[File] = Option.empty) {
 
-    def withId(newId: Int): FolkloreTrack = FolkloreTrack(
+    def withId(newId: String): FolkloreTrack = FolkloreTrack(
       id = newId,
       title = title,
       performer = performer,
@@ -150,5 +107,4 @@ object DataModel {
       file = file
     )
   }
-
 }

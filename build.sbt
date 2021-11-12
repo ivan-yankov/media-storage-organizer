@@ -10,6 +10,7 @@ val derbyVersion = "10.14.2.0"
 val jaudioTaggerVersion = "2.0.3"
 val jFlacVersion = "1.5.2"
 val http4sVersion = "0.20.10"
+val circeVersion = "0.14.1"
 
 mainClass in assembly := Some("org.yankov.mso.application.Main")
 
@@ -28,6 +29,11 @@ libraryDependencies ++= Seq(
 
   // database
   "org.apache.derby" % "derby" % derbyVersion,
+
+  "io.circe" %% "circe-generic" % circeVersion,
+  "io.circe" %% "circe-parser" % circeVersion,
+  "io.circe" %% "circe-literal" % circeVersion,
+
 
   //audio
   // https://mvnrepository.com/artifact/org/jaudiotagger
@@ -54,7 +60,7 @@ libraryDependencies ++= javaFxModules.map(x =>
 )
 
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", _ @ _*) => MergeStrategy.discard
+  case PathList("META-INF", _@_*) => MergeStrategy.discard
   case _ => MergeStrategy.first
 }
 
