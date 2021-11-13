@@ -1,6 +1,6 @@
 package org.yankov.mso.application.search
 
-import org.yankov.mso.application.IOUtils
+import org.yankov.mso.application.FileUtils
 
 import java.io.{BufferedReader, FileInputStream, InputStreamReader}
 import java.nio.file.{Files, Paths}
@@ -28,7 +28,7 @@ object TextAnalyzer {
     }
   }
 
-  private val stopWordsBg = IOUtils.readTextFile("/stop-words-bg.txt")
+  private val stopWordsBg = FileUtils.readTextFile("/stop-words-bg.txt")
 
   def analyze(string: String): String = {
     string
