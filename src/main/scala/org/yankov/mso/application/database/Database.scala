@@ -1,103 +1,92 @@
 package org.yankov.mso.application.database
 
-import io.circe.{Decoder, Json, parser}
 import io.circe.syntax.EncoderOps
-import org.slf4j.LoggerFactory
-import org.yankov.mso.application.model.DatabaseModel._
+import io.circe.{Decoder, Encoder, parser}
+import org.yankov.mso.application.FileUtils
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path, Paths, StandardOpenOption}
-import scala.collection.JavaConverters._
+import java.nio.file.Path
 
-case class Database(dbRootDir: String) {
-  private val log = LoggerFactory.getLogger(getClass)
-  private val charset = StandardCharsets.UTF_8
-  private val metadataDir = "meta"
+object Database {
   private val separator = "|"
 
-  private val artists = "artists"
-  private val sources = "sources"
-  private val tracks = "tracks"
-
-  def insert(entry: DbEntry): Either[String, Path] = {
-    entry match {
-      case x: DbArtist => insertJsonObject(sourcePath(ArtistsDataSource), x.id, x.asJson)
-      case x: DbSource => insertJsonObject(sourcePath(SourcesDataSource), x.id, x.asJson)
-      case x: DbFolkloreTrack => insertJsonObject(sourcePath(TracksDataSource), x.id, x.asJson)
-      case _ => Left("Unsupported DbEntry")
+  def insert[T](entries: List[(String, T)], path: Path)
+               (implicit encoder: Encoder[T]): Either[String, Unit] = {
+    FileUtils.writeTextFile(
+      lines = entries.map(x => x._1 + separator + serialize(x._2)),
+      path = path.toString,
+      append = true
+    ) match {
+      case Left(e) => Left(e)
+      case Right(_) => Right(())
     }
   }
 
-  def read(ids: List[String], dataSource: DataSource): Either[String, List[DbEntry]] = {
-    readJsonObjects(sourcePath(dataSource), ids) match {
+  def read[T](keys: List[String], path: Path)
+             (implicit decoder: Decoder[T]): Either[String, List[T]] = {
+    readJsonObjects(path, keys) match {
       case Left(error) => Left(error)
       case Right(entries) =>
-        dataSource match {
-          case ArtistsDataSource => parseEntries[DbArtist](entries)
-          case SourcesDataSource => parseEntries[DbSource](entries)
-          case TracksDataSource => parseEntries[DbFolkloreTrack](entries)
-          case _ => Left("Unsupported DbEntry")
+        val deserialized = entries.map(x => deserialize(x))
+        if (deserialized.forall(x => x.isRight)) Right(deserialized.map(x => x.right.get))
+        else Left(deserialized.filter(x => x.isLeft).map(x => x.left.get).mkString(System.lineSeparator()))
+    }
+  }
+
+  def update[T](entries: Map[String, T], path: Path)
+               (implicit encoder: Encoder[T]): Either[String, List[String]] = {
+    FileUtils.readTextFile(path.toString) match {
+      case Left(e) => Left(e)
+      case Right(lines) =>
+        val updated: List[(String, Option[String])] = lines.map(
+          x => {
+            val key = x.substring(0, x.indexOf(separator))
+            entries.get(key) match {
+              case Some(entry) => (serialize(entry), Some(key))
+              case None => (x, None)
+            }
+          }
+        )
+        FileUtils.writeTextFile(updated.map(x => x._1), path.toString) match {
+          case Left(e) => Left(e)
+          case Right(_) => Right(updated.withFilter(x => x._2.nonEmpty).map(x => x._2.get))
         }
     }
   }
 
-  def update(entries: List[DbEntry]): Either[String, Int] = ???
+  def delete(keys: List[String], path: Path): Either[String, Int] = {
+    def acceptLine(line: String): Boolean =
+      !keys.exists(x => line.startsWith(x))
 
-  def delete(ids: List[String]): Either[String, Int] = ???
-
-  private def insertJsonObject(path: Path, key: String, json: Json): Either[String, Path] = {
-    try {
-      Right(
-        Files.write(
-          path,
-          List(key + separator + json.deepDropNullValues.noSpaces).asJava,
-          charset,
-          StandardOpenOption.APPEND
-        )
-      )
-    }
-    catch {
-      case e: Exception =>
-        log.error("Unable to insert database object", e)
-        Left(e.getMessage)
+    FileUtils.readTextFile(path.toString, acceptLine) match {
+      case Left(e) => Left(e)
+      case Right(lines) => FileUtils.writeTextFile(lines, path.toString) match {
+        case Left(e) => Left(e)
+        case Right(_) => Right(lines.size)
+      }
     }
   }
 
   private def readJsonObjects(path: Path, keys: List[String]): Either[String, List[String]] = {
-    try {
-      val all = Files.readAllLines(path, charset).asScala.toList
-      if (keys.isEmpty) Right(all)
-      else Right(
-        all
-          .filter(x => keys.exists(y => x.startsWith(y)))
-          .map(x => x.substring(x.indexOf(separator) + 1))
-      )
+    def acceptLine(line: String): Boolean = {
+      if (keys.nonEmpty) keys.exists(x => line.startsWith(x))
+      else true
     }
-    catch {
-      case e: Exception =>
-        val message = "Unable to read from database"
-        log.error(message, e)
-        Left(message)
+
+    FileUtils.readTextFile(path.toString, acceptLine) match {
+      case Left(e) => Left(e)
+      case Right(lines) => Right(lines.map(x => x.substring(x.indexOf(separator) + 1)))
     }
   }
 
-  private def parseEntries[T](entries: List[String])
-                             (implicit decoder: Decoder[T]): Either[String, List[T]] = {
-    val parseResults = entries.map(x => parser.parse(x))
-    if (parseResults.forall(x => x.isRight)) {
-      val decodeResults = parseResults.map(x => x.right.get.as[T])
-      if (decodeResults.forall(x => x.isRight)) Right(decodeResults.map(x => x.right.get))
-      else Left(decodeResults.filter(x => x.isLeft).map(x => x.left.get.message).mkString(System.lineSeparator()))
-    }
-    else Left(parseResults.filter(x => x.isLeft).map(x => x.left.get.message).mkString(System.lineSeparator()))
-  }
+  private def serialize[T](x: T)(implicit encoder: Encoder[T]): String = x.asJson.deepDropNullValues.noSpaces
 
-  private def sourcePath(dataSource: DataSource): Path = {
-    val file = dataSource match {
-      case ArtistsDataSource => artists
-      case SourcesDataSource => sources
-      case TracksDataSource => tracks
+  private def deserialize[T](s: String)(implicit decoder: Decoder[T]): Either[String, T] = {
+    parser.parse(s) match {
+      case Left(parsingFailure) => Left(parsingFailure.message)
+      case Right(json) => json.as[T] match {
+        case Left(decodingFailure) => Left(decodingFailure.message)
+        case Right(result) => Right(result)
+      }
     }
-    Paths.get(dbRootDir, metadataDir, file)
   }
 }
