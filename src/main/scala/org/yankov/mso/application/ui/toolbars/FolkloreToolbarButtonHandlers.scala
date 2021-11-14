@@ -7,7 +7,7 @@ import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.console.ApplicationConsole
-import org.yankov.mso.application.ui.{FolkloreTrackEditor, Utils}
+import org.yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
 import org.yankov.mso.application.{Commands, Main, Resources}
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
@@ -35,7 +35,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def loadTracks(targetInputTab: Boolean): Unit = {
     Commands.loadItems(
       targetTable(targetInputTab),
-      x => FolkloreTrackProperties(FolkloreTrack().withFile(Option(x)).withDuration(Utils.calculateDuration(Option(x))))
+      x => FolkloreTrackProperties(FolkloreTrack().withFile(Option(x)).withDuration(UiUtils.calculateDuration(Option(x))))
     )
   }
 
@@ -103,7 +103,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def deleteItem(targetInputTab: Boolean): Unit = {
     Commands.deleteItem[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      () => Utils.confirmDeleteFromDatabase,
+      () => UiUtils.confirmDeleteFromDatabase,
       x => {
         if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful)
         else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed)
