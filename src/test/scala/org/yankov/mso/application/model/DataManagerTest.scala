@@ -478,8 +478,8 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
         dbCache = mocks.dbCache,
         sqlInsert = mocks.sqlInsert,
         sqlUpdate = mocks.sqlUpdate,
-        readRecord = readFile,
-        writeRecord = writeFile
+        readBinaryFile = readFile,
+        writeBinaryFile = writeFile
       )
       dataManager.insertTracks(
         List(
@@ -527,7 +527,7 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       mediaDir = "/media",
       dbCache = mocks.dbCache,
       sqlDelete = mocks.sqlDelete,
-      deleteRecord = deleteFile
+      deleteFile = deleteFile
     )
     dataManager.deleteTrack(FolkloreTrack(id = 1)) shouldBe true
   }
@@ -844,9 +844,9 @@ class DataManagerTest extends FreeSpec with Matchers with MockFactory {
       dbCache = mocks.dbCache,
       sqlInsert = mocks.sqlInsert,
       sqlUpdate = mocks.sqlUpdate,
-      readRecord = readFile,
-      writeRecord = writeFile,
-      deleteRecord = deleteFile
+      readBinaryFile = readFile,
+      writeBinaryFile = writeFile,
+      deleteFile = deleteFile
     )
     dataManager.updateTracks(
       List(

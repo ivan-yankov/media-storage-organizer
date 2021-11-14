@@ -10,6 +10,8 @@ object DataModel {
 
   def invalidId: Id = ""
 
+  def asIdOption(id: Id): Option[Id] = if (isValidId(id)) Option(id) else Option.empty
+
   trait ArtistMission
 
   case object Singer extends ArtistMission

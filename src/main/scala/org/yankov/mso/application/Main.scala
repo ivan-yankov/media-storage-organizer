@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.yankov.mso.application.media.MediaServer
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
-import org.yankov.mso.application.model.{DataManager, DatabaseCache}
+import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.search.SearchModel.SearchParameters
 import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
 import org.yankov.mso.application.ui.Utils
@@ -92,8 +92,7 @@ object Main extends JFXApp {
 
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
     val mediaDir = getApplicationArgument(Resources.ApplicationArgumentKeys.mediaDir)
-    val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())
-    DataManager(connectionString, mediaDir, DatabaseCache(connectionString))
+    DataManager(dbDir, mediaDir)
   }
 
   private def tabPane: TabPane = {

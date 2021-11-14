@@ -1,13 +1,14 @@
 package org.yankov.mso.application.commands
 
 import java.time.Duration
-
 import org.scalatest.{FreeSpec, Matchers}
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.search.SearchEngine
 import org.yankov.mso.application.search.SearchModel.Filters._
 import org.yankov.mso.application.search.SearchModel.Variables._
 import org.yankov.mso.application.search.SearchModel._
+
+import java.util.UUID
 
 class SearchEngineTest extends FreeSpec with Matchers {
   private val getDuration: FolkloreTrack => Duration = x => x.duration
@@ -59,7 +60,7 @@ class SearchEngineTest extends FreeSpec with Matchers {
 
     "not contains title" in {
       val parameters = List(SearchParameters(varTitle, filterNotContains, "недке хубава"))
-      val tracksWithIds = tracks.zip(tracks.reverse.indices).map(x => x._1.withId(x._2 + 1))
+      val tracksWithIds = tracks.zip(tracks.reverse.indices).map(x => x._1.withId(UUID.randomUUID().toString))
       val (found, _) = SearchEngine.search[FolkloreTrack](
         tracksWithIds,
         parameters,

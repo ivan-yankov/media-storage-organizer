@@ -1,5 +1,6 @@
 package org.yankov.mso.application.search
 
+import org.yankov.mso.application.Id
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.SearchModel.SearchIndexElement
 import org.yankov.mso.application.search.TextAnalyzer._
@@ -24,7 +25,7 @@ case class SearchIndexes(tracks: List[FolkloreTrack]) {
       .map(x => (x.id, valueProvider(x)))
       .map(x => (x._1, indexAnalyze(x._2)))
 
-    def findIds(term: String): List[Int] = {
+    def findIds(term: String): List[Id] = {
       val result = analyzedValues
         .filter(x => x._2.contains(term))
         .map(x => x._1)
