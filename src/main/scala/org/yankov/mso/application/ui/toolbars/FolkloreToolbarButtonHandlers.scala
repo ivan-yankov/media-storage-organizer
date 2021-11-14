@@ -20,13 +20,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def updateItems(targetInputTab: Boolean): Unit = {
     Commands.updateItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => dataManager.updateTracks(
-        x.map(y => y.track),
-        (x, y) => console.writeMessageWithTimestamp(
-          if (y) Resources.ConsoleMessages.updateTrackSuccessful(x.title)
-          else Resources.ConsoleMessages.updateTrackFailed(x.title)
-        )
-      )
+      x => dataManager.updateTracks(x.map(y => y.track))
     )
   }
 
@@ -109,10 +103,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def deleteItem(targetInputTab: Boolean): Unit = {
     Commands.deleteItem[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => Utils.confirmDeleteFromDatabase(x.track.id),
+      () => Utils.confirmDeleteFromDatabase,
       x => {
-        if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful(x.track.id))
-        else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed(x.track.id))
+        if (dataManager.deleteTrack(x.track)) console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackSuccessful)
+        else console.writeMessageWithTimestamp(Resources.ConsoleMessages.deleteTrackFailed)
       }
     )
   }
@@ -127,20 +121,14 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def uploadItems(targetInputTab: Boolean): Unit = {
     Commands.uploadItems[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => dataManager.insertTracks(
-        x.map(y => y.track),
-        (x, y) => console.writeMessageWithTimestamp(
-          if (y) Resources.ConsoleMessages.insertTrackSuccessful(x.title)
-          else Resources.ConsoleMessages.insertTrackFailed(x.title)
-        )
-      )
+      x => dataManager.insertTracks(x.map(y => y.track))
     )
   }
 
   override def play(targetInputTab: Boolean): Unit = {
     Commands.play[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => Player.play(x.track, dataManager.storageFileName)
+      x => Player.play(x.track, dataManager.mediaFile)
     )
   }
 

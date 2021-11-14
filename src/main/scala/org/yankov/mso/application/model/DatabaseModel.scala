@@ -8,7 +8,8 @@ object DatabaseModel {
   case class DbArtist(id: Id,
                       name: Option[String],
                       note: Option[String],
-                      instrumentId: Option[Id])
+                      instrumentId: Option[Id],
+                      missions: Option[List[Id]])
   implicit val dbArtistEncoder: Encoder[DbArtist] = deriveEncoder[DbArtist]
   implicit val dbArtistDecoder: Decoder[DbArtist] = deriveDecoder[DbArtist]
 

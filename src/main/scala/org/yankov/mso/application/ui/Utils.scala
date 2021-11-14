@@ -18,7 +18,7 @@ object Utils {
 
   def confirmOverwrite: Boolean = confirmDialog(Resources.Dialogs.overwriteRecordsInDatabase)
 
-  def confirmDeleteFromDatabase(id: Int): Boolean = confirmDialog(Resources.Dialogs.deleteTrackFromDatabase(id))
+  def confirmDeleteFromDatabase: Boolean = confirmDialog(Resources.Dialogs.deleteTrackFromDatabase)
 
   def selectDirectory: Option[File] = {
     val directoryChooser = new DirectoryChooser()

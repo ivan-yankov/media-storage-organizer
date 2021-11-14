@@ -1,12 +1,12 @@
 package org.yankov.mso.application.search
 
+import org.yankov.mso.application.Id
 import org.yankov.mso.application.Resources.Filters._
 import org.yankov.mso.application.Resources.Variables._
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.TextAnalyzer._
 
 object SearchModel {
-
   private val levenshteinTolerance = 1
 
   case class Variable[T](label: String, valueProvider: T => String, searchIndex: List[SearchIndexElement])
@@ -142,6 +142,5 @@ object SearchModel {
 
   case class SearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)
 
-  case class SearchIndexElement(term: String, ids: List[Int])
-
+  case class SearchIndexElement(term: String, ids: List[Id])
 }
