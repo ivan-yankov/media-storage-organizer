@@ -4,7 +4,7 @@ import java.io.{File, FileOutputStream, IOException}
 
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.media.Player
-import org.yankov.mso.application.ui.Utils
+import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
 import scalafx.scene.control.{Button, SelectionMode, TableView}
 
@@ -15,7 +15,7 @@ object Commands {
   private val console: ConsoleService = ApplicationConsole
 
   def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {
-    if (Utils.confirmOverwrite) {
+    if (UiUtils.confirmOverwrite) {
       val items = table
         .getItems
         .asScala
@@ -31,7 +31,7 @@ object Commands {
   }
 
   def exportItems[T](table: TableView[T], createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
-    val directory = Utils.selectDirectory
+    val directory = UiUtils.selectDirectory
     if (directory.isDefined) {
       console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
       table
@@ -54,7 +54,7 @@ object Commands {
   }
 
   def loadItems[T](table: TableView[T], createItem: File => T): Unit = {
-    val files = Utils.selectFlacFiles(false)
+    val files = UiUtils.selectFlacFiles(false)
     if (files.isDefined) {
       files
         .get

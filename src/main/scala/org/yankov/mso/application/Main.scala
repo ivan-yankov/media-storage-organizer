@@ -7,7 +7,7 @@ import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTr
 import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.search.SearchModel.SearchParameters
 import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
-import org.yankov.mso.application.ui.Utils
+import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, FolkloreTrackTable, SearchFilterControls}
@@ -29,7 +29,7 @@ object Main extends JFXApp {
     y = ApplicationSettings.getY
 
     onCloseRequest = event => {
-      if (Utils.confirmCloseApplication) {
+      if (UiUtils.confirmCloseApplication) {
         MediaServer.stop()
       }
       else event.consume()
