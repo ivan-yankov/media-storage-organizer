@@ -2,13 +2,16 @@ package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
 
-import java.io.{File, FileOutputStream, PrintWriter}
-import java.nio.file.Files
+import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths, StandardOpenOption}
 import java.util.Scanner
 import scala.annotation.tailrec
+import scala.collection.JavaConverters.asJavaIterableConverter
 
 object FileUtils {
   private val log = LoggerFactory.getLogger(getClass)
+  private val charset = StandardCharsets.UTF_8
 
   def readTextFile(path: String, acceptLine: String => Boolean = _ => true): Either[String, List[String]] = {
     tryOrException(() => new Scanner(getClass.getResourceAsStream(path))) match {
@@ -26,6 +29,7 @@ object FileUtils {
             }
             else lines
           }
+
           val result = collectLines(List()).filter(x => x.nonEmpty).reverse
           Right(result)
         }
@@ -41,23 +45,19 @@ object FileUtils {
   }
 
   def writeTextFile(lines: List[String], path: String, append: Boolean = false): Either[String, Unit] = {
-    tryOrException(() => new PrintWriter(new FileOutputStream(path, append))) match {
-      case Left(e) =>
-        log.error("Fail to initialize text file for writing", e)
+    try {
+      Files.write(
+        Paths.get(path),
+        lines.asJava,
+        charset,
+        if (append) StandardOpenOption.APPEND else StandardOpenOption.WRITE
+      )
+      Right(())
+    }
+    catch {
+      case e: Exception =>
+        log.error("Fail to write text file", e)
         Left(e.getMessage)
-      case Right(writer) =>
-        try {
-          lines.foreach(x => writer.println(x))
-          Right(())
-        }
-        catch {
-          case e: Exception =>
-            log.error("Fail to write text file", e)
-            Left(e.getMessage)
-        }
-      finally {
-        writer.close()
-      }
     }
   }
 
