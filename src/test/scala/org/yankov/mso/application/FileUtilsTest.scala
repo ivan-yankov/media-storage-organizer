@@ -3,7 +3,6 @@ package org.yankov.mso.application
 import org.scalatest._
 
 import java.io.File
-import java.nio.file.Files
 
 class FileUtilsTest extends FreeSpec with Matchers {
   private val basePath = "/file-utils"
@@ -12,7 +11,7 @@ class FileUtilsTest extends FreeSpec with Matchers {
     val path = basePath + "/read-text-file.txt"
 
     "accept all lines" in {
-      FileUtils.readTextFile(path) shouldBe Right(
+      FileUtils.readTextFile(getClass.getResourceAsStream(path)) shouldBe Right(
         List(
           "First line",
           "Not acceptable line",
@@ -23,7 +22,7 @@ class FileUtilsTest extends FreeSpec with Matchers {
     }
 
     "filter lines" in {
-      FileUtils.readTextFile(path, x => !x.toLowerCase().startsWith("not")) shouldBe Right(
+      FileUtils.readTextFile(getClass.getResourceAsStream(path), x => !x.toLowerCase().startsWith("not")) shouldBe Right(
         List(
           "First line",
           "Second line",
@@ -43,28 +42,22 @@ class FileUtilsTest extends FreeSpec with Matchers {
 
       "create and rewrite" in {
         val fileName = "write-text-file.txt"
-        val file = File.createTempFile(fileName, "")
-        file.deleteOnExit()
+        val file = TestHelpers.tempFile(fileName)
 
-        FileUtils.writeTextFile(lines, file.getPath)
-        FileUtils.writeTextFile(lines, file.getPath)
+        FileUtils.writeTextFile(lines, file.toPath)
+        FileUtils.writeTextFile(lines, file.toPath)
 
-        val actual = Files.readAllBytes(file.toPath)
-        val expected = getClass.getResourceAsStream(path(fileName)).readAllBytes()
-        actual shouldBe expected
+        TestHelpers.assertFilesEqual(file.toPath, path(fileName))
       }
 
       "append" in {
         val fileName = "write-text-file-appended.txt"
-        val file = File.createTempFile(fileName, "")
-        file.deleteOnExit()
+        val file = TestHelpers.tempFile(fileName)
 
-        FileUtils.writeTextFile(lines, file.getPath)
-        FileUtils.writeTextFile(lines, file.getPath, append = true)
+        FileUtils.writeTextFile(lines, file.toPath)
+        FileUtils.writeTextFile(lines, file.toPath, append = true)
 
-        val actual = Files.readAllBytes(file.toPath)
-        val expected = getClass.getResourceAsStream(path(fileName)).readAllBytes()
-        actual shouldBe expected
+        TestHelpers.assertFilesEqual(file.toPath, path(fileName))
       }
     }
   }
