@@ -51,48 +51,33 @@ object SearchModel {
     val filterEquals: Filter[FolkloreTrack] = Filter(
       equalsLabel,
       (variable, value, tracks) => {
-        if (value.nonEmpty) {
-          tracks
-            .filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
-            .sortWith(idComparator)
-        }
-        else tracks.sortWith(idComparator)
+        if (value.nonEmpty) tracks.filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+        else tracks
       }
     )
 
     val filterNotEquals: Filter[FolkloreTrack] = Filter(
       notEqualsLabel,
       (variable, value, tracks) => {
-        if (value.nonEmpty) {
-          tracks
-            .filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
-            .sortWith(idComparator)
-        }
-        else tracks.sortWith(idComparator)
+        if (value.nonEmpty) tracks.filterNot(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyze(value)))
+        else tracks
       }
     )
 
     val filterContains: Filter[FolkloreTrack] = Filter(
       containsLabel,
       (variable, value, tracks) => {
-        if (value.nonEmpty) {
-          tracks
-            .filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
-            .sortWith(idComparator)
-        }
-        else tracks.sortWith(idComparator)
+        if (value.nonEmpty)
+          tracks.filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+        else tracks
       }
     )
 
     val filterNotContains: Filter[FolkloreTrack] = Filter(
       notContainsLabel,
       (variable, value, tracks) => {
-        if (value.nonEmpty) {
-          tracks
-            .filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
-            .sortWith(idComparator)
-        }
-        else tracks.sortWith(idComparator)
+        if (value.nonEmpty) tracks.filterNot(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+        else tracks
       }
     )
 
@@ -136,8 +121,6 @@ object SearchModel {
       filterNotEquals,
       filterFuzzySearch
     )
-
-    private def idComparator: (FolkloreTrack, FolkloreTrack) => Boolean = (x, y) => x.id < y.id
   }
 
   case class SearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)

@@ -60,13 +60,12 @@ class SearchEngineTest extends FreeSpec with Matchers {
 
     "not contains title" in {
       val parameters = List(SearchParameters(varTitle, filterNotContains, "недке хубава"))
-      val tracksWithIds = tracks.zip(tracks.reverse.indices).map(x => x._1.withId(UUID.randomUUID().toString))
       val (found, _) = SearchEngine.search[FolkloreTrack](
-        tracksWithIds,
+        tracks,
         parameters,
         getDuration
       )
-      found shouldBe tracksWithIds.tail
+      found shouldBe List(t2, t3, t4, t5)
     }
 
     "equals title" in {
@@ -124,6 +123,17 @@ class SearchEngineTest extends FreeSpec with Matchers {
       )
       val (found, _) = SearchEngine.search[FolkloreTrack](tracks, parameters, getDuration)
       found shouldBe List(t4)
+    }
+
+    "do not sort search results" in {
+      val parameters = List(SearchParameters(varTitle, filterNotContains, "недке хубава"))
+      val tracksWithIds = tracks.zip(tracks.reverse.indices).map(x => x._1.withId(UUID.randomUUID().toString))
+      val (found, _) = SearchEngine.search[FolkloreTrack](
+        tracksWithIds,
+        parameters,
+        getDuration
+      )
+      found shouldBe tracksWithIds.tail
     }
   }
 }
