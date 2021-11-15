@@ -4,6 +4,7 @@ import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, Encoder, parser}
 import org.yankov.mso.application.FileUtils
 
+import java.io.{FileInputStream, InputStream}
 import java.nio.file.Path
 
 object Database {
@@ -13,7 +14,7 @@ object Database {
                (implicit encoder: Encoder[T]): Either[String, Unit] = {
     FileUtils.writeTextFile(
       lines = entries.map(x => x._1 + separator + serialize(x._2)),
-      path = path.toString,
+      path = path,
       append = true
     ) match {
       case Left(e) => Left(e)
@@ -21,9 +22,21 @@ object Database {
     }
   }
 
-  def read[T](keys: List[String], path: Path)
+  def read[T](keys: List[String], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
              (implicit decoder: Decoder[T]): Either[String, List[T]] = {
-    readJsonObjects(path, keys) match {
+    def readJsonObjects: Either[String, List[String]] = {
+      def acceptLine(line: String): Boolean = {
+        if (keys.nonEmpty) keys.exists(x => line.startsWith(x))
+        else true
+      }
+
+      FileUtils.readTextFile(inputStream(path), acceptLine) match {
+        case Left(e) => Left(e)
+        case Right(lines) => Right(lines.map(x => x.substring(x.indexOf(separator) + 1)))
+      }
+    }
+
+    readJsonObjects match {
       case Left(error) => Left(error)
       case Right(entries) =>
         val deserialized = entries.map(x => deserialize(x))
@@ -32,21 +45,21 @@ object Database {
     }
   }
 
-  def update[T](entries: Map[String, T], path: Path)
+  def update[T](entries: Map[String, T], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
                (implicit encoder: Encoder[T]): Either[String, List[String]] = {
-    FileUtils.readTextFile(path.toString) match {
+    FileUtils.readTextFile(inputStream(path)) match {
       case Left(e) => Left(e)
       case Right(lines) =>
         val updated: List[(String, Option[String])] = lines.map(
           x => {
             val key = x.substring(0, x.indexOf(separator))
             entries.get(key) match {
-              case Some(entry) => (serialize(entry), Some(key))
+              case Some(entry) => (key + separator + serialize(entry), Some(key))
               case None => (x, None)
             }
           }
         )
-        FileUtils.writeTextFile(updated.map(x => x._1), path.toString) match {
+        FileUtils.writeTextFile(updated.map(x => x._1), path) match {
           case Left(e) => Left(e)
           case Right(_) => Right(updated.withFilter(x => x._2.nonEmpty).map(x => x._2.get))
         }
@@ -54,27 +67,13 @@ object Database {
   }
 
   def delete(keys: List[String], path: Path): Either[String, Int] = {
-    def acceptLine(line: String): Boolean =
-      !keys.exists(x => line.startsWith(x))
-
-    FileUtils.readTextFile(path.toString, acceptLine) match {
+    FileUtils.readTextFile(new FileInputStream(path.toString), x => !keys.exists(y => x.startsWith(y))) match {
       case Left(e) => Left(e)
-      case Right(lines) => FileUtils.writeTextFile(lines, path.toString) match {
-        case Left(e) => Left(e)
-        case Right(_) => Right(lines.size)
-      }
-    }
-  }
-
-  private def readJsonObjects(path: Path, keys: List[String]): Either[String, List[String]] = {
-    def acceptLine(line: String): Boolean = {
-      if (keys.nonEmpty) keys.exists(x => line.startsWith(x))
-      else true
-    }
-
-    FileUtils.readTextFile(path.toString, acceptLine) match {
-      case Left(e) => Left(e)
-      case Right(lines) => Right(lines.map(x => x.substring(x.indexOf(separator) + 1)))
+      case Right(lines) =>
+        FileUtils.writeTextFile(lines, path) match {
+          case Left(e) => Left(e)
+          case Right(_) => Right(keys.size - lines.size)
+        }
     }
   }
 
@@ -89,4 +88,6 @@ object Database {
       }
     }
   }
+
+  private def inputStreamFromPath(path: Path): InputStream = new FileInputStream(path.toString)
 }

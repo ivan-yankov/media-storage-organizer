@@ -2,9 +2,9 @@ package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
 
-import java.io.File
+import java.io.{File, InputStream}
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Paths, StandardOpenOption}
+import java.nio.file.{Files, Path, StandardOpenOption}
 import java.util.Scanner
 import scala.annotation.tailrec
 import scala.collection.JavaConverters.asJavaIterableConverter
@@ -13,8 +13,8 @@ object FileUtils {
   private val log = LoggerFactory.getLogger(getClass)
   private val charset = StandardCharsets.UTF_8
 
-  def readTextFile(path: String, acceptLine: String => Boolean = _ => true): Either[String, List[String]] = {
-    tryOrException(() => new Scanner(getClass.getResourceAsStream(path))) match {
+  def readTextFile(inputStream: InputStream, acceptLine: String => Boolean = _ => true): Either[String, List[String]] = {
+    tryOrException(() => new Scanner(inputStream)) match {
       case Left(e) =>
         log.error("Fail to initialize text file for reading", e)
         Left(e.getMessage)
@@ -44,13 +44,14 @@ object FileUtils {
     }
   }
 
-  def writeTextFile(lines: List[String], path: String, append: Boolean = false): Either[String, Unit] = {
+  def writeTextFile(lines: List[String], path: Path, append: Boolean = false): Either[String, Unit] = {
     try {
+      if (!append) Files.deleteIfExists(path)
       Files.write(
-        Paths.get(path),
+        path,
         lines.asJava,
         charset,
-        if (append) StandardOpenOption.APPEND else StandardOpenOption.WRITE
+        if (append) StandardOpenOption.APPEND else StandardOpenOption.CREATE
       )
       Right(())
     }

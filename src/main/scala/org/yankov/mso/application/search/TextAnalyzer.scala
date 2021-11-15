@@ -28,7 +28,7 @@ object TextAnalyzer {
     }
   }
 
-  private val stopWordsBg = FileUtils.readTextFile("/stop-words-bg.txt")
+  private val stopWordsBg = FileUtils.readTextFile(getClass.getResourceAsStream("/stop-words-bg.txt"))
 
   def analyze(string: String): String = {
     string
