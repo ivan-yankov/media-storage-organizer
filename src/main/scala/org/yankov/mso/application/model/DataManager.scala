@@ -9,22 +9,23 @@ import org.yankov.mso.application.search.{SearchIndexes, SearchIndexesInstance}
 import org.yankov.mso.application.{FileUtils, Id, Resources}
 
 import java.io.File
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 import java.util.UUID
 
 case class DataManager(dbRootDir: String,
-                       mediaDir: String) {
+                       mediaDir: String,
+                       database: Database) {
   refreshIndex()
 
   private val log = LoggerFactory.getLogger(getClass)
 
-  private val metadataPath = Paths.get(dbRootDir, "meta")
-  private val artistsPath = Paths.get(metadataPath.toString, "artists")
-  private val instrumentsPath = Paths.get(metadataPath.toString, "instruments")
-  private val sourceTypesPath = Paths.get(metadataPath.toString, "source-types")
-  private val sourcesPath = Paths.get(metadataPath.toString, "sources")
-  private val ethnographicRegionsPath = Paths.get(metadataPath.toString, "ethnographic-regions")
-  private val tracksPath = Paths.get(metadataPath.toString, "tracks")
+  val metadataPath: Path = Paths.get(dbRootDir, "meta")
+  val artistsPath: Path = Paths.get(metadataPath.toString, "artists")
+  val instrumentsPath: Path = Paths.get(metadataPath.toString, "instruments")
+  val sourceTypesPath: Path = Paths.get(metadataPath.toString, "source-types")
+  val sourcesPath: Path = Paths.get(metadataPath.toString, "sources")
+  val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
+  val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
 
   implicit class FolkloreTrackAsDbFolkloreTrack(track: FolkloreTrack) {
     def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
@@ -64,7 +65,7 @@ case class DataManager(dbRootDir: String,
     def asDbEntry: DbArtist = {
       val missions = artist.missions.map(x => DataModel.artistMissionToString(x))
       DbArtist(
-        id = generateId,
+        id = artist.id,
         name = asStringOption(artist.name),
         note = asStringOption(artist.note),
         instrumentId = asStringOption(artist.instrument.id),
@@ -85,7 +86,7 @@ case class DataManager(dbRootDir: String,
 
   def insertTracks(tracks: List[FolkloreTrack]): Boolean = {
     val tracksWithIds = tracks.map(x => x.withId(generateId))
-    Database.insert(tracksWithIds.map(x => (x.id, x.asDbEntry)), tracksPath) match {
+    database.insert(tracksWithIds.map(x => x.asDbEntry), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -96,7 +97,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def updateTracks(tracks: List[FolkloreTrack]): Boolean = {
-    Database.update(tracks.map(x => (x.id, x.asDbEntry)).toMap, tracksPath) match {
+    database.update(tracks.map(x => x.asDbEntry), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -110,7 +111,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def getTracks: List[FolkloreTrack] = {
-    Database.read[DbFolkloreTrack](List(), tracksPath) match {
+    database.read[DbFolkloreTrack](List(), tracksPath) match {
       case Left(e) =>
         log.error(e)
         List()
@@ -120,7 +121,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
-    Database.delete(List(track.id), tracksPath) match {
+    database.delete(List(track.id), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -130,7 +131,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def getSourceTypes: List[SourceType] = {
-    Database.read[DbSourceType](List(), sourceTypesPath) match {
+    database.read[DbSourceType](List(), sourceTypesPath) match {
       case Left(e) =>
         log.error(e)
         List()
@@ -140,8 +141,9 @@ case class DataManager(dbRootDir: String,
   }
 
   def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    val dbEntry = DbEthnographicRegion(generateId, asStringOption(ethnographicRegion.name))
-    Database.insert(List((dbEntry.id, dbEntry)), ethnographicRegionsPath) match {
+    val id = if (isValidId(ethnographicRegion.id)) ethnographicRegion.id else generateId
+    val dbEntry = DbEthnographicRegion(id, asStringOption(ethnographicRegion.name))
+    database.insert(List(dbEntry), ethnographicRegionsPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -153,7 +155,7 @@ case class DataManager(dbRootDir: String,
 
   def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
     val dbEntry = DbEthnographicRegion(ethnographicRegion.id, asStringOption(ethnographicRegion.name))
-    Database.update(Map(dbEntry.id -> dbEntry), ethnographicRegionsPath) match {
+    database.update(List(dbEntry), ethnographicRegionsPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -164,7 +166,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def getEthnographicRegions: List[EthnographicRegion] = {
-    Database.read[DbEthnographicRegion](List(), ethnographicRegionsPath) match {
+    database.read[DbEthnographicRegion](List(), ethnographicRegionsPath) match {
       case Left(e) =>
         log.error(e)
         List()
@@ -174,8 +176,9 @@ case class DataManager(dbRootDir: String,
   }
 
   def insertSource(source: Source): Boolean = {
-    val dbEntry = DbSource(generateId, asStringOption(source.signature), asIdOption(source.sourceType.id))
-    Database.insert(List((dbEntry.id, dbEntry)), sourcesPath) match {
+    val id = if (isValidId(source.id)) source.id else generateId
+    val dbEntry = DbSource(id, asStringOption(source.signature), asIdOption(source.sourceType.id))
+    database.insert(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -187,7 +190,7 @@ case class DataManager(dbRootDir: String,
 
   def updateSource(source: Source): Boolean = {
     val dbEntry = DbSource(source.id, asStringOption(source.signature), asIdOption(source.sourceType.id))
-    Database.update(Map(dbEntry.id -> dbEntry), sourcesPath) match {
+    database.update(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -198,7 +201,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def getSources: List[Source] = {
-    Database.read[DbSource](List(), sourcesPath) match {
+    database.read[DbSource](List(), sourcesPath) match {
       case Left(e) =>
         log.error(e)
         List()
@@ -208,8 +211,9 @@ case class DataManager(dbRootDir: String,
   }
 
   def insertInstrument(instrument: Instrument): Boolean = {
-    val dbEntry = DbInstrument(generateId, asStringOption(instrument.name))
-    Database.insert(List((dbEntry.id, dbEntry)), instrumentsPath) match {
+    val id = if (isValidId(instrument.id)) instrument.id else generateId
+    val dbEntry = DbInstrument(id, asStringOption(instrument.name))
+    database.insert(List(dbEntry), instrumentsPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -221,7 +225,7 @@ case class DataManager(dbRootDir: String,
 
   def updateInstrument(instrument: Instrument): Boolean = {
     val dbEntry = DbInstrument(instrument.id, asStringOption(instrument.name))
-    Database.update(Map(dbEntry.id -> dbEntry), instrumentsPath) match {
+    database.update(List(dbEntry), instrumentsPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -232,7 +236,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def getInstruments: List[Instrument] = {
-    Database.read[DbInstrument](List(), instrumentsPath) match {
+    database.read[DbInstrument](List(), instrumentsPath) match {
       case Left(e) =>
         log.error(e)
         List()
@@ -242,7 +246,8 @@ case class DataManager(dbRootDir: String,
   }
 
   def insertArtist(artist: Artist): Boolean = {
-    Database.insert(List((artist.id, artist.asDbEntry)), artistsPath) match {
+    val id = if (isValidId(artist.id)) artist.id else generateId
+    database.insert(List(artist.withId(id).asDbEntry), artistsPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -253,7 +258,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def updateArtist(artist: Artist): Boolean = {
-    Database.update(Map(artist.id -> artist.asDbEntry), artistsPath) match {
+    database.update(List(artist.asDbEntry), artistsPath) match {
       case Left(e) =>
         log.error(e)
         false
@@ -264,7 +269,7 @@ case class DataManager(dbRootDir: String,
   }
 
   def getArtists: List[Artist] = {
-    Database.read[DbArtist](List(), artistsPath) match {
+    database.read[DbArtist](List(), artistsPath) match {
       case Left(e) =>
         log.error(e)
         List()
@@ -306,7 +311,7 @@ case class DataManager(dbRootDir: String,
   private def getArtist(idOption: Option[Id]): Artist = {
     idOption match {
       case Some(id) =>
-        Database.read[DbArtist](List(id), artistsPath) match {
+        database.read[DbArtist](List(id), artistsPath) match {
           case Left(_) => Artist()
           case Right(result) => result.headOption match {
             case Some(dbEntry) => dbEntry.asArtist
@@ -321,7 +326,7 @@ case class DataManager(dbRootDir: String,
   private def getInstrument(idOption: Option[Id]): Instrument = {
     idOption match {
       case Some(id) =>
-        Database.read[DbInstrument](List(id), instrumentsPath) match {
+        database.read[DbInstrument](List(id), instrumentsPath) match {
           case Left(_) => Instrument()
           case Right(result) => result.headOption match {
             case Some(dbEntry) => Instrument(dbEntry.id, dbEntry.name.getOrElse(""))
@@ -336,7 +341,7 @@ case class DataManager(dbRootDir: String,
   private def getSource(idOption: Option[Id]): Source = {
     idOption match {
       case Some(id) =>
-        Database.read[DbSource](List(id), sourcesPath) match {
+        database.read[DbSource](List(id), sourcesPath) match {
           case Left(_) => Source()
           case Right(result) => result.headOption match {
             case Some(dbEntry) => Source(
@@ -355,7 +360,7 @@ case class DataManager(dbRootDir: String,
   private def getSourceType(idOption: Option[Id]): SourceType = {
     idOption match {
       case Some(id) =>
-        Database.read[DbSourceType](List(id), sourceTypesPath) match {
+        database.read[DbSourceType](List(id), sourceTypesPath) match {
           case Left(_) => SourceType()
           case Right(result) => result.headOption match {
             case Some(dbEntry) => SourceType(
@@ -373,7 +378,7 @@ case class DataManager(dbRootDir: String,
   private def getEthnographicRegion(idOption: Option[Id]): EthnographicRegion = {
     idOption match {
       case Some(id) =>
-        Database.read[DbEthnographicRegion](List(id), ethnographicRegionsPath) match {
+        database.read[DbEthnographicRegion](List(id), ethnographicRegionsPath) match {
           case Left(_) => EthnographicRegion()
           case Right(result) => result.headOption match {
             case Some(dbEntry) => EthnographicRegion(
@@ -388,7 +393,7 @@ case class DataManager(dbRootDir: String,
     }
   }
 
-  private def refreshIndex(): Unit = SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
-
   private def generateId: String = UUID.randomUUID().toString
+
+  private def refreshIndex(): Unit = SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
 }
