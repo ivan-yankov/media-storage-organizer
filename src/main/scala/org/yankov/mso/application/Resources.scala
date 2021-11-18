@@ -1,11 +1,10 @@
 package org.yankov.mso.application
 
-import java.time.Duration
-
 import org.yankov.mso.application.converters.DurationConverter
 
-object Resources {
+import java.time.Duration
 
+object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaDir: String = "--media-dir"
@@ -103,6 +102,7 @@ object Resources {
     val filter: String = "Филтър"
     val value: String = "Стойност"
     val search: String = "Търсене"
+
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration, withLeadingZero = false)}"
   }
@@ -155,7 +155,7 @@ object Resources {
     val ensemble: String = "Ансамбъл"
     val chamberGroup: String = "Камерна група"
     val artistNameUndefined: String = "Не е въведено име на артист"
-    val artistInstrumentUndefined: String ="Избрана е роля 'инструменталист', но не е посочен инструмент"
+    val artistInstrumentUndefined: String = "Избрана е роля 'инструменталист', но не е посочен инструмент"
     val noArtistMissionSelected: String = "Не е избрана нито една роля"
   }
 
@@ -190,5 +190,4 @@ object Resources {
     val containsLabel: String = "Съдържа"
     val notContainsLabel: String = "Не съдържа"
   }
-
 }

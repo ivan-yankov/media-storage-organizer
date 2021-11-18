@@ -80,7 +80,16 @@ object DataModel {
                     name: String = "",
                     instrument: Instrument = Instrument(),
                     note: String = "",
-                    missions: List[ArtistMission] = List())
+                    missions: List[ArtistMission] = List()) {
+
+    def withId(newId: Id): Artist = Artist(
+      id = newId,
+      name = name,
+      instrument = instrument,
+      note = note,
+      missions = missions
+    )
+  }
 
   case class FolkloreTrack(id: Id = invalidId,
                            title: String = "",

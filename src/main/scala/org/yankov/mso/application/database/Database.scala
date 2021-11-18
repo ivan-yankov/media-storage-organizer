@@ -2,18 +2,34 @@ package org.yankov.mso.application.database
 
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, Encoder, parser}
-import org.yankov.mso.application.FileUtils
+import org.yankov.mso.application.model.DatabaseModel.DbEntry
+import org.yankov.mso.application.{FileUtils, Id}
 
 import java.io.{FileInputStream, InputStream}
 import java.nio.file.Path
 
-object Database {
+trait Database {
+  def insert[T <: DbEntry](entries: List[T], path: Path)
+                          (implicit encoder: Encoder[T]): Either[String, Unit]
+
+  def read[T](keys: List[Id], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
+             (implicit decoder: Decoder[T]): Either[String, List[T]]
+
+  def update[T <: DbEntry](entries: List[T], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
+                          (implicit encoder: Encoder[T]): Either[String, List[String]]
+
+  def delete(keys: List[Id], path: Path): Either[String, Int]
+
+  def inputStreamFromPath(path: Path): InputStream = new FileInputStream(path.toString)
+}
+
+case class RealDatabase() extends Database {
   private val separator = "|"
 
-  def insert[T](entries: List[(String, T)], path: Path)
-               (implicit encoder: Encoder[T]): Either[String, Unit] = {
+  override def insert[T <: DbEntry](entries: List[T], path: Path)
+                                   (implicit encoder: Encoder[T]): Either[String, Unit] = {
     FileUtils.writeTextFile(
-      lines = entries.map(x => x._1 + separator + serialize(x._2)),
+      lines = entries.map(x => x.id + separator + serialize(x)),
       path = path,
       append = true
     ) match {
@@ -22,8 +38,8 @@ object Database {
     }
   }
 
-  def read[T](keys: List[String], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
-             (implicit decoder: Decoder[T]): Either[String, List[T]] = {
+  override def read[T](keys: List[Id], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
+                      (implicit decoder: Decoder[T]): Either[String, List[T]] = {
     def readJsonObjects: Either[String, List[String]] = {
       def acceptLine(line: String): Boolean = {
         if (keys.nonEmpty) keys.exists(x => line.startsWith(x))
@@ -45,15 +61,15 @@ object Database {
     }
   }
 
-  def update[T](entries: Map[String, T], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
-               (implicit encoder: Encoder[T]): Either[String, List[String]] = {
+  override def update[T <: DbEntry](entries: List[T], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
+                                   (implicit encoder: Encoder[T]): Either[String, List[String]] = {
     FileUtils.readTextFile(inputStream(path)) match {
       case Left(e) => Left(e)
       case Right(lines) =>
         val updated: List[(String, Option[String])] = lines.map(
           x => {
             val key = x.substring(0, x.indexOf(separator))
-            entries.get(key) match {
+            entries.find(x => x.id.equals(key)) match {
               case Some(entry) => (key + separator + serialize(entry), Some(key))
               case None => (x, None)
             }
@@ -66,7 +82,7 @@ object Database {
     }
   }
 
-  def delete(keys: List[String], path: Path): Either[String, Int] = {
+  override def delete(keys: List[Id], path: Path): Either[String, Int] = {
     FileUtils.readTextFile(new FileInputStream(path.toString), x => !keys.exists(y => x.startsWith(y))) match {
       case Left(e) => Left(e)
       case Right(lines) =>
@@ -88,6 +104,4 @@ object Database {
       }
     }
   }
-
-  private def inputStreamFromPath(path: Path): InputStream = new FileInputStream(path.toString)
 }
