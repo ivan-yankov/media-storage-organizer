@@ -135,6 +135,7 @@ case class DataManager(dbRootDir: String,
         log.error(e)
         false
       case Right(number) =>
+        refreshIndex()
         number == 1
     }
   }

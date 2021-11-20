@@ -16,7 +16,7 @@ trait Database {
              (implicit decoder: Decoder[T]): Either[String, List[T]]
 
   def update[T <: DbEntry](entries: List[T], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
-                          (implicit encoder: Encoder[T]): Either[String, List[String]]
+                          (implicit encoder: Encoder[T]): Either[String, List[Id]]
 
   def delete(keys: List[Id], path: Path): Either[String, Int]
 
@@ -62,7 +62,7 @@ case class RealDatabase() extends Database {
   }
 
   override def update[T <: DbEntry](entries: List[T], path: Path, inputStream: Path => InputStream = inputStreamFromPath)
-                                   (implicit encoder: Encoder[T]): Either[String, List[String]] = {
+                                   (implicit encoder: Encoder[T]): Either[String, List[Id]] = {
     FileUtils.readTextFile(inputStream(path)) match {
       case Left(e) => Left(e)
       case Right(lines) =>

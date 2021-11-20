@@ -21,6 +21,35 @@ class DataManagerTest extends FreeSpec with Matchers {
   private val ethnographicRegionsPath = Paths.get(dbDir, "meta", "ethnographic-regions")
   private val tracksPath = Paths.get(dbDir, "meta", "tracks")
 
+  private val missions = List(
+    Singer,
+    InstrumentPlayer,
+    Composer,
+    Conductor,
+    Orchestra,
+    Choir,
+    Ensemble,
+    ChamberGroup
+  )
+
+  private       val tracks = (1 to 3).toList.map(
+    x => FolkloreTrack(
+      id = s"$x",
+      title = s"title$x",
+      performer = Artist(s"performer$x"),
+      accompanimentPerformer = Artist(s"accompanimentPerformer$x"),
+      author = Artist(s"author$x"),
+      arrangementAuthor = Artist(s"arrangementAuthor$x"),
+      conductor = Artist(s"conductor$x"),
+      soloist = Artist(s"soloist$x"),
+      duration = Duration.ofSeconds(123),
+      note = s"note$x",
+      source = Source(s"source$x"),
+      ethnographicRegion = EthnographicRegion(s"ethnographicRegion$x"),
+      file = Some(new File(s"file$x"))
+    )
+  )
+
   case class PutRecordCheck() {
     private var files: java.util.List[String] = new java.util.ArrayList[String]()
 
@@ -36,7 +65,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertArtist(Artist())
+        DataManager(dbDir, mediaDir, db).insertArtist(Artist()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbArtist].id.nonEmpty shouldBe true
@@ -52,17 +81,6 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        val missions = List(
-          Singer,
-          InstrumentPlayer,
-          Composer,
-          Conductor,
-          Orchestra,
-          Choir,
-          Ensemble,
-          ChamberGroup
-        )
-
         DataManager(dbDir, mediaDir, db).insertArtist(
           Artist(
             id = "id",
@@ -71,7 +89,7 @@ class DataManagerTest extends FreeSpec with Matchers {
             note = "note",
             missions = missions
           )
-        )
+        ) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbArtist].id shouldBe "id"
@@ -82,13 +100,14 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.getInsertPath shouldBe artistsPath
       }
     }
+
     "source" - {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertSource(Source())
+        DataManager(dbDir, mediaDir, db).insertSource(Source()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbSource].id.nonEmpty shouldBe true
@@ -106,9 +125,9 @@ class DataManagerTest extends FreeSpec with Matchers {
           Source(
             id = "id",
             signature = "signature",
-            sourceType = SourceType("source-type-id", "")
+            sourceType = SourceType("source-type-id")
           )
-        )
+        ) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbSource].id shouldBe "id"
@@ -117,13 +136,14 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.getInsertPath shouldBe sourcesPath
       }
     }
+
     "instrument" - {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertInstrument(Instrument())
+        DataManager(dbDir, mediaDir, db).insertInstrument(Instrument()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbInstrument].id.nonEmpty shouldBe true
@@ -136,7 +156,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertInstrument(Instrument("id", "name"))
+        DataManager(dbDir, mediaDir, db).insertInstrument(Instrument("id", "name")) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbInstrument].id shouldBe "id"
@@ -144,13 +164,14 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.getInsertPath shouldBe instrumentsPath
       }
     }
+
     "ethnographic region" - {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertEthnographicRegion(EthnographicRegion())
+        DataManager(dbDir, mediaDir, db).insertEthnographicRegion(EthnographicRegion()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbEthnographicRegion].id.nonEmpty shouldBe true
@@ -163,7 +184,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.setInsertResult(Right(()))
         db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertEthnographicRegion(EthnographicRegion("id", "name"))
+        DataManager(dbDir, mediaDir, db).insertEthnographicRegion(EthnographicRegion("id", "name")) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbEthnographicRegion].id shouldBe "id"
@@ -171,6 +192,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.getInsertPath shouldBe ethnographicRegionsPath
       }
     }
+
     "tracks" - {
       "empty" in {
         val db = FakeDatabase()
@@ -179,13 +201,9 @@ class DataManagerTest extends FreeSpec with Matchers {
 
         val putRecordCheck = PutRecordCheck()
 
-        val tracks = List(
-          FolkloreTrack(),
-          FolkloreTrack(),
-          FolkloreTrack()
-        )
+        val tracks = List.fill(3)(FolkloreTrack())
 
-        DataManager(dbDir, mediaDir, db).insertTracks(tracks, putRecordCheck.putRecord)
+        DataManager(dbDir, mediaDir, db).insertTracks(tracks, putRecordCheck.putRecord) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.foreach(
@@ -215,25 +233,7 @@ class DataManagerTest extends FreeSpec with Matchers {
 
         val putRecordCheck = PutRecordCheck()
 
-        val tracks = (1 to 3).toList.map(
-          x => FolkloreTrack(
-            id = s"$x",
-            title = s"title$x",
-            performer = Artist(s"performer$x"),
-            accompanimentPerformer = Artist(s"accompanimentPerformer$x"),
-            author = Artist(s"author$x"),
-            arrangementAuthor = Artist(s"arrangementAuthor$x"),
-            conductor = Artist(s"conductor$x"),
-            soloist = Artist(s"soloist$x"),
-            duration = Duration.ofSeconds(123),
-            note = s"note$x",
-            source = Source(s"source$x"),
-            ethnographicRegion = EthnographicRegion(s"ethnographicRegion$x"),
-            file = Some(new File(s"file$x"))
-          )
-        )
-
-        DataManager(dbDir, mediaDir, db).insertTracks(tracks, putRecordCheck.putRecord)
+        DataManager(dbDir, mediaDir, db).insertTracks(tracks, putRecordCheck.putRecord) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.zip(tracks).foreach(
@@ -260,372 +260,119 @@ class DataManagerTest extends FreeSpec with Matchers {
     }
   }
 
+  "delete track" in {
+    val db = FakeDatabase()
+    db.setDeleteResult(Right(1))
+    db.setReadResult(Right(List[DbFolkloreTrack]()))
 
+    DataManager(dbDir, mediaDir, db).deleteTrack(FolkloreTrack("id")) shouldBe true
 
+    db.getDeleteKeys.size shouldBe 1
+    db.getDeleteKeys.head shouldBe "id"
+    db.getDeletePath shouldBe tracksPath
+  }
 
-    //  "delete track should succeed" in {
-    //    val mocks = Mocks()
-    //
-    //    (mocks.dbCache.refresh _).expects().returns(()).twice()
-    //
-    //    mocks
-    //      .sqlDelete
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "FOLKLORE_TRACK",
-    //        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    val deleteFile = mockFunction[File, Unit]
-    //    deleteFile.expects(new File("/media/1.flac")).returns().once()
-    //
-    //    val dataManager = DataManager(
-    //      dbRootDir = connectionString,
-    //      mediaDir = "/media",
-    //      dbCache = mocks.dbCache,
-    //      sqlDelete = mocks.sqlDelete,
-    //      deleteFile = deleteFile
-    //    )
-    //    dataManager.deleteTrack(FolkloreTrack(id = 1)) shouldBe true
-    //  }
-    //
-    //  "update ethnographic region should succeed" in {
-    //    val mocks = Mocks()
-    //
-    //    (mocks.dbCache.refresh _).expects().returns(()).twice()
-    //
-    //    mocks
-    //      .sqlUpdate
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ETHNOGRAPHIC_REGION",
-    //        List("NAME"),
-    //        List(VarcharSqlValue(Option("ethnographic-region"))),
-    //        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    val dataManager = DataManager(
-    //      dbRootDir = connectionString,
-    //      mediaDir = "",
-    //      dbCache = mocks.dbCache,
-    //      sqlUpdate = mocks.sqlUpdate
-    //    )
-    //    dataManager.updateEthnographicRegion(EthnographicRegion(1, "ethnographic-region")) shouldBe true
-    //  }
-    //
-    //  "update source should succeed" in {
-    //    val mocks = Mocks()
-    //
-    //    (mocks.dbCache.refresh _).expects().returns(()).twice()
-    //
-    //    mocks
-    //      .sqlUpdate
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "SOURCE",
-    //        List("SIGNATURE", "TYPE_ID"),
-    //        List(VarcharSqlValue(Option("source")), IntSqlValue(Option(10))),
-    //        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    val dataManager = DataManager(
-    //      dbRootDir = connectionString,
-    //      mediaDir = "",
-    //      dbCache = mocks.dbCache,
-    //      sqlUpdate = mocks.sqlUpdate
-    //    )
-    //    dataManager.updateSource(Source(1, SourceType(10), "source")) shouldBe true
-    //  }
-    //
-    //  "update instrument should succeed" in {
-    //    val mocks = Mocks()
-    //
-    //    (mocks.dbCache.refresh _).expects().returns(()).twice()
-    //
-    //    mocks
-    //      .sqlUpdate
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "INSTRUMENT",
-    //        List("NAME"),
-    //        List(VarcharSqlValue(Option("instrument"))),
-    //        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    val dataManager = DataManager(
-    //      dbRootDir = connectionString,
-    //      mediaDir = "",
-    //      dbCache = mocks.dbCache,
-    //      sqlUpdate = mocks.sqlUpdate
-    //    )
-    //    dataManager.updateInstrument(Instrument(1, "instrument")) shouldBe true
-    //  }
-    //
-    //  "update artist should succeed" in {
-    //    val missions = List(
-    //      Singer,
-    //      InstrumentPlayer,
-    //      Composer,
-    //      Conductor,
-    //      Orchestra,
-    //      Choir,
-    //      Ensemble,
-    //      ChamberGroup
-    //    )
-    //
-    //    val mocks = Mocks()
-    //
-    //    (mocks.dbCache.refresh _).expects().returns(()).twice()
-    //
-    //    mocks
-    //      .sqlUpdate
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST",
-    //        List("NAME", "NOTE", "INSTRUMENT_ID"),
-    //        List(
-    //          VarcharSqlValue(Option("name")),
-    //          VarcharSqlValue(Option("note")),
-    //          IntSqlValue(Option(10))
-    //        ),
-    //        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlDelete
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List(WhereClause("ARTIST_ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("SINGER")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("INSTRUMENT_PLAYER")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("COMPOSER")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("CONDUCTOR")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("ORCHESTRA")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("CHOIR")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("ENSEMBLE")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    mocks
-    //      .sqlInsert
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "ARTIST_MISSIONS",
-    //        List("ARTIST_ID", "MISSIONS"),
-    //        List(
-    //          IntSqlValue(Option(1)),
-    //          VarcharSqlValue(Option("CHAMBER_GROUP")),
-    //        )
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    val dataManager = DataManager(
-    //      dbRootDir = connectionString,
-    //      mediaDir = "",
-    //      dbCache = mocks.dbCache,
-    //      sqlInsert = mocks.sqlInsert,
-    //      sqlUpdate = mocks.sqlUpdate,
-    //      sqlDelete = mocks.sqlDelete
-    //    )
-    //    dataManager.updateArtist(
-    //      Artist(
-    //        1,
-    //        "name",
-    //        Instrument(10, "instrument"),
-    //        "note",
-    //        missions
-    //      )
-    //    ) shouldBe true
-    //  }
-    //
-    //  "update tracks should succeed" in {
-    //    val mocks = Mocks()
-    //
-    //    (mocks.dbCache.refresh _).expects().returns(()).twice()
-    //
-    //    mocks
-    //      .sqlUpdate
-    //      .expects(
-    //        *,
-    //        "ADMIN",
-    //        "FOLKLORE_TRACK",
-    //        List(
-    //          "DURATION",
-    //          "NOTE",
-    //          "TITLE",
-    //          "ACCOMPANIMENTPERFORMER_ID",
-    //          "ARRANGEMENTAUTHOR_ID",
-    //          "AUTHOR_ID",
-    //          "CONDUCTOR_ID",
-    //          "PERFORMER_ID",
-    //          "SOLOIST_ID",
-    //          "SOURCE_ID",
-    //          "ETHNOGRAPHICREGION_ID"
-    //        ),
-    //        List(
-    //          VarcharSqlValue(Option("00:01:00")),
-    //          VarcharSqlValue(Option("note")),
-    //          VarcharSqlValue(Option("title")),
-    //          IntSqlValue(Option(10)),
-    //          IntSqlValue(Option(11)),
-    //          IntSqlValue(Option(12)),
-    //          IntSqlValue(Option(13)),
-    //          IntSqlValue(Option(14)),
-    //          IntSqlValue(Option(15)),
-    //          IntSqlValue(Option(16)),
-    //          IntSqlValue(Option(17))
-    //        ),
-    //        List(WhereClause("ID", "=", IntSqlValue(Option(1))))
-    //      ).returns(Right(()))
-    //      .once()
-    //
-    //    val onTrackUpdated = mockFunction[FolkloreTrack, Boolean, Unit]
-    //    onTrackUpdated.expects(*, true).returns().once()
-    //
-    //    val bytes = "record".getBytes
-    //
-    //    val readFile = mockFunction[File, Array[Byte]]
-    //    readFile.expects(new File("/path/to/the/file/input.flac")).returns(bytes).once()
-    //
-    //    val deleteFile = mockFunction[File, Unit]
-    //    deleteFile.expects(new File("/media/1.flac")).returns().once()
-    //
-    //    val writeFile = mockFunction[File, Array[Byte], Unit]
-    //    writeFile.expects(new File("/media/1.flac"), bytes).returns().once()
-    //
-    //    val dataManager = DataManager(
-    //      dbRootDir = connectionString,
-    //      mediaDir = "/media",
-    //      dbCache = mocks.dbCache,
-    //      sqlInsert = mocks.sqlInsert,
-    //      sqlUpdate = mocks.sqlUpdate,
-    //      readBinaryFile = readFile,
-    //      writeBinaryFile = writeFile,
-    //      deleteFile = deleteFile
-    //    )
-    //    dataManager.updateTracks(
-    //      List(
-    //        FolkloreTrack(
-    //          id = 1,
-    //          duration = Duration.ofSeconds(60),
-    //          note = "note",
-    //          title = "title",
-    //          accompanimentPerformer = Artist(10, "accompaniment-performer"),
-    //          arrangementAuthor = Artist(11, "arrangement-author"),
-    //          author = Artist(12, "author"),
-    //          conductor = Artist(13, "conductor"),
-    //          performer = Artist(14, "performer"),
-    //          soloist = Artist(15, "soloist"),
-    //          source = Source(16),
-    //          ethnographicRegion = EthnographicRegion(17),
-    //          file = Option(new File("/path/to/the/file/input.flac"))
-    //        )
-    //      ),
-    //      onTrackUpdated
-    //    ) shouldBe true
-    //  }
+  "update" - {
+    "ethnographic region" in {
+      val db = FakeDatabase()
+      db.setUpdateResult(Right(List("id")))
+      db.setReadResult(Right(List[DbFolkloreTrack]()))
+
+      DataManager(dbDir, mediaDir, db).updateEthnographicRegion(EthnographicRegion("id", "name")) shouldBe true
+
+      db.getUpdateEntries.size shouldBe 1
+      db.getUpdateEntries.head.asInstanceOf[DbEthnographicRegion].id shouldBe "id"
+      db.getUpdateEntries.head.asInstanceOf[DbEthnographicRegion].name shouldBe Some("name")
+      db.getUpdatePath shouldBe ethnographicRegionsPath
+    }
+
+    "source" in {
+      val db = FakeDatabase()
+      db.setUpdateResult(Right(List("id")))
+      db.setReadResult(Right(List[DbFolkloreTrack]()))
+
+      DataManager(dbDir, mediaDir, db).updateSource(
+        Source(
+          id = "id",
+          signature = "signature",
+          sourceType = SourceType("source-type-id")
+        )
+      ) shouldBe true
+
+      db.getUpdateEntries.size shouldBe 1
+      db.getUpdateEntries.head.asInstanceOf[DbSource].id shouldBe "id"
+      db.getUpdateEntries.head.asInstanceOf[DbSource].signature shouldBe Some("signature")
+      db.getUpdateEntries.head.asInstanceOf[DbSource].typeId shouldBe Some("source-type-id")
+      db.getUpdatePath shouldBe sourcesPath
+    }
+
+    "instrument" in {
+      val db = FakeDatabase()
+      db.setUpdateResult(Right(List("id")))
+      db.setReadResult(Right(List[DbFolkloreTrack]()))
+
+      DataManager(dbDir, mediaDir, db).updateInstrument(Instrument("id", "name")) shouldBe true
+
+      db.getUpdateEntries.size shouldBe 1
+      db.getUpdateEntries.head.asInstanceOf[DbInstrument].id shouldBe "id"
+      db.getUpdateEntries.head.asInstanceOf[DbInstrument].name shouldBe Some("name")
+      db.getUpdatePath shouldBe instrumentsPath
+    }
+
+    "artist" in {
+      val db = FakeDatabase()
+      db.setUpdateResult(Right(List("id")))
+      db.setReadResult(Right(List[DbFolkloreTrack]()))
+
+      DataManager(dbDir, mediaDir, db).updateArtist(
+        Artist(
+          id = "id",
+          name = "name",
+          instrument = Instrument("instrument-id"),
+          note = "note",
+          missions = missions
+        )
+      ) shouldBe true
+
+      db.getUpdateEntries.size shouldBe 1
+      db.getUpdateEntries.head.asInstanceOf[DbArtist].id shouldBe "id"
+      db.getUpdateEntries.head.asInstanceOf[DbArtist].name shouldBe Some("name")
+      db.getUpdateEntries.head.asInstanceOf[DbArtist].note shouldBe Some("note")
+      db.getUpdateEntries.head.asInstanceOf[DbArtist].instrumentId shouldBe Some("instrument-id")
+      db.getUpdateEntries.head.asInstanceOf[DbArtist].missions shouldBe Some(missions.map(x => artistMissionToString(x)))
+      db.getUpdatePath shouldBe artistsPath
+    }
+
+    "tracks" in {
+      val db = FakeDatabase()
+      db.setUpdateResult(Right((tracks.map(x => x.id))))
+      db.setReadResult(Right(List[DbFolkloreTrack]()))
+
+      val putRecordCheck = PutRecordCheck()
+
+      DataManager(dbDir, mediaDir, db).updateTracks(tracks, putRecordCheck.putRecord) shouldBe true
+
+      db.getUpdateEntries.size shouldBe tracks.size
+      db.getUpdateEntries.zip(tracks).foreach(
+        pair => {
+          val x = pair._1
+          val y = pair._2
+          x.asInstanceOf[DbFolkloreTrack].id shouldBe y.id
+          x.asInstanceOf[DbFolkloreTrack].duration shouldBe Some("00:02:03")
+          x.asInstanceOf[DbFolkloreTrack].note shouldBe Some(y.note)
+          x.asInstanceOf[DbFolkloreTrack].title shouldBe Some(y.title)
+          x.asInstanceOf[DbFolkloreTrack].accompanimentPerformerId shouldBe Some(y.accompanimentPerformer.id)
+          x.asInstanceOf[DbFolkloreTrack].arrangementAuthorId shouldBe Some(y.arrangementAuthor.id)
+          x.asInstanceOf[DbFolkloreTrack].authorId shouldBe Some(y.author.id)
+          x.asInstanceOf[DbFolkloreTrack].conductorId shouldBe Some(y.conductor.id)
+          x.asInstanceOf[DbFolkloreTrack].performerId shouldBe Some(y.performer.id)
+          x.asInstanceOf[DbFolkloreTrack].soloistId shouldBe Some(y.soloist.id)
+          x.asInstanceOf[DbFolkloreTrack].sourceId shouldBe Some(y.source.id)
+          x.asInstanceOf[DbFolkloreTrack].ethnographicRegionId shouldBe Some(y.ethnographicRegion.id)
+        }
+      )
+      db.getUpdatePath shouldBe tracksPath
+      putRecordCheck.getFiles shouldBe tracks.map(x => x.file.get.toPath.toString)
+    }
+  }
 }
