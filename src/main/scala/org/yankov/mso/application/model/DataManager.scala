@@ -84,19 +84,24 @@ case class DataManager(dbRootDir: String,
     )
   }
 
-  def insertTracks(tracks: List[FolkloreTrack]): Boolean = {
-    val tracksWithIds = tracks.map(x => x.withId(generateId))
+  def insertTracks(tracks: List[FolkloreTrack], insertRecord: (Id, File) => Boolean = putRecord): Boolean = {
+    val tracksWithIds = tracks.map(
+      x => {
+        val id = if (isValidId(x.id)) x.id else generateId
+        x.withId(id)
+      }
+    )
     database.insert(tracksWithIds.map(x => x.asDbEntry), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
       case Right(_) =>
         refreshIndex()
-        tracksWithIds.map(x => putRecord(x)).forall(x => x)
+        tracksWithIds.filter(x => x.file.isDefined).map(x => insertRecord(x.id, x.file.get)).forall(x => x)
     }
   }
 
-  def updateTracks(tracks: List[FolkloreTrack]): Boolean = {
+  def updateTracks(tracks: List[FolkloreTrack], updateRecord: (Id, File) => Boolean = putRecord): Boolean = {
     database.update(tracks.map(x => x.asDbEntry), tracksPath) match {
       case Left(e) =>
         log.error(e)
@@ -104,7 +109,11 @@ case class DataManager(dbRootDir: String,
       case Right(updated) =>
         if (updated.size == tracks.size) {
           refreshIndex()
-          updated.map(x => tracks.find(y => y.id.equals(x)).get).map(x => putRecord(x)).forall(x => x)
+          updated
+            .map(x => tracks.find(y => y.id.equals(x)).get)
+            .filter(x => x.file.isDefined)
+            .map(x => updateRecord(x.id, x.file.get))
+            .forall(x => x)
         }
         else false
     }
@@ -294,17 +303,13 @@ case class DataManager(dbRootDir: String,
 
   private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 
-  private def putRecord(track: FolkloreTrack): Boolean = {
-    track.file match {
-      case Some(file) =>
-        FileUtils.readBinaryFile(file) match {
-          case Left(e) =>
-            log.error(e)
-            false
-          case Right(data) =>
-            FileUtils.deleteFile(mediaFile(track.id)) && FileUtils.writeBinaryFile(mediaFile(track.id), data)
-        }
-      case None => true
+  private def putRecord(id: Id, file: File): Boolean = {
+    FileUtils.readBinaryFile(file) match {
+      case Left(e) =>
+        log.error(e)
+        false
+      case Right(data) =>
+        FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
     }
   }
 
