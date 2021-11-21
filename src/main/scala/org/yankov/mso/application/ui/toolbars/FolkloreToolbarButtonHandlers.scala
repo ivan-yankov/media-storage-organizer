@@ -16,6 +16,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private var copiedProperties: Option[FolkloreTrackProperties] = Option.empty
   private val dataManager = Main.dataManager
   private val console = ApplicationConsole
+  private val maxFileNameLength = 250
 
   override def updateItems(targetInputTab: Boolean): Unit = {
     Commands.updateItems[FolkloreTrackProperties](
@@ -151,13 +152,11 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   private def createOutputFileName(dir: File, track: FolkloreTrack): String = {
-    val result = dir.getAbsolutePath +
-      File.separator +
-      track.id + "_" +
-      track.title + "_" +
-      StringConverters.artistToString(track.performer) +
-      Resources.Media.flacExtension
+    val fileName = (track.id + "_" + track.title + "_" + StringConverters.artistToString(track.performer))
+      .take(maxFileNameLength)
 
-    result.replace("\"", "")
+    val fullFileName = dir.getAbsolutePath + fileName + File.separator + Resources.Media.flacExtension
+
+    fullFileName.replace("\"", "")
   }
 }
