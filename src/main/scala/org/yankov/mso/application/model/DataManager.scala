@@ -13,13 +13,14 @@ import java.nio.file.{Path, Paths}
 import java.util.UUID
 
 case class DataManager(dbRootDir: String,
-                       mediaDir: String,
-                       database: Database) {
+                       database: Database,
+                       doIndex: Boolean) {
   refreshIndex()
 
   private val log = LoggerFactory.getLogger(getClass)
 
-  val metadataPath: Path = Paths.get(dbRootDir, "meta")
+  val metadataPath: Path = Paths.get(dbRootDir, "data")
+  val mediaPath: Path = Paths.get(dbRootDir, "media")
   val artistsPath: Path = Paths.get(metadataPath.toString, "artists")
   val instrumentsPath: Path = Paths.get(metadataPath.toString, "instruments")
   val sourceTypesPath: Path = Paths.get(metadataPath.toString, "source-types")
@@ -313,7 +314,7 @@ case class DataManager(dbRootDir: String,
     else Array()
   }
 
-  def mediaFile(trackId: Id): File = Paths.get(mediaDir, trackId + Resources.Media.flacExtension).toFile
+  def mediaFile(trackId: Id): File = Paths.get(mediaPath.toString, trackId + Resources.Media.flacExtension).toFile
 
   private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 
@@ -414,5 +415,8 @@ case class DataManager(dbRootDir: String,
 
   private def generateId: String = UUID.randomUUID().toString
 
-  private def refreshIndex(): Unit = SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
+  private def refreshIndex(): Unit = {
+    if (doIndex) SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
+    else ()
+  }
 }
