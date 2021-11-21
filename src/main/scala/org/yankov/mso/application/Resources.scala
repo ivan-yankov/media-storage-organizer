@@ -7,7 +7,6 @@ import java.time.Duration
 object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
-    val mediaDir: String = "--media-dir"
     val mediaServerPort: String = "--media-server-port"
     val findDuplicates: String = "--find-duplicates"
   }

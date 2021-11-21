@@ -3,11 +3,11 @@ package org.yankov.mso.application
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.MediaServer
+import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
-import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.search.SearchModel.SearchParameters
-import org.yankov.mso.application.search.{SearchEngine, SearchIndexes, SearchIndexesInstance, TextAnalyzer}
+import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
@@ -88,12 +88,8 @@ object Main extends JFXApp {
   }
 
   private def createDataManager: DataManager = {
-    System.setSecurityManager(null)
-    Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
-
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-    val mediaDir = getApplicationArgument(Resources.ApplicationArgumentKeys.mediaDir)
-    DataManager(dbDir, mediaDir, RealDatabase())
+    DataManager(dbDir, RealDatabase(), doIndex = true)
   }
 
   private def tabPane: TabPane = {

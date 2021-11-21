@@ -1,7 +1,7 @@
 package org.yankov.mso.application.model
 
 import org.scalatest.{FreeSpec, Matchers}
-import org.yankov.mso.application.database.FakeDatabase
+import org.yankov.mso.application.database.{Database, FakeDatabase}
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 
@@ -12,14 +12,13 @@ import scala.collection.JavaConverters._
 
 class DataManagerTest extends FreeSpec with Matchers {
   private val dbDir = "db-dir"
-  private val mediaDir = "media-dir"
 
-  private val artistsPath = Paths.get(dbDir, "meta", "artists")
-  private val sourcesPath = Paths.get(dbDir, "meta", "sources")
-  private val sourceTypesPath = Paths.get(dbDir, "meta", "source-types")
-  private val instrumentsPath = Paths.get(dbDir, "meta", "instruments")
-  private val ethnographicRegionsPath = Paths.get(dbDir, "meta", "ethnographic-regions")
-  private val tracksPath = Paths.get(dbDir, "meta", "tracks")
+  private val artistsPath = Paths.get(dbDir, "data", "artists")
+  private val sourcesPath = Paths.get(dbDir, "data", "sources")
+  private val sourceTypesPath = Paths.get(dbDir, "data", "source-types")
+  private val instrumentsPath = Paths.get(dbDir, "data", "instruments")
+  private val ethnographicRegionsPath = Paths.get(dbDir, "data", "ethnographic-regions")
+  private val tracksPath = Paths.get(dbDir, "data", "tracks")
 
   private val missions = List(
     Singer,
@@ -58,14 +57,15 @@ class DataManagerTest extends FreeSpec with Matchers {
     def putRecord(file: File): Boolean = files.add(file.toPath.toString)
   }
 
+  private def dataManager(db: Database): DataManager = DataManager(dbDir, db, doIndex = false)
+
   "insert" - {
     "artist" - {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertArtist(Artist()) shouldBe true
+        dataManager(db).insertArtist(Artist()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbArtist].id.nonEmpty shouldBe true
@@ -79,9 +79,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "non-empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertArtist(
+        dataManager(db).insertArtist(
           Artist(
             id = "id",
             name = "name",
@@ -105,9 +104,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertSource(Source()) shouldBe true
+        dataManager(db).insertSource(Source()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbSource].id.nonEmpty shouldBe true
@@ -119,9 +117,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "non-empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertSource(
+        dataManager(db).insertSource(
           Source(
             id = "id",
             signature = "signature",
@@ -141,9 +138,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertSourceType(SourceType(id = "id", name = "name")) shouldBe true
+        dataManager(db).insertSourceType(SourceType(id = "id", name = "name")) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbSourceType].id shouldBe "id"
@@ -160,9 +156,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertInstrument(Instrument()) shouldBe true
+        dataManager(db).insertInstrument(Instrument()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbInstrument].id.nonEmpty shouldBe true
@@ -173,9 +168,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "non-empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertInstrument(Instrument("id", "name")) shouldBe true
+        dataManager(db).insertInstrument(Instrument("id", "name")) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbInstrument].id shouldBe "id"
@@ -188,9 +182,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertEthnographicRegion(EthnographicRegion()) shouldBe true
+        dataManager(db).insertEthnographicRegion(EthnographicRegion()) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbEthnographicRegion].id.nonEmpty shouldBe true
@@ -201,9 +194,8 @@ class DataManagerTest extends FreeSpec with Matchers {
       "non-empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-        DataManager(dbDir, mediaDir, db).insertEthnographicRegion(EthnographicRegion("id", "name")) shouldBe true
+        dataManager(db).insertEthnographicRegion(EthnographicRegion("id", "name")) shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbEthnographicRegion].id shouldBe "id"
@@ -216,13 +208,12 @@ class DataManagerTest extends FreeSpec with Matchers {
       "empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
         val putRecordCheck = PutRecordCheck()
 
         val tracks = List.fill(3)(FolkloreTrack())
 
-        DataManager(dbDir, mediaDir, db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
+        dataManager(db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.foreach(
@@ -248,11 +239,10 @@ class DataManagerTest extends FreeSpec with Matchers {
       "non-empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
-        db.setReadResult(Right(List[DbFolkloreTrack]()))
 
         val putRecordCheck = PutRecordCheck()
 
-        DataManager(dbDir, mediaDir, db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
+        dataManager(db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.zip(tracks).foreach(
@@ -282,9 +272,8 @@ class DataManagerTest extends FreeSpec with Matchers {
   "delete track" in {
     val db = FakeDatabase()
     db.setDeleteResult(Right(1))
-    db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-    DataManager(dbDir, mediaDir, db).deleteTrack(FolkloreTrack("id")) shouldBe true
+    dataManager(db).deleteTrack(FolkloreTrack("id")) shouldBe true
 
     db.getDeleteKeys.size shouldBe 1
     db.getDeleteKeys.head shouldBe "id"
@@ -295,9 +284,8 @@ class DataManagerTest extends FreeSpec with Matchers {
     "ethnographic region" in {
       val db = FakeDatabase()
       db.setUpdateResult(Right(List("id")))
-      db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-      DataManager(dbDir, mediaDir, db).updateEthnographicRegion(EthnographicRegion("id", "name")) shouldBe true
+      dataManager(db).updateEthnographicRegion(EthnographicRegion("id", "name")) shouldBe true
 
       db.getUpdateEntries.size shouldBe 1
       db.getUpdateEntries.head.asInstanceOf[DbEthnographicRegion].id shouldBe "id"
@@ -308,9 +296,8 @@ class DataManagerTest extends FreeSpec with Matchers {
     "source" in {
       val db = FakeDatabase()
       db.setUpdateResult(Right(List("id")))
-      db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-      DataManager(dbDir, mediaDir, db).updateSource(
+      dataManager(db).updateSource(
         Source(
           id = "id",
           signature = "signature",
@@ -328,9 +315,8 @@ class DataManagerTest extends FreeSpec with Matchers {
     "instrument" in {
       val db = FakeDatabase()
       db.setUpdateResult(Right(List("id")))
-      db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-      DataManager(dbDir, mediaDir, db).updateInstrument(Instrument("id", "name")) shouldBe true
+      dataManager(db).updateInstrument(Instrument("id", "name")) shouldBe true
 
       db.getUpdateEntries.size shouldBe 1
       db.getUpdateEntries.head.asInstanceOf[DbInstrument].id shouldBe "id"
@@ -341,9 +327,8 @@ class DataManagerTest extends FreeSpec with Matchers {
     "artist" in {
       val db = FakeDatabase()
       db.setUpdateResult(Right(List("id")))
-      db.setReadResult(Right(List[DbFolkloreTrack]()))
 
-      DataManager(dbDir, mediaDir, db).updateArtist(
+      dataManager(db).updateArtist(
         Artist(
           id = "id",
           name = "name",
@@ -365,11 +350,10 @@ class DataManagerTest extends FreeSpec with Matchers {
     "tracks" in {
       val db = FakeDatabase()
       db.setUpdateResult(Right(tracks.map(x => x.id)))
-      db.setReadResult(Right(List[DbFolkloreTrack]()))
 
       val putRecordCheck = PutRecordCheck()
 
-      DataManager(dbDir, mediaDir, db).updateTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
+      dataManager(db).updateTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
 
       db.getUpdateEntries.size shouldBe tracks.size
       db.getUpdateEntries.zip(tracks).foreach(
