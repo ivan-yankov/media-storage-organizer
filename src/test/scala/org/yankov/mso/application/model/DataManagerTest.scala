@@ -1,15 +1,14 @@
 package org.yankov.mso.application.model
 
 import org.scalatest.{FreeSpec, Matchers}
-import org.yankov.mso.application.Id
 import org.yankov.mso.application.database.FakeDatabase
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import scala.collection.JavaConverters._
 
 import java.io.File
 import java.nio.file.Paths
 import java.time.Duration
+import scala.collection.JavaConverters._
 
 class DataManagerTest extends FreeSpec with Matchers {
   private val dbDir = "db-dir"
@@ -17,6 +16,7 @@ class DataManagerTest extends FreeSpec with Matchers {
 
   private val artistsPath = Paths.get(dbDir, "meta", "artists")
   private val sourcesPath = Paths.get(dbDir, "meta", "sources")
+  private val sourceTypesPath = Paths.get(dbDir, "meta", "source-types")
   private val instrumentsPath = Paths.get(dbDir, "meta", "instruments")
   private val ethnographicRegionsPath = Paths.get(dbDir, "meta", "ethnographic-regions")
   private val tracksPath = Paths.get(dbDir, "meta", "tracks")
@@ -32,7 +32,7 @@ class DataManagerTest extends FreeSpec with Matchers {
     ChamberGroup
   )
 
-  private       val tracks = (1 to 3).toList.map(
+  private val tracks = (1 to 3).toList.map(
     x => FolkloreTrack(
       id = s"$x",
       title = s"title$x",
@@ -51,11 +51,11 @@ class DataManagerTest extends FreeSpec with Matchers {
   )
 
   case class PutRecordCheck() {
-    private var files: java.util.List[String] = new java.util.ArrayList[String]()
+    private val files: java.util.List[String] = new java.util.ArrayList[String]()
 
     def getFiles: List[String] = files.asScala.toList
 
-    def putRecord(id: Id, file: File): Boolean = files.add(file.toPath.toString)
+    def putRecord(file: File): Boolean = files.add(file.toPath.toString)
   }
 
   "insert" - {
@@ -137,6 +137,25 @@ class DataManagerTest extends FreeSpec with Matchers {
       }
     }
 
+    "source type" - {
+      "empty" in {
+        val db = FakeDatabase()
+        db.setInsertResult(Right(()))
+        db.setReadResult(Right(List[DbFolkloreTrack]()))
+
+        DataManager(dbDir, mediaDir, db).insertSourceType(SourceType(id = "id", name = "name")) shouldBe true
+
+        db.getInsertEntries.size shouldBe 1
+        db.getInsertEntries.head.asInstanceOf[DbSourceType].id shouldBe "id"
+        db.getInsertEntries.head.asInstanceOf[DbSourceType].name shouldBe Some("name")
+        db.getInsertPath shouldBe sourceTypesPath
+      }
+
+      "non-empty" in {
+
+      }
+    }
+
     "instrument" - {
       "empty" in {
         val db = FakeDatabase()
@@ -203,7 +222,7 @@ class DataManagerTest extends FreeSpec with Matchers {
 
         val tracks = List.fill(3)(FolkloreTrack())
 
-        DataManager(dbDir, mediaDir, db).insertTracks(tracks, putRecordCheck.putRecord) shouldBe true
+        DataManager(dbDir, mediaDir, db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.foreach(
@@ -233,7 +252,7 @@ class DataManagerTest extends FreeSpec with Matchers {
 
         val putRecordCheck = PutRecordCheck()
 
-        DataManager(dbDir, mediaDir, db).insertTracks(tracks, putRecordCheck.putRecord) shouldBe true
+        DataManager(dbDir, mediaDir, db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.zip(tracks).foreach(
@@ -345,12 +364,12 @@ class DataManagerTest extends FreeSpec with Matchers {
 
     "tracks" in {
       val db = FakeDatabase()
-      db.setUpdateResult(Right((tracks.map(x => x.id))))
+      db.setUpdateResult(Right(tracks.map(x => x.id)))
       db.setReadResult(Right(List[DbFolkloreTrack]()))
 
       val putRecordCheck = PutRecordCheck()
 
-      DataManager(dbDir, mediaDir, db).updateTracks(tracks, putRecordCheck.putRecord) shouldBe true
+      DataManager(dbDir, mediaDir, db).updateTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
 
       db.getUpdateEntries.size shouldBe tracks.size
       db.getUpdateEntries.zip(tracks).foreach(
