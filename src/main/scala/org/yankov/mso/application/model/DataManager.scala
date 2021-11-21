@@ -220,6 +220,19 @@ case class DataManager(dbRootDir: String,
     }
   }
 
+  def insertSourceType(sourceType: SourceType): Boolean = {
+    val id = if (isValidId(sourceType.id)) sourceType.id else generateId
+    val dbEntry = DbSourceType(id, asStringOption(sourceType.name))
+    database.insert(List(dbEntry), sourceTypesPath) match {
+      case Left(e) =>
+        log.error(e)
+        false
+      case Right(_) =>
+        refreshIndex()
+        true
+    }
+  }
+
   def insertInstrument(instrument: Instrument): Boolean = {
     val id = if (isValidId(instrument.id)) instrument.id else generateId
     val dbEntry = DbInstrument(id, asStringOption(instrument.name))
