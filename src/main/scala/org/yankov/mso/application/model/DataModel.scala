@@ -31,14 +31,14 @@ object DataModel {
   case object ChamberGroup extends ArtistMission
 
   object ArtistMissions {
-    val singer: String = "SINGER"
-    val instrumentPlayer: String = "INSTRUMENT_PLAYER"
-    val composer: String = "COMPOSER"
-    val conductor: String = "CONDUCTOR"
-    val orchestra: String = "ORCHESTRA"
-    val choir: String = "CHOIR"
-    val ensemble: String = "ENSEMBLE"
-    val chamberGroup: String = "CHAMBER_GROUP"
+    val singer: String = "Singer"
+    val instrumentPlayer: String = "InstrumentPlayer"
+    val composer: String = "Composer"
+    val conductor: String = "Conductor"
+    val orchestra: String = "Orchestra"
+    val choir: String = "Choir"
+    val ensemble: String = "Ensemble"
+    val chamberGroup: String = "ChamberGroup"
   }
 
   def artistMissionToString(mission: ArtistMission): String = mission match {

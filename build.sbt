@@ -1,6 +1,6 @@
 name := "media-storage-organizer"
 
-version := "2.0"
+version := "3.0"
 
 scalaVersion := "2.12.4"
 
