@@ -6,8 +6,8 @@ import org.yankov.mso.application.media.MediaServer
 import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
+import org.yankov.mso.application.search.SearchEngine
 import org.yankov.mso.application.search.SearchModel.SearchParameters
-import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
@@ -66,7 +66,7 @@ object Main extends JFXApp {
         val items = value.split("=")
         if (items.length == 2) items(1)
         else {
-          log.error(s"Value for application argument [$argument] no found.")
+          log.error(s"Value for application argument [$argument] not found.")
           defaultValue
         }
       case None =>
@@ -76,14 +76,6 @@ object Main extends JFXApp {
   }
 
   private def onStart(): Unit = {
-    getApplicationArgument(Resources.ApplicationArgumentKeys.findDuplicates, required = false) match {
-      case Resources.ApplicationArgumentValues.findDuplicatesExact =>
-        setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer + "|" + x.duration.getSeconds.toString))
-      case Resources.ApplicationArgumentValues.findDuplicatesTitlePerformer =>
-        setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer))
-      case _ => ()
-    }
-
     new Thread(() => MediaServer.start()).start()
   }
 
@@ -152,22 +144,5 @@ object Main extends JFXApp {
 
     val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)
     ApplicationConsole.writeMessageWithTimestamp(message)
-  }
-
-  private def findDuplicates(key: FolkloreTrack => String): List[FolkloreTrack] = {
-    dataManager
-      .getTracks
-      .groupBy(x => key(x))
-      .filter(x => x._2.size > 1)
-      .values
-      .toList
-      .flatten
-  }
-
-  private def setOutput(items: List[FolkloreTrack]): Unit = {
-    searchTable.getValue.getItems.clear()
-    items
-      .map(x => FolkloreTrackProperties(x))
-      .foreach(x => searchTable.getValue.getItems.add(x))
   }
 }
