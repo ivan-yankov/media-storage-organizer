@@ -183,7 +183,6 @@ object Resources {
   }
 
   object Filters {
-    val fuzzySearchLabel: String = "Гъвкаво търсене"
     val equalsLabel: String = "Идентично"
     val notEqualsLabel: String = "Различно"
     val containsLabel: String = "Съдържа"
