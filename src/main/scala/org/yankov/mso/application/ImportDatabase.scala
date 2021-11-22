@@ -67,7 +67,7 @@ object ImportDatabase {
     insertTracks(trackIds, tracksRaw, artistIds, sourceIds, ethnographicRegionsIds, dataManager)
 
     val renameRecordsScript = Paths.get(dir, "move-track-records.sh")
-    val scriptRecords = trackIds.map(x => s"mv ${x._1}.flac ${x._2}.flac").toList
+    val scriptRecords = trackIds.map(x => s"mv media/${x._1}.flac media/${x._2}.flac").toList
 
     FileUtils.writeTextFile(scriptRecords, renameRecordsScript)
 

@@ -12,11 +12,7 @@ import java.io.File
 import java.nio.file.{Path, Paths}
 import java.util.UUID
 
-case class DataManager(dbRootDir: String,
-                       database: Database,
-                       doIndex: Boolean) {
-  refreshIndex()
-
+case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) {
   private val log = LoggerFactory.getLogger(getClass)
 
   val metadataPath: Path = Paths.get(dbRootDir, "data")
@@ -27,6 +23,8 @@ case class DataManager(dbRootDir: String,
   val sourcesPath: Path = Paths.get(metadataPath.toString, "sources")
   val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
   val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
+
+  refreshIndex()
 
   implicit class FolkloreTrackAsDbFolkloreTrack(track: FolkloreTrack) {
     def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
