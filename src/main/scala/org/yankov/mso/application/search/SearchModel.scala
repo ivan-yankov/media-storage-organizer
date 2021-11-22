@@ -9,22 +9,22 @@ import org.yankov.mso.application.search.TextAnalyzer._
 object SearchModel {
   private val levenshteinTolerance = 1
 
-  case class Variable[T](label: String, valueProvider: T => String, searchIndex: List[SearchIndexElement])
+  case class Variable[T](label: String, valueProvider: T => String)
 
   object Variables {
-    val varTitle: Variable[FolkloreTrack] = Variable[FolkloreTrack](title, x => x.title, getSearchIndexes.titleIndex)
-    val varPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](performer, x => x.performer.name, getSearchIndexes.performerIndex)
-    val varAccompanimentPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](accompanimentPerformer, x => x.accompanimentPerformer.name, getSearchIndexes.accompanimentPerformerIndex)
-    val varArrangementAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](arrangementAuthor, x => x.arrangementAuthor.name, getSearchIndexes.arrangementAuthorIndex)
-    val varConductor: Variable[FolkloreTrack] = Variable[FolkloreTrack](conductor, x => x.conductor.name, getSearchIndexes.conductorIndex)
-    val varInstrumentPerformance: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentPerformance, x => x.performer.instrument.name, getSearchIndexes.instrumentPerformanceIndex)
-    val varInstrumentAccompaniment: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentAccompaniment, x => x.accompanimentPerformer.instrument.name, getSearchIndexes.instrumentAccompanimentIndex)
-    val varSoloist: Variable[FolkloreTrack] = Variable[FolkloreTrack](soloist, x => x.soloist.name, getSearchIndexes.soloistIndex)
-    val varAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](author, x => x.author.name, getSearchIndexes.authorIndex)
-    val varEthnographicRegion: Variable[FolkloreTrack] = Variable[FolkloreTrack](ethnographicRegion, x => x.ethnographicRegion.name, getSearchIndexes.ethnographicRegionIndex)
-    val varTrackNote: Variable[FolkloreTrack] = Variable[FolkloreTrack](trackNote, x => x.note, getSearchIndexes.noteIndex)
-    val varSourceType: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name, getSearchIndexes.sourceTypeIndex)
-    val varSourceSignature: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceSignature, x => x.source.signature, getSearchIndexes.sourceSignatureIndex)
+    val varTitle: Variable[FolkloreTrack] = Variable[FolkloreTrack](title, x => x.title)
+    val varPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](performer, x => x.performer.name)
+    val varAccompanimentPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](accompanimentPerformer, x => x.accompanimentPerformer.name)
+    val varArrangementAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](arrangementAuthor, x => x.arrangementAuthor.name)
+    val varConductor: Variable[FolkloreTrack] = Variable[FolkloreTrack](conductor, x => x.conductor.name)
+    val varInstrumentPerformance: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentPerformance, x => x.performer.instrument.name)
+    val varInstrumentAccompaniment: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentAccompaniment, x => x.accompanimentPerformer.instrument.name)
+    val varSoloist: Variable[FolkloreTrack] = Variable[FolkloreTrack](soloist, x => x.soloist.name)
+    val varAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](author, x => x.author.name)
+    val varEthnographicRegion: Variable[FolkloreTrack] = Variable[FolkloreTrack](ethnographicRegion, x => x.ethnographicRegion.name)
+    val varTrackNote: Variable[FolkloreTrack] = Variable[FolkloreTrack](trackNote, x => x.note)
+    val varSourceType: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name)
+    val varSourceSignature: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceSignature, x => x.source.signature)
 
     def asList: List[Variable[FolkloreTrack]] = List(
       varTitle,
@@ -41,8 +41,6 @@ object SearchModel {
       varSourceType,
       varSourceSignature
     )
-
-    private def getSearchIndexes: SearchIndexes = SearchIndexesInstance.getInstance
   }
 
   case class Filter[T](label: String, execute: (Variable[T], String, List[T]) => List[T])
@@ -81,45 +79,11 @@ object SearchModel {
       }
     )
 
-    val filterFuzzySearch: Filter[FolkloreTrack] = Filter(
-      fuzzySearchLabel,
-      (variable, value, tracks) => {
-        def fuzzyContains(term: String, terms: List[String]): Boolean =
-          terms.exists(x => levenshteinDistance(x, term) <= levenshteinTolerance)
-
-        val analyzedValue = analyze(value)
-        val exactMatches = tracks
-          .filter(x => analyze(variable.valueProvider(x)).equalsIgnoreCase(analyzedValue))
-        val containsMatches = tracks
-          .diff(exactMatches)
-          .filter(x => analyze(variable.valueProvider(x)).contains(analyzedValue))
-
-        val indexAnalyzedValue = indexAnalyze(value)
-        val ids = variable
-          .searchIndex
-          .filter(x => fuzzyContains(x.term, indexAnalyzedValue))
-          .map(x => x.ids)
-        val idsFound = ids
-          .flatten
-          .distinct
-          .map(x => (x, ids.count(y => y.contains(x))))
-          .sortWith((x, y) => x._2 > y._2)
-          .map(x => x._1)
-        val fuzzyMatches = tracks
-          .diff(exactMatches)
-          .diff(containsMatches)
-          .filter(x => idsFound.contains(x.id))
-
-        exactMatches ++ containsMatches ++ fuzzyMatches
-      }
-    )
-
     def asList: List[Filter[FolkloreTrack]] = List(
       filterContains,
       filterNotContains,
       filterEquals,
-      filterNotEquals,
-      filterFuzzySearch
+      filterNotEquals
     )
   }
 

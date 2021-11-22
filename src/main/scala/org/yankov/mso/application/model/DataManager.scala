@@ -5,7 +5,6 @@ import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.Database
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.search.{SearchIndexes, SearchIndexesInstance}
 import org.yankov.mso.application.{FileUtils, Id, Resources}
 
 import java.io.File
@@ -23,8 +22,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   val sourcesPath: Path = Paths.get(metadataPath.toString, "sources")
   val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
   val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
-
-  refreshIndex()
 
   implicit class FolkloreTrackAsDbFolkloreTrack(track: FolkloreTrack) {
     def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
@@ -95,7 +92,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         tracksWithIds.filter(x => x.file.isDefined).map(x => insertRecord(x.id, x.file.get)).forall(x => x)
     }
   }
@@ -107,7 +103,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         false
       case Right(updated) =>
         if (updated.size == tracks.size) {
-          refreshIndex()
           updated
             .map(x => tracks.find(y => y.id.equals(x)).get)
             .filter(x => x.file.isDefined)
@@ -134,7 +129,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(number) =>
-        refreshIndex()
         number == 1
     }
   }
@@ -157,7 +151,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         true
     }
   }
@@ -169,7 +162,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(updated) =>
-        refreshIndex()
         updated.size == 1
     }
   }
@@ -192,7 +184,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         true
     }
   }
@@ -204,7 +195,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(updated) =>
-        refreshIndex()
         updated.size == 1
     }
   }
@@ -227,7 +217,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         true
     }
   }
@@ -240,7 +229,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         true
     }
   }
@@ -252,7 +240,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(updated) =>
-        refreshIndex()
         updated.size == 1
     }
   }
@@ -274,7 +261,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         true
     }
   }
@@ -285,7 +271,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         log.error(e)
         false
       case Right(_) =>
-        refreshIndex()
         true
     }
   }
@@ -412,9 +397,4 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   }
 
   private def generateId: String = UUID.randomUUID().toString
-
-  private def refreshIndex(): Unit = {
-    if (doIndex) SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
-    else ()
-  }
 }
