@@ -42,6 +42,8 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
 
   val searchTabButtons: List[Button] = List(
     editButton(ButtonUserData(false)),
+    copyPropertiesButton(ButtonUserData(false)),
+    applyPropertiesButton(ButtonUserData(false)),
     playButton(ButtonUserData(false)),
     updateButton(ButtonUserData(false)),
     deleteButton(ButtonUserData(false)),

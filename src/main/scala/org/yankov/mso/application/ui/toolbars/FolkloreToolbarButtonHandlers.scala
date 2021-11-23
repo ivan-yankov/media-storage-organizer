@@ -1,16 +1,16 @@
 package org.yankov.mso.application.ui.toolbars
 
-import java.io.File
-
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
-import org.yankov.mso.application.{Commands, Main, Resources}
+import org.yankov.mso.application._
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
+
+import java.io.File
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private var copiedProperties: Option[FolkloreTrackProperties] = Option.empty
@@ -56,28 +56,18 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def applyProperties(targetInputTab: Boolean): Unit = {
     val table = targetTable(targetInputTab)
 
-    def createProperties(index: Int): FolkloreTrackProperties = {
-      val copiedTrack = copiedProperties.get.track
-      val selectedProperties = table.items.getValue.get(index)
-      val newTrack = FolkloreTrack(
-        id = copiedTrack.id,
-        title = selectedProperties.track.title,
-        performer = copiedTrack.performer,
-        accompanimentPerformer = copiedTrack.accompanimentPerformer,
-        author = copiedTrack.author,
-        arrangementAuthor = copiedTrack.arrangementAuthor,
-        conductor = copiedTrack.conductor,
-        soloist = copiedTrack.soloist,
-        duration = selectedProperties.track.duration,
-        note = copiedTrack.note,
-        source = copiedTrack.source,
-        ethnographicRegion = copiedTrack.ethnographicRegion,
-        file = selectedProperties.track.file
-      )
+    def createProperties(row: Int, col: Int): FolkloreTrackProperties = {
+      val sourceTrack = copiedProperties.get.track
+      val destinationTrack = table.items.getValue.get(row).track
+
+      val mergeTrackMap = table.getUserData.asInstanceOf[MergeTrackMap]
+
+      val newTrack = mergeTrackMap.getOrElse[MergeTrack](col, (_, x) => x)(sourceTrack, destinationTrack)
       FolkloreTrackProperties(newTrack)
     }
 
-    Commands.applyProperties(table,
+    Commands.applyProperties(
+      table,
       targetButtons(targetInputTab).find(x => x.id.value.equals(ButtonIds.btnApplyProperties)).get,
       copiedProperties,
       createProperties
