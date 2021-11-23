@@ -45,7 +45,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   implicit class FolkloreTrackAsDbFolkloreTrack(track: FolkloreTrack) {
     def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
       id = track.id,
-      duration = Option(DurationConverter.toHourMinSecString(track.duration, withLeadingZero = true)),
+      duration = Option(DurationConverter.toHourMinSecString(track.duration)),
       note = track.note.asOption,
       title = track.title.asOption,
       accompanimentPerformerId = track.accompanimentPerformer.id.asOption,

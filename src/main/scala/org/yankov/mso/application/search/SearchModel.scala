@@ -7,8 +7,6 @@ import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.TextAnalyzer._
 
 object SearchModel {
-  private val levenshteinTolerance = 1
-
   case class Variable[T](label: String, valueProvider: T => String)
 
   object Variables {
