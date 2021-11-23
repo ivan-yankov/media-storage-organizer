@@ -103,7 +103,7 @@ object Resources {
     val search: String = "Търсене"
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
-      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration, withLeadingZero = false)}"
+      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
   }
 
   object TrackEditor {
