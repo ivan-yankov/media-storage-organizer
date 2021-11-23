@@ -48,6 +48,8 @@ case class FakeDatabase() extends Database {
 
   def setDeleteResult(result: Either[String, Int]): Unit = deleteResult = result
 
+  override def setOnChange(f: () => Unit): Unit = ()
+
   override def insert[T <: DbEntry](entries: List[T], path: Path)
                                    (implicit encoder: Encoder[T]): Either[String, Unit] = {
     insertEntries = entries

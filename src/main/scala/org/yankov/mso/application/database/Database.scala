@@ -9,6 +9,8 @@ import java.io.{FileInputStream, InputStream}
 import java.nio.file.Path
 
 trait Database {
+  def setOnChange(f: () => Unit): Unit
+
   def insert[T <: DbEntry](entries: List[T], path: Path)
                           (implicit encoder: Encoder[T]): Either[String, Unit]
 
@@ -24,7 +26,10 @@ trait Database {
 }
 
 case class RealDatabase() extends Database {
+  private var onChange: Option[() => Unit] = None
   private val separator = "|"
+
+  override def setOnChange(f: () => Unit): Unit = onChange = Some(f)
 
   override def insert[T <: DbEntry](entries: List[T], path: Path)
                                    (implicit encoder: Encoder[T]): Either[String, Unit] = {
@@ -33,8 +38,14 @@ case class RealDatabase() extends Database {
       path = path,
       append = true
     ) match {
-      case Left(e) => Left(e)
-      case Right(_) => Right(())
+      case Left(e) =>
+        Left(e)
+      case Right(_) =>
+        onChange match {
+          case Some(f) => f()
+          case None => ()
+        }
+        Right(())
     }
   }
 
@@ -76,8 +87,14 @@ case class RealDatabase() extends Database {
           }
         )
         FileUtils.writeTextFile(updated.map(x => x._1), path) match {
-          case Left(e) => Left(e)
-          case Right(_) => Right(updated.withFilter(x => x._2.nonEmpty).map(x => x._2.get))
+          case Left(e) =>
+            Left(e)
+          case Right(_) =>
+            onChange match {
+              case Some(f) => f()
+              case None => ()
+            }
+            Right(updated.withFilter(x => x._2.nonEmpty).map(x => x._2.get))
         }
     }
   }
@@ -87,8 +104,14 @@ case class RealDatabase() extends Database {
       case Left(e) => Left(e)
       case Right(lines) =>
         FileUtils.writeTextFile(lines, path) match {
-          case Left(e) => Left(e)
-          case Right(_) => Right(keys.size - lines.size)
+          case Left(e) =>
+            Left(e)
+          case Right(_) =>
+            onChange match {
+              case Some(f) => f()
+              case None => ()
+            }
+            Right(keys.size - lines.size)
         }
     }
   }

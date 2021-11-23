@@ -2,7 +2,7 @@ package org.yankov.mso.application.model
 
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.converters.DurationConverter
-import org.yankov.mso.application.database.Database
+import org.yankov.mso.application.database.{Database, DatabaseCache}
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.{FileUtils, Id, Resources}
@@ -23,20 +23,39 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
   val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
 
+  private var dbCache: DatabaseCache = _
+
+  private def updateCache(): Unit = dbCache = DatabaseCache(database)
+
+  database.setOnChange(updateCache)
+
+  implicit class StringOption(x: String) {
+    def asOption: Option[String] = if (x.nonEmpty) Option(x) else Option.empty
+  }
+
+  implicit class MapGet[T](x: Map[Id, T]) {
+    def getByOptionOrElse(maybeId: Option[Id], defaultValue: T): T = {
+      maybeId match {
+        case Some(id) => x.getOrElse(id, defaultValue)
+        case None => defaultValue
+      }
+    }
+  }
+
   implicit class FolkloreTrackAsDbFolkloreTrack(track: FolkloreTrack) {
     def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
       id = track.id,
       duration = Option(DurationConverter.toHourMinSecString(track.duration, withLeadingZero = true)),
-      note = asStringOption(track.note),
-      title = asStringOption(track.title),
-      accompanimentPerformerId = asStringOption(track.accompanimentPerformer.id),
-      arrangementAuthorId = asStringOption(track.arrangementAuthor.id),
-      authorId = asStringOption(track.author.id),
-      conductorId = asStringOption(track.conductor.id),
-      performerId = asStringOption(track.performer.id),
-      soloistId = asStringOption(track.soloist.id),
-      sourceId = asStringOption(track.source.id),
-      ethnographicRegionId = asStringOption(track.ethnographicRegion.id)
+      note = track.note.asOption,
+      title = track.title.asOption,
+      accompanimentPerformerId = track.accompanimentPerformer.id.asOption,
+      arrangementAuthorId = track.arrangementAuthor.id.asOption,
+      authorId = track.author.id.asOption,
+      conductorId = track.conductor.id.asOption,
+      performerId = track.performer.id.asOption,
+      soloistId = track.soloist.id.asOption,
+      sourceId = track.source.id.asOption,
+      ethnographicRegionId = track.ethnographicRegion.id.asOption
     )
   }
 
@@ -44,16 +63,16 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     def asFolkloreTrack: FolkloreTrack = FolkloreTrack(
       id = track.id,
       title = track.title.getOrElse(""),
-      performer = getArtist(track.performerId),
-      accompanimentPerformer = getArtist(track.accompanimentPerformerId),
-      author = getArtist(track.authorId),
-      arrangementAuthor = getArtist(track.arrangementAuthorId),
-      conductor = getArtist(track.conductorId),
-      soloist = getArtist(track.soloistId),
+      performer = dbCache.artists.getByOptionOrElse(track.performerId, Artist()),
+      accompanimentPerformer = dbCache.artists.getByOptionOrElse(track.accompanimentPerformerId, Artist()),
+      author = dbCache.artists.getByOptionOrElse(track.authorId, Artist()),
+      arrangementAuthor = dbCache.artists.getByOptionOrElse(track.arrangementAuthorId, Artist()),
+      conductor = dbCache.artists.getByOptionOrElse(track.conductorId, Artist()),
+      soloist = dbCache.artists.getByOptionOrElse(track.soloistId, Artist()),
       duration = DurationConverter.fromString(track.duration.getOrElse("")),
       note = track.note.getOrElse(""),
-      source = getSource(track.sourceId),
-      ethnographicRegion = getEthnographicRegion(track.ethnographicRegionId)
+      source = dbCache.sources.getByOptionOrElse(track.sourceId, Source()),
+      ethnographicRegion = dbCache.ethnographicRegions.getByOptionOrElse(track.ethnographicRegionId, EthnographicRegion())
     )
   }
 
@@ -62,9 +81,9 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
       val missions = artist.missions.map(x => DataModel.artistMissionToString(x))
       DbArtist(
         id = artist.id,
-        name = asStringOption(artist.name),
-        note = asStringOption(artist.note),
-        instrumentId = asStringOption(artist.instrument.id),
+        name = artist.name.asOption,
+        note = artist.note.asOption,
+        instrumentId = artist.instrument.id.asOption,
         missions = if (missions.nonEmpty) Option(missions) else Option.empty
       )
     }
@@ -74,7 +93,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     def asArtist: Artist = Artist(
       id = dbArtist.id,
       name = dbArtist.name.getOrElse(""),
-      instrument = getInstrument(dbArtist.instrumentId),
+      instrument = dbCache.instruments.getByOptionOrElse(dbArtist.instrumentId, Instrument()),
       note = dbArtist.note.getOrElse(""),
       missions = dbArtist.missions.getOrElse(List[String]()).map(x => DataModel.artistMissionFromString(x))
     )
@@ -113,15 +132,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getTracks: List[FolkloreTrack] = {
-    database.read[DbFolkloreTrack](List(), tracksPath) match {
-      case Left(e) =>
-        log.error(e)
-        List()
-      case Right(result) =>
-        result.map(x => x.asFolkloreTrack)
-    }
-  }
+  def getTracks: List[FolkloreTrack] = dbCache.tracks.values.toList
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
     database.delete(List(track.id), tracksPath) match {
@@ -133,19 +144,11 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getSourceTypes: List[SourceType] = {
-    database.read[DbSourceType](List(), sourceTypesPath) match {
-      case Left(e) =>
-        log.error(e)
-        List()
-      case Right(result) =>
-        result.map(x => SourceType(id = x.id, name = x.name.getOrElse("")))
-    }
-  }
+  def getSourceTypes: List[SourceType] = dbCache.sourceTypes.values.toList
 
   def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
     val id = if (isValidId(ethnographicRegion.id)) ethnographicRegion.id else generateId
-    val dbEntry = DbEthnographicRegion(id, asStringOption(ethnographicRegion.name))
+    val dbEntry = DbEthnographicRegion(id, ethnographicRegion.name.asOption)
     database.insert(List(dbEntry), ethnographicRegionsPath) match {
       case Left(e) =>
         log.error(e)
@@ -156,7 +159,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   }
 
   def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    val dbEntry = DbEthnographicRegion(ethnographicRegion.id, asStringOption(ethnographicRegion.name))
+    val dbEntry = DbEthnographicRegion(ethnographicRegion.id, ethnographicRegion.name.asOption)
     database.update(List(dbEntry), ethnographicRegionsPath) match {
       case Left(e) =>
         log.error(e)
@@ -166,19 +169,11 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getEthnographicRegions: List[EthnographicRegion] = {
-    database.read[DbEthnographicRegion](List(), ethnographicRegionsPath) match {
-      case Left(e) =>
-        log.error(e)
-        List()
-      case Right(result) =>
-        result.map(x => EthnographicRegion(id = x.id, name = x.name.getOrElse("")))
-    }
-  }
+  def getEthnographicRegions: List[EthnographicRegion] = dbCache.ethnographicRegions.values.toList
 
   def insertSource(source: Source): Boolean = {
     val id = if (isValidId(source.id)) source.id else generateId
-    val dbEntry = DbSource(id, asStringOption(source.signature), asIdOption(source.sourceType.id))
+    val dbEntry = DbSource(id, source.signature.asOption, asIdOption(source.sourceType.id))
     database.insert(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
@@ -189,7 +184,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   }
 
   def updateSource(source: Source): Boolean = {
-    val dbEntry = DbSource(source.id, asStringOption(source.signature), asIdOption(source.sourceType.id))
+    val dbEntry = DbSource(source.id, source.signature.asOption, asIdOption(source.sourceType.id))
     database.update(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
@@ -199,19 +194,11 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getSources: List[Source] = {
-    database.read[DbSource](List(), sourcesPath) match {
-      case Left(e) =>
-        log.error(e)
-        List()
-      case Right(result) =>
-        result.map(x => Source(id = x.id, sourceType = getSourceType(x.typeId), signature = x.signature.getOrElse("")))
-    }
-  }
+  def getSources: List[Source] = dbCache.sources.values.toList
 
   def insertSourceType(sourceType: SourceType): Boolean = {
     val id = if (isValidId(sourceType.id)) sourceType.id else generateId
-    val dbEntry = DbSourceType(id, asStringOption(sourceType.name))
+    val dbEntry = DbSourceType(id, sourceType.name.asOption)
     database.insert(List(dbEntry), sourceTypesPath) match {
       case Left(e) =>
         log.error(e)
@@ -223,7 +210,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
 
   def insertInstrument(instrument: Instrument): Boolean = {
     val id = if (isValidId(instrument.id)) instrument.id else generateId
-    val dbEntry = DbInstrument(id, asStringOption(instrument.name))
+    val dbEntry = DbInstrument(id, instrument.name.asOption)
     database.insert(List(dbEntry), instrumentsPath) match {
       case Left(e) =>
         log.error(e)
@@ -234,7 +221,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   }
 
   def updateInstrument(instrument: Instrument): Boolean = {
-    val dbEntry = DbInstrument(instrument.id, asStringOption(instrument.name))
+    val dbEntry = DbInstrument(instrument.id, instrument.name.asOption)
     database.update(List(dbEntry), instrumentsPath) match {
       case Left(e) =>
         log.error(e)
@@ -244,15 +231,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getInstruments: List[Instrument] = {
-    database.read[DbInstrument](List(), instrumentsPath) match {
-      case Left(e) =>
-        log.error(e)
-        List()
-      case Right(result) =>
-        result.map(x => Instrument(id = x.id, name = x.name.getOrElse("")))
-    }
-  }
+  def getInstruments: List[Instrument] = dbCache.instruments.values.toList
 
   def insertArtist(artist: Artist): Boolean = {
     val id = if (isValidId(artist.id)) artist.id else generateId
@@ -275,15 +254,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getArtists: List[Artist] = {
-    database.read[DbArtist](List(), artistsPath) match {
-      case Left(e) =>
-        log.error(e)
-        List()
-      case Right(result) =>
-        result.map(x => x.asArtist)
-    }
-  }
+  def getArtists: List[Artist] = dbCache.artists.values.toList
 
   def getRecord(id: Id): Array[Byte] = {
     if (isValidId(id)) {
@@ -291,15 +262,14 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         case Left(e) =>
           log.error(e)
           Array()
-        case Right(data) => data
+        case Right(data) =>
+          data
       }
     }
     else Array()
   }
 
   def mediaFile(trackId: Id): File = Paths.get(mediaPath.toString, trackId + Resources.Media.flacExtension).toFile
-
-  private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
 
   private def putRecord(id: Id, file: File): Boolean = {
     FileUtils.readBinaryFile(file) match {
@@ -308,91 +278,6 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
         false
       case Right(data) =>
         FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
-    }
-  }
-
-  private def getArtist(idOption: Option[Id]): Artist = {
-    idOption match {
-      case Some(id) =>
-        database.read[DbArtist](List(id), artistsPath) match {
-          case Left(_) => Artist()
-          case Right(result) => result.headOption match {
-            case Some(dbEntry) => dbEntry.asArtist
-            case None => Artist()
-          }
-        }
-      case None =>
-        Artist()
-    }
-  }
-
-  private def getInstrument(idOption: Option[Id]): Instrument = {
-    idOption match {
-      case Some(id) =>
-        database.read[DbInstrument](List(id), instrumentsPath) match {
-          case Left(_) => Instrument()
-          case Right(result) => result.headOption match {
-            case Some(dbEntry) => Instrument(dbEntry.id, dbEntry.name.getOrElse(""))
-            case None => Instrument()
-          }
-        }
-      case None =>
-        Instrument()
-    }
-  }
-
-  private def getSource(idOption: Option[Id]): Source = {
-    idOption match {
-      case Some(id) =>
-        database.read[DbSource](List(id), sourcesPath) match {
-          case Left(_) => Source()
-          case Right(result) => result.headOption match {
-            case Some(dbEntry) => Source(
-              id = dbEntry.id,
-              sourceType = getSourceType(dbEntry.typeId),
-              signature = dbEntry.signature.getOrElse("")
-            )
-            case None => Source()
-          }
-        }
-      case None =>
-        Source()
-    }
-  }
-
-  private def getSourceType(idOption: Option[Id]): SourceType = {
-    idOption match {
-      case Some(id) =>
-        database.read[DbSourceType](List(id), sourceTypesPath) match {
-          case Left(_) => SourceType()
-          case Right(result) => result.headOption match {
-            case Some(dbEntry) => SourceType(
-              id = dbEntry.id,
-              name = dbEntry.name.getOrElse("")
-            )
-            case None => SourceType()
-          }
-        }
-      case None =>
-        SourceType()
-    }
-  }
-
-  private def getEthnographicRegion(idOption: Option[Id]): EthnographicRegion = {
-    idOption match {
-      case Some(id) =>
-        database.read[DbEthnographicRegion](List(id), ethnographicRegionsPath) match {
-          case Left(_) => EthnographicRegion()
-          case Right(result) => result.headOption match {
-            case Some(dbEntry) => EthnographicRegion(
-              id = dbEntry.id,
-              name = dbEntry.name.getOrElse("")
-            )
-            case None => EthnographicRegion()
-          }
-        }
-      case None =>
-        EthnographicRegion()
     }
   }
 
