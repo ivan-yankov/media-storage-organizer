@@ -27,6 +27,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
 
   private def updateCache(): Unit = dbCache = DatabaseCache(database)
 
+  updateCache()
   database.setOnChange(updateCache)
 
   implicit class StringOption(x: String) {

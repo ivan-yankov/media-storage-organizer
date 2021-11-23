@@ -5,14 +5,16 @@ import java.time.Duration
 object DurationConverter {
   private val separator = ':'
   private val hhMMss = "%02d" + separator + "%02d" + separator + "%02d"
+  private val hMMss = "%d" + separator + "%02d" + separator + "%02d"
   private val minutesInHour = 60
   private val secondsInMinute = 60
   private val secondsInHour = 60 * secondsInMinute
   private val millisInSecond = 1000
 
   def toHourMinSecString(duration: Duration, trimLeadingZeros: Boolean = false): String = {
-    val str = hhMMss.format(duration.toHours, toMinutesPart(duration), toSecondsPart(duration))
-    if (trimLeadingZeros) str.foldLeft("")((acc, c) => if (acc.isEmpty && (c == '0' || c == separator)) acc else acc + c.toString)
+    val f = if (trimLeadingZeros) hMMss else hhMMss
+    val str = f.format(duration.toHours, toMinutesPart(duration), toSecondsPart(duration))
+    if (trimLeadingZeros && duration.toHours == 0) str.substring(str.indexOf(separator) + 1)
     else str
   }
 
