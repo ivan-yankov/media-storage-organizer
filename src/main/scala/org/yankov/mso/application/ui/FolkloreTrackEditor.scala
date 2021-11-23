@@ -136,7 +136,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
   private def handleCancel(): Unit = stage.close()
 
   private def getDuration: Duration = {
-    if (fileSelector.getFile.isDefined) Utils.calculateDuration(Option(fileSelector.getFile.get))
+    if (fileSelector.getFile.isDefined) UiUtils.calculateDuration(Option(fileSelector.getFile.get))
     else track.duration
   }
 }

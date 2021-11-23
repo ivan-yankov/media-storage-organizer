@@ -2,7 +2,7 @@ package org.yankov.mso.application.ui.controls
 
 import java.io.File
 
-import org.yankov.mso.application.ui.Utils
+import org.yankov.mso.application.ui.UiUtils
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.layout.{HBox, Pane, Priority, VBox}
 
@@ -23,7 +23,7 @@ case class FileSelector(labelText: String) {
     val button = new Button {
       text = "..."
       onAction = _ => {
-        val selection = Utils.selectFlacFiles(true)
+        val selection = UiUtils.selectFlacFiles(true)
         if (selection.isDefined) {
           file = {
             if (selection.isDefined && selection.nonEmpty) Option(selection.get.head)

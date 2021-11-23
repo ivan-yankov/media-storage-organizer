@@ -1,587 +1,286 @@
 package org.yankov.mso.application.model
 
-import java.io.File
-import java.nio.file.{Files, Paths}
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.DurationConverter
-import org.yankov.mso.application.database.DbUtils._
-import org.yankov.mso.application.database.SqlModel._
-import org.yankov.mso.application.database._
+import org.yankov.mso.application.database.{Database, DatabaseCache}
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.model.SqlFunctions._
-import org.yankov.mso.application.search.{SearchIndexes, SearchIndexesInstance}
+import org.yankov.mso.application.{FileUtils, Id, Resources}
 
-case class DataManager(dbConnectionString: String,
-                       mediaDir: String,
-                       dbCache: DatabaseCache,
-                       sqlInsert: SqlInsert = DatabaseManager.insert,
-                       sqlUpdate: SqlUpdate = DatabaseManager.update,
-                       sqlDelete: SqlDelete = DatabaseManager.delete,
-                       readRecord: File => Array[Byte] = x => Files.readAllBytes(x.toPath),
-                       writeRecord: (File, Array[Byte]) => Unit = (x, y) => Files.write(x.toPath, y),
-                       deleteRecord: File => Unit = x => Files.deleteIfExists(x.toPath)) {
-  refreshCacheAndIndex()
+import java.io.File
+import java.nio.file.{Path, Paths}
+import java.util.UUID
 
+case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) {
   private val log = LoggerFactory.getLogger(getClass)
-  private val equal = "="
 
-  def insertTracks(tracks: List[FolkloreTrack], onTrackInserted: (FolkloreTrack, Boolean) => Unit): Boolean = {
-    def insertTrack(track: FolkloreTrack): Boolean = {
-      val trackId = dbCache.getNextTrackId
-      connect(dbConnectionString) match {
-        case Some(connection) =>
-          sqlInsert(
-            connection,
-            schema,
-            Tables.folkloreTrack,
-            Tables.folkloreTrackColumns,
-            List(
-              IntSqlValue(Option(trackId)),
-              VarcharSqlValue(Option(DurationConverter.toHourMinSecString(track.duration, withLeadingZero = true))),
-              VarcharSqlValue(asStringOption(track.note)),
-              VarcharSqlValue(asStringOption(track.title)),
-              IntSqlValue(asIdOption(track.accompanimentPerformer.id)),
-              IntSqlValue(asIdOption(track.arrangementAuthor.id)),
-              IntSqlValue(asIdOption(track.author.id)),
-              IntSqlValue(asIdOption(track.conductor.id)),
-              IntSqlValue(asIdOption(track.performer.id)),
-              IntSqlValue(asIdOption(track.soloist.id)),
-              IntSqlValue(asIdOption(track.source.id)),
-              IntSqlValue(asIdOption(track.ethnographicRegion.id))
-            )
-          ) match {
-            case Left(throwable) =>
-              log.error("Unable to insert track", throwable)
-              disconnect(connection)
-              false
-            case Right(_) =>
-              if (track.file.isDefined) writeRecord(storageFileName(trackId), readRecord(track.file.get))
-              refreshCacheAndIndex()
-              disconnect(connection)
-              true
-          }
-        case None =>
-          false
+  val metadataPath: Path = Paths.get(dbRootDir, "data")
+  val mediaPath: Path = Paths.get(dbRootDir, "media")
+  val artistsPath: Path = Paths.get(metadataPath.toString, "artists")
+  val instrumentsPath: Path = Paths.get(metadataPath.toString, "instruments")
+  val sourceTypesPath: Path = Paths.get(metadataPath.toString, "source-types")
+  val sourcesPath: Path = Paths.get(metadataPath.toString, "sources")
+  val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
+  val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
+
+  private var dbCache: DatabaseCache = _
+
+  private def updateCache(): Unit = dbCache = DatabaseCache(database)
+
+  updateCache()
+  database.setOnChange(updateCache)
+
+  implicit class StringOption(x: String) {
+    def asOption: Option[String] = if (x.nonEmpty) Option(x) else Option.empty
+  }
+
+  implicit class MapGet[T](x: Map[Id, T]) {
+    def getByOptionOrElse(maybeId: Option[Id], defaultValue: T): T = {
+      maybeId match {
+        case Some(id) => x.getOrElse(id, defaultValue)
+        case None => defaultValue
       }
     }
-
-    val result = tracks
-      .map(x => {
-        val r = insertTrack(x)
-        onTrackInserted(x, r)
-        r
-      })
-      .forall(x => x)
-
-    result
   }
 
-  def updateTracks(tracks: List[FolkloreTrack], onTrackUpdated: (FolkloreTrack, Boolean) => Unit): Boolean = {
-    def updateTrack(track: FolkloreTrack): Boolean = {
-      connect(dbConnectionString) match {
-        case Some(connection) =>
-          sqlUpdate(
-            connection,
-            schema,
-            Tables.folkloreTrack,
-            Tables.folkloreTrackColumns.filter(x => !x.equals(id)),
-            List(
-              VarcharSqlValue(Option(DurationConverter.toHourMinSecString(track.duration, withLeadingZero = true))),
-              VarcharSqlValue(asStringOption(track.note)),
-              VarcharSqlValue(asStringOption(track.title)),
-              IntSqlValue(asIdOption(track.accompanimentPerformer.id)),
-              IntSqlValue(asIdOption(track.arrangementAuthor.id)),
-              IntSqlValue(asIdOption(track.author.id)),
-              IntSqlValue(asIdOption(track.conductor.id)),
-              IntSqlValue(asIdOption(track.performer.id)),
-              IntSqlValue(asIdOption(track.soloist.id)),
-              IntSqlValue(asIdOption(track.source.id)),
-              IntSqlValue(asIdOption(track.ethnographicRegion.id))
-            ),
-            List(WhereClause(id, equal, IntSqlValue(asIdOption(track.id))))
-          ) match {
-            case Left(throwable) =>
-              log.error("Unable to update track", throwable)
-              disconnect(connection)
-              false
-            case Right(_) =>
-              if (track.file.isDefined) {
-                deleteRecord(storageFileName(track.id))
-                writeRecord(storageFileName(track.id), readRecord(track.file.get))
-              }
-              refreshCacheAndIndex()
-              disconnect(connection)
-              true
-          }
-        case None =>
-          false
-      }
+  implicit class FolkloreTrackAsDbFolkloreTrack(track: FolkloreTrack) {
+    def asDbEntry: DbFolkloreTrack = DbFolkloreTrack(
+      id = track.id,
+      duration = Option(DurationConverter.toHourMinSecString(track.duration)),
+      note = track.note.asOption,
+      title = track.title.asOption,
+      accompanimentPerformerId = track.accompanimentPerformer.id.asOption,
+      arrangementAuthorId = track.arrangementAuthor.id.asOption,
+      authorId = track.author.id.asOption,
+      conductorId = track.conductor.id.asOption,
+      performerId = track.performer.id.asOption,
+      soloistId = track.soloist.id.asOption,
+      sourceId = track.source.id.asOption,
+      ethnographicRegionId = track.ethnographicRegion.id.asOption
+    )
+  }
+
+  implicit class DbFolkloreTrackAsFolkloreTrack(track: DbFolkloreTrack) {
+    def asFolkloreTrack: FolkloreTrack = FolkloreTrack(
+      id = track.id,
+      title = track.title.getOrElse(""),
+      performer = dbCache.artists.getByOptionOrElse(track.performerId, Artist()),
+      accompanimentPerformer = dbCache.artists.getByOptionOrElse(track.accompanimentPerformerId, Artist()),
+      author = dbCache.artists.getByOptionOrElse(track.authorId, Artist()),
+      arrangementAuthor = dbCache.artists.getByOptionOrElse(track.arrangementAuthorId, Artist()),
+      conductor = dbCache.artists.getByOptionOrElse(track.conductorId, Artist()),
+      soloist = dbCache.artists.getByOptionOrElse(track.soloistId, Artist()),
+      duration = DurationConverter.fromString(track.duration.getOrElse("")),
+      note = track.note.getOrElse(""),
+      source = dbCache.sources.getByOptionOrElse(track.sourceId, Source()),
+      ethnographicRegion = dbCache.ethnographicRegions.getByOptionOrElse(track.ethnographicRegionId, EthnographicRegion())
+    )
+  }
+
+  implicit class ArtistAsDbArtist(artist: Artist) {
+    def asDbEntry: DbArtist = {
+      val missions = artist.missions.map(x => DataModel.artistMissionToString(x))
+      DbArtist(
+        id = artist.id,
+        name = artist.name.asOption,
+        note = artist.note.asOption,
+        instrumentId = artist.instrument.id.asOption,
+        missions = if (missions.nonEmpty) Option(missions) else Option.empty
+      )
     }
-
-    val result = tracks
-      .map(x => {
-        val r = updateTrack(x)
-        onTrackUpdated(x, r)
-        r
-      })
-      .forall(x => x)
-
-    result
   }
 
-  def getTracks: List[FolkloreTrack] = {
-    dbCache
-      .getCache
-      .folkloreTracks
-      .map(x => FolkloreTrack(
-        id = x.id,
-        title = x.title.getOrElse(""),
-        performer = getArtist(x.performerId),
-        accompanimentPerformer = getArtist(x.accompanimentPerformerId),
-        author = getArtist(x.authorId),
-        arrangementAuthor = getArtist(x.arrangementAuthorId),
-        conductor = getArtist(x.conductorId),
-        soloist = getArtist(x.soloistId),
-        duration = DurationConverter.fromString(x.duration.getOrElse("")),
-        note = x.note.getOrElse(""),
-        source = getSource(x.sourceId),
-        ethnographicRegion = getEthnographicRegion(x.ethnographicRegionId)
-      ))
+  implicit class DbArtisAsArtist(dbArtist: DbArtist) {
+    def asArtist: Artist = Artist(
+      id = dbArtist.id,
+      name = dbArtist.name.getOrElse(""),
+      instrument = dbCache.instruments.getByOptionOrElse(dbArtist.instrumentId, Instrument()),
+      note = dbArtist.note.getOrElse(""),
+      missions = dbArtist.missions.getOrElse(List[String]()).map(x => DataModel.artistMissionFromString(x))
+    )
   }
+
+  def insertTracks(tracks: List[FolkloreTrack], insertRecord: (Id, File) => Boolean = putRecord): Boolean = {
+    val tracksWithIds = tracks.map(
+      x => {
+        val id = if (isValidId(x.id)) x.id else generateId
+        x.withId(id)
+      }
+    )
+    database.insert(tracksWithIds.map(x => x.asDbEntry), tracksPath) match {
+      case Left(e) =>
+        log.error(e)
+        false
+      case Right(_) =>
+        tracksWithIds.filter(x => x.file.isDefined).map(x => insertRecord(x.id, x.file.get)).forall(x => x)
+    }
+  }
+
+  def updateTracks(tracks: List[FolkloreTrack], updateRecord: (Id, File) => Boolean = putRecord): Boolean = {
+    database.update(tracks.map(x => x.asDbEntry), tracksPath) match {
+      case Left(e) =>
+        log.error(e)
+        false
+      case Right(updated) =>
+        if (updated.size == tracks.size) {
+          updated
+            .map(x => tracks.find(y => y.id.equals(x)).get)
+            .filter(x => x.file.isDefined)
+            .map(x => updateRecord(x.id, x.file.get))
+            .forall(x => x)
+        }
+        else false
+    }
+  }
+
+  def getTracks: List[FolkloreTrack] = dbCache.tracks.values.toList
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlDelete(
-          connection,
-          schema,
-          Tables.folkloreTrack,
-          List(WhereClause(id, equal, IntSqlValue(Option(track.id))))
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to delete track", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            deleteRecord(storageFileName(track.id))
-            refreshCacheAndIndex()
-            disconnect(connection)
-            true
-        }
-      case None =>
+    database.delete[DbFolkloreTrack](List(track.id), tracksPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(number) =>
+        number == 1
     }
   }
 
-  def getSourceTypes: List[SourceType] = {
-    dbCache
-      .getCache
-      .sourceTypes
-      .map(x => SourceType(id = x.id, name = x.name.getOrElse("")))
-  }
+  def getSourceTypes: List[SourceType] = dbCache.sourceTypes.values.toList
 
   def insertEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlInsert(
-          connection,
-          schema,
-          Tables.ethnographicRegion,
-          Tables.ethnographicRegionColumns,
-          List(
-            IntSqlValue(Option(dbCache.getNextEthnographicRegionId)),
-            VarcharSqlValue(asStringOption(ethnographicRegion.name))
-          )
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to insert ethnographic region", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            refreshCacheAndIndex()
-            true
-        }
-      case None =>
+    val id = if (isValidId(ethnographicRegion.id)) ethnographicRegion.id else generateId
+    val dbEntry = DbEthnographicRegion(id, ethnographicRegion.name.asOption)
+    database.insert(List(dbEntry), ethnographicRegionsPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(_) =>
+        true
     }
   }
 
   def updateEthnographicRegion(ethnographicRegion: EthnographicRegion): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlUpdate(
-          connection,
-          schema,
-          Tables.ethnographicRegion,
-          Tables.ethnographicRegionColumns.filter(x => !x.equals(id)),
-          List(VarcharSqlValue(asStringOption(ethnographicRegion.name))),
-          List(WhereClause(id, equal, IntSqlValue(asIdOption(ethnographicRegion.id))))
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to update ethnographic region", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            refreshCacheAndIndex()
-            true
-        }
-      case None =>
+    val dbEntry = DbEthnographicRegion(ethnographicRegion.id, ethnographicRegion.name.asOption)
+    database.update(List(dbEntry), ethnographicRegionsPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(updated) =>
+        updated.size == 1
     }
   }
 
-  def getEthnographicRegions: List[EthnographicRegion] = {
-    dbCache
-      .getCache
-      .ethnographicRegions
-      .map(x => EthnographicRegion(id = x.id, name = x.name.getOrElse("")))
-  }
+  def getEthnographicRegions: List[EthnographicRegion] = dbCache.ethnographicRegions.values.toList
 
   def insertSource(source: Source): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlInsert(
-          connection,
-          schema,
-          Tables.source,
-          Tables.sourceColumns,
-          List(
-            IntSqlValue(Option(dbCache.getNextSourceId)),
-            VarcharSqlValue(asStringOption(source.signature)),
-            IntSqlValue(asIdOption(source.sourceType.id))
-          )
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to insert artist", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            refreshCacheAndIndex()
-            true
-        }
-      case None =>
+    val id = if (isValidId(source.id)) source.id else generateId
+    val dbEntry = DbSource(id, source.signature.asOption, asIdOption(source.sourceType.id))
+    database.insert(List(dbEntry), sourcesPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(_) =>
+        true
     }
   }
 
   def updateSource(source: Source): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlUpdate(
-          connection,
-          schema,
-          Tables.source,
-          Tables.sourceColumns.filter(x => !x.equals(id)),
-          List(VarcharSqlValue(asStringOption(source.signature)), IntSqlValue(asIdOption(source.sourceType.id))),
-          List(WhereClause(id, equal, IntSqlValue(asIdOption(source.id))))
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to update source", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            refreshCacheAndIndex()
-            true
-        }
-      case None =>
+    val dbEntry = DbSource(source.id, source.signature.asOption, asIdOption(source.sourceType.id))
+    database.update(List(dbEntry), sourcesPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(updated) =>
+        updated.size == 1
     }
   }
 
-  def getSources: List[Source] = {
-    dbCache
-      .getCache
-      .sources
-      .map(x => Source(id = x.id, sourceType = getSourceType(x.typeId), signature = x.signature.getOrElse("")))
+  def getSources: List[Source] = dbCache.sources.values.toList
+
+  def insertSourceType(sourceType: SourceType): Boolean = {
+    val id = if (isValidId(sourceType.id)) sourceType.id else generateId
+    val dbEntry = DbSourceType(id, sourceType.name.asOption)
+    database.insert(List(dbEntry), sourceTypesPath) match {
+      case Left(e) =>
+        log.error(e)
+        false
+      case Right(_) =>
+        true
+    }
   }
 
   def insertInstrument(instrument: Instrument): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlInsert(
-          connection,
-          schema,
-          Tables.instrument,
-          Tables.instrumentColumns,
-          List(
-            IntSqlValue(Option(dbCache.getNextInstrumentId)),
-            VarcharSqlValue(asStringOption(instrument.name))
-          )
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to insert instrument", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            refreshCacheAndIndex()
-            true
-        }
-      case None =>
+    val id = if (isValidId(instrument.id)) instrument.id else generateId
+    val dbEntry = DbInstrument(id, instrument.name.asOption)
+    database.insert(List(dbEntry), instrumentsPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(_) =>
+        true
     }
   }
 
   def updateInstrument(instrument: Instrument): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlUpdate(
-          connection,
-          schema,
-          Tables.instrument,
-          Tables.instrumentColumns.filter(x => !x.equals(id)),
-          List(VarcharSqlValue(asStringOption(instrument.name))),
-          List(WhereClause(id, equal, IntSqlValue(asIdOption(instrument.id))))
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to update instrument", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            disconnect(connection)
-            refreshCacheAndIndex()
-            true
-        }
-      case None =>
+    val dbEntry = DbInstrument(instrument.id, instrument.name.asOption)
+    database.update(List(dbEntry), instrumentsPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(updated) =>
+        updated.size == 1
     }
   }
 
-  def getInstruments: List[Instrument] = {
-    dbCache
-      .getCache
-      .instruments
-      .map(x => Instrument(id = x.id, name = x.name.getOrElse("")))
-  }
+  def getInstruments: List[Instrument] = dbCache.instruments.values.toList
 
   def insertArtist(artist: Artist): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        val artistId = dbCache.getNextArtistId
-        sqlInsert(
-          connection,
-          schema,
-          Tables.artist,
-          Tables.artistColumns,
-          List(
-            IntSqlValue(Option(artistId)),
-            VarcharSqlValue(asStringOption(artist.name)),
-            VarcharSqlValue(asStringOption(artist.note)),
-            IntSqlValue(asIdOption(artist.instrument.id))
-          )
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to insert artist", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            val result = artist
-              .missions
-              .map(x => DataModel.artistMissionToString(x))
-              .map(x =>
-                sqlInsert(
-                  connection,
-                  schema,
-                  Tables.artistMissions,
-                  Tables.artistMissionsColumns,
-                  List(IntSqlValue(Option(artistId)), VarcharSqlValue(asStringOption(x)))
-                )
-              )
-              .forall(x => x.isRight)
-            disconnect(connection)
-            refreshCacheAndIndex()
-            result
-        }
-      case None =>
+    val id = if (isValidId(artist.id)) artist.id else generateId
+    database.insert(List(artist.withId(id).asDbEntry), artistsPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(_) =>
+        true
     }
   }
 
   def updateArtist(artist: Artist): Boolean = {
-    connect(dbConnectionString) match {
-      case Some(connection) =>
-        sqlUpdate(
-          connection,
-          schema,
-          Tables.artist,
-          Tables.artistColumns.filter(x => !x.equals(id)),
-          List(
-            VarcharSqlValue(asStringOption(artist.name)),
-            VarcharSqlValue(asStringOption(artist.note)),
-            IntSqlValue(asIdOption(artist.instrument.id)),
-          ),
-          List(WhereClause(id, equal, IntSqlValue(asIdOption(artist.id))))
-        ) match {
-          case Left(throwable) =>
-            log.error("Unable to update instrument", throwable)
-            disconnect(connection)
-            false
-          case Right(_) =>
-            sqlDelete(
-              connection,
-              schema,
-              Tables.artistMissions,
-              List(WhereClause(Tables.artistId, equal, IntSqlValue(asIdOption(artist.id))))
-            )
-            val result = artist
-              .missions
-              .map(x => DataModel.artistMissionToString(x))
-              .map(x =>
-                sqlInsert(
-                  connection,
-                  schema,
-                  Tables.artistMissions,
-                  Tables.artistMissionsColumns,
-                  List(IntSqlValue(asIdOption(artist.id)), VarcharSqlValue(asStringOption(x)))
-                )
-              )
-              .forall(x => x.isRight)
-            disconnect(connection)
-            refreshCacheAndIndex()
-            result
-        }
-      case None =>
+    database.update(List(artist.asDbEntry), artistsPath) match {
+      case Left(e) =>
+        log.error(e)
         false
+      case Right(_) =>
+        true
     }
   }
 
-  def getArtists: List[Artist] = {
-    dbCache
-      .getCache
-      .artists
-      .map(x => extractArtist(x))
-  }
+  def getArtists: List[Artist] = dbCache.artists.values.toList
 
-  def getRecord(id: Int): Array[Byte] = {
-    if (isValidId(id)) readRecord(storageFileName(id))
+  def getRecord(id: Id): Array[Byte] = {
+    if (isValidId(id)) {
+      FileUtils.readBinaryFile(mediaFile(id)) match {
+        case Left(e) =>
+          log.error(e)
+          Array()
+        case Right(data) =>
+          data
+      }
+    }
     else Array()
   }
 
-  def storageFileName(trackId: Int): File =
-    Paths.get(mediaDir, trackId + Resources.Media.flacExtension).toFile
+  def mediaFile(trackId: Id): File = Paths.get(mediaPath.toString, trackId + Resources.Media.flacExtension).toFile
 
-  private def asStringOption(x: String): Option[String] = if (x.nonEmpty) Option(x) else Option.empty
-
-  private def getArtist(idOption: Option[Int]): Artist = {
-    idOption match {
-      case Some(id) =>
-        dbCache
-          .getCache
-          .artists
-          .find(x => x.id.equals(id)) match {
-          case Some(dbArtist) =>
-            extractArtist(dbArtist)
-          case None =>
-            Artist()
-        }
-      case None =>
-        Artist()
+  private def putRecord(id: Id, file: File): Boolean = {
+    FileUtils.readBinaryFile(file) match {
+      case Left(e) =>
+        log.error(e)
+        false
+      case Right(data) =>
+        FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
     }
   }
 
-  private def extractArtist(dbArtist: DbArtist): Artist = {
-    Artist(
-      id = dbArtist.id,
-      name = dbArtist.name.getOrElse(""),
-      instrument = getInstrument(dbArtist.instrumentId),
-      note = dbArtist.note.getOrElse(""),
-      missions = dbCache
-        .getCache
-        .artistMissions
-        .filter(x => x.artistId.equals(dbArtist.id))
-        .map(x => artistMissionFromString(x.missions.get))
-    )
-  }
-
-  private def getInstrument(idOption: Option[Int]): Instrument = {
-    idOption match {
-      case Some(id) =>
-        dbCache
-          .getCache
-          .instruments
-          .find(x => x.id.equals(id)) match {
-          case Some(dbInstrument) =>
-            Instrument(
-              id = dbInstrument.id,
-              name = dbInstrument.name.getOrElse("")
-            )
-          case None =>
-            Instrument()
-        }
-      case None =>
-        Instrument()
-    }
-  }
-
-  private def getSource(idOption: Option[Int]): Source = {
-    idOption match {
-      case Some(id) =>
-        dbCache
-          .getCache
-          .sources
-          .find(x => x.id.equals(id)) match {
-          case Some(dbSource) =>
-            Source(
-              id = dbSource.id,
-              sourceType = getSourceType(dbSource.typeId),
-              signature = dbSource.signature.getOrElse("")
-            )
-          case None =>
-            Source()
-        }
-      case None =>
-        Source()
-    }
-  }
-
-  private def getSourceType(idOption: Option[Int]): SourceType = {
-    idOption match {
-      case Some(id) =>
-        dbCache
-          .getCache
-          .sourceTypes
-          .find(x => x.id.equals(id)) match {
-          case Some(dbSourceType) =>
-            SourceType(
-              id = dbSourceType.id,
-              name = dbSourceType.name.getOrElse("")
-            )
-          case None =>
-            SourceType()
-        }
-      case None =>
-        SourceType()
-    }
-  }
-
-  private def getEthnographicRegion(idOption: Option[Int]): EthnographicRegion = {
-    idOption match {
-      case Some(id) =>
-        dbCache
-          .getCache
-          .ethnographicRegions
-          .find(x => x.id.equals(id)) match {
-          case Some(dbEthnographicRegion) =>
-            EthnographicRegion(
-              id = dbEthnographicRegion.id,
-              name = dbEthnographicRegion.name.getOrElse("")
-            )
-          case None =>
-            EthnographicRegion()
-        }
-      case None =>
-        EthnographicRegion()
-    }
-  }
-
-  private def refreshCacheAndIndex(): Unit = {
-    dbCache.refresh()
-    SearchIndexesInstance.setInstance(SearchIndexes(getTracks))
-  }
+  private def generateId: String = UUID.randomUUID().toString
 }

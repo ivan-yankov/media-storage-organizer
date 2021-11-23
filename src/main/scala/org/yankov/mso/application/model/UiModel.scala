@@ -29,7 +29,7 @@ object UiModel {
   }
 
   case class FolkloreTrackProperties(track: FolkloreTrack) {
-    def id: StringProperty = StringProperty(track.id.toString)
+    def id: StringProperty = StringProperty(track.id)
 
     def title: StringProperty = StringProperty(track.title)
 
@@ -45,7 +45,7 @@ object UiModel {
 
     def soloist: StringProperty = StringProperty(track.soloist.name)
 
-    def duration: StringProperty = StringProperty(DurationConverter.toMinSecString(track.duration))
+    def duration: StringProperty = StringProperty(DurationConverter.toHourMinSecString(track.duration, trimLeadingZeros = true))
 
     def source: StringProperty = StringProperty(StringConverters.sourceToString(track.source))
 

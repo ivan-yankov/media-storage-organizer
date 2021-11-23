@@ -1,11 +1,10 @@
 package org.yankov.mso.application.ui.controls
 
-import org.yankov.mso.application.Resources
 import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
 import org.yankov.mso.application.ui.FolkloreTrackEditor
 import org.yankov.mso.application.ui.controls.FontModel.{CustomFont, NormalStyle, NormalWeight, SansSerif}
+import org.yankov.mso.application.{MergeTrack, Resources}
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
 import scalafx.scene.control._
 import scalafx.scene.layout.{Pane, StackPane}
 
@@ -15,7 +14,8 @@ case class FolkloreTrackTable(inputTable: Boolean) {
   private val table: TableView[FolkloreTrackProperties] = {
     val t = new TableView[FolkloreTrackProperties] {
       editable = false
-      selectionModel.value.setSelectionMode(if (inputTable) SelectionMode.Single else SelectionMode.Multiple)
+      selectionModel.value.setSelectionMode(SelectionMode.Multiple)
+      selectionModel.value.setCellSelectionEnabled(true)
 
       createTableColumns.foreach(x => columns.add(x))
       columns.foreach(x => x.setStyle(tableFont.cssRepresentation))
@@ -26,6 +26,19 @@ case class FolkloreTrackTable(inputTable: Boolean) {
         onMouseClicked = event =>
           if (event.getClickCount == 2) FolkloreTrackEditor(table, table.getSelectionModel.getSelectedIndex).open()
       }
+
+      userData = Map[Int, MergeTrack](
+        1 -> ((src, dest) => dest.copy(performer = src.performer)),
+        2 -> ((src, dest) => dest.copy(accompanimentPerformer = src.accompanimentPerformer)),
+        3 -> ((src, dest) => dest.copy(arrangementAuthor = src.arrangementAuthor)),
+        4 -> ((src, dest) => dest.copy(conductor = src.conductor)),
+        5 -> ((src, dest) => dest.copy(author = src.author)),
+        6 -> ((src, dest) => dest.copy(soloist = src.soloist)),
+        8 -> ((src, dest) => dest.copy(source = src.source)),
+        9 -> ((src, dest) => dest.copy(ethnographicRegion = src.ethnographicRegion)),
+        10 -> ((src, dest) => dest.copy(note = src.note)),
+        11 -> ((src, dest) => dest.copy(source = src.source)),
+      )
     }
 
     setColumnSizes(t)

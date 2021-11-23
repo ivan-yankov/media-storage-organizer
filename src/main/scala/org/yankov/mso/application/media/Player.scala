@@ -1,7 +1,7 @@
 package org.yankov.mso.application.media
 
 import org.yankov.mso.application.Main.getApplicationArgument
-import org.yankov.mso.application.Resources
+import org.yankov.mso.application.{Id, Resources}
 import org.yankov.mso.application.media.decode.FlacDecoder
 import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 
@@ -11,7 +11,7 @@ import java.nio.file.Files
 object Player {
   private var player: FolkloreTrackMediaPlayer = _
 
-  def play(track: FolkloreTrack, storageFileName: Int => File): Unit = {
+  def play(track: FolkloreTrack, storageFileName: Id => File): Unit = {
     val port = getApplicationArgument(
       Resources.ApplicationArgumentKeys.mediaServerPort,
       Resources.ApplicationArgumentValues.mediaServerPort,
