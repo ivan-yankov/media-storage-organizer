@@ -57,7 +57,7 @@ case class FakeDatabase() extends Database {
     insertResult
   }
 
-  override def read[T](keys: List[Id], path: Path, inputStream: Path => InputStream)
+  override def read[T <: DbEntry](keys: List[Id], path: Path, inputStream: Path => InputStream)
                       (implicit decoder: Decoder[T]): Either[String, List[T]] = {
     readKeys = keys
     readPath = path
@@ -68,13 +68,14 @@ case class FakeDatabase() extends Database {
   }
 
   override def update[T <: DbEntry](entries: List[T], path: Path, inputStream: Path => InputStream)
-                                   (implicit encoder: Encoder[T]): Either[String, List[Id]] = {
+                                   (implicit encoder: Encoder[T], decoder: Decoder[T]): Either[String, List[Id]] = {
     updateEntries = entries
     updatePath = path
     updateResult
   }
 
-  override def delete(keys: List[Id], path: Path): Either[String, Int] = {
+  override def delete[T <: DbEntry](keys: List[Id], path: Path)
+                                   (implicit decoder: Decoder[T]): Either[String, Int] = {
     deleteKeys = keys
     deletePath = path
     deleteResult
