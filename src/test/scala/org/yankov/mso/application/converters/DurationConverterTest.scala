@@ -13,7 +13,7 @@ class DurationConverterTest extends FreeSpec with Matchers {
 
     "without leading zeros" in {
       DurationConverter.toHourMinSecString(Duration.ofSeconds(3850), trimLeadingZeros = true) shouldBe "1:04:10"
-      DurationConverter.toHourMinSecString(Duration.ofSeconds(300), trimLeadingZeros = true) shouldBe "5:00"
+      DurationConverter.toHourMinSecString(Duration.ofSeconds(300), trimLeadingZeros = true) shouldBe "05:00"
     }
   }
 
