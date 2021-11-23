@@ -135,7 +135,7 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
   def getTracks: List[FolkloreTrack] = dbCache.tracks.values.toList
 
   def deleteTrack(track: FolkloreTrack): Boolean = {
-    database.delete(List(track.id), tracksPath) match {
+    database.delete[DbFolkloreTrack](List(track.id), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
