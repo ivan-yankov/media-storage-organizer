@@ -1,14 +1,12 @@
 package org.yankov.mso.application
 
-import java.time.Duration
-
 import org.yankov.mso.application.converters.DurationConverter
 
-object Resources {
+import java.time.Duration
 
+object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
-    val mediaDir: String = "--media-dir"
     val mediaServerPort: String = "--media-server-port"
     val findDuplicates: String = "--find-duplicates"
   }
@@ -46,7 +44,7 @@ object Resources {
     val areYouSure: String = "Сигурни ли сте?"
     val yes: String = "Да"
     val no: String = "Не"
-    def deleteTrackFromDatabase(id: Int): String = s"Запис с идентификатор [$id] ще бъде изтрит от базата данни."
+    val deleteTrackFromDatabase: String = "Избраният запис ще бъде изтрит от базата данни."
   }
 
   object ToolbarButtons {
@@ -83,18 +81,14 @@ object Resources {
   }
 
   object ConsoleMessages {
-    val uploadStarted: String = "Обновяване на база данни - начало"
-    val uploadSuccessful: String = "Обновяване на база данни - край"
+    val uploadStarted: String = "Начало на транзакция за обновяване на база данни"
+    val uploadSuccessful: String = "Успешно обновяване на база данни"
     val uploadFailed: String = "Неуспешно обновяване на база данни"
     val unableWriteFile: String = "Неуспешен експорт на файл"
     val exportStarted: String = "Експорт на файлове - начало"
     val exportCompleted: String = "Експорт на файлове - край"
-    def insertTrackSuccessful(title: String): String = s"Успешно добавяне на запис [$title]"
-    def insertTrackFailed(title: String): String = s"Грешка при добавяне на запис [$title]"
-    def updateTrackSuccessful(title: String): String = s"Успешно обновяване на запис [$title]"
-    def updateTrackFailed(title: String): String = s"Грешка при обновяване на запис [$title]"
-    def deleteTrackSuccessful(id: Int): String = s"Успешно изтрит запис с идентификатор [$id]"
-    def deleteTrackFailed(id: Int): String = s"Грешка при изтриване на запис с идентификатор [$id]"
+    val deleteTrackSuccessful: String = "Успешно изтрит запис"
+    val deleteTrackFailed: String = "Грешка при изтриване на запис"
   }
 
   object Controls {
@@ -107,8 +101,9 @@ object Resources {
     val filter: String = "Филтър"
     val value: String = "Стойност"
     val search: String = "Търсене"
+
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
-      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration, withLeadingZero = false)}"
+      s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
   }
 
   object TrackEditor {
@@ -159,7 +154,7 @@ object Resources {
     val ensemble: String = "Ансамбъл"
     val chamberGroup: String = "Камерна група"
     val artistNameUndefined: String = "Не е въведено име на артист"
-    val artistInstrumentUndefined: String ="Избрана е роля 'инструменталист', но не е посочен инструмент"
+    val artistInstrumentUndefined: String = "Избрана е роля 'инструменталист', но не е посочен инструмент"
     val noArtistMissionSelected: String = "Не е избрана нито една роля"
   }
 
@@ -188,11 +183,9 @@ object Resources {
   }
 
   object Filters {
-    val fuzzySearchLabel: String = "Гъвкаво търсене"
     val equalsLabel: String = "Идентично"
     val notEqualsLabel: String = "Различно"
     val containsLabel: String = "Съдържа"
     val notContainsLabel: String = "Не съдържа"
   }
-
 }

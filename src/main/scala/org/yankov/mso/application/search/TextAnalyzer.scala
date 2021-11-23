@@ -1,11 +1,6 @@
 package org.yankov.mso.application.search
 
-import org.yankov.mso.application.IOUtils
-
-import java.io.{BufferedReader, FileInputStream, InputStreamReader}
-import java.nio.file.{Files, Paths}
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
 
 object TextAnalyzer {
 
@@ -28,20 +23,11 @@ object TextAnalyzer {
     }
   }
 
-  private val stopWordsBg = IOUtils.readTextFile("/stop-words-bg.txt")
-
   def analyze(string: String): String = {
     string
       .normalize()
       .removePunctuation()
       .trim
-  }
-
-  def indexAnalyze(string: String): List[String] = {
-    analyze(string)
-      .split(" ")
-      .toList
-      .filterNot(x => stopWordsBg.contains(x))
   }
 
   def levenshteinDistance(s1: String, s2: String): Int = {

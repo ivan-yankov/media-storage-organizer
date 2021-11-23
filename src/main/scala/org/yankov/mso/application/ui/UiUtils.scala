@@ -11,14 +11,14 @@ import scalafx.stage.{DirectoryChooser, FileChooser}
 
 import scala.collection.JavaConverters._
 
-object Utils {
+object UiUtils {
   private val log = LoggerFactory.getLogger(getClass)
 
   def confirmCloseApplication: Boolean = confirmDialog(Resources.Dialogs.closeApplication)
 
   def confirmOverwrite: Boolean = confirmDialog(Resources.Dialogs.overwriteRecordsInDatabase)
 
-  def confirmDeleteFromDatabase(id: Int): Boolean = confirmDialog(Resources.Dialogs.deleteTrackFromDatabase(id))
+  def confirmDeleteFromDatabase: Boolean = confirmDialog(Resources.Dialogs.deleteTrackFromDatabase)
 
   def selectDirectory: Option[File] = {
     val directoryChooser = new DirectoryChooser()

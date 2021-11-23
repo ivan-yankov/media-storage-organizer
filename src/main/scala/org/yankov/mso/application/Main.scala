@@ -1,14 +1,15 @@
 package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.database._
+import org.yankov.mso.application.converters.StringConverters.sourceToString
+import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.MediaServer
+import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
-import org.yankov.mso.application.model.{DataManager, DatabaseCache}
+import org.yankov.mso.application.search.SearchEngine
 import org.yankov.mso.application.search.SearchModel.SearchParameters
-import org.yankov.mso.application.search.{SearchEngine, TextAnalyzer}
-import org.yankov.mso.application.ui.Utils
+import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, FolkloreTrackTable, SearchFilterControls}
@@ -30,7 +31,7 @@ object Main extends JFXApp {
     y = ApplicationSettings.getY
 
     onCloseRequest = event => {
-      if (Utils.confirmCloseApplication) {
+      if (UiUtils.confirmCloseApplication) {
         MediaServer.stop()
       }
       else event.consume()
@@ -66,7 +67,7 @@ object Main extends JFXApp {
         val items = value.split("=")
         if (items.length == 2) items(1)
         else {
-          log.error(s"Value for application argument [$argument] no found.")
+          log.error(s"Value for application argument [$argument] not found.")
           defaultValue
         }
       case None =>
@@ -76,25 +77,12 @@ object Main extends JFXApp {
   }
 
   private def onStart(): Unit = {
-    getApplicationArgument(Resources.ApplicationArgumentKeys.findDuplicates, required = false) match {
-      case Resources.ApplicationArgumentValues.findDuplicatesExact =>
-        setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer + "|" + x.duration.getSeconds.toString))
-      case Resources.ApplicationArgumentValues.findDuplicatesTitlePerformer =>
-        setOutput(findDuplicates(x => TextAnalyzer.analyze(x.title) + "|" + x.performer))
-      case _ => ()
-    }
-
     new Thread(() => MediaServer.start()).start()
   }
 
   private def createDataManager: DataManager = {
-    System.setSecurityManager(null)
-    Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
-
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-    val mediaDir = getApplicationArgument(Resources.ApplicationArgumentKeys.mediaDir)
-    val connectionString = ConnectionStringFactory.createDerbyConnectionString(DirectoryDatabaseProtocol, dbDir, Map())
-    DataManager(connectionString, mediaDir, DatabaseCache(connectionString))
+    DataManager(dbDir, RealDatabase(), doIndex = true)
   }
 
   private def tabPane: TabPane = {
@@ -153,26 +141,18 @@ object Main extends JFXApp {
       x => x.duration
     )
     searchTable.getValue.getItems.clear()
-    tracks.foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
+    val groupedTracks = tracks
+      .groupBy(x => x.source)
+      .map(x => (x._1, x._2.sortBy(y => y.performer.name)))
+
+    groupedTracks
+      .keys
+      .toList
+      .sortBy(x => sourceToString(x))
+      .flatMap(x => groupedTracks(x))
+      .foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
 
     val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)
     ApplicationConsole.writeMessageWithTimestamp(message)
-  }
-
-  private def findDuplicates(key: FolkloreTrack => String): List[FolkloreTrack] = {
-    dataManager
-      .getTracks
-      .groupBy(x => key(x))
-      .filter(x => x._2.size > 1)
-      .values
-      .toList
-      .flatten
-  }
-
-  private def setOutput(items: List[FolkloreTrack]): Unit = {
-    searchTable.getValue.getItems.clear()
-    items
-      .map(x => FolkloreTrackProperties(x))
-      .foreach(x => searchTable.getValue.getItems.add(x))
   }
 }

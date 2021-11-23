@@ -1,106 +1,50 @@
 package org.yankov.mso.application.model
 
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import org.yankov.mso.application.Id
+
 object DatabaseModel {
-
-  val schema: String = "ADMIN"
-  val id: String = "ID"
-
-  object Tables {
-    val artist: String = "ARTIST"
-    val artistMissions: String = "ARTIST_MISSIONS"
-    val sourceType: String = "SOURCE_TYPE"
-    val source: String = "SOURCE"
-    val instrument: String = "INSTRUMENT"
-    val ethnographicRegion: String = "ETHNOGRAPHIC_REGION"
-    val folkloreTrack: String = "FOLKLORE_TRACK"
-
-    val artistColumns: List[String] = List(
-      id,
-      "NAME",
-      "NOTE",
-      "INSTRUMENT_ID"
-    )
-
-    val artistId: String = "ARTIST_ID"
-    val artistMissionsColumns: List[String] = List(
-      artistId,
-      "MISSIONS"
-    )
-
-    val sourceTypeColumns: List[String] = List(
-      id,
-      "NAME"
-    )
-
-    val sourceColumns: List[String] = List(
-      id,
-      "SIGNATURE",
-      "TYPE_ID"
-    )
-
-    val instrumentColumns: List[String] = List(
-      id,
-      "NAME"
-    )
-
-    val ethnographicRegionColumns: List[String] = List(
-      id,
-      "NAME"
-    )
-
-    val folkloreTrackColumns: List[String] = List(
-      id,
-      "DURATION",
-      "NOTE",
-      "TITLE",
-      "ACCOMPANIMENTPERFORMER_ID",
-      "ARRANGEMENTAUTHOR_ID",
-      "AUTHOR_ID",
-      "CONDUCTOR_ID",
-      "PERFORMER_ID",
-      "SOLOIST_ID",
-      "SOURCE_ID",
-      "ETHNOGRAPHICREGION_ID"
-    )
+  trait DbEntry {
+    def id: Id
   }
 
-  object ArtistMissions {
-    val singer: String = "SINGER"
-    val instrumentPlayer: String = "INSTRUMENT_PLAYER"
-    val composer: String = "COMPOSER"
-    val conductor: String = "CONDUCTOR"
-    val orchestra: String = "ORCHESTRA"
-    val choir: String = "CHOIR"
-    val ensemble: String = "ENSEMBLE"
-    val chamberGroup: String = "CHAMBER_GROUP"
-  }
-
-  case class DbArtist(id: Int,
+  case class DbArtist(id: Id,
                       name: Option[String],
                       note: Option[String],
-                      instrumentId: Option[Int])
+                      instrumentId: Option[Id],
+                      missions: Option[List[String]]) extends DbEntry
+  implicit val dbArtistEncoder: Encoder[DbArtist] = deriveEncoder[DbArtist]
+  implicit val dbArtistDecoder: Decoder[DbArtist] = deriveDecoder[DbArtist]
 
-  case class DbArtistMissions(artistId: Int, missions: Option[String])
+  case class DbEthnographicRegion(id: Id, name: Option[String]) extends DbEntry
+  implicit val dbEthnographicRegionEncoder: Encoder[DbEthnographicRegion] = deriveEncoder[DbEthnographicRegion]
+  implicit val dbEthnographicRegionDecoder: Decoder[DbEthnographicRegion] = deriveDecoder[DbEthnographicRegion]
 
-  case class DbEthnographicRegion(id: Int, name: Option[String])
+  case class DbInstrument(id: Id, name: Option[String]) extends DbEntry
+  implicit val dbInstrumentEncoder: Encoder[DbInstrument] = deriveEncoder[DbInstrument]
+  implicit val dbInstrumentRegionDecoder: Decoder[DbInstrument] = deriveDecoder[DbInstrument]
 
-  case class DbInstrument(id: Int, name: Option[String])
+  case class DbSourceType(id: Id, name: Option[String]) extends DbEntry
+  implicit val dbSourceTypeEncoder: Encoder[DbSourceType] = deriveEncoder[DbSourceType]
+  implicit val dbSourceTypeDecoder: Decoder[DbSourceType] = deriveDecoder[DbSourceType]
 
-  case class DbSourceType(id: Int, name: Option[String])
+  case class DbSource(id: Id, signature: Option[String], typeId: Option[Id]) extends DbEntry
+  implicit val dbSourceEncoder: Encoder[DbSource] = deriveEncoder[DbSource]
+  implicit val dbSourceDecoder: Decoder[DbSource] = deriveDecoder[DbSource]
 
-  case class DbSource(id: Int, signature: Option[String], typeId: Option[Int])
-
-  case class DbFolkloreTrack(id: Int,
+  case class DbFolkloreTrack(id: Id,
                              duration: Option[String],
                              note: Option[String],
                              title: Option[String],
-                             accompanimentPerformerId: Option[Int],
-                             arrangementAuthorId: Option[Int],
-                             authorId: Option[Int],
-                             conductorId: Option[Int],
-                             performerId: Option[Int],
-                             soloistId: Option[Int],
-                             sourceId: Option[Int],
-                             ethnographicRegionId: Option[Int])
-
+                             accompanimentPerformerId: Option[Id],
+                             arrangementAuthorId: Option[Id],
+                             authorId: Option[Id],
+                             conductorId: Option[Id],
+                             performerId: Option[Id],
+                             soloistId: Option[Id],
+                             sourceId: Option[Id],
+                             ethnographicRegionId: Option[Id]) extends DbEntry
+  implicit val dbFolkloreTrackEncoder: Encoder[DbFolkloreTrack] = deriveEncoder[DbFolkloreTrack]
+  implicit val dbFolkloreTrackDecoder: Decoder[DbFolkloreTrack] = deriveDecoder[DbFolkloreTrack]
 }
