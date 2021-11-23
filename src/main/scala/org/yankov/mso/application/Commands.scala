@@ -74,37 +74,29 @@ object Commands {
       .map(x => table.getItems.set(x, withTitle(table.getItems.get(x), titles(x))))
   }
 
-  def applyProperties[T](table: TableView[T], applyPropertiesButton: Button, copiedProperties: Option[T], createProperties: Int => T): Unit = {
-    val selected = table.getSelectionModel.getSelectedIndices.asScala.toList
+  def applyProperties[T](table: TableView[T],
+                         applyPropertiesButton: Button,
+                         copiedProperties: Option[T],
+                         createProperties: (Int, Int) => T): Unit = {
+    val selectedRows = table.getSelectionModel.getSelectedIndices.asScala.toList
+    val selectedCell = getTableSelectedCell(table)
 
-    if (copiedProperties.isDefined && selected.nonEmpty) {
-      selected.foreach(x => table.getItems.set(x, createProperties(x)))
-
+    if (copiedProperties.isDefined && selectedRows.nonEmpty && selectedCell.isDefined) {
+      selectedRows.foreach(x => table.getItems.set(x, createProperties(x, selectedCell.get)))
       applyPropertiesButton.setDisable(true)
-
-      table.getSelectionModel.clearSelection()
-      table.getSelectionModel.setSelectionMode(SelectionMode.Single)
     }
   }
 
   def copyProperties[T](table: TableView[T], applyPropertiesButton: Button): Option[T] = {
-    val index = getTableSelectedIndex(table)
-    if (index.isDefined) {
-      val copiedProperties = Option(
-        table
-          .items
-          .getValue
-          .get(index.get)
-      )
-
-      applyPropertiesButton.setDisable(false)
-
-      table.getSelectionModel.clearSelection()
-      table.getSelectionModel.setSelectionMode(SelectionMode.Multiple)
-
-      copiedProperties
+    getTableSelectedIndex(table) match {
+      case Some(index) =>
+        val copiedProperties = Option(table.items.getValue.get(index))
+        applyPropertiesButton.setDisable(false)
+        table.getSelectionModel.clearSelection()
+        copiedProperties
+      case None =>
+        Option.empty
     }
-    else Option.empty
   }
 
   def cloneItem[T](table: TableView[T], newItem: T => T): Unit = {
@@ -174,6 +166,12 @@ object Commands {
 
   private def getTableSelectedIndex(table: TableView[_]): Option[Int] = {
     val index = table.getSelectionModel.getSelectedIndex
+    if (index < 0) Option.empty
+    else Option(index)
+  }
+
+  private def getTableSelectedCell(table: TableView[_]): Option[Int] = {
+    val index = table.getFocusModel.getFocusedCell.getColumn
     if (index < 0) Option.empty
     else Option(index)
   }

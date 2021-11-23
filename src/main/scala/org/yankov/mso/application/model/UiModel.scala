@@ -29,7 +29,7 @@ object UiModel {
   }
 
   case class FolkloreTrackProperties(track: FolkloreTrack) {
-    def id: StringProperty = StringProperty(track.id.toString)
+    def id: StringProperty = StringProperty(track.id)
 
     def title: StringProperty = StringProperty(track.title)
 
