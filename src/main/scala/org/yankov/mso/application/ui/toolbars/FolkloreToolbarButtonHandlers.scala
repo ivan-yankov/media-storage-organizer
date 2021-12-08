@@ -142,10 +142,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   private def createOutputFileName(dir: File, track: FolkloreTrack): String = {
-    val fileName = (track.id + "_" + track.title + "_" + StringConverters.artistToString(track.performer))
+    val fileName = (track.id + " - " + track.title + " - " + StringConverters.artistToString(track.performer))
       .take(maxFileNameLength)
 
-    val fullFileName = dir.getAbsolutePath + fileName + File.separator + Resources.Media.flacExtension
+    val fullFileName = dir.getAbsolutePath + File.separator + fileName + Resources.Media.flacExtension
 
     fullFileName.replace("\"", "")
   }
