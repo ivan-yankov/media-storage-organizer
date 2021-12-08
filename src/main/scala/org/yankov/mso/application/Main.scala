@@ -1,6 +1,7 @@
 package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
+import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.converters.StringConverters.sourceToString
 import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.MediaServer
@@ -141,15 +142,8 @@ object Main extends JFXApp {
       x => x.duration
     )
     searchTable.getValue.getItems.clear()
-    val groupedTracks = tracks
-      .groupBy(x => x.source)
-      .map(x => (x._1, x._2.sortBy(y => y.performer.name)))
-
-    groupedTracks
-      .keys
-      .toList
-      .sortBy(x => sourceToString(x))
-      .flatMap(x => groupedTracks(x))
+    tracks
+      .sortBy(x => (StringConverters.sourceToString(x.source), x.note, x.title))
       .foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
 
     val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)
