@@ -3,6 +3,7 @@ package org.yankov.mso.application.model
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.{Database, DatabaseCache}
+import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.{FileUtils, Id, Resources}
@@ -11,24 +12,25 @@ import java.io.File
 import java.nio.file.{Path, Paths}
 import java.util.UUID
 
-case class DataManager(dbRootDir: String, database: Database) {
+case class DataManager(database: Database,
+                       dataPath: Path,
+                       mediaPath: Path,
+                       audioIndex: Option[AudioIndex]) {
   private val log = LoggerFactory.getLogger(getClass)
 
-  val metadataPath: Path = Paths.get(dbRootDir, "data")
-  val mediaPath: Path = Paths.get(dbRootDir, "media")
-  val artistsPath: Path = Paths.get(metadataPath.toString, "artists")
-  val instrumentsPath: Path = Paths.get(metadataPath.toString, "instruments")
-  val sourceTypesPath: Path = Paths.get(metadataPath.toString, "source-types")
-  val sourcesPath: Path = Paths.get(metadataPath.toString, "sources")
-  val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
-  val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
+  val artistsPath: Path = Paths.get(dataPath.toString, "artists")
+  val instrumentsPath: Path = Paths.get(dataPath.toString, "instruments")
+  val sourceTypesPath: Path = Paths.get(dataPath.toString, "source-types")
+  val sourcesPath: Path = Paths.get(dataPath.toString, "sources")
+  val ethnographicRegionsPath: Path = Paths.get(dataPath.toString, "ethnographic-regions")
+  val tracksPath: Path = Paths.get(dataPath.toString, "tracks")
 
   private var dbCache: DatabaseCache = _
 
   private def updateCache(): Unit = dbCache = DatabaseCache(database)
 
   updateCache()
-  database.setOnChange(updateCache)
+  database.setOnChange(() => updateCache())
 
   implicit class StringOption(x: String) {
     def asOption: Option[String] = if (x.nonEmpty) Option(x) else Option.empty
@@ -278,11 +280,16 @@ case class DataManager(dbRootDir: String, database: Database) {
         log.error(e)
         false
       case Right(data) =>
+        if (audioIndex.isDefined) {
+          audioIndex.get.remove(id)
+          audioIndex.get.add(id)
+        }
         FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
     }
   }
 
   private def deleteTrackFile(id: Id): Boolean = {
+    if (audioIndex.isDefined) audioIndex.get.remove(id)
     FileUtils.deleteFile(mediaFile(id))
   }
 
