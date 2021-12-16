@@ -60,7 +60,7 @@ class DataManagerTest extends FreeSpec with Matchers {
     def deleteRecord(id: Id): Boolean = files.remove(id)
   }
 
-  private def dataManager(db: Database): DataManager = DataManager(dbDir, db, doIndex = false)
+  private def dataManager(db: Database): DataManager = DataManager(dbDir, db)
 
   "insert" - {
     "artist" - {

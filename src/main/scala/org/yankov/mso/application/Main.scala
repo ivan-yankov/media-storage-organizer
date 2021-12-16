@@ -83,7 +83,7 @@ object Main extends JFXApp {
 
   private def createDataManager: DataManager = {
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-    DataManager(dbDir, RealDatabase(), doIndex = true)
+    DataManager(dbDir, RealDatabase())
   }
 
   private def tabPane: TabPane = {
