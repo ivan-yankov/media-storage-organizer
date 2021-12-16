@@ -10,7 +10,9 @@ case class AudioIndex(dataPath: Path) {
 
   val audioIndexPath: Path = Paths.get(dataPath.toString, "audio-index")
 
-  def buildIfNotExists(): Unit = ???
+  def buildIfNotExists(): Unit = {
+
+  }
 
   def add(id: Id): Boolean = {
     console.writeMessageWithTimestamp(Resources.ConsoleMessages.refreshAudioIndex)

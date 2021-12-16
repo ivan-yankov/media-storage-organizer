@@ -21,6 +21,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
 import java.nio.file.{Path, Paths}
+import java.time.Duration
 
 object Main extends JFXApp {
   stage = new PrimaryStage {
@@ -141,16 +142,22 @@ object Main extends JFXApp {
   }
 
   private def search(searchParameters: List[SearchParameters[FolkloreTrack]]): Unit = {
-    val (tracks, totalDuration) = SearchEngine.search[FolkloreTrack](
-      dataManager.getTracks,
-      searchParameters,
-      x => x.duration
-    )
-    searchTable.getValue.getItems.clear()
-    tracks
-      .sortBy(x => (StringConverters.sourceToString(x.source), x.note, x.title))
-      .foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
+    val tracks = {
+      if (searchParameters.forall(x => x.value.isBlank)) {
+        dataManager.getTracks
+      }
+      else {
+        SearchEngine.search[FolkloreTrack](
+          dataManager.getTracks,
+          searchParameters
+        ).sortBy(x => (StringConverters.sourceToString(x.source), x.note, x.title))
+      }
+    }
 
+    searchTable.getValue.getItems.clear()
+    tracks.foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
+
+    val totalDuration = tracks.map(x => x.duration).foldLeft(Duration.ZERO)((x, y) => x.plus(y))
     val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)
     ApplicationConsole.writeMessageWithTimestamp(message)
   }
