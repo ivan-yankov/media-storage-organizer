@@ -11,7 +11,7 @@ import java.io.File
 import java.nio.file.{Path, Paths}
 import java.util.UUID
 
-case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) {
+case class DataManager(dbRootDir: String, database: Database) {
   private val log = LoggerFactory.getLogger(getClass)
 
   val metadataPath: Path = Paths.get(dbRootDir, "data")

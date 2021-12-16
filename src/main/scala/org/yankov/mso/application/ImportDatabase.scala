@@ -16,7 +16,7 @@ object ImportDatabase {
 
   def main(args: Array[String]): Unit = {
     val dir = args(0)
-    val dataManager = DataManager(dir, RealDatabase(), doIndex = false)
+    val dataManager = DataManager(dir, RealDatabase())
 
     clear(Paths.get(dir, "data"))
 
