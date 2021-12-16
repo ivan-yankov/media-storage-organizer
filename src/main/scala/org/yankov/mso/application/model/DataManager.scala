@@ -135,13 +135,13 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
 
   def getTracks: List[FolkloreTrack] = dbCache.tracks.values.toList
 
-  def deleteTrack(track: FolkloreTrack): Boolean = {
+  def deleteTrack(track: FolkloreTrack, removeTrackFile: Id => Boolean = deleteTrackFile): Boolean = {
     database.delete[DbFolkloreTrack](List(track.id), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
       case Right(number) =>
-        number == 1
+        number == 1 && removeTrackFile(track.id)
     }
   }
 
@@ -282,5 +282,9 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  private def generateId: String = UUID.randomUUID().toString
+  private def deleteTrackFile(id: Id): Boolean = {
+    FileUtils.deleteFile(mediaFile(id))
+  }
+
+  private def generateId: String = UUID.randomUUID.toString
 }
