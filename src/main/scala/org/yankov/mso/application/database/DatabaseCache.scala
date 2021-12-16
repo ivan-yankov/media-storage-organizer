@@ -68,13 +68,13 @@ case class DatabaseCache(database: Database) {
     }
   }
 
-  lazy val tracks: Map[Id, FolkloreTrack] = {
+  lazy val tracks: List[FolkloreTrack] = {
     database.read[DbFolkloreTrack](List(), tracksPath) match {
       case Left(e) =>
         log.error(e)
-        Map()
+        List()
       case Right(result) =>
-        result.map(x => (x.id, x.asFolkloreTrack)).toMap
+        result.map(x => x.asFolkloreTrack)
     }
   }
 }

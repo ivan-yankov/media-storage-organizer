@@ -135,7 +135,7 @@ case class DataManager(database: Database,
     }
   }
 
-  def getTracks: List[FolkloreTrack] = dbCache.tracks.values.toList
+  def getTracks: List[FolkloreTrack] = dbCache.tracks
 
   def deleteTrack(track: FolkloreTrack, removeTrackFile: Id => Boolean = deleteTrackFile): Boolean = {
     database.delete[DbFolkloreTrack](List(track.id), tracksPath) match {
