@@ -2,9 +2,8 @@ package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.converters.StringConverters
-import org.yankov.mso.application.converters.StringConverters.sourceToString
 import org.yankov.mso.application.database.RealDatabase
-import org.yankov.mso.application.media.MediaServer
+import org.yankov.mso.application.media.{AudioIndex, MediaServer}
 import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
@@ -20,6 +19,8 @@ import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
+
+import java.nio.file.{Path, Paths}
 
 object Main extends JFXApp {
   stage = new PrimaryStage {
@@ -83,7 +84,11 @@ object Main extends JFXApp {
 
   private def createDataManager: DataManager = {
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-    DataManager(dbDir, RealDatabase())
+    val dataPath: Path = Paths.get(dbDir, "data")
+    val mediaPath: Path = Paths.get(dbDir, "media")
+    val audioIndex = AudioIndex(dataPath)
+    audioIndex.buildIfNotExists()
+    DataManager(RealDatabase(), dataPath, mediaPath, Some(audioIndex))
   }
 
   private def tabPane: TabPane = {

@@ -89,6 +89,7 @@ object Resources {
     val exportCompleted: String = "Експорт на файлове - край"
     val deleteTrackSuccessful: String = "Успешно изтрит запис"
     val deleteTrackFailed: String = "Грешка при изтриване на запис"
+    val refreshAudioIndex: String = "Обновяване на аудио индекс"
   }
 
   object Controls {

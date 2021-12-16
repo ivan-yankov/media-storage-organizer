@@ -3,6 +3,7 @@ package org.yankov.mso.application.model
 import org.scalatest.{FreeSpec, Matchers}
 import org.yankov.mso.application.Id
 import org.yankov.mso.application.database.{Database, FakeDatabase}
+import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 
@@ -60,7 +61,9 @@ class DataManagerTest extends FreeSpec with Matchers {
     def deleteRecord(id: Id): Boolean = files.remove(id)
   }
 
-  private def dataManager(db: Database): DataManager = DataManager(dbDir, db)
+  private def dataManager(db: Database): DataManager = {
+    DataManager(db, Paths.get("db-dir", "data"), Paths.get("db-dir", "media"), None)
+  }
 
   "insert" - {
     "artist" - {
