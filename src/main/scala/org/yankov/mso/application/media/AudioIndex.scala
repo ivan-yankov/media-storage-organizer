@@ -1,26 +1,21 @@
 package org.yankov.mso.application.media
 
-import org.yankov.mso.application.{Id, Resources}
-import org.yankov.mso.application.ui.console.ApplicationConsole
+import org.slf4j.LoggerFactory
+import org.yankov.mso.application.Id
+import org.yankov.mso.application.database.Database
+import org.yankov.mso.application.model.DatabasePaths
 
-import java.nio.file.{Path, Paths}
-
-case class AudioIndex(dataPath: Path) {
-  private val console = ApplicationConsole
-
-  val audioIndexPath: Path = Paths.get(dataPath.toString, "audio-index")
+case class AudioIndex(db: Database, databasePaths: DatabasePaths) {
+  private val log = LoggerFactory.getLogger(getClass)
 
   def buildIfNotExists(): Unit = {
-
   }
 
   def add(id: Id): Boolean = {
-    console.writeMessageWithTimestamp(Resources.ConsoleMessages.refreshAudioIndex)
     ???
   }
 
   def remove(id: Id): Boolean = {
-    console.writeMessageWithTimestamp(Resources.ConsoleMessages.refreshAudioIndex)
     ???
   }
 }

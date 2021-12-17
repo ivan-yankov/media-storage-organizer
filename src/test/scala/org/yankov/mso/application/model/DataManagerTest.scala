@@ -3,24 +3,23 @@ package org.yankov.mso.application.model
 import org.scalatest.{FreeSpec, Matchers}
 import org.yankov.mso.application.Id
 import org.yankov.mso.application.database.{Database, FakeDatabase}
-import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 
 import java.io.File
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 import java.time.Duration
 import scala.collection.JavaConverters._
 
 class DataManagerTest extends FreeSpec with Matchers {
-  private val dbDir = "db-dir"
+  private val dbPaths = DatabasePaths(Paths.get("db-dir"))
 
-  private val artistsPath = Paths.get(dbDir, "data", "artists")
-  private val sourcesPath = Paths.get(dbDir, "data", "sources")
-  private val sourceTypesPath = Paths.get(dbDir, "data", "source-types")
-  private val instrumentsPath = Paths.get(dbDir, "data", "instruments")
-  private val ethnographicRegionsPath = Paths.get(dbDir, "data", "ethnographic-regions")
-  private val tracksPath = Paths.get(dbDir, "data", "tracks")
+  private def artistsPath: Path = dbPaths.artists
+  private def instrumentsPath: Path = dbPaths.instruments
+  private def sourceTypesPath: Path = dbPaths.sourceTypes
+  private def sourcesPath: Path = dbPaths.sources
+  private def ethnographicRegionsPath: Path = dbPaths.ethnographicRegions
+  private def tracksPath: Path = dbPaths.tracks
 
   private val missions = List(
     Singer,
@@ -62,7 +61,7 @@ class DataManagerTest extends FreeSpec with Matchers {
   }
 
   private def dataManager(db: Database): DataManager = {
-    DataManager(db, Paths.get("db-dir", "data"), Paths.get("db-dir", "media"), None)
+    DataManager(db, dbPaths, None)
   }
 
   "insert" - {

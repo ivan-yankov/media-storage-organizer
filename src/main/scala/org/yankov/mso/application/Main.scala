@@ -4,9 +4,9 @@ import org.slf4j.LoggerFactory
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.{AudioIndex, MediaServer}
-import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
+import org.yankov.mso.application.model.{DataManager, DatabasePaths}
 import org.yankov.mso.application.search.SearchEngine
 import org.yankov.mso.application.search.SearchModel.SearchParameters
 import org.yankov.mso.application.ui.UiUtils
@@ -20,7 +20,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.Paths
 import java.time.Duration
 
 object Main extends JFXApp {
@@ -85,11 +85,11 @@ object Main extends JFXApp {
 
   private def createDataManager: DataManager = {
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-    val dataPath: Path = Paths.get(dbDir, "data")
-    val mediaPath: Path = Paths.get(dbDir, "media")
-    val audioIndex = AudioIndex(dataPath)
+    val dbPaths = DatabasePaths(Paths.get(dbDir))
+    val db = RealDatabase()
+    val audioIndex = AudioIndex(db, dbPaths)
     audioIndex.buildIfNotExists()
-    DataManager(RealDatabase(), dataPath, mediaPath, Some(audioIndex))
+    DataManager(db, dbPaths, Some(audioIndex))
   }
 
   private def tabPane: TabPane = {

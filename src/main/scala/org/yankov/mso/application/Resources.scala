@@ -8,12 +8,9 @@ object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaServerPort: String = "--media-server-port"
-    val findDuplicates: String = "--find-duplicates"
   }
 
   object ApplicationArgumentValues {
-    val findDuplicatesExact: String = "exact"
-    val findDuplicatesTitlePerformer: String = "title-performer"
     val mediaServerPort: String = "5432"
   }
 
@@ -89,7 +86,6 @@ object Resources {
     val exportCompleted: String = "Експорт на файлове - край"
     val deleteTrackSuccessful: String = "Успешно изтрит запис"
     val deleteTrackFailed: String = "Грешка при изтриване на запис"
-    val refreshAudioIndex: String = "Обновяване на аудио индекс"
   }
 
   object Controls {
