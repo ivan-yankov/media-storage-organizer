@@ -2,7 +2,7 @@ package org.yankov.mso.application
 
 import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.RealDatabase
-import org.yankov.mso.application.model.DataManager
+import org.yankov.mso.application.model.{DataManager, DatabasePaths}
 import org.yankov.mso.application.model.DataModel._
 
 import java.nio.charset.StandardCharsets
@@ -16,7 +16,7 @@ object ImportDatabase {
 
   def main(args: Array[String]): Unit = {
     val dir = args(0)
-    val dataManager = DataManager(RealDatabase(), Paths.get(dir, "data"), Paths.get(dir, "media"), None)
+    val dataManager = DataManager(RealDatabase(), DatabasePaths(Paths.get(dir)), None)
 
     clear(Paths.get(dir, "data"))
 

@@ -13,21 +13,21 @@ import java.nio.file.{Path, Paths}
 import java.util.UUID
 
 case class DataManager(database: Database,
-                       dataPath: Path,
-                       mediaPath: Path,
+                       databasePaths: DatabasePaths,
                        audioIndex: Option[AudioIndex]) {
   private val log = LoggerFactory.getLogger(getClass)
 
-  val artistsPath: Path = Paths.get(dataPath.toString, "artists")
-  val instrumentsPath: Path = Paths.get(dataPath.toString, "instruments")
-  val sourceTypesPath: Path = Paths.get(dataPath.toString, "source-types")
-  val sourcesPath: Path = Paths.get(dataPath.toString, "sources")
-  val ethnographicRegionsPath: Path = Paths.get(dataPath.toString, "ethnographic-regions")
-  val tracksPath: Path = Paths.get(dataPath.toString, "tracks")
+  private def artistsPath: Path = databasePaths.artists
+  private def instrumentsPath: Path = databasePaths.instruments
+  private def sourceTypesPath: Path = databasePaths.sourceTypes
+  private def sourcesPath: Path = databasePaths.sources
+  private def ethnographicRegionsPath: Path = databasePaths.ethnographicRegions
+  private def tracksPath: Path = databasePaths.tracks
+  private def mediaPath: Path = databasePaths.media
 
   private var dbCache: DatabaseCache = _
 
-  private def updateCache(): Unit = dbCache = DatabaseCache(database)
+  private def updateCache(): Unit = dbCache = DatabaseCache(database, databasePaths)
 
   updateCache()
   database.setOnChange(() => updateCache())
