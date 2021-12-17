@@ -6,10 +6,10 @@ import org.yankov.mso.application.database.{Database, DatabaseCache}
 import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.{FileUtils, Id, Resources}
+import org.yankov.mso.application.{FileUtils, Id}
 
 import java.io.File
-import java.nio.file.{Path, Paths}
+import java.nio.file.Path
 import java.util.UUID
 
 case class DataManager(database: Database,
@@ -272,8 +272,6 @@ case class DataManager(database: Database,
     else Array()
   }
 
-  def mediaFile(trackId: Id): File = Paths.get(mediaPath.toString, trackId + Resources.Media.flacExtension).toFile
-
   private def putRecord(id: Id, file: File): Boolean = {
     FileUtils.readBinaryFile(file) match {
       case Left(e) =>
@@ -292,6 +290,8 @@ case class DataManager(database: Database,
     if (audioIndex.isDefined) audioIndex.get.remove(id)
     FileUtils.deleteFile(mediaFile(id))
   }
+
+  private def mediaFile(id: Id): File = databasePaths.mediaFile(id)
 
   private def generateId: String = UUID.randomUUID.toString
 }

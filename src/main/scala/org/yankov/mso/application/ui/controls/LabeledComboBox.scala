@@ -128,8 +128,8 @@ case class LabeledComboBox[T](labelText: String,
   }
 
   private def handleKeyReleased(event: KeyEvent): Unit = {
-    if (event.getCode.equals(KeyCode.BACK_SPACE) && filterText.length() > 0) {
-      filterText.deleteCharAt(filterText.length() - 1)
+    if (event.getCode.equals(KeyCode.BACK_SPACE) && filterText.nonEmpty) {
+      filterText.deleteCharAt(filterText.length - 1)
       filterTextField.setText(filterText.toString)
       filterItems()
       showPopup()

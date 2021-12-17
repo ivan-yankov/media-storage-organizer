@@ -1,5 +1,8 @@
 package org.yankov.mso.application.model
 
+import org.yankov.mso.application.{Id, Resources}
+
+import java.io.File
 import java.nio.file.{Path, Paths}
 
 case class DatabasePaths(dbDir: Path) {
@@ -12,4 +15,6 @@ case class DatabasePaths(dbDir: Path) {
   val ethnographicRegions: Path = Paths.get(data.toString, "ethnographic-regions")
   val tracks: Path = Paths.get(data.toString, "tracks")
   val audioIndex: Path = Paths.get(data.toString, "audio-index")
+
+  def mediaFile(trackId: Id): File = Paths.get(media.toString, trackId + Resources.Media.flacExtension).toFile
 }

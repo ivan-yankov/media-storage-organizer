@@ -47,4 +47,8 @@ object DatabaseModel {
                              ethnographicRegionId: Option[Id]) extends DbEntry
   implicit val dbFolkloreTrackEncoder: Encoder[DbFolkloreTrack] = deriveEncoder[DbFolkloreTrack]
   implicit val dbFolkloreTrackDecoder: Decoder[DbFolkloreTrack] = deriveDecoder[DbFolkloreTrack]
+
+  case class DbAudioIndexItem(id: Id, hash: String, data: List[Long]) extends DbEntry
+  implicit val dbAudioIndexItemEncoder: Encoder[DbAudioIndexItem] = deriveEncoder[DbAudioIndexItem]
+  implicit val dbAudioIndexItemDecoder: Decoder[DbAudioIndexItem] = deriveDecoder[DbAudioIndexItem]
 }
