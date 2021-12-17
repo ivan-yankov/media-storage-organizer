@@ -17,3 +17,7 @@ sudo apt-get update
 sudo apt-get install sbt
 
 - Install IntelliJ or other IDE (optional)
+
+- Math library
+Uses math library which is currently not open source. It is build from another project and provided to this project's lib directory.
+Math library is build in the application jar and it is part of the deplyment, but not part of the code base.
