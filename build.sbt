@@ -2,7 +2,7 @@ name := "media-storage-organizer"
 
 version := "3.1"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.15"
 
 val scalaFxVersion = "8.0.144-R12"
 val slfVersion = "1.7.30"

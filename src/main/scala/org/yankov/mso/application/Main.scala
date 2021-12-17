@@ -88,7 +88,7 @@ object Main extends JFXApp {
     val dbPaths = DatabasePaths(Paths.get(dbDir))
     val db = RealDatabase()
     val audioIndex = AudioIndex(db, dbPaths)
-    audioIndex.buildIfNotExists()
+//    audioIndex.buildIfNotExists()
     DataManager(db, dbPaths, Some(audioIndex))
   }
 

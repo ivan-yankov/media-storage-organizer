@@ -2,7 +2,7 @@ package org.yankov.mso.application
 
 import org.scalatest._
 
-import java.io.File
+import java.nio.file.Paths
 
 class FileUtilsTest extends FreeSpec with Matchers {
   private val basePath = "/file-utils"
@@ -58,6 +58,38 @@ class FileUtilsTest extends FreeSpec with Matchers {
         FileUtils.writeTextFile(lines, file.toPath, append = true)
 
         TestHelpers.assertFilesEqual(file.toPath, path(fileName))
+      }
+    }
+  }
+
+  "file extensions" - {
+    val fileWithExtensionLong = Paths.get("some", "path", "to", "the", "file.ext")
+    val fileWithExtensionSimple = Paths.get("file.ext")
+
+    val fileWithoutExtensionLong = Paths.get("some", "path", "to", "the", "file")
+    val fileWithoutExtensionSimple = Paths.get("file")
+
+    "file name extension" - {
+      "file with extension" in {
+        FileUtils.fileNameExtension(fileWithExtensionLong) shouldBe ".ext"
+        FileUtils.fileNameExtension(fileWithExtensionSimple) shouldBe ".ext"
+      }
+
+      "file without extension" in {
+        FileUtils.fileNameExtension(fileWithoutExtensionLong) shouldBe ""
+        FileUtils.fileNameExtension(fileWithoutExtensionSimple) shouldBe ""
+      }
+    }
+
+    "file name without extension" - {
+      "file with extension" in {
+        FileUtils.fileNameWithoutExtension(fileWithExtensionLong) shouldBe "file"
+        FileUtils.fileNameWithoutExtension(fileWithExtensionSimple) shouldBe "file"
+      }
+
+      "file without extension" in {
+        FileUtils.fileNameWithoutExtension(fileWithoutExtensionLong) shouldBe "file"
+        FileUtils.fileNameWithoutExtension(fileWithoutExtensionSimple) shouldBe "file"
       }
     }
   }

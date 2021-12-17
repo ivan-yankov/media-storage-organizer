@@ -12,3 +12,4 @@ launch
 test-data/
 *.flac
 *.wav
+lib/math-assembly-1.0.jar

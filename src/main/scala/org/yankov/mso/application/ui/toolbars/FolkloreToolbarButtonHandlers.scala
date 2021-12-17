@@ -119,7 +119,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def play(targetInputTab: Boolean): Unit = {
     Commands.play[FolkloreTrackProperties](
       targetTable(targetInputTab),
-      x => Player.play(x.track, dataManager.mediaFile)
+      x => Player.play(x.track, dataManager.databasePaths.mediaFile)
     )
   }
 
