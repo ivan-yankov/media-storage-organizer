@@ -27,7 +27,8 @@ object Resources {
     val title: String = "База данни - българска народна музика"
     val inputTab: String = "Въвеждане на записи"
     val inputArtifactsTab: String = "Артефакти"
-    val searchTab: String = "Справка"
+    val searchTab: String = "Търсене"
+    val audioSearchTab: String = "Аудио търсене"
   }
 
   object Dialogs {
@@ -63,6 +64,7 @@ object Resources {
   }
 
   object TableColumns {
+    val id: String = "Идентификатор"
     val title: String = "Заглавие"
     val performer: String = "Изпълнител"
     val accompanimentPerformer: String = "Съпровод"
@@ -75,6 +77,8 @@ object Resources {
     val ethnographicRegion: String = "Област"
     val file: String = "Файл"
     val note: String = "Забележка"
+    val sampleFile: String = "Файл за търсене"
+    val matchType: String = "Тип съвпадение"
   }
 
   object ConsoleMessages {
@@ -184,5 +188,10 @@ object Resources {
     val notEqualsLabel: String = "Различно"
     val containsLabel: String = "Съдържа"
     val notContainsLabel: String = "Не съдържа"
+  }
+
+  object AudioSearch {
+    val identical: String = "Идентично"
+    val similar: String = "Подобно"
   }
 }

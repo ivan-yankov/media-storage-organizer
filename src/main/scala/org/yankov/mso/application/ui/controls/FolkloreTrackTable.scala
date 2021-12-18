@@ -1,11 +1,11 @@
 package org.yankov.mso.application.ui.controls
 
-import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
+import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.ui.FolkloreTrackEditor
 import org.yankov.mso.application.{MergeTrack, Resources}
 import scalafx.scene.control._
 
-case class FolkloreTrackTable(inputTable: Boolean) extends UiTable[FolkloreTrackProperties] {
+class FolkloreTrackTable(inputTable: Boolean) extends UiTable[TrackTableProperties] {
   override def isEditable: Boolean = false
 
   override def selectionMode: SelectionMode = SelectionMode.Multiple
@@ -29,25 +29,22 @@ case class FolkloreTrackTable(inputTable: Boolean) extends UiTable[FolkloreTrack
     )
   }
 
-  override def columnWidths: List[Double] =
-    List(200, 175, 175, 175, 175, 150, 150, 50, 150, 150, 200, 150).map(x => x.toDouble)
-
-  override def createTableColumns: List[TableColumn[FolkloreTrackProperties, _]] = {
+  override def createTableColumns: List[(TableColumn[TrackTableProperties, String], Double)] = {
     val columns = List(
-      stringTableColumn(Resources.TableColumns.title, _.title),
-      stringTableColumn(Resources.TableColumns.performer, _.performer),
-      stringTableColumn(Resources.TableColumns.accompanimentPerformer, _.accompanimentPerformer),
-      stringTableColumn(Resources.TableColumns.arrangementAuthor, _.arrangementAuthor),
-      stringTableColumn(Resources.TableColumns.conductor, _.conductor),
-      stringTableColumn(Resources.TableColumns.author, _.author),
-      stringTableColumn(Resources.TableColumns.soloist, _.soloist),
-      stringTableColumn(Resources.TableColumns.duration, _.duration),
-      stringTableColumn(Resources.TableColumns.source, _.source),
-      stringTableColumn(Resources.TableColumns.ethnographicRegion, _.ethnographicRegion),
-      stringTableColumn(Resources.TableColumns.note, _.note)
+      stringTableColumn(Resources.TableColumns.title, _.title, 200.0),
+      stringTableColumn(Resources.TableColumns.performer, _.performer, 175.0),
+      stringTableColumn(Resources.TableColumns.accompanimentPerformer, _.accompanimentPerformer, 175.0),
+      stringTableColumn(Resources.TableColumns.arrangementAuthor, _.arrangementAuthor, 175.0),
+      stringTableColumn(Resources.TableColumns.conductor, _.conductor, 175.0),
+      stringTableColumn(Resources.TableColumns.author, _.author, 150.0),
+      stringTableColumn(Resources.TableColumns.soloist, _.soloist, 150.0),
+      stringTableColumn(Resources.TableColumns.duration, _.duration, 50.0),
+      stringTableColumn(Resources.TableColumns.source, _.source, 150.0),
+      stringTableColumn(Resources.TableColumns.ethnographicRegion, _.ethnographicRegion, 200.0),
+      stringTableColumn(Resources.TableColumns.note, _.note, 150.0)
     )
 
-    if (inputTable) columns ++ List(stringTableColumn(Resources.TableColumns.file, _.file))
-    else columns
+    if (inputTable) columns ++ List(stringTableColumn(Resources.TableColumns.file, _.file, 150.0))
+    else columns ++ List(stringTableColumn(Resources.TableColumns.id, _.id, 150.0))
   }
 }

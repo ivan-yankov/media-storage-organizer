@@ -7,6 +7,8 @@ import scalafx.beans.property.StringProperty
 import scalafx.scene.image.Image
 import scalafx.stage.Screen
 
+import java.io.File
+
 object UiModel {
 
   object ApplicationSettings {
@@ -28,7 +30,9 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class FolkloreTrackProperties(track: FolkloreTrack) {
+  case class AudioSearchMatch(file: File, identical: Boolean)
+
+  case class TrackTableProperties(track: FolkloreTrack, audioSearchMatch: Option[AudioSearchMatch] = None) {
     def id: StringProperty = StringProperty(track.id)
 
     def title: StringProperty = StringProperty(track.title)
@@ -54,5 +58,23 @@ object UiModel {
     def note: StringProperty = StringProperty(track.note)
 
     def file: StringProperty = StringProperty(if (track.file.isDefined) track.file.get.getName else "")
+
+    def sampleFile: StringProperty = {
+      audioSearchMatch match {
+        case Some(x) => StringProperty(x.file.getName)
+        case None => StringProperty("")
+      }
+    }
+
+    def matchType: StringProperty = {
+      audioSearchMatch match {
+        case Some(x) =>
+          StringProperty(
+            if (x.identical) Resources.AudioSearch.identical
+            else Resources.AudioSearch.similar
+          )
+        case None => StringProperty("")
+      }
+    }
   }
 }
