@@ -5,14 +5,14 @@ import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.{AudioIndex, MediaServer}
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
+import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.model.{DataManager, DatabasePaths}
 import org.yankov.mso.application.search.SearchEngine
 import org.yankov.mso.application.search.SearchModel.SearchParameters
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
-import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, FolkloreTrackTable, SearchFilterControls}
+import org.yankov.mso.application.ui.controls._
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
@@ -51,8 +51,9 @@ object Main extends JFXApp {
   private lazy val log = LoggerFactory.getLogger(getClass)
 
   lazy val dataManager: DataManager = createDataManager
-  lazy val inputTable: FolkloreTrackTable = FolkloreTrackTable(true)
-  lazy val searchTable: FolkloreTrackTable = FolkloreTrackTable(false)
+  lazy val inputTable: FolkloreTrackTable = new FolkloreTrackTable(true)
+  lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
+  lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
   lazy val searchFilterControls: SearchFilterControls[FolkloreTrack] = SearchFilterControls(
     () => FolkloreControlsFactory.createSearchVariable(),
@@ -95,6 +96,7 @@ object Main extends JFXApp {
   private def tabPane: TabPane = {
     VBox.setVgrow(inputTable.getContainer, Priority.Always)
     VBox.setVgrow(searchTable.getContainer, Priority.Always)
+    VBox.setVgrow(audioSearchTable.getContainer, Priority.Always)
 
     val inputTab = new VBox {
       children = Seq(
@@ -104,8 +106,6 @@ object Main extends JFXApp {
         inputTable.getContainer
       )
     }
-
-    val inputArtifactsTab = ArtifactsTab()
 
     val searchFilterPanels = searchFilterControls.controls.map(x => x.panel)
     val searchTab = new VBox {
@@ -120,6 +120,12 @@ object Main extends JFXApp {
       )
     }
 
+    val audioSearchTab = new VBox {
+      children = Seq(
+        audioSearchTable.getContainer
+      )
+    }
+
     new TabPane {
       tabs = Seq(
         new Tab {
@@ -130,12 +136,17 @@ object Main extends JFXApp {
         new Tab {
           text = Resources.MainForm.inputArtifactsTab
           closable = false
-          content = inputArtifactsTab.getContainer
+          content = ArtifactsTab().getContainer
         },
         new Tab {
           text = Resources.MainForm.searchTab
           closable = false
           content = searchTab
+        },
+        new Tab {
+          text = Resources.MainForm.audioSearchTab
+          closable = false
+          content = audioSearchTab
         }
       )
     }
@@ -155,7 +166,7 @@ object Main extends JFXApp {
     }
 
     searchTable.pure.getItems.clear()
-    tracks.foreach(x => searchTable.pure.getItems.add(FolkloreTrackProperties(x)))
+    tracks.foreach(x => searchTable.pure.getItems.add(TrackTableProperties(x)))
 
     val totalDuration = tracks.map(x => x.duration).foldLeft(Duration.ZERO)((x, y) => x.plus(y))
     val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)

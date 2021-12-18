@@ -1,10 +1,9 @@
 package org.yankov.mso.application.ui
 
 import java.time.Duration
-
 import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
-import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
+import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.ui.controls.FolkloreControlsFactory._
 import org.yankov.mso.application.ui.controls.{FileSelector, LabeledTextField}
 import scalafx.geometry.{Insets, Pos}
@@ -13,7 +12,7 @@ import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.layout.{GridPane, HBox, StackPane, VBox}
 import scalafx.stage.{Modality, Stage}
 
-case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackIndex: Int) {
+case class FolkloreTrackEditor(table: TableView[TrackTableProperties], trackIndex: Int) {
   private val title = LabeledTextField(Resources.TableColumns.title, track.title)
   private val performer = createPerformer(track.performer)
   private val accompanimentPerformer = createAccompanimentPerformer(track.accompanimentPerformer)
@@ -129,7 +128,7 @@ case class FolkloreTrackEditor(table: TableView[FolkloreTrackProperties], trackI
       file = fileSelector.getFile
     )
 
-    table.getItems.set(trackIndex, FolkloreTrackProperties(newTrack))
+    table.getItems.set(trackIndex, TrackTableProperties(newTrack))
     stage.close()
   }
 
