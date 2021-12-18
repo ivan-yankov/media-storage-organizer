@@ -154,8 +154,8 @@ object Main extends JFXApp {
       }
     }
 
-    searchTable.getValue.getItems.clear()
-    tracks.foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
+    searchTable.pure.getItems.clear()
+    tracks.foreach(x => searchTable.pure.getItems.add(FolkloreTrackProperties(x)))
 
     val totalDuration = tracks.map(x => x.duration).foldLeft(Duration.ZERO)((x, y) => x.plus(y))
     val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)

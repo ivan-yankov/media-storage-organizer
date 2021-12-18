@@ -132,8 +132,8 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   private def targetTable(targetInputTab: Boolean): TableView[FolkloreTrackProperties] = {
-    if (targetInputTab) Main.inputTable.getValue
-    else Main.searchTable.getValue
+    if (targetInputTab) Main.inputTable.pure
+    else Main.searchTable.pure
   }
 
   private def targetButtons(targetInputTab: Boolean): List[Button] = {
