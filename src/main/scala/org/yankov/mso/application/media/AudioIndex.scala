@@ -15,11 +15,11 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
   private val log = LoggerFactory.getLogger(getClass)
 
   implicit class AudioIndexItemAsSearchData(item: DbAudioIndexItem) {
-    def asSearchData: AudioSearchData = AudioSearchData(hash = item.hash, data = item.data.map(x => x.toDouble))
+    def asSearchData: AudioSearchData = AudioSearchData(hash = item.hash, data = item.data.map(x => x.toDouble).toVector)
   }
 
   implicit class FingerprintAsSearchData(fp: Fingerprint) {
-    def asSearchData: AudioSearchData = AudioSearchData(hash = fp.compressed, data = fp.data.map(x => x.toDouble).toList)
+    def asSearchData: AudioSearchData = AudioSearchData(hash = fp.compressed, data = fp.data.map(x => x.toDouble).toVector)
   }
 
   def buildIfNotExists(): Unit = {
@@ -55,7 +55,7 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
             val fp = calculateFingerprint(file)
             val matches = items
               .map(x => (audioMatch(fp.asSearchData, x.asSearchData), x.id))
-              .filterNot(x => x._1 == Different)
+              .filterNot(x => x._1 == NonMatch)
             if (matches.nonEmpty) {
               Some(
                 AudioSearchResult(

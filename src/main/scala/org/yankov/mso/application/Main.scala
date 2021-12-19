@@ -52,13 +52,13 @@ object Main extends JFXApp {
   lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
   lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
-  lazy val searchControls: SearchControls[FolkloreTrack] = new MetadataSearchControls[FolkloreTrack](
+  lazy val metadataSearchControls: SearchControls[FolkloreTrack] = new MetadataSearchControls[FolkloreTrack](
     x => Search.metadataSearch(x, dataManager.getTracks, searchTable),
     () => FolkloreControlsFactory.createSearchVariable(),
     () => FolkloreControlsFactory.createSearchFilter()
   )
   lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
-    x => Search.audioSearch(x)
+    x => Search.audioSearch(x, dataManager.audioIndex, audioSearchTable)
   )
 
   onStart()
@@ -107,7 +107,7 @@ object Main extends JFXApp {
       )
     }
 
-    val searchPanels = searchControls.panels
+    val searchPanels = metadataSearchControls.panels
     val searchTab = new VBox {
       children = Seq(
         new ToolBar {

@@ -70,8 +70,8 @@ object UiModel {
       audioSearchMatch match {
         case Some(x) =>
           StringProperty(
-            if (x.identical) Resources.AudioSearch.identical
-            else Resources.AudioSearch.similar
+            if (x.identical) Resources.Search.audioSearchIdentical
+            else Resources.Search.audioSearchSimilar
           )
         case None => StringProperty("")
       }

@@ -104,6 +104,9 @@ object Resources {
     val search: String = "Търсене"
     val audioSearchPane = "Търсене на запис по звуков файл"
     val audioSearchButton: String = "Избор на файлове и търсене"
+    val audioSearchError: String = "Грешка при аудио търсене"
+    val audioSearchIdentical: String = "Идентично"
+    val audioSearchSimilar: String = "Подобно"
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
@@ -191,10 +194,5 @@ object Resources {
     val notEqualsLabel: String = "Различно"
     val containsLabel: String = "Съдържа"
     val notContainsLabel: String = "Не съдържа"
-  }
-
-  object AudioSearch {
-    val identical: String = "Идентично"
-    val similar: String = "Подобно"
   }
 }

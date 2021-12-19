@@ -2,10 +2,12 @@ package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.search.SearchModel.AudioSearchParameters
+import org.yankov.mso.application.ui.UiUtils._
 import scalafx.scene.control.TitledPane
 
-class AudioSearchControls(search: List[AudioSearchParameters] => Unit) extends SearchControls[FolkloreTrack] {
+import java.io.File
+
+class AudioSearchControls(search: List[File] => Unit) extends SearchControls[FolkloreTrack] {
   val panel: TitledPane = {
     val searchContainer = createSearchContainer
 
@@ -22,5 +24,10 @@ class AudioSearchControls(search: List[AudioSearchParameters] => Unit) extends S
 
   override def panels: List[TitledPane] = List(panel)
 
-  override def doSearch(): Unit = ???
+  override def doSearch(): Unit = {
+    selectFlacFiles(false) match {
+      case Some(files) => search(files)
+      case None => ()
+    }
+  }
 }
