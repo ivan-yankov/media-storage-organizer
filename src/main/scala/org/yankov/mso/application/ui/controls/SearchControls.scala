@@ -7,9 +7,9 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.{Button, TitledPane}
 import scalafx.scene.layout.{HBox, Priority}
 
-case class SearchFilterControls[T](variableCreator: () => LabeledComboBox[Variable[T]],
-                                   filterCreator: () => LabeledComboBox[Filter[T]],
-                                   search: List[SearchParameters[T]] => Unit) {
+case class SearchControls[T](variableCreator: () => LabeledComboBox[Variable[T]],
+                             filterCreator: () => LabeledComboBox[Filter[T]],
+                             search: List[SearchParameters[T]] => Unit) {
 
   case class FilterControls(variable: LabeledComboBox[Variable[T]],
                             filter: LabeledComboBox[Filter[T]],

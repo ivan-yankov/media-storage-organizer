@@ -55,7 +55,7 @@ object Main extends JFXApp {
   lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
   lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
-  lazy val searchFilterControls: SearchFilterControls[FolkloreTrack] = SearchFilterControls(
+  lazy val searchFilterControls: SearchControls[FolkloreTrack] = SearchControls(
     () => FolkloreControlsFactory.createSearchVariable(),
     () => FolkloreControlsFactory.createSearchFilter(),
     x => search(x)

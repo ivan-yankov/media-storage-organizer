@@ -181,6 +181,7 @@ object Resources {
     val trackNote: String = "Забележка"
     val sourceType: String = "Тип на източник"
     val sourceSignature: String = "Сигнатура на източник"
+    val id: String = "Идентификатор"
   }
 
   object Filters {
