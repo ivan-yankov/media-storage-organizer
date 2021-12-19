@@ -6,7 +6,7 @@ import org.yankov.mso.application.search.SearchModel._
 import scalafx.scene.control.TitledPane
 import scalafx.scene.layout.{HBox, Priority}
 
-class MetadataSearchControls[T](search: List[MetadataSearchParameters[T]] => Unit,
+class MetadataSearchControls[T](search: List[SearchParameters[T]] => Unit,
                                 createVariables: () => LabeledComboBox[Variable[T]],
                                 createFilters: () => LabeledComboBox[Filter[T]]) extends SearchControls[T] {
 
@@ -52,5 +52,5 @@ class MetadataSearchControls[T](search: List[MetadataSearchParameters[T]] => Uni
   override def panels: List[TitledPane] = controls.map(x => x.panel)
 
   override def doSearch(): Unit =
-    search(controls.map(x => MetadataSearchParameters(x.variable.getValue, x.filter.getValue, x.value.getValue)))
+    search(controls.map(x => SearchParameters(x.variable.getValue, x.filter.getValue, x.value.getValue)))
 }

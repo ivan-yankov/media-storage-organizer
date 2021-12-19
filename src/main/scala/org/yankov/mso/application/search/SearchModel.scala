@@ -89,9 +89,7 @@ object SearchModel {
     )
   }
 
-  case class MetadataSearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)
-
-  case class AudioSearchParameters(sampleFiles: List[File])
+  case class SearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)
 
   case class SearchIndexElement(term: String, ids: List[Id])
 }
