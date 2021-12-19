@@ -1,18 +1,16 @@
 package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.{AudioIndex, MediaServer}
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.model.{DataManager, DatabasePaths}
-import org.yankov.mso.application.search.SearchEngine
-import org.yankov.mso.application.search.SearchModel.SearchParameters
+import org.yankov.mso.application.search._
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
-import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.controls._
+import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
@@ -21,7 +19,6 @@ import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
 import java.nio.file.Paths
-import java.time.Duration
 
 object Main extends JFXApp {
   stage = new PrimaryStage {
@@ -55,10 +52,13 @@ object Main extends JFXApp {
   lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
   lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
-  lazy val searchFilterControls: SearchControls[FolkloreTrack] = SearchControls(
+  lazy val searchControls: SearchControls[FolkloreTrack] = new MetadataSearchControls[FolkloreTrack](
+    x => Search.metadataSearch(x, dataManager.getTracks, searchTable),
     () => FolkloreControlsFactory.createSearchVariable(),
-    () => FolkloreControlsFactory.createSearchFilter(),
-    x => search(x)
+    () => FolkloreControlsFactory.createSearchFilter()
+  )
+  lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
+    x => Search.audioSearch(x)
   )
 
   onStart()
@@ -89,7 +89,7 @@ object Main extends JFXApp {
     val dbPaths = DatabasePaths(Paths.get(dbDir))
     val db = RealDatabase()
     val audioIndex = AudioIndex(db, dbPaths)
-//    audioIndex.buildIfNotExists()
+    //    audioIndex.buildIfNotExists()
     DataManager(db, dbPaths, Some(audioIndex))
   }
 
@@ -107,21 +107,22 @@ object Main extends JFXApp {
       )
     }
 
-    val searchFilterPanels = searchFilterControls.controls.map(x => x.panel)
+    val searchPanels = searchControls.panels
     val searchTab = new VBox {
       children = Seq(
         new ToolBar {
           items = toolbarButtons.searchTabButtons
         },
-        searchFilterPanels.head,
-        searchFilterPanels.tail.head,
-        searchFilterPanels.tail.tail.head,
+        searchPanels.head,
+        searchPanels.tail.head,
+        searchPanels.tail.tail.head,
         searchTable.getContainer
       )
     }
 
     val audioSearchTab = new VBox {
       children = Seq(
+        audioSearchControls.panels.head,
         audioSearchTable.getContainer
       )
     }
@@ -150,26 +151,5 @@ object Main extends JFXApp {
         }
       )
     }
-  }
-
-  private def search(searchParameters: List[SearchParameters[FolkloreTrack]]): Unit = {
-    val tracks = {
-      if (searchParameters.forall(x => x.value.isBlank)) {
-        dataManager.getTracks
-      }
-      else {
-        SearchEngine.search[FolkloreTrack](
-          dataManager.getTracks,
-          searchParameters
-        ).sortBy(x => (StringConverters.sourceToString(x.source), x.note, x.title))
-      }
-    }
-
-    searchTable.pure.getItems.clear()
-    tracks.foreach(x => searchTable.pure.getItems.add(TrackTableProperties(x)))
-
-    val totalDuration = tracks.map(x => x.duration).foldLeft(Duration.ZERO)((x, y) => x.plus(y))
-    val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)
-    ApplicationConsole.writeMessageWithTimestamp(message)
   }
 }
