@@ -6,6 +6,8 @@ import org.yankov.mso.application.Resources.Variables._
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.TextAnalyzer._
 
+import java.io.File
+
 object SearchModel {
   case class Variable[T](label: String, valueProvider: T => String)
 
@@ -87,7 +89,9 @@ object SearchModel {
     )
   }
 
-  case class SearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)
+  case class MetadataSearchParameters[T](variable: Variable[T], filter: Filter[T], value: String)
+
+  case class AudioSearchParameters(sampleFiles: List[File])
 
   case class SearchIndexElement(term: String, ids: List[Id])
 }

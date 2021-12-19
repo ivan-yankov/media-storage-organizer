@@ -1,13 +1,11 @@
 package org.yankov.mso.application.ui.controls
 
-import scalafx.scene.input.{Clipboard, ClipboardContent, KeyCode, KeyCodeCombination, KeyCombination}
 import org.yankov.mso.application.ui.controls.FontModel._
 import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.{SelectionMode, TableColumn, TableRow, TableView}
+import scalafx.scene.input._
 import scalafx.scene.layout.{Pane, StackPane}
-
-import scala.collection.JavaConverters._
 
 abstract class UiTable[T] {
   private val table: TableView[T] = new TableView[T]() {
@@ -54,6 +52,11 @@ abstract class UiTable[T] {
   def getContainer: Pane = container
 
   def pure: TableView[T] = table
+
+  def setItems(items: List[T]): Unit = {
+    table.getItems.clear()
+    items.foreach(x => table.getItems.add(x))
+  }
 
   def stringTableColumn(textValue: String, valueFactory: T => StringProperty, width: Double): (TableColumn[T, String], Double) = {
     (

@@ -102,6 +102,8 @@ object Resources {
     val filter: String = "Филтър"
     val value: String = "Стойност"
     val search: String = "Търсене"
+    val audioSearchPane = "Търсене на запис по звуков файл"
+    val audioSearchButton: String = "Избор на файлове и търсене"
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
