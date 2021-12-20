@@ -7,10 +7,15 @@ import scalafx.scene.control.TitledPane
 
 import java.io.File
 
-class AudioSearchControls(search: List[File] => Unit) extends SearchControls[FolkloreTrack] {
+class AudioSearchControls(search: (List[File], Double, Int) => Unit) extends SearchControls[FolkloreTrack] {
+  private val correlation = LabeledTextField(Resources.Search.correlation, "0.9")
+  private val crossCorrelationShift = LabeledTextField(Resources.Search.crossCorrelationShift, "50")
+
   val panel: TitledPane = {
     val searchContainer = createSearchContainer
 
+    searchContainer.children.add(correlation.getContainer)
+    searchContainer.children.add(crossCorrelationShift.getContainer)
     searchContainer.children.add(btnSearch)
 
     new TitledPane {
@@ -26,7 +31,7 @@ class AudioSearchControls(search: List[File] => Unit) extends SearchControls[Fol
 
   override def doSearch(): Unit = {
     selectFlacFiles(false) match {
-      case Some(files) => search(files)
+      case Some(files) => search(files, correlation.getValue.toDouble, crossCorrelationShift.getValue.toInt)
       case None => ()
     }
   }

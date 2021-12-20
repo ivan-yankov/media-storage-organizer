@@ -107,9 +107,15 @@ object Resources {
     val audioSearchError: String = "Грешка при аудио търсене"
     val audioSearchIdentical: String = "Идентично"
     val audioSearchSimilar: String = "Подобно"
+    val correlation: String = "Граничен коефициент на корелация"
+    val crossCorrelationShift: String = "Отмесване за крос-корелация"
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
+
+    def errorFingerprintCalculation(id: String): String = s"Грешка при декодиране на flac [$id]"
+
+    def audioIndexItemError(id: String): String = s"Запис с идентификатор [$id] не е индексиран в аудио индекс"
   }
 
   object TrackEditor {

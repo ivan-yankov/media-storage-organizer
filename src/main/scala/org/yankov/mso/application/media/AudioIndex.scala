@@ -2,13 +2,17 @@ package org.yankov.mso.application.media
 
 import chromaprint.Fingerprint
 import chromaprint.quick.Fingerprinter
+import com.yankov.math.MathUtils
+import com.yankov.math.Model.{DoubleNumber, _}
+import com.yankov.math.xcorr.Correlation.crossCorrelation
 import org.slf4j.LoggerFactory
+import org.yankov.mso.application._
 import org.yankov.mso.application.database.Database
 import org.yankov.mso.application.media.decode.FlacDecoder
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.model.DatabasePaths
-import org.yankov.mso.application.{AudioMatcher, FileUtils, Id, Resources}
+import org.yankov.mso.application.ui.console.ApplicationConsole
 
 import java.io.{ByteArrayInputStream, FileInputStream, InputStream}
 
@@ -23,16 +27,6 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     def asSearchData: AudioSearchData = AudioSearchData(hash = fp.compressed, data = fp.data.map(x => x.toDouble).toVector)
   }
 
-  private def decode(input: InputStream): Option[InputStream] = {
-    FlacDecoder.decode(input.readAllBytes()) match {
-      case Some(bytes) =>
-        Some(new ByteArrayInputStream(bytes))
-      case None =>
-        log.error("Error on flac decoding")
-        None
-    }
-  }
-
   private def fileInputs: Map[Id, InputStream] = {
     val ext = Resources.Media.flacExtension
     FileUtils
@@ -44,15 +38,10 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
 
   def build(inputs: Map[Id, InputStream] = fileInputs): Unit = {
     log.info("Build audio index")
-    calculateAndInsertItems(inputs.map(x => x._1 -> decode(x._2)).filter(x => x._2.isDefined).map(x => x._1 -> x._2.get))
+    calculateAndInsertItems(inputs)
   }
 
-  def add(id: Id): Boolean = {
-    decode(new FileInputStream(databasePaths.mediaFile(id))) match {
-      case Some(input) => calculateAndInsertItems(Map(id -> input))
-      case None => false
-    }
-  }
+  def add(id: Id): Boolean = calculateAndInsertItems(Map(id -> new FileInputStream(databasePaths.mediaFile(id))))
 
   def remove(id: Id): Boolean = {
     database.delete[DbAudioIndexItem](List(id), databasePaths.audioIndex) match {
@@ -64,53 +53,93 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     }
   }
 
-  def search(inputs: Map[Id, InputStream], audioMatch: AudioMatcher): List[AudioSearchResult] = {
+  def search(samples: Map[Id, InputStream],
+             correlationThreshold: Double,
+             crossCorrelationShift: Int): List[AudioSearchResult] = {
+    def audioMatchData: (AudioSearchData, AudioSearchData) => AudioMatchType =
+      audioMatch(correlationThreshold, crossCorrelationShift)(_, _)
+
     database.read[DbAudioIndexItem](List(), databasePaths.audioIndex) match {
       case Left(e) =>
         log.error(s"Unable to read audio index [$e]")
         List()
       case Right(items) =>
-        inputs.map {
-          input =>
-            val fp = calculateFingerprint(input._1, input._2)
-            val matches = items
-              .map(x => (audioMatch(fp.asSearchData, x.asSearchData), x.id))
-              .filterNot(x => x._1 == NonMatch)
-            if (matches.nonEmpty) {
-              Some(
-                AudioSearchResult(
-                  sampleId = input._1,
-                  exactMatches = matches.filter(x => x._1 == ExactMatch).map(x => x._2),
-                  similarMatches = matches.filter(x => x._1 == SimilarMatch).map(x => x._2)
-                )
-              )
+        samples.map {
+          sample =>
+            calculateFingerprint(sample._1, sample._2) match {
+              case Some(fp) =>
+                val matches = items
+                  .map(x => (audioMatchData(fp.asSearchData, x.asSearchData), x.id))
+                  .filterNot(x => x._1 == NonMatch)
+                if (matches.nonEmpty) {
+                  Some(
+                    AudioSearchResult(
+                      sampleId = sample._1,
+                      exactMatches = matches.filter(x => x._1 == ExactMatch).map(x => x._2),
+                      similarMatches = matches.filter(x => x._1 == SimilarMatch).map(x => x._2)
+                    )
+                  )
+                }
+                else None
+              case None => None
             }
-            else None
         }.filter(x => x.isDefined).map(x => x.get).toList
     }
   }
 
-  private def calculateFingerprint(id: Id, input: InputStream): Fingerprint = {
-    log.info(s"Calculate audio fingerprint for [$id]")
-    Fingerprinter(input).unsafeRunSync()
+  private def audioMatch(correlationThreshold: Double, crossCorrelationShift: Int)
+                        (a: AudioSearchData, b: AudioSearchData): AudioMatchType = {
+    if (a.hash.equals(b.hash)) ExactMatch
+    else {
+      crossCorrelation(a.data.asNumbers, b.data.asNumbers, crossCorrelationShift) match {
+        case Some(correlation) =>
+          if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) SimilarMatch
+          else NonMatch
+        case None =>
+          ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioSearchError)
+          NonMatch
+      }
+    }
+  }
+
+  private def calculateFingerprint(id: Id, input: InputStream): Option[Fingerprint] = {
+    FlacDecoder.decode(input.readAllBytes()) match {
+      case Some(bytes) =>
+        log.info(s"Calculate audio fingerprint for [$id]")
+        Some(Fingerprinter(new ByteArrayInputStream(bytes)).unsafeRunSync())
+      case None =>
+        ApplicationConsole.writeMessageWithTimestamp(Resources.Search.errorFingerprintCalculation(id))
+        None
+    }
+
   }
 
   private def calculateAndInsertItems(inputs: Map[Id, InputStream]): Boolean = {
     val items = inputs.map {
       input =>
-        val fp = calculateFingerprint(input._1, input._2)
-        DbAudioIndexItem(
-          id = input._1,
-          hash = fp.compressed,
-          data = fp.data.map(y => y.toLong).toList
-        )
+        calculateFingerprint(input._1, input._2) match {
+          case Some(fp) =>
+            Right(
+              DbAudioIndexItem(
+                id = input._1,
+                hash = fp.compressed,
+                data = fp.data.map(y => y.toLong).toList
+              )
+            )
+          case None => Left(input._1)
+        }
     }.toList
-    database.insert(items, databasePaths.audioIndex) match {
+
+    val notIndexedIds = items.filter(x => x.isLeft).map(x => x.left.get)
+    notIndexedIds.foreach(x => ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioIndexItemError(x)))
+
+    val indexedItems = items.filter(x => x.isRight).map(x => x.right.get)
+    database.insert(indexedItems, databasePaths.audioIndex) match {
       case Left(e) =>
-        log.error(s"Error during building audio index [$e]")
+        log.error(s"Error during insert audio index items [$e]")
         false
       case Right(_) =>
-        true
+        notIndexedIds.isEmpty
     }
   }
 }
