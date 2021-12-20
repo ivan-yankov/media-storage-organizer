@@ -3,7 +3,6 @@ package org.yankov.mso.application.search
 import com.yankov.math.MathUtils
 import com.yankov.math.Model._
 import com.yankov.math.xcorr.Correlation._
-import org.yankov.mso.application.{Id, Resources}
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
@@ -11,8 +10,9 @@ import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.search.SearchModel._
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.UiTable
+import org.yankov.mso.application.{Id, Resources}
 
-import java.io.File
+import java.io.InputStream
 import java.time.Duration
 
 object Search {
@@ -39,11 +39,11 @@ object Search {
     ApplicationConsole.writeMessageWithTimestamp(message)
   }
 
-  def audioSearch(files: List[File],
+  def audioSearch(inputs: Map[Id, InputStream],
                   allTracks: List[FolkloreTrack],
                   audioIndex: Option[AudioIndex],
                   resultTable: UiTable[TrackTableProperties]): Unit = {
-    if (files.isEmpty || audioIndex.isEmpty) return
+    if (inputs.isEmpty || audioIndex.isEmpty) return
 
     def audioMatch(a: AudioSearchData, b: AudioSearchData): AudioMatchType = {
       if (a.hash.equals(b.hash)) ExactMatch
@@ -59,14 +59,14 @@ object Search {
       }
     }
 
-    val searchResults = audioIndex.get.search(files, audioMatch)
+    val searchResults = audioIndex.get.search(inputs, audioMatch)
 
     def collectResults(onCollection: AudioSearchResult => List[Id], identical: Boolean): List[TrackTableProperties] = {
       searchResults
         .flatMap(
           x =>
             List
-              .fill(onCollection(x).size)(x.sampleFile)
+              .fill(onCollection(x).size)(x.sampleId)
               .zip(onCollection(x))
               .map(
                 y =>

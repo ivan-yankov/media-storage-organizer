@@ -77,7 +77,7 @@ object Resources {
     val ethnographicRegion: String = "Област"
     val file: String = "Файл"
     val note: String = "Забележка"
-    val sampleFile: String = "Файл за търсене"
+    val sampleId: String = "Образец за търсене"
     val matchType: String = "Тип съвпадение"
   }
 

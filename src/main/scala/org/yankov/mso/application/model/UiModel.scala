@@ -1,6 +1,6 @@
 package org.yankov.mso.application.model
 
-import org.yankov.mso.application.Resources
+import org.yankov.mso.application.{Id, Resources}
 import org.yankov.mso.application.converters.{DurationConverter, StringConverters}
 import org.yankov.mso.application.model.DataModel._
 import scalafx.beans.property.StringProperty
@@ -30,7 +30,7 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class AudioSearchMatch(file: File, identical: Boolean)
+  case class AudioSearchMatch(id: Id, identical: Boolean)
 
   case class TrackTableProperties(track: FolkloreTrack, audioSearchMatch: Option[AudioSearchMatch] = None) {
     def id: StringProperty = StringProperty(track.id)
@@ -59,9 +59,9 @@ object UiModel {
 
     def file: StringProperty = StringProperty(if (track.file.isDefined) track.file.get.getName else "")
 
-    def sampleFile: StringProperty = {
+    def sampleId: StringProperty = {
       audioSearchMatch match {
-        case Some(x) => StringProperty(x.file.getName)
+        case Some(x) => StringProperty(x.id)
         case None => StringProperty("")
       }
     }

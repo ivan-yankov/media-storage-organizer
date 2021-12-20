@@ -17,7 +17,7 @@ class AudioSearchTable() extends UiTable[TrackTableProperties] {
 
   override def createTableColumns: List[(TableColumn[TrackTableProperties, String], Double)] = {
     List(
-      stringTableColumn(Resources.TableColumns.sampleFile, _.sampleFile, 150.0),
+      stringTableColumn(Resources.TableColumns.sampleId, _.sampleId, 150.0),
       stringTableColumn(Resources.TableColumns.matchType, _.matchType, 125.0),
       stringTableColumn(Resources.TableColumns.title, _.title, 200.0),
       stringTableColumn(Resources.TableColumns.performer, _.performer, 175.0),
