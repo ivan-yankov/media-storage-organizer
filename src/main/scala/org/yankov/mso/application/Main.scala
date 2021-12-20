@@ -1,25 +1,25 @@
 package org.yankov.mso.application
 
 import org.slf4j.LoggerFactory
-import org.yankov.mso.application.converters.StringConverters
-import org.yankov.mso.application.converters.StringConverters.sourceToString
 import org.yankov.mso.application.database.RealDatabase
-import org.yankov.mso.application.media.MediaServer
-import org.yankov.mso.application.model.DataManager
+import org.yankov.mso.application.media.{AudioIndex, MediaServer}
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.UiModel.{ApplicationSettings, FolkloreTrackProperties}
-import org.yankov.mso.application.search.SearchEngine
-import org.yankov.mso.application.search.SearchModel.SearchParameters
+import org.yankov.mso.application.model.UiModel._
+import org.yankov.mso.application.model.{DataManager, DatabasePaths}
+import org.yankov.mso.application.search._
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
+import org.yankov.mso.application.ui.controls._
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
-import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, FolkloreTrackTable, SearchFilterControls}
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
+
+import java.io.FileInputStream
+import java.nio.file.Paths
 
 object Main extends JFXApp {
   stage = new PrimaryStage {
@@ -49,21 +49,48 @@ object Main extends JFXApp {
   private lazy val log = LoggerFactory.getLogger(getClass)
 
   lazy val dataManager: DataManager = createDataManager
-  lazy val inputTable: FolkloreTrackTable = FolkloreTrackTable(true)
-  lazy val searchTable: FolkloreTrackTable = FolkloreTrackTable(false)
+  lazy val inputTable: FolkloreTrackTable = new FolkloreTrackTable(true)
+  lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
+  lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
   lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
-  lazy val searchFilterControls: SearchFilterControls[FolkloreTrack] = SearchFilterControls(
+  lazy val metadataSearchControls: SearchControls[FolkloreTrack] = new MetadataSearchControls[FolkloreTrack](
+    x => Search.metadataSearch(x, dataManager.getTracks, searchTable),
     () => FolkloreControlsFactory.createSearchVariable(),
-    () => FolkloreControlsFactory.createSearchFilter(),
-    x => search(x)
+    () => FolkloreControlsFactory.createSearchFilter()
   )
+  lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
+    (files, correlation, crossCorrelationShift) => Search.audioSearch(
+      files.map(y => y.getName -> new FileInputStream(y)).toMap,
+      dataManager.getTracks,
+      dataManager.audioIndex,
+      audioSearchTable,
+      correlation,
+      crossCorrelationShift
+    )
+  )
+
+  override def main(args: Array[String]): Unit = {
+    if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.buildAudioIndex, args.toSeq)) {
+      createDataManager.audioIndex.get.build()
+    }
+    else if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.importDatabase, args.toSeq)) {
+      ImportDatabase.run(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
+    }
+    else {
+      super.main(args)
+    }
+  }
 
   onStart()
 
-  def getApplicationArgument(argument: String, defaultValue: String = "", required: Boolean = true): String = {
-    parameters
-      .raw
-      .find(x => x.startsWith(argument)) match {
+  def getApplicationArgumentFlag(argument: String, arguments: Seq[String] = parameters.raw): Boolean =
+    arguments.exists(x => x.equals(argument))
+
+  def getApplicationArgument(argument: String,
+                             defaultValue: String = "",
+                             required: Boolean = true,
+                             arguments: Seq[String] = parameters.raw): String = {
+    arguments.find(x => x.startsWith(argument)) match {
       case Some(value) =>
         val items = value.split("=")
         if (items.length == 2) items(1)
@@ -83,12 +110,16 @@ object Main extends JFXApp {
 
   private def createDataManager: DataManager = {
     val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-    DataManager(dbDir, RealDatabase(), doIndex = true)
+    val dbPaths = DatabasePaths(Paths.get(dbDir))
+    val db = RealDatabase()
+    val audioIndex = AudioIndex(db, dbPaths)
+    DataManager(db, dbPaths, Some(audioIndex))
   }
 
   private def tabPane: TabPane = {
     VBox.setVgrow(inputTable.getContainer, Priority.Always)
     VBox.setVgrow(searchTable.getContainer, Priority.Always)
+    VBox.setVgrow(audioSearchTable.getContainer, Priority.Always)
 
     val inputTab = new VBox {
       children = Seq(
@@ -99,18 +130,23 @@ object Main extends JFXApp {
       )
     }
 
-    val inputArtifactsTab = ArtifactsTab()
-
-    val searchFilterPanels = searchFilterControls.controls.map(x => x.panel)
+    val searchPanels = metadataSearchControls.panels
     val searchTab = new VBox {
       children = Seq(
         new ToolBar {
           items = toolbarButtons.searchTabButtons
         },
-        searchFilterPanels.head,
-        searchFilterPanels.tail.head,
-        searchFilterPanels.tail.tail.head,
+        searchPanels.head,
+        searchPanels.tail.head,
+        searchPanels.tail.tail.head,
         searchTable.getContainer
+      )
+    }
+
+    val audioSearchTab = new VBox {
+      children = Seq(
+        audioSearchControls.panels.head,
+        audioSearchTable.getContainer
       )
     }
 
@@ -124,29 +160,19 @@ object Main extends JFXApp {
         new Tab {
           text = Resources.MainForm.inputArtifactsTab
           closable = false
-          content = inputArtifactsTab.getContainer
+          content = ArtifactsTab().getContainer
         },
         new Tab {
           text = Resources.MainForm.searchTab
           closable = false
           content = searchTab
+        },
+        new Tab {
+          text = Resources.MainForm.audioSearchTab
+          closable = false
+          content = audioSearchTab
         }
       )
     }
-  }
-
-  private def search(searchParameters: List[SearchParameters[FolkloreTrack]]): Unit = {
-    val (tracks, totalDuration) = SearchEngine.search[FolkloreTrack](
-      dataManager.getTracks,
-      searchParameters,
-      x => x.duration
-    )
-    searchTable.getValue.getItems.clear()
-    tracks
-      .sortBy(x => (StringConverters.sourceToString(x.source), x.note, x.title))
-      .foreach(x => searchTable.getValue.getItems.add(FolkloreTrackProperties(x)))
-
-    val message = Resources.Search.totalItemsFound(tracks.size, totalDuration)
-    ApplicationConsole.writeMessageWithTimestamp(message)
   }
 }

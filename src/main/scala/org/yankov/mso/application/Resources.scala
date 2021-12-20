@@ -8,12 +8,11 @@ object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaServerPort: String = "--media-server-port"
-    val findDuplicates: String = "--find-duplicates"
+    val importDatabase: String = "--import-database"
+    val buildAudioIndex: String = "--build-audio-index"
   }
 
   object ApplicationArgumentValues {
-    val findDuplicatesExact: String = "exact"
-    val findDuplicatesTitlePerformer: String = "title-performer"
     val mediaServerPort: String = "5432"
   }
 
@@ -30,7 +29,8 @@ object Resources {
     val title: String = "База данни - българска народна музика"
     val inputTab: String = "Въвеждане на записи"
     val inputArtifactsTab: String = "Артефакти"
-    val searchTab: String = "Справка"
+    val searchTab: String = "Търсене"
+    val audioSearchTab: String = "Аудио търсене"
   }
 
   object Dialogs {
@@ -66,6 +66,7 @@ object Resources {
   }
 
   object TableColumns {
+    val id: String = "Идентификатор"
     val title: String = "Заглавие"
     val performer: String = "Изпълнител"
     val accompanimentPerformer: String = "Съпровод"
@@ -78,6 +79,8 @@ object Resources {
     val ethnographicRegion: String = "Област"
     val file: String = "Файл"
     val note: String = "Забележка"
+    val sampleId: String = "Образец за търсене"
+    val matchType: String = "Тип съвпадение"
   }
 
   object ConsoleMessages {
@@ -101,9 +104,20 @@ object Resources {
     val filter: String = "Филтър"
     val value: String = "Стойност"
     val search: String = "Търсене"
+    val audioSearchPane = "Търсене на запис по звуков файл"
+    val audioSearchButton: String = "Избор на файлове и търсене"
+    val audioSearchError: String = "Грешка при аудио търсене"
+    val audioSearchIdentical: String = "Идентично"
+    val audioSearchSimilar: String = "Подобно"
+    val correlation: String = "Граничен коефициент на корелация"
+    val crossCorrelationShift: String = "Отмесване за крос-корелация"
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
+
+    def errorFingerprintCalculation(id: String): String = s"Грешка при декодиране на flac [$id]"
+
+    def audioIndexItemError(id: String): String = s"Запис с идентификатор [$id] не е индексиран в аудио индекс"
   }
 
   object TrackEditor {
@@ -180,6 +194,7 @@ object Resources {
     val trackNote: String = "Забележка"
     val sourceType: String = "Тип на източник"
     val sourceSignature: String = "Сигнатура на източник"
+    val id: String = "Идентификатор"
   }
 
   object Filters {

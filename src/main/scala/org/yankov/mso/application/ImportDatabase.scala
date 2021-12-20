@@ -2,11 +2,10 @@ package org.yankov.mso.application
 
 import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.RealDatabase
-import org.yankov.mso.application.model.DataManager
 import org.yankov.mso.application.model.DataModel._
+import org.yankov.mso.application.model.{DataManager, DatabasePaths}
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file.{Files, Path, Paths}
 import java.util.UUID
 import scala.collection.JavaConverters._
 
@@ -14,9 +13,8 @@ object ImportDatabase {
   private val columnDelimiter = "#"
   private val textWrapper = "@"
 
-  def main(args: Array[String]): Unit = {
-    val dir = args(0)
-    val dataManager = DataManager(dir, RealDatabase(), doIndex = false)
+  def run(dir: String): Unit = {
+    val dataManager = DataManager(RealDatabase(), DatabasePaths(Paths.get(dir)), None)
 
     clear(Paths.get(dir, "data"))
 

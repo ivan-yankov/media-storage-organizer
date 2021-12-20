@@ -3,32 +3,34 @@ package org.yankov.mso.application.model
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.converters.DurationConverter
 import org.yankov.mso.application.database.{Database, DatabaseCache}
+import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.{FileUtils, Id, Resources}
+import org.yankov.mso.application.{FileUtils, Id}
 
 import java.io.File
-import java.nio.file.{Path, Paths}
+import java.nio.file.Path
 import java.util.UUID
 
-case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) {
+case class DataManager(database: Database,
+                       databasePaths: DatabasePaths,
+                       audioIndex: Option[AudioIndex]) {
   private val log = LoggerFactory.getLogger(getClass)
 
-  val metadataPath: Path = Paths.get(dbRootDir, "data")
-  val mediaPath: Path = Paths.get(dbRootDir, "media")
-  val artistsPath: Path = Paths.get(metadataPath.toString, "artists")
-  val instrumentsPath: Path = Paths.get(metadataPath.toString, "instruments")
-  val sourceTypesPath: Path = Paths.get(metadataPath.toString, "source-types")
-  val sourcesPath: Path = Paths.get(metadataPath.toString, "sources")
-  val ethnographicRegionsPath: Path = Paths.get(metadataPath.toString, "ethnographic-regions")
-  val tracksPath: Path = Paths.get(metadataPath.toString, "tracks")
+  private def artistsPath: Path = databasePaths.artists
+  private def instrumentsPath: Path = databasePaths.instruments
+  private def sourceTypesPath: Path = databasePaths.sourceTypes
+  private def sourcesPath: Path = databasePaths.sources
+  private def ethnographicRegionsPath: Path = databasePaths.ethnographicRegions
+  private def tracksPath: Path = databasePaths.tracks
+  private def mediaPath: Path = databasePaths.media
 
   private var dbCache: DatabaseCache = _
 
-  private def updateCache(): Unit = dbCache = DatabaseCache(database)
+  private def updateCache(): Unit = dbCache = DatabaseCache(database, databasePaths)
 
   updateCache()
-  database.setOnChange(updateCache)
+  database.setOnChange(() => updateCache())
 
   implicit class StringOption(x: String) {
     def asOption: Option[String] = if (x.nonEmpty) Option(x) else Option.empty
@@ -133,15 +135,15 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     }
   }
 
-  def getTracks: List[FolkloreTrack] = dbCache.tracks.values.toList
+  def getTracks: List[FolkloreTrack] = dbCache.tracks
 
-  def deleteTrack(track: FolkloreTrack): Boolean = {
+  def deleteTrack(track: FolkloreTrack, removeTrackFile: Id => Boolean = deleteTrackFile): Boolean = {
     database.delete[DbFolkloreTrack](List(track.id), tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
       case Right(number) =>
-        number == 1
+        number == 1 && removeTrackFile(track.id)
     }
   }
 
@@ -270,17 +272,26 @@ case class DataManager(dbRootDir: String, database: Database, doIndex: Boolean) 
     else Array()
   }
 
-  def mediaFile(trackId: Id): File = Paths.get(mediaPath.toString, trackId + Resources.Media.flacExtension).toFile
-
   private def putRecord(id: Id, file: File): Boolean = {
     FileUtils.readBinaryFile(file) match {
       case Left(e) =>
         log.error(e)
         false
       case Right(data) =>
+        if (audioIndex.isDefined) {
+          audioIndex.get.remove(id)
+          audioIndex.get.add(id)
+        }
         FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
     }
   }
 
-  private def generateId: String = UUID.randomUUID().toString
+  private def deleteTrackFile(id: Id): Boolean = {
+    if (audioIndex.isDefined) audioIndex.get.remove(id)
+    FileUtils.deleteFile(mediaFile(id))
+  }
+
+  private def mediaFile(id: Id): File = databasePaths.mediaFile(id)
+
+  private def generateId: String = UUID.randomUUID.toString
 }
