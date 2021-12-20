@@ -7,6 +7,8 @@ import scalafx.scene.control.{SelectionMode, TableColumn, TableRow, TableView}
 import scalafx.scene.input._
 import scalafx.scene.layout.{Pane, StackPane}
 
+import scala.collection.JavaConverters.asScalaBufferConverter
+
 abstract class UiTable[T] {
   private val table: TableView[T] = new TableView[T]() {
     editable = isEditable
@@ -38,10 +40,12 @@ abstract class UiTable[T] {
   }
 
   private def copySelectionToClipboard(): Unit = {
-    val row = table.getFocusModel.getFocusedCell.getRow
-    val col = table.getFocusModel.getFocusedCell.getColumn
-    if (row < 0 || col < 0) return
-    val data = table.columns.get(col).getCellData(row).toString
+    def cellToString(cell: Any): String = if (cell == null) "" else cell.toString
+
+    val selected = table.getSelectionModel.getSelectedCells.asScala.toList
+    val rows = selected.map(x => x.getRow).distinct.sorted
+    val cols = selected.map(x => x.getColumn).distinct.sorted
+    val data = rows.map(r => cols.map(c => cellToString(table.getColumns.get(c).getCellData(r))).mkString("\t")).mkString("\n")
     val clipboardContent = new ClipboardContent()
     clipboardContent.putString(data)
     Clipboard.systemClipboard.content = clipboardContent
