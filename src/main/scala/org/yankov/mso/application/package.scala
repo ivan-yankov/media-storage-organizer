@@ -6,5 +6,4 @@ package object application {
   type Id = String
   type MergeTrack = (FolkloreTrack, FolkloreTrack) => FolkloreTrack
   type MergeTrackMap = Map[Int, MergeTrack]
-  type AudioMatcher = (AudioSearchData, AudioSearchData) => AudioMatchType
 }

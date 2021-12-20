@@ -1,8 +1,6 @@
 package org.yankov.mso.application.search
 
-import com.yankov.math.MathUtils
-import com.yankov.math.Model._
-import com.yankov.math.xcorr.Correlation._
+
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
@@ -16,9 +14,6 @@ import java.io.InputStream
 import java.time.Duration
 
 object Search {
-  private val audioCorrelationThreshold = DoubleNumber(0.7)
-  private val crossCorrelationShift = 50
-
   def metadataSearch(searchParameters: List[SearchParameters[FolkloreTrack]],
                      allTracks: List[FolkloreTrack],
                      resultTable: UiTable[TrackTableProperties]): Unit = {
@@ -42,24 +37,12 @@ object Search {
   def audioSearch(inputs: Map[Id, InputStream],
                   allTracks: List[FolkloreTrack],
                   audioIndex: Option[AudioIndex],
-                  resultTable: UiTable[TrackTableProperties]): Unit = {
+                  resultTable: UiTable[TrackTableProperties],
+                  correlationThreshold: Double,
+                  crossCorrelationShift: Int): Unit = {
     if (inputs.isEmpty || audioIndex.isEmpty) return
 
-    def audioMatch(a: AudioSearchData, b: AudioSearchData): AudioMatchType = {
-      if (a.hash.equals(b.hash)) ExactMatch
-      else {
-        crossCorrelation(a.data.asNumbers, b.data.asNumbers, crossCorrelationShift) match {
-          case Some(result) =>
-            if (MathUtils.abs(result) > audioCorrelationThreshold) SimilarMatch
-            else NonMatch
-          case None =>
-            ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioSearchError)
-            NonMatch
-        }
-      }
-    }
-
-    val searchResults = audioIndex.get.search(inputs, audioMatch)
+    val searchResults = audioIndex.get.search(inputs, correlationThreshold, crossCorrelationShift)
 
     def collectResults(onCollection: AudioSearchResult => List[Id], identical: Boolean): List[TrackTableProperties] = {
       searchResults
