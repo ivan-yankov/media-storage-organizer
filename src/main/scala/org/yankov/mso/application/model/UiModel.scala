@@ -1,11 +1,13 @@
 package org.yankov.mso.application.model
 
-import org.yankov.mso.application.Resources
+import org.yankov.mso.application.{Id, Resources}
 import org.yankov.mso.application.converters.{DurationConverter, StringConverters}
 import org.yankov.mso.application.model.DataModel._
 import scalafx.beans.property.StringProperty
 import scalafx.scene.image.Image
 import scalafx.stage.Screen
+
+import java.io.File
 
 object UiModel {
 
@@ -28,7 +30,9 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class FolkloreTrackProperties(track: FolkloreTrack) {
+  case class AudioSearchMatch(id: Id, identical: Boolean)
+
+  case class TrackTableProperties(track: FolkloreTrack, audioSearchMatch: Option[AudioSearchMatch] = None) {
     def id: StringProperty = StringProperty(track.id)
 
     def title: StringProperty = StringProperty(track.title)
@@ -54,5 +58,23 @@ object UiModel {
     def note: StringProperty = StringProperty(track.note)
 
     def file: StringProperty = StringProperty(if (track.file.isDefined) track.file.get.getName else "")
+
+    def sampleId: StringProperty = {
+      audioSearchMatch match {
+        case Some(x) => StringProperty(x.id)
+        case None => StringProperty("")
+      }
+    }
+
+    def matchType: StringProperty = {
+      audioSearchMatch match {
+        case Some(x) =>
+          StringProperty(
+            if (x.identical) Resources.Search.audioSearchIdentical
+            else Resources.Search.audioSearchSimilar
+          )
+        case None => StringProperty("")
+      }
+    }
   }
 }

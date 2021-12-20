@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, StandardOpenOption}
 import java.util.Scanner
 import scala.annotation.tailrec
-import scala.collection.JavaConverters.asJavaIterableConverter
+import scala.collection.JavaConverters._
 
 object FileUtils {
   private val log = LoggerFactory.getLogger(getClass)
@@ -94,6 +94,20 @@ object FileUtils {
         log.error("Fail to delete file", e)
         false
     }
+  }
+
+  def getFiles(path: Path): List[Path] = Files.walk(path).iterator.asScala.toList.filter(x => Files.isRegularFile(x))
+
+  def fileNameExtension(path: Path): String = {
+    val fileName = path.getFileName.toString
+    if (fileName.contains(".")) fileName.substring(fileName.lastIndexOf("."))
+    else ""
+  }
+
+  def fileNameWithoutExtension(path: Path): String = {
+    val fileName = path.getFileName.toString
+    if (fileName.contains(".")) fileName.substring(0, fileName.lastIndexOf("."))
+    else fileName
   }
 
   private def tryOrException[T](f: () => T): Either[Throwable, T] = {

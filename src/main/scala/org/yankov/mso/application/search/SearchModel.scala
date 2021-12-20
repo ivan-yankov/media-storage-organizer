@@ -6,6 +6,8 @@ import org.yankov.mso.application.Resources.Variables._
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.TextAnalyzer._
 
+import java.io.File
+
 object SearchModel {
   case class Variable[T](label: String, valueProvider: T => String)
 
@@ -23,6 +25,7 @@ object SearchModel {
     val varTrackNote: Variable[FolkloreTrack] = Variable[FolkloreTrack](trackNote, x => x.note)
     val varSourceType: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name)
     val varSourceSignature: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceSignature, x => x.source.signature)
+    val varId: Variable[FolkloreTrack] = Variable[FolkloreTrack](id, x => x.id)
 
     def asList: List[Variable[FolkloreTrack]] = List(
       varTitle,
@@ -30,14 +33,15 @@ object SearchModel {
       varAccompanimentPerformer,
       varArrangementAuthor,
       varConductor,
+      varSourceType,
+      varSourceSignature,
+      varId,
+      varTrackNote,
       varInstrumentPerformance,
       varInstrumentAccompaniment,
       varSoloist,
       varAuthor,
-      varEthnographicRegion,
-      varTrackNote,
-      varSourceType,
-      varSourceSignature
+      varEthnographicRegion
     )
   }
 

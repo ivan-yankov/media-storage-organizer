@@ -1,24 +1,25 @@
 package org.yankov.mso.application.model
 
 import org.scalatest.{FreeSpec, Matchers}
+import org.yankov.mso.application.Id
 import org.yankov.mso.application.database.{Database, FakeDatabase}
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 
 import java.io.File
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 import java.time.Duration
 import scala.collection.JavaConverters._
 
 class DataManagerTest extends FreeSpec with Matchers {
-  private val dbDir = "db-dir"
+  private val dbPaths = DatabasePaths(Paths.get("db-dir"))
 
-  private val artistsPath = Paths.get(dbDir, "data", "artists")
-  private val sourcesPath = Paths.get(dbDir, "data", "sources")
-  private val sourceTypesPath = Paths.get(dbDir, "data", "source-types")
-  private val instrumentsPath = Paths.get(dbDir, "data", "instruments")
-  private val ethnographicRegionsPath = Paths.get(dbDir, "data", "ethnographic-regions")
-  private val tracksPath = Paths.get(dbDir, "data", "tracks")
+  private def artistsPath: Path = dbPaths.artists
+  private def instrumentsPath: Path = dbPaths.instruments
+  private def sourceTypesPath: Path = dbPaths.sourceTypes
+  private def sourcesPath: Path = dbPaths.sources
+  private def ethnographicRegionsPath: Path = dbPaths.ethnographicRegions
+  private def tracksPath: Path = dbPaths.tracks
 
   private val missions = List(
     Singer,
@@ -49,15 +50,19 @@ class DataManagerTest extends FreeSpec with Matchers {
     )
   )
 
-  case class PutRecordCheck() {
+  case class RecordCheck() {
     private val files: java.util.List[String] = new java.util.ArrayList[String]()
 
     def getFiles: List[String] = files.asScala.toList
 
     def putRecord(file: File): Boolean = files.add(file.toPath.toString)
+
+    def deleteRecord(id: Id): Boolean = files.remove(id)
   }
 
-  private def dataManager(db: Database): DataManager = DataManager(dbDir, db, doIndex = false)
+  private def dataManager(db: Database): DataManager = {
+    DataManager(db, dbPaths, None)
+  }
 
   "insert" - {
     "artist" - {
@@ -209,11 +214,11 @@ class DataManagerTest extends FreeSpec with Matchers {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
 
-        val putRecordCheck = PutRecordCheck()
+        val recordCheck = RecordCheck()
 
         val tracks = List.fill(3)(FolkloreTrack())
 
-        dataManager(db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
+        dataManager(db).insertTracks(tracks, (_, f) => recordCheck.putRecord(f)) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.foreach(
@@ -233,16 +238,16 @@ class DataManagerTest extends FreeSpec with Matchers {
           }
         )
         db.getInsertPath shouldBe tracksPath
-        putRecordCheck.getFiles shouldBe List()
+        recordCheck.getFiles shouldBe List()
       }
 
       "non-empty" in {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
 
-        val putRecordCheck = PutRecordCheck()
+        val recordCheck = RecordCheck()
 
-        dataManager(db).insertTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
+        dataManager(db).insertTracks(tracks, (_, f) => recordCheck.putRecord(f)) shouldBe true
 
         db.getInsertEntries.size shouldBe tracks.size
         db.getInsertEntries.zip(tracks).foreach(
@@ -264,7 +269,7 @@ class DataManagerTest extends FreeSpec with Matchers {
           }
         )
         db.getInsertPath shouldBe tracksPath
-        putRecordCheck.getFiles shouldBe tracks.map(x => x.file.get.toPath.toString)
+        recordCheck.getFiles shouldBe tracks.map(x => x.file.get.toPath.toString)
       }
     }
   }
@@ -273,11 +278,15 @@ class DataManagerTest extends FreeSpec with Matchers {
     val db = FakeDatabase()
     db.setDeleteResult(Right(1))
 
-    dataManager(db).deleteTrack(FolkloreTrack("id")) shouldBe true
+    val recordCheck = RecordCheck()
+    recordCheck.putRecord(new File("id"))
+
+    dataManager(db).deleteTrack(FolkloreTrack("id"), x => recordCheck.deleteRecord(x)) shouldBe true
 
     db.getDeleteKeys.size shouldBe 1
     db.getDeleteKeys.head shouldBe "id"
     db.getDeletePath shouldBe tracksPath
+    recordCheck.getFiles.isEmpty shouldBe true
   }
 
   "update" - {
@@ -351,9 +360,9 @@ class DataManagerTest extends FreeSpec with Matchers {
       val db = FakeDatabase()
       db.setUpdateResult(Right(tracks.map(x => x.id)))
 
-      val putRecordCheck = PutRecordCheck()
+      val recordCheck = RecordCheck()
 
-      dataManager(db).updateTracks(tracks, (_, f) => putRecordCheck.putRecord(f)) shouldBe true
+      dataManager(db).updateTracks(tracks, (_, f) => recordCheck.putRecord(f)) shouldBe true
 
       db.getUpdateEntries.size shouldBe tracks.size
       db.getUpdateEntries.zip(tracks).foreach(
@@ -375,7 +384,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         }
       )
       db.getUpdatePath shouldBe tracksPath
-      putRecordCheck.getFiles shouldBe tracks.map(x => x.file.get.toPath.toString)
+      recordCheck.getFiles shouldBe tracks.map(x => x.file.get.toPath.toString)
     }
   }
 }

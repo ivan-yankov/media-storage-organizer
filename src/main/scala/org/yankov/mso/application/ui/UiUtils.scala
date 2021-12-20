@@ -39,8 +39,8 @@ object UiUtils {
       else Option.empty
     }
     else {
-      val files = fileChooser.showOpenMultipleDialog(Main.stage.getScene.getWindow).asScala.toList
-      if (files != null) Option(files) else Option.empty
+      val files = fileChooser.showOpenMultipleDialog(Main.stage.getScene.getWindow)
+      if (files != null) Option(files.asScala.toList) else Option.empty
     }
   }
 

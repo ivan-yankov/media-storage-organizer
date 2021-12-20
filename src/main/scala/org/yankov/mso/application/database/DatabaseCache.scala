@@ -5,12 +5,13 @@ import org.yankov.mso.application.Id
 import org.yankov.mso.application.Main.dataManager._
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
+import org.yankov.mso.application.model.DatabasePaths
 
-case class DatabaseCache(database: Database) {
+case class DatabaseCache(database: Database, databasePaths: DatabasePaths) {
   private val log = LoggerFactory.getLogger(getClass)
 
   lazy val artists: Map[Id, Artist] = {
-    database.read[DbArtist](List(), artistsPath) match {
+    database.read[DbArtist](List(), databasePaths.artists) match {
       case Left(e) =>
         log.error(e)
         Map()
@@ -20,7 +21,7 @@ case class DatabaseCache(database: Database) {
   }
 
   lazy val sourceTypes: Map[Id, SourceType] = {
-    database.read[DbSourceType](List(), sourceTypesPath) match {
+    database.read[DbSourceType](List(), databasePaths.sourceTypes) match {
       case Left(e) =>
         log.error(e)
         Map()
@@ -30,7 +31,7 @@ case class DatabaseCache(database: Database) {
   }
 
   lazy val ethnographicRegions: Map[Id, EthnographicRegion] = {
-    database.read[DbEthnographicRegion](List(), ethnographicRegionsPath) match {
+    database.read[DbEthnographicRegion](List(), databasePaths.ethnographicRegions) match {
       case Left(e) =>
         log.error(e)
         Map()
@@ -40,7 +41,7 @@ case class DatabaseCache(database: Database) {
   }
 
   lazy val sources: Map[Id, Source] = {
-    database.read[DbSource](List(), sourcesPath) match {
+    database.read[DbSource](List(), databasePaths.sources) match {
       case Left(e) =>
         log.error(e)
         Map()
@@ -59,7 +60,7 @@ case class DatabaseCache(database: Database) {
   }
 
   lazy val instruments: Map[Id, Instrument] = {
-    database.read[DbInstrument](List(), instrumentsPath) match {
+    database.read[DbInstrument](List(), databasePaths.instruments) match {
       case Left(e) =>
         log.error(e)
         Map()
@@ -68,13 +69,13 @@ case class DatabaseCache(database: Database) {
     }
   }
 
-  lazy val tracks: Map[Id, FolkloreTrack] = {
-    database.read[DbFolkloreTrack](List(), tracksPath) match {
+  lazy val tracks: List[FolkloreTrack] = {
+    database.read[DbFolkloreTrack](List(), databasePaths.tracks) match {
       case Left(e) =>
         log.error(e)
-        Map()
+        List()
       case Right(result) =>
-        result.map(x => (x.id, x.asFolkloreTrack)).toMap
+        result.map(x => x.asFolkloreTrack)
     }
   }
 }

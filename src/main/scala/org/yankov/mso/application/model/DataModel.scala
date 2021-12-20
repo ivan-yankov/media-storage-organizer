@@ -169,4 +169,16 @@ object DataModel {
       file = file
     )
   }
+
+  case class AudioSearchData(hash: String, data: Vector[Double])
+
+  case class AudioSearchResult(sampleId: Id, exactMatches: List[Id], similarMatches: List[Id])
+
+  trait AudioMatchType
+
+  case object ExactMatch extends AudioMatchType
+
+  case object SimilarMatch extends AudioMatchType
+
+  case object NonMatch extends AudioMatchType
 }

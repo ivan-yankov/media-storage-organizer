@@ -3,7 +3,7 @@ package org.yankov.mso.application.ui.toolbars
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.model.UiModel.FolkloreTrackProperties
+import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
 import org.yankov.mso.application._
@@ -13,20 +13,20 @@ import scalafx.scene.input.{Clipboard, DataFormat}
 import java.io.File
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
-  private var copiedProperties: Option[FolkloreTrackProperties] = Option.empty
+  private var copiedProperties: Option[TrackTableProperties] = Option.empty
   private val dataManager = Main.dataManager
   private val console = ApplicationConsole
   private val maxFileNameLength = 250
 
   override def updateItems(targetInputTab: Boolean): Unit = {
-    Commands.updateItems[FolkloreTrackProperties](
+    Commands.updateItems[TrackTableProperties](
       targetTable(targetInputTab),
       x => dataManager.updateTracks(x.map(y => y.track))
     )
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
-    Commands.exportItems[FolkloreTrackProperties](
+    Commands.exportItems[TrackTableProperties](
       targetTable(targetInputTab),
       (x, y) => createOutputFileName(x, y.track),
       x => dataManager.getRecord(x.track.id)
@@ -36,7 +36,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def loadTracks(targetInputTab: Boolean): Unit = {
     Commands.loadItems(
       targetTable(targetInputTab),
-      x => FolkloreTrackProperties(FolkloreTrack().withFile(Option(x)).withDuration(UiUtils.calculateDuration(Option(x))))
+      x => TrackTableProperties(FolkloreTrack().withFile(Option(x)).withDuration(UiUtils.calculateDuration(Option(x))))
     )
   }
 
@@ -45,10 +45,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def importTitlesFromClipboard(targetInputTab: Boolean): Unit = {
     val clipboard = Clipboard.systemClipboard
     if (clipboard.hasContent(DataFormat.PlainText)) {
-      Commands.importTitlesFromClipboard[FolkloreTrackProperties](
+      Commands.importTitlesFromClipboard[TrackTableProperties](
         targetTable(targetInputTab),
         clipboard.getString,
-        (x, y) => FolkloreTrackProperties(x.track.withTitle(y))
+        (x, y) => TrackTableProperties(x.track.withTitle(y))
       )
     }
   }
@@ -56,14 +56,14 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def applyProperties(targetInputTab: Boolean): Unit = {
     val table = targetTable(targetInputTab)
 
-    def createProperties(row: Int, col: Int): FolkloreTrackProperties = {
+    def createProperties(row: Int, col: Int): TrackTableProperties = {
       val sourceTrack = copiedProperties.get.track
       val destinationTrack = table.items.getValue.get(row).track
 
       val mergeTrackMap = table.getUserData.asInstanceOf[MergeTrackMap]
 
       val newTrack = mergeTrackMap.getOrElse[MergeTrack](col, (_, x) => x)(sourceTrack, destinationTrack)
-      FolkloreTrackProperties(newTrack)
+      TrackTableProperties(newTrack)
     }
 
     Commands.applyProperties(
@@ -83,16 +83,16 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def cloneItem(targetInputTab: Boolean): Unit = {
-    Commands.cloneItem[FolkloreTrackProperties](
+    Commands.cloneItem[TrackTableProperties](
       targetTable(targetInputTab),
-      x => FolkloreTrackProperties(x.track)
+      x => TrackTableProperties(x.track)
     )
   }
 
   override def removeItem(targetInputTab: Boolean): Unit = Commands.removeItem(targetTable(targetInputTab))
 
   override def deleteItem(targetInputTab: Boolean): Unit = {
-    Commands.deleteItem[FolkloreTrackProperties](
+    Commands.deleteItem[TrackTableProperties](
       targetTable(targetInputTab),
       () => UiUtils.confirmDeleteFromDatabase,
       x => {
@@ -105,21 +105,21 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def addItem(targetInputTab: Boolean): Unit = {
     Commands.addItem(
       targetTable(targetInputTab),
-      FolkloreTrackProperties(FolkloreTrack())
+      TrackTableProperties(FolkloreTrack())
     )
   }
 
   override def uploadItems(targetInputTab: Boolean): Unit = {
-    Commands.uploadItems[FolkloreTrackProperties](
+    Commands.uploadItems[TrackTableProperties](
       targetTable(targetInputTab),
       x => dataManager.insertTracks(x.map(y => y.track))
     )
   }
 
   override def play(targetInputTab: Boolean): Unit = {
-    Commands.play[FolkloreTrackProperties](
+    Commands.play[TrackTableProperties](
       targetTable(targetInputTab),
-      x => Player.play(x.track, dataManager.mediaFile)
+      x => Player.play(x.track, dataManager.databasePaths.mediaFile)
     )
   }
 
@@ -131,9 +131,9 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
     )
   }
 
-  private def targetTable(targetInputTab: Boolean): TableView[FolkloreTrackProperties] = {
-    if (targetInputTab) Main.inputTable.getValue
-    else Main.searchTable.getValue
+  private def targetTable(targetInputTab: Boolean): TableView[TrackTableProperties] = {
+    if (targetInputTab) Main.inputTable.pure
+    else Main.searchTable.pure
   }
 
   private def targetButtons(targetInputTab: Boolean): List[Button] = {
