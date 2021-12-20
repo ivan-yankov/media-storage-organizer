@@ -64,12 +64,12 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
         log.error(s"Unable to read audio index [$e]")
         List()
       case Right(items) =>
-        samples.map {
+        samples.par.map {
           sample =>
             calculateFingerprint(sample._1, sample._2) match {
               case Some(fp) =>
                 val matches = items
-                  .map(x => (audioMatchData(fp.asSearchData, x.asSearchData), x.id))
+                  .map(item => (audioMatchData(fp.asSearchData, item.asSearchData), item.id))
                   .filterNot(x => x._1 == NonMatch)
                 if (matches.nonEmpty) {
                   Some(
