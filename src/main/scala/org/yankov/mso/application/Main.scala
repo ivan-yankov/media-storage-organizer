@@ -69,12 +69,28 @@ object Main extends JFXApp {
     )
   )
 
+  override def main(args: Array[String]): Unit = {
+    if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.buildAudioIndex, args.toSeq)) {
+      createDataManager.audioIndex.get.build()
+    }
+    else if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.importDatabase, args.toSeq)) {
+      ImportDatabase.run(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
+    }
+    else {
+      super.main(args)
+    }
+  }
+
   onStart()
 
-  def getApplicationArgument(argument: String, defaultValue: String = "", required: Boolean = true): String = {
-    parameters
-      .raw
-      .find(x => x.startsWith(argument)) match {
+  def getApplicationArgumentFlag(argument: String, arguments: Seq[String] = parameters.raw): Boolean =
+    arguments.exists(x => x.equals(argument))
+
+  def getApplicationArgument(argument: String,
+                             defaultValue: String = "",
+                             required: Boolean = true,
+                             arguments: Seq[String] = parameters.raw): String = {
+    arguments.find(x => x.startsWith(argument)) match {
       case Some(value) =>
         val items = value.split("=")
         if (items.length == 2) items(1)
@@ -97,7 +113,6 @@ object Main extends JFXApp {
     val dbPaths = DatabasePaths(Paths.get(dbDir))
     val db = RealDatabase()
     val audioIndex = AudioIndex(db, dbPaths)
-    //    audioIndex.buildIfNotExists()
     DataManager(db, dbPaths, Some(audioIndex))
   }
 
