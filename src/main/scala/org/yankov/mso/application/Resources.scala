@@ -8,6 +8,8 @@ object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaServerPort: String = "--media-server-port"
+    val importDatabase: String = "--import-database"
+    val buildAudioIndex: String = "--build-audio-index"
   }
 
   object ApplicationArgumentValues {
