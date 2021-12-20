@@ -58,7 +58,7 @@ object Main extends JFXApp {
     () => FolkloreControlsFactory.createSearchFilter()
   )
   lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
-    x => Search.audioSearch(x, dataManager.audioIndex, audioSearchTable)
+    x => Search.audioSearch(x, dataManager.getTracks, dataManager.audioIndex, audioSearchTable)
   )
 
   onStart()
