@@ -18,6 +18,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
+import java.io.FileInputStream
 import java.nio.file.Paths
 
 object Main extends JFXApp {
@@ -58,7 +59,12 @@ object Main extends JFXApp {
     () => FolkloreControlsFactory.createSearchFilter()
   )
   lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
-    x => Search.audioSearch(x, dataManager.getTracks, dataManager.audioIndex, audioSearchTable)
+    x => Search.audioSearch(
+      x.map(y => y.getName -> new FileInputStream(y)).toMap,
+      dataManager.getTracks,
+      dataManager.audioIndex,
+      audioSearchTable
+    )
   )
 
   onStart()
