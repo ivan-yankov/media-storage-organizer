@@ -38,10 +38,21 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
 
   def build(inputs: Map[Id, InputStream] = fileInputs): Unit = {
     log.info("Build audio index")
-    calculateAndInsertItems(inputs)
+    calculateAndInsertItems(inputs) match {
+      case Left(notIndexedIds) =>
+        notIndexedIds.foreach(x => log.error(s"Input with id [$x] is not indexed in audio index"))
+      case Right(_) => ()
+    }
   }
 
-  def add(id: Id): Boolean = calculateAndInsertItems(Map(id -> new FileInputStream(databasePaths.mediaFile(id))))
+  def add(id: Id): Boolean = {
+    calculateAndInsertItems(Map(id -> new FileInputStream(databasePaths.mediaFile(id)))) match {
+      case Left(notIndexedIds) =>
+        notIndexedIds.foreach(x => ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioIndexItemError(x)))
+        false
+      case Right(_) => true
+    }
+  }
 
   def remove(id: Id): Boolean = {
     database.delete[DbAudioIndexItem](List(id), databasePaths.audioIndex) match {
@@ -81,7 +92,9 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
                   )
                 }
                 else None
-              case None => None
+              case None =>
+                ApplicationConsole.writeMessageWithTimestamp(Resources.Search.errorFingerprintCalculation(sample._1))
+                None
             }
         }.filter(x => x.isDefined).map(x => x.get).toList
     }
@@ -108,13 +121,12 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
         log.info(s"Calculate audio fingerprint for [$id]")
         Some(Fingerprinter(new ByteArrayInputStream(bytes)).unsafeRunSync())
       case None =>
-        ApplicationConsole.writeMessageWithTimestamp(Resources.Search.errorFingerprintCalculation(id))
         None
     }
 
   }
 
-  private def calculateAndInsertItems(inputs: Map[Id, InputStream]): Boolean = {
+  private def calculateAndInsertItems(inputs: Map[Id, InputStream]): Either[List[Id], Unit] = {
     val items = inputs.map {
       input =>
         calculateFingerprint(input._1, input._2) match {
@@ -131,15 +143,15 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     }.toList
 
     val notIndexedIds = items.filter(x => x.isLeft).map(x => x.left.get)
-    notIndexedIds.foreach(x => ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioIndexItemError(x)))
 
     val indexedItems = items.filter(x => x.isRight).map(x => x.right.get)
     database.insert(indexedItems, databasePaths.audioIndex) match {
       case Left(e) =>
         log.error(s"Error during insert audio index items [$e]")
-        false
+        Left(List())
       case Right(_) =>
-        notIndexedIds.isEmpty
+        if (notIndexedIds.nonEmpty) Left(notIndexedIds)
+        else Right(())
     }
   }
 }
