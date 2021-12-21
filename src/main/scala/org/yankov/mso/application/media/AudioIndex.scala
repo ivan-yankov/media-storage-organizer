@@ -48,7 +48,7 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
   def add(id: Id): Boolean = {
     calculateAndInsertItems(Map(id -> new FileInputStream(databasePaths.mediaFile(id)))) match {
       case Left(notIndexedIds) =>
-        notIndexedIds.foreach(x => ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioIndexItemError(x)))
+        notIndexedIds.foreach(x => ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.audioIndexItemError(x)))
         false
       case Right(_) => true
     }
@@ -93,7 +93,7 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
                 }
                 else None
               case None =>
-                ApplicationConsole.writeMessageWithTimestamp(Resources.Search.errorFingerprintCalculation(sample._1))
+                ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.errorFingerprintCalculation(sample._1))
                 None
             }
         }.filter(x => x.isDefined).map(x => x.get).toList

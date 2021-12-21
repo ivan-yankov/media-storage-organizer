@@ -87,11 +87,17 @@ object Resources {
     val uploadStarted: String = "Начало на транзакция за обновяване на база данни"
     val uploadSuccessful: String = "Успешно обновяване на база данни"
     val uploadFailed: String = "Неуспешно обновяване на база данни"
-    val unableWriteFile: String = "Неуспешен експорт на файл"
+    val unableExportFile: String = "Неуспешен експорт на файл"
     val exportStarted: String = "Експорт на файлове - начало"
     val exportCompleted: String = "Експорт на файлове - край"
     val deleteTrackSuccessful: String = "Успешно изтрит запис"
     val deleteTrackFailed: String = "Грешка при изтриване на запис"
+
+    def unableToWriteFile(path: String): String = s"Не може да се запише файл $path"
+
+    def errorFingerprintCalculation(id: String): String = s"Грешка при декодиране на flac [$id]"
+
+    def audioIndexItemError(id: String): String = s"Запис с идентификатор [$id] не е индексиран в аудио индекс"
   }
 
   object Controls {
@@ -114,10 +120,6 @@ object Resources {
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
-
-    def errorFingerprintCalculation(id: String): String = s"Грешка при декодиране на flac [$id]"
-
-    def audioIndexItemError(id: String): String = s"Запис с идентификатор [$id] не е индексиран в аудио индекс"
   }
 
   object TrackEditor {

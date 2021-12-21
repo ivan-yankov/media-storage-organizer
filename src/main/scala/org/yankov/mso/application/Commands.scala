@@ -46,7 +46,7 @@ object Commands {
           } catch {
             case e: IOException =>
               log.error(s"Unable to write file [$outputFileName]", e)
-              console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableWriteFile} [$outputFileName]")
+              console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableExportFile} [$outputFileName]")
           }
         })
       console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)

@@ -6,10 +6,11 @@ import org.yankov.mso.application.database.{Database, DatabaseCache}
 import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
-import org.yankov.mso.application.{FileUtils, Id}
+import org.yankov.mso.application.ui.console.ApplicationConsole
+import org.yankov.mso.application.{FileUtils, Id, Resources}
 
 import java.io.File
-import java.nio.file.Path
+import java.nio.file.{Files, Path}
 import java.util.UUID
 
 case class DataManager(database: Database,
@@ -278,11 +279,20 @@ case class DataManager(database: Database,
         log.error(e)
         false
       case Right(data) =>
-        if (audioIndex.isDefined) {
-          audioIndex.get.remove(id)
-          audioIndex.get.add(id)
+        if (Files.isWritable(mediaFile(id).toPath)) {
+          val result = FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
+          if (result && audioIndex.isDefined) {
+            audioIndex.get.remove(id)
+            audioIndex.get.add(id)
+          }
+          result
         }
-        FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
+        else {
+          ApplicationConsole.writeMessageWithTimestamp(
+            Resources.ConsoleMessages.unableToWriteFile(mediaFile(id).toPath.toString)
+          )
+          false
+        }
     }
   }
 
