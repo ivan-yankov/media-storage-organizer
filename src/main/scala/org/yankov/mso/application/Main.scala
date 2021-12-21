@@ -26,13 +26,22 @@ object Main extends JFXApp {
 
   override def main(args: Array[String]): Unit = {
     if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.buildAudioIndex, args.toSeq)) {
-      val dataManager = createDataManager(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
+      val dataManager = createDataManager(
+        getApplicationArgument(
+          argument = Resources.ApplicationArgumentKeys.databaseDirectory,
+          arguments = args.toSeq)
+      )
       Files.deleteIfExists(dataManager.databasePaths.audioIndex)
       Files.createFile(dataManager.databasePaths.audioIndex)
       dataManager.audioIndex.get.build()
     }
     else if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.importDatabase, args.toSeq)) {
-      ImportDatabase.run(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
+      ImportDatabase.run(
+        getApplicationArgument(
+          Resources.ApplicationArgumentKeys.databaseDirectory,
+          arguments = args.toSeq
+        )
+      )
     }
     else {
       super.main(args)
