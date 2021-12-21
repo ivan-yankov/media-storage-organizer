@@ -123,7 +123,6 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
       case None =>
         None
     }
-
   }
 
   private def calculateAndInsertItems(inputs: Map[Id, InputStream]): Either[List[Id], Unit] = {
