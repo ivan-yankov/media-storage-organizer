@@ -19,9 +19,26 @@ import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
 import java.io.FileInputStream
-import java.nio.file.Paths
+import java.nio.file.{Files, Paths}
 
 object Main extends JFXApp {
+  private lazy val log = LoggerFactory.getLogger(getClass)
+
+  override def main(args: Array[String]): Unit = {
+    if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.buildAudioIndex, args.toSeq)) {
+      val dataManager = createDataManager(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
+      Files.deleteIfExists(dataManager.databasePaths.audioIndex)
+      Files.createFile(dataManager.databasePaths.audioIndex)
+      dataManager.audioIndex.get.build()
+    }
+    else if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.importDatabase, args.toSeq)) {
+      ImportDatabase.run(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
+    }
+    else {
+      super.main(args)
+    }
+  }
+
   stage = new PrimaryStage {
     maximized = ApplicationSettings.isMaximized
     width = ApplicationSettings.getWindowWidth
@@ -46,9 +63,9 @@ object Main extends JFXApp {
     }
   }
 
-  private lazy val log = LoggerFactory.getLogger(getClass)
-
-  lazy val dataManager: DataManager = createDataManager
+  lazy val dataManager: DataManager = createDataManager(
+    getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
+  )
   lazy val inputTable: FolkloreTrackTable = new FolkloreTrackTable(true)
   lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
   lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
@@ -68,18 +85,6 @@ object Main extends JFXApp {
       crossCorrelationShift
     )
   )
-
-  override def main(args: Array[String]): Unit = {
-    if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.buildAudioIndex, args.toSeq)) {
-      createDataManager.audioIndex.get.build()
-    }
-    else if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.importDatabase, args.toSeq)) {
-      ImportDatabase.run(getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory))
-    }
-    else {
-      super.main(args)
-    }
-  }
 
   onStart()
 
@@ -108,8 +113,7 @@ object Main extends JFXApp {
     new Thread(() => MediaServer.start()).start()
   }
 
-  private def createDataManager: DataManager = {
-    val dbDir = getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
+  private def createDataManager(dbDir: String): DataManager = {
     val dbPaths = DatabasePaths(Paths.get(dbDir))
     val db = RealDatabase()
     val audioIndex = AudioIndex(db, dbPaths)
