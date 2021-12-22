@@ -85,16 +85,7 @@ object FileUtils {
     }
   }
 
-  def deleteFile(file: File): Boolean = {
-    try {
-      Files.deleteIfExists(file.toPath)
-    }
-    catch {
-      case e: Exception =>
-        log.error("Fail to delete file", e)
-        false
-    }
-  }
+  def deleteFile(file: File): Boolean = Files.deleteIfExists(file.toPath)
 
   def getFiles(path: Path): List[Path] = Files.walk(path).iterator.asScala.toList.filter(x => Files.isRegularFile(x))
 
