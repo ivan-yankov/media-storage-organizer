@@ -8,7 +8,7 @@ import java.io.InputStream
 import java.nio.file.Path
 
 case class FakeDatabase() extends Database {
-  private var insertEntries: List[_] = _
+  private var insertEntries: List[_] = List()
   private var insertPath: Path = _
   private var insertResult: Either[String, Unit] = _
 
@@ -16,7 +16,7 @@ case class FakeDatabase() extends Database {
   private var readPath: Path = _
   private var readResult: Either[String, List[_]] = _
 
-  private var updateEntries: List[_] = _
+  private var updateEntries: List[_] = List()
   private var updatePath: Path = _
   private var updateResult: Either[String, List[Id]] = _
 
@@ -52,7 +52,7 @@ case class FakeDatabase() extends Database {
 
   override def insert[T <: DbEntry](entries: List[T], path: Path)
                                    (implicit encoder: Encoder[T]): Either[String, Unit] = {
-    insertEntries = entries
+    insertEntries = insertEntries ++ entries
     insertPath = path
     insertResult
   }
@@ -69,7 +69,7 @@ case class FakeDatabase() extends Database {
 
   override def update[T <: DbEntry](entries: List[T], path: Path, inputStream: Path => InputStream)
                                    (implicit encoder: Encoder[T], decoder: Decoder[T]): Either[String, List[Id]] = {
-    updateEntries = entries
+    updateEntries = updateEntries.filterNot(x => entries.contains(x)) ++ entries
     updatePath = path
     updateResult
   }
