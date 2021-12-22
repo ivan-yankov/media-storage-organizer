@@ -1,13 +1,13 @@
 package org.yankov.mso.application
 
 import java.io.{File, FileOutputStream, IOException}
-
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
 import scalafx.scene.control.{Button, SelectionMode, TableView}
 
+import java.nio.file.Paths
 import collection.JavaConverters._
 
 object Commands {
@@ -21,7 +21,6 @@ object Commands {
         .asScala
         .toList
 
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
       if (update(items)) {
         console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
         clearTable(table)
@@ -33,22 +32,15 @@ object Commands {
   def exportItems[T](table: TableView[T], createOutputFileName: (File, T) => String, getRecord: T => Array[Byte]): Unit = {
     val directory = UiUtils.selectDirectory
     if (directory.isDefined) {
-      console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportStarted)
       table
         .getSelectionModel
         .getSelectedItems
-        .forEach(x => {
-          val outputFileName = createOutputFileName(directory.get, x)
-          try {
-            val out = new FileOutputStream(outputFileName)
-            out.write(getRecord(x))
-            out.close()
-          } catch {
-            case e: IOException =>
-              log.error(s"Unable to write file [$outputFileName]", e)
-              console.writeMessageWithTimestamp(s"${Resources.ConsoleMessages.unableExportFile} [$outputFileName]")
+        .forEach(
+          x => {
+            val outputFileName = createOutputFileName(directory.get, x)
+            FileUtils.writeBinaryFile(new File(outputFileName), getRecord(x))
           }
-        })
+        )
       console.writeMessageWithTimestamp(Resources.ConsoleMessages.exportCompleted)
     }
   }
@@ -146,7 +138,6 @@ object Commands {
       .asScala
       .toList
 
-    console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadStarted)
     if (insertItems(items)) {
       console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadSuccessful)
       clearTable(table)

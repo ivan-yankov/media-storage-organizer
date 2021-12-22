@@ -279,20 +279,13 @@ case class DataManager(database: Database,
         log.error(e)
         false
       case Right(data) =>
-        if (Files.isWritable(mediaFile(id).toPath)) {
-          val result = FileUtils.deleteFile(mediaFile(id)) && FileUtils.writeBinaryFile(mediaFile(id), data)
-          if (result && audioIndex.isDefined) {
-            audioIndex.get.remove(id)
-            audioIndex.get.add(id)
-          }
-          result
+        FileUtils.deleteFile(mediaFile(id))
+        val result = FileUtils.writeBinaryFile(mediaFile(id), data)
+        if (result && audioIndex.isDefined) {
+          audioIndex.get.remove(id)
+          audioIndex.get.add(id)
         }
-        else {
-          ApplicationConsole.writeMessageWithTimestamp(
-            Resources.ConsoleMessages.unableToWriteFile(mediaFile(id).toPath.toString)
-          )
-          false
-        }
+        result
     }
   }
 

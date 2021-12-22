@@ -84,12 +84,9 @@ object Resources {
   }
 
   object ConsoleMessages {
-    val uploadStarted: String = "Начало на транзакция за обновяване на база данни"
     val uploadSuccessful: String = "Успешно обновяване на база данни"
     val uploadFailed: String = "Неуспешно обновяване на база данни"
-    val unableExportFile: String = "Неуспешен експорт на файл"
-    val exportStarted: String = "Експорт на файлове - начало"
-    val exportCompleted: String = "Експорт на файлове - край"
+    val exportCompleted: String = "Успешен експорт на файлове"
     val deleteTrackSuccessful: String = "Успешно изтрит запис"
     val deleteTrackFailed: String = "Грешка при изтриване на запис"
 
