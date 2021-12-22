@@ -11,7 +11,6 @@ import java.nio.file.Paths
 import collection.JavaConverters._
 
 object Commands {
-  private val log = LoggerFactory.getLogger(getClass)
   private val console: ConsoleService = ApplicationConsole
 
   def updateItems[T](table: TableView[T], update: List[T] => Boolean): Unit = {

@@ -2,10 +2,12 @@ package org.yankov.mso.application.ui
 
 import java.io.File
 import java.time.Duration
-
 import org.jaudiotagger.audio.AudioFileIO
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.{Main, Resources}
+import scalafx.application.Platform
+import scalafx.concurrent.Task
+import scalafx.scene.Cursor
 import scalafx.scene.control.{Alert, ButtonType}
 import scalafx.stage.{DirectoryChooser, FileChooser}
 
@@ -13,6 +15,10 @@ import scala.collection.JavaConverters._
 
 object UiUtils {
   private val log = LoggerFactory.getLogger(getClass)
+
+  implicit class TaskInThread[T](task: Task[T]) {
+    def inThread: Thread = new Thread(task)
+  }
 
   def confirmCloseApplication: Boolean = confirmDialog(Resources.Dialogs.closeApplication)
 
@@ -74,5 +80,24 @@ object UiUtils {
     alert.getButtonTypes.setAll(yes, no)
     val answer = alert.showAndWait
     answer.isDefined && answer.get.equals(yes)
+  }
+
+  def longOperation[T](f: () => T): Task[T] = {
+    new Task[T](
+      () => {
+        val cursor = Main.stage.scene.value.getCursor
+        Platform.runLater {
+          Main.stage.scene.value.setCursor(Cursor.Wait)
+        }
+
+        val result = f()
+
+        Platform.runLater {
+          Main.stage.scene.value.setCursor(cursor)
+        }
+
+        result
+      }
+    ) {}
   }
 }
