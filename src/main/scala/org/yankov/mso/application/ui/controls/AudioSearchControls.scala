@@ -31,7 +31,10 @@ class AudioSearchControls(search: (List[File], Double, Int) => Unit) extends Sea
 
   override def doSearch(): Unit = {
     selectFlacFiles(false) match {
-      case Some(files) => search(files, correlation.getValue.toDouble, crossCorrelationShift.getValue.toInt)
+      case Some(files) =>
+        longOperation(
+          () => search(files, correlation.getValue.toDouble, crossCorrelationShift.getValue.toInt)
+        ).inThread.start()
       case None => ()
     }
   }

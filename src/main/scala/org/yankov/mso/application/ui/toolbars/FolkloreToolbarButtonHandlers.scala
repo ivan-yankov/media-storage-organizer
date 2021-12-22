@@ -1,12 +1,13 @@
 package org.yankov.mso.application.ui.toolbars
 
+import org.yankov.mso.application._
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel._
+import org.yankov.mso.application.ui.UiUtils._
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
-import org.yankov.mso.application._
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
 
@@ -19,18 +20,22 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private val maxFileNameLength = 250
 
   override def updateItems(targetInputTab: Boolean): Unit = {
-    Commands.updateItems[TrackTableProperties](
-      targetTable(targetInputTab),
-      x => dataManager.updateTracks(x.map(y => y.track))
-    )
+    longOperation(
+      () => Commands.updateItems[TrackTableProperties](
+        targetTable(targetInputTab),
+        x => dataManager.updateTracks(x.map(y => y.track))
+      )
+    ).inThread.start()
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
-    Commands.exportItems[TrackTableProperties](
-      targetTable(targetInputTab),
-      (x, y) => createOutputFileName(x, y.track),
-      x => dataManager.getRecord(x.track.id)
-    )
+    longOperation(
+      () => Commands.exportItems[TrackTableProperties](
+        targetTable(targetInputTab),
+        (x, y) => createOutputFileName(x, y.track),
+        x => dataManager.getRecord(x.track.id)
+      )
+    ).inThread.start()
   }
 
   override def loadTracks(targetInputTab: Boolean): Unit = {
@@ -110,10 +115,12 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def uploadItems(targetInputTab: Boolean): Unit = {
-    Commands.uploadItems[TrackTableProperties](
-      targetTable(targetInputTab),
-      x => dataManager.insertTracks(x.map(y => y.track))
-    )
+    longOperation(
+      () => Commands.uploadItems[TrackTableProperties](
+        targetTable(targetInputTab),
+        x => dataManager.insertTracks(x.map(y => y.track))
+      )
+    ).inThread.start()
   }
 
   override def play(targetInputTab: Boolean): Unit = {

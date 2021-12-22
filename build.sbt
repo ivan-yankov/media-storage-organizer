@@ -70,5 +70,3 @@ assemblyMergeStrategy in assembly := {
 }
 
 scalacOptions ++= Seq("-deprecation", "-feature")
-
-fullClasspath in assembly := (fullClasspath in Compile).value
