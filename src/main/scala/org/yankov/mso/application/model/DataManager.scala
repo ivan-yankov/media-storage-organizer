@@ -10,7 +10,7 @@ import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.{FileUtils, Id, Resources}
 
 import java.io.File
-import java.nio.file.{Files, Path}
+import java.nio.file.Path
 import java.util.UUID
 
 case class DataManager(database: Database,
@@ -24,7 +24,6 @@ case class DataManager(database: Database,
   private def sourcesPath: Path = databasePaths.sources
   private def ethnographicRegionsPath: Path = databasePaths.ethnographicRegions
   private def tracksPath: Path = databasePaths.tracks
-  private def mediaPath: Path = databasePaths.media
 
   private var dbCache: DatabaseCache = _
 
@@ -283,7 +282,9 @@ case class DataManager(database: Database,
         val result = FileUtils.writeBinaryFile(mediaFile(id), data)
         if (result && audioIndex.isDefined) {
           audioIndex.get.remove(id)
-          audioIndex.get.add(id)
+          if (!audioIndex.get.add(id)) {
+            ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.audioIndexItemError(id))
+          }
         }
         result
     }

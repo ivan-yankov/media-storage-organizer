@@ -38,21 +38,14 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
 
   def build(inputs: Map[Id, InputStream] = fileInputs): Unit = {
     log.info("Build audio index")
-    calculateAndInsertItems(inputs) match {
-      case Left(notIndexedIds) =>
-        notIndexedIds.foreach(x => log.error(s"Input with id [$x] is not indexed in audio index"))
-      case Right(_) => ()
-    }
+    inputs
+      .map(x => x._1 -> calculateAndInsertItem(x._1, x._2))
+      .filterNot(x => x._2)
+      .keys
+      .foreach(x => log.error(s"Input with id [$x] is not indexed in audio index"))
   }
 
-  def add(id: Id): Boolean = {
-    calculateAndInsertItems(Map(id -> new FileInputStream(databasePaths.mediaFile(id)))) match {
-      case Left(notIndexedIds) =>
-        notIndexedIds.foreach(x => ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.audioIndexItemError(x)))
-        false
-      case Right(_) => true
-    }
-  }
+  def add(id: Id): Boolean = calculateAndInsertItem(id, new FileInputStream(databasePaths.mediaFile(id)))
 
   def remove(id: Id): Boolean = {
     database.delete[DbAudioIndexItem](List(id), databasePaths.audioIndex) match {
@@ -125,32 +118,22 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     }
   }
 
-  private def calculateAndInsertItems(inputs: Map[Id, InputStream]): Either[List[Id], Unit] = {
-    val items = inputs.map {
-      input =>
-        calculateFingerprint(input._1, input._2) match {
-          case Some(fp) =>
-            Right(
-              DbAudioIndexItem(
-                id = input._1,
-                hash = fp.compressed,
-                data = fp.data.map(y => y.toLong).toList
-              )
-            )
-          case None => Left(input._1)
+  private def calculateAndInsertItem(id: Id, input: InputStream): Boolean = {
+    calculateFingerprint(id, input) match {
+      case Some(fp) =>
+        val item = DbAudioIndexItem(
+          id = id,
+          hash = fp.compressed,
+          data = fp.data.map(y => y.toLong).toList
+        )
+        database.insert(List(item), databasePaths.audioIndex) match {
+          case Left(e) =>
+            log.error(s"Error during insert audio index item [$e]")
+            false
+          case Right(_) => true
         }
-    }.toList
-
-    val notIndexedIds = items.filter(x => x.isLeft).map(x => x.left.get)
-
-    val indexedItems = items.filter(x => x.isRight).map(x => x.right.get)
-    database.insert(indexedItems, databasePaths.audioIndex) match {
-      case Left(e) =>
-        log.error(s"Error during insert audio index items [$e]")
-        Left(List())
-      case Right(_) =>
-        if (notIndexedIds.nonEmpty) Left(notIndexedIds)
-        else Right(())
+      case None =>
+        false
     }
   }
 }
