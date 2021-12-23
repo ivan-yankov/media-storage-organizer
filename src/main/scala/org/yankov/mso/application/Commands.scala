@@ -1,13 +1,10 @@
 package org.yankov.mso.application
 
-import java.io.{File, FileOutputStream, IOException}
-import org.slf4j.LoggerFactory
-import org.yankov.mso.application.media.Player
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
-import scalafx.scene.control.{Button, SelectionMode, TableView}
+import scalafx.scene.control.{Button, TableView}
 
-import java.nio.file.Paths
+import java.io.File
 import collection.JavaConverters._
 
 object Commands {
@@ -54,10 +51,7 @@ object Commands {
     }
   }
 
-  def clearTable(table: TableView[_]): Unit = {
-    Player.close()
-    table.getItems.clear()
-  }
+  def clearTable(table: TableView[_]): Unit = table.getItems.clear()
 
   def importTitlesFromClipboard[T](table: TableView[T], data: String, withTitle: (T, String) => T): Unit = {
     val titles = data.split(System.lineSeparator()).filter(x => x.nonEmpty)
