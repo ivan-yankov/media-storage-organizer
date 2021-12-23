@@ -16,11 +16,10 @@ object TextAnalyzer {
         else replace(input.replace(replaceWhat.head, replaceWith), replaceWhat.tail, replaceWith)
       }
 
-      replace(string, symbols, " ")
-        .trim
-        // replace multiple spaces with a single space
-        .replaceAll(" +", " ")
+      replace(string, symbols, " ").trim.refineMultipleSpaces
     }
+
+    def refineMultipleSpaces: String = string.replaceAll(" +", " ")
   }
 
   def analyze(string: String): String = {

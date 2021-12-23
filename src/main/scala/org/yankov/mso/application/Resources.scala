@@ -31,6 +31,9 @@ object Resources {
     val inputArtifactsTab: String = "Артефакти"
     val searchTab: String = "Търсене"
     val audioSearchTab: String = "Аудио търсене"
+    val extractTitleFromFileName: String = "Заглавие от име на файл"
+    val extractTitleFromFileNameRegex: String = "Регулярен израз"
+    val invalidRegex: String = "Невалиден регулярен израз"
   }
 
   object Dialogs {

@@ -95,6 +95,14 @@ object Main extends JFXApp {
     ),
     () => audioSearchTable.clear()
   )
+  lazy val extractTitleFromFileNameCheckBox: CheckBox = new CheckBox {
+    text = Resources.MainForm.extractTitleFromFileName
+    selected = false
+  }
+  lazy val extractTitleFromFileNameRegex: LabeledTextField = LabeledTextField(
+    labelText = Resources.MainForm.extractTitleFromFileNameRegex,
+    value = "(?<= - ).*"
+  )
 
   onStart()
 
@@ -135,10 +143,15 @@ object Main extends JFXApp {
     VBox.setVgrow(searchTable.getContainer, Priority.Always)
     VBox.setVgrow(audioSearchTable.getContainer, Priority.Always)
 
+    val additionalInputControls = List(
+      new SplitPane(),
+      extractTitleFromFileNameRegex.getContainer,
+      extractTitleFromFileNameCheckBox
+    )
     val inputTab = new VBox {
       children = Seq(
         new ToolBar {
-          items = toolbarButtons.inputTabButtons
+          items = toolbarButtons.inputTabButtons ++ additionalInputControls
         },
         inputTable.getContainer
       )
