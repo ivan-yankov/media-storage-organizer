@@ -22,12 +22,10 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private val maxFileNameLength = 250
 
   override def updateItems(targetInputTab: Boolean): Unit = {
-    longOperation(
-      () => Commands.updateItems[TrackTableProperties](
-        targetTable(targetInputTab),
-        x => dataManager.updateTracks(x.map(y => y.track))
-      )
-    ).inThread.start()
+    Commands.updateItems[TrackTableProperties](
+      targetTable(targetInputTab),
+      x => dataManager.updateTracks(x.map(y => y.track))
+    )
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
