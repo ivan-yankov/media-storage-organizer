@@ -3,20 +3,27 @@ package org.yankov.mso.application.ui.controls
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.ui.UiUtils._
-import scalafx.scene.control.TitledPane
+import scalafx.scene.control.{Button, TitledPane}
 
 import java.io.File
 
-class AudioSearchControls(search: (List[File], Double, Int) => Unit) extends SearchControls[FolkloreTrack] {
+class AudioSearchControls(search: (List[File], Double, Int) => Unit,
+                          clear: () => Unit) extends SearchControls[FolkloreTrack] {
   private val correlation = LabeledTextField(Resources.Search.correlation, "0.9")
   private val crossCorrelationShift = LabeledTextField(Resources.Search.crossCorrelationShift, "50")
 
   val panel: TitledPane = {
     val searchContainer = createSearchContainer
 
+    val btnClear: Button = new Button {
+      text = Resources.Search.audioSearchClearButton
+      onAction = _ => clear()
+    }
+
     searchContainer.children.add(correlation.getContainer)
     searchContainer.children.add(crossCorrelationShift.getContainer)
     searchContainer.children.add(btnSearch)
+    searchContainer.children.add(btnClear)
 
     new TitledPane {
       text = Resources.Search.audioSearchPane

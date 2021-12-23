@@ -30,7 +30,7 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class AudioSearchMatch(id: Id, identical: Boolean)
+  case class AudioSearchMatch(id: Id, identical: Boolean, correlation: Double)
 
   case class TrackTableProperties(track: FolkloreTrack, audioSearchMatch: Option[AudioSearchMatch] = None) {
     def id: StringProperty = StringProperty(track.id)
@@ -73,6 +73,13 @@ object UiModel {
             if (x.identical) Resources.Search.audioSearchIdentical
             else Resources.Search.audioSearchSimilar
           )
+        case None => StringProperty("")
+      }
+    }
+
+    def correlation: StringProperty = {
+      audioSearchMatch match {
+        case Some(x) => StringProperty("%.4f".format(x.correlation))
         case None => StringProperty("")
       }
     }

@@ -81,6 +81,7 @@ object Resources {
     val note: String = "Забележка"
     val sampleId: String = "Образец за търсене"
     val matchType: String = "Тип съвпадение"
+    val correlation: String = "Корелация"
   }
 
   object ConsoleMessages {
@@ -109,11 +110,12 @@ object Resources {
     val search: String = "Търсене"
     val audioSearchPane = "Търсене на запис по звуков файл"
     val audioSearchButton: String = "Избор на файлове и търсене"
+    val audioSearchClearButton: String = "Изчистване"
     val audioSearchError: String = "Грешка при аудио търсене"
     val audioSearchIdentical: String = "Идентично"
     val audioSearchSimilar: String = "Подобно"
-    val correlation: String = "Граничен коефициент на корелация"
-    val crossCorrelationShift: String = "Отмесване за крос-корелация"
+    val correlation: String = "Гранична корелация"
+    val crossCorrelationShift: String = "Отместване"
 
     def totalItemsFound(totalCount: Int, totalDuration: Duration): String =
       s"Брой намерени записи $totalCount, общо времетраене ${DurationConverter.toHourMinSecString(totalDuration)}"
