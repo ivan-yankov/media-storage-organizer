@@ -3,7 +3,7 @@ import scala.collection.JavaConverters._
 
 name := "media-storage-organizer"
 
-version := "3.2"
+version := "3.3"
 
 scalaVersion := "2.12.15"
 
