@@ -10,8 +10,10 @@ import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
+import org.yankov.mso.application.search.TextAnalyzer._
 
 import java.io.File
+import java.util.regex.Pattern
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   private var copiedProperties: Option[TrackTableProperties] = Option.empty
@@ -37,9 +39,41 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def loadTracks(targetInputTab: Boolean): Unit = {
+    def extractTitle(file: File): String = {
+      try {
+        val pattern = Pattern.compile(Main.extractTitleFromFileNameRegex.getValue)
+        val matcher = pattern.matcher(file.getName.replace(Resources.Media.flacExtension, ""))
+        if (matcher.find()) {
+          val s = matcher.group().trim.refineMultipleSpaces.toLowerCase
+          s.head.toUpper + s.tail
+        }
+        else ""
+      } catch {
+        case _: Exception =>
+          ApplicationConsole.writeMessageWithTimestamp(Resources.MainForm.invalidRegex)
+          ""
+      }
+    }
+
     Commands.loadItems(
       targetTable(targetInputTab),
-      x => TrackTableProperties(FolkloreTrack().withFile(Option(x)).withDuration(UiUtils.calculateDuration(Option(x))))
+      x => {
+        if (Main.extractTitleFromFileNameCheckBox.isSelected) {
+          TrackTableProperties(
+            FolkloreTrack()
+              .withTitle(extractTitle(x))
+              .withFile(Option(x))
+              .withDuration(UiUtils.calculateDuration(Option(x)))
+          )
+        }
+        else {
+          TrackTableProperties(
+            FolkloreTrack()
+              .withFile(Option(x))
+              .withDuration(UiUtils.calculateDuration(Option(x)))
+          )
+        }
+      }
     )
   }
 
