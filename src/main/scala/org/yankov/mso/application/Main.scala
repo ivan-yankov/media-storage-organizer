@@ -92,7 +92,8 @@ object Main extends JFXApp {
       audioSearchTable,
       correlation,
       crossCorrelationShift
-    )
+    ),
+    () => audioSearchTable.clear()
   )
 
   onStart()

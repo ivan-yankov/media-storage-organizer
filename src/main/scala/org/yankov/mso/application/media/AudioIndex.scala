@@ -18,6 +18,7 @@ import java.io.{ByteArrayInputStream, FileInputStream, InputStream}
 
 case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
   private val log = LoggerFactory.getLogger(getClass)
+  private val maxResultCountPerSample = 10
 
   implicit class AudioIndexItemAsSearchData(item: DbAudioIndexItem) {
     def asSearchData: AudioSearchData = AudioSearchData(hash = item.hash, data = item.data.map(x => x.toDouble).toVector)
@@ -60,8 +61,8 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
   def search(samples: Map[Id, InputStream],
              correlationThreshold: Double,
              crossCorrelationShift: Int): List[AudioSearchResult] = {
-    def audioMatchData: (AudioSearchData, AudioSearchData) => AudioMatchType =
-      audioMatch(correlationThreshold, crossCorrelationShift)(_, _)
+    def audioMatchData: (Id, Id, AudioSearchData, AudioSearchData) => AudioSearchResult =
+      audioMatch(correlationThreshold, crossCorrelationShift)(_, _, _, _)
 
     database.read[DbAudioIndexItem](List(), databasePaths.audioIndex) match {
       case Left(e) =>
@@ -72,38 +73,34 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
           sample =>
             calculateFingerprint(sample._1, sample._2) match {
               case Some(fp) =>
-                val matches = items
-                  .map(item => (audioMatchData(fp.asSearchData, item.asSearchData), item.id))
-                  .filterNot(x => x._1 == NonMatch)
-                if (matches.nonEmpty) {
-                  Some(
-                    AudioSearchResult(
-                      sampleId = sample._1,
-                      exactMatches = matches.filter(x => x._1 == ExactMatch).map(x => x._2),
-                      similarMatches = matches.filter(x => x._1 == SimilarMatch).map(x => x._2)
-                    )
-                  )
-                }
-                else None
+                Some(
+                  items
+                    .map(item => audioMatchData(sample._1, item.id, fp.asSearchData, item.asSearchData))
+                    .filterNot(x => x.matchType == NonMatch)
+                    .sortBy(x => scala.math.abs(x.correlation)).reverse
+                    .take(maxResultCountPerSample)
+                )
               case None =>
                 ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.errorFingerprintCalculation(sample._1))
                 None
             }
-        }.filter(x => x.isDefined).map(x => x.get).toList
+        }.filter(x => x.isDefined).flatMap(x => x.get).toList
     }
   }
 
   private def audioMatch(correlationThreshold: Double, crossCorrelationShift: Int)
-                        (a: AudioSearchData, b: AudioSearchData): AudioMatchType = {
-    if (a.hash.equals(b.hash)) ExactMatch
+                        (aId: Id, bId: Id, a: AudioSearchData, b: AudioSearchData): AudioSearchResult = {
+    if (a.hash.equals(b.hash)) {
+      AudioSearchResult(aId, bId, ExactMatch, 1.0)
+    }
     else {
       crossCorrelation(a.data.asNumbers, b.data.asNumbers, crossCorrelationShift) match {
         case Some(correlation) =>
-          if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) SimilarMatch
-          else NonMatch
+          if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) AudioSearchResult(aId, bId, SimilarMatch, correlation.value)
+          else AudioSearchResult(aId, bId, NonMatch, 0.0)
         case None =>
           ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioSearchError)
-          NonMatch
+          AudioSearchResult(aId, bId, NonMatch, 0.0)
       }
     }
   }

@@ -29,13 +29,11 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def exportItems(targetInputTab: Boolean): Unit = {
-    longOperation(
-      () => Commands.exportItems[TrackTableProperties](
-        targetTable(targetInputTab),
-        (x, y) => createOutputFileName(x, y.track),
-        x => dataManager.getRecord(x.track.id)
-      )
-    ).inThread.start()
+    Commands.exportItems[TrackTableProperties](
+      targetTable(targetInputTab),
+      (x, y) => createOutputFileName(x, y.track),
+      x => dataManager.getRecord(x.track.id)
+    )
   }
 
   override def loadTracks(targetInputTab: Boolean): Unit = {

@@ -43,26 +43,15 @@ object Search {
     if (inputs.isEmpty || audioIndex.isEmpty) return
 
     val searchResults = audioIndex.get.search(inputs, correlationThreshold, crossCorrelationShift)
+      .map(
+        x => {
+          TrackTableProperties(
+            allTracks.find(y => x.matchId.equals(y.id)).getOrElse(FolkloreTrack()),
+            Some(AudioSearchMatch(x.sampleId, identical = x.matchType == ExactMatch, x.correlation))
+          )
+        }
+      )
 
-    def collectResults(onCollection: AudioSearchResult => List[Id], identical: Boolean): List[TrackTableProperties] = {
-      searchResults
-        .flatMap(
-          x =>
-            List
-              .fill(onCollection(x).size)(x.sampleId)
-              .zip(onCollection(x))
-              .map(
-                y =>
-                  TrackTableProperties(
-                    allTracks.find(z => z.id.equals(y._2)).getOrElse(FolkloreTrack()),
-                    Some(AudioSearchMatch(y._1, identical = identical))
-                  )
-              )
-        ).filter(x => isValidId(x.track.id))
-    }
-
-    val exactMatchResults = collectResults(x => x.exactMatches, identical = true)
-    val similarMatchResults = collectResults(x => x.similarMatches, identical = false)
-    resultTable.setItems(exactMatchResults ++ similarMatchResults)
+    resultTable.setItems(searchResults)
   }
 }

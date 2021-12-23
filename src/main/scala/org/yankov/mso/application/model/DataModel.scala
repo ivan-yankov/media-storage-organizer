@@ -172,7 +172,7 @@ object DataModel {
 
   case class AudioSearchData(hash: String, data: Vector[Double])
 
-  case class AudioSearchResult(sampleId: Id, exactMatches: List[Id], similarMatches: List[Id])
+  case class AudioSearchResult(sampleId: Id, matchId: Id, matchType: AudioMatchType, correlation: Double)
 
   trait AudioMatchType
 

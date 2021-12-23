@@ -58,9 +58,11 @@ abstract class UiTable[T] {
   def pure: TableView[T] = table
 
   def setItems(items: List[T]): Unit = {
-    table.getItems.clear()
+    clear()
     items.foreach(x => table.getItems.add(x))
   }
+
+  def clear(): Unit = table.getItems.clear()
 
   def stringTableColumn(textValue: String, valueFactory: T => StringProperty, width: Double): (TableColumn[T, String], Double) = {
     (
