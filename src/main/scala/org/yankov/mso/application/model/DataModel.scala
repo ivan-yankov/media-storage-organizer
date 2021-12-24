@@ -170,17 +170,20 @@ object DataModel {
     )
   }
 
-  case class AudioSearchSample(id: Id, input: InputStream)
+  case class AudioSearchSample(id: Id, audioData: Array[Byte])
 
   case class AudioSearchData(hash: String, data: Vector[Double])
 
-  case class AudioSearchResult(sample: AudioSearchSample, matchId: Id, matchType: AudioMatchType, correlation: Double)
+  case class MatchDetails(matchId: Id,
+                          matchType: AudioMatchType,
+                          correlation: Double)
+
+  case class AudioSearchResult(sample: AudioSearchSample,
+                               matchDetails: Option[MatchDetails])
 
   trait AudioMatchType
 
   case object ExactMatch extends AudioMatchType
 
   case object SimilarMatch extends AudioMatchType
-
-  case object NonMatch extends AudioMatchType
 }

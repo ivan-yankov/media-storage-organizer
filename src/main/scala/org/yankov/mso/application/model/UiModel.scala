@@ -68,8 +68,9 @@ object UiModel {
       audioSearchResult match {
         case Some(x) =>
           StringProperty(
-            if (x.matchType == ExactMatch) Resources.Search.audioSearchIdentical
-            else Resources.Search.audioSearchSimilar
+            x.matchDetails
+              .map(y => if (y.matchType == ExactMatch) Resources.Search.audioSearchIdentical else Resources.Search.audioSearchSimilar)
+              .getOrElse("")
           )
         case None => StringProperty("")
       }
@@ -77,7 +78,12 @@ object UiModel {
 
     def correlation: StringProperty = {
       audioSearchResult match {
-        case Some(x) => StringProperty("%.4f".format(x.correlation))
+        case Some(x) =>
+          StringProperty(
+            x.matchDetails
+              .map(y => "%.4f".format(y.correlation))
+              .getOrElse("")
+          )
         case None => StringProperty("")
       }
     }

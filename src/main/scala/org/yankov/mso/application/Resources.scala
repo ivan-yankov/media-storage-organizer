@@ -114,6 +114,8 @@ object Resources {
     val audioSearchPane = "Търсене на запис по звуков файл"
     val audioSearchButton: String = "Избор на файлове и търсене"
     val audioSearchClearButton: String = "Изчистване"
+    val audioSearchPlayLeftButton: String = "Ляв |>"
+    val audioSearchPlayRightButton: String = "Десен |>"
     val audioSearchError: String = "Грешка при аудио търсене"
     val audioSearchIdentical: String = "Идентично"
     val audioSearchSimilar: String = "Подобно"
