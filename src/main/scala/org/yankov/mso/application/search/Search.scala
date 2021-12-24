@@ -42,24 +42,20 @@ object Search {
                   crossCorrelationShift: Int): Unit = {
     if (inputs.isEmpty || audioIndex.isEmpty) return
 
-    val searchResults = audioIndex.get.search(inputs, correlationThreshold, crossCorrelationShift).map(
-      x => {
-        x.map(
-          y => {
-            TrackTableProperties(
-              allTracks.find(z => y.matchId.equals(z.id)).getOrElse(FolkloreTrack()),
-              Some(y)
-            )
-          }
-        )
-      }
-    )
+    val searchResults: List[List[TrackTableProperties]] = audioIndex.get
+      .search(inputs, correlationThreshold, crossCorrelationShift)
+      .map(
+        x => {
+          if (x._2.isEmpty) List(TrackTableProperties(FolkloreTrack(), Some(AudioSearchResult(x._1, None))))
+          else x._2.map(y => TrackTableProperties(allTracks.find(z => z.id.equals(y.matchDetails.get.matchId)).get, Some(y)))
+        }
+      ).toList
 
     resultTable.setItems(
       searchResults.foldLeft(List[TrackTableProperties]())(
         (acc, x) => {
-          if (acc.nonEmpty) acc ++ List(TrackTableProperties(FolkloreTrack())) ++ x
-          else acc ++ x
+          if (acc.nonEmpty) acc ++ List(TrackTableProperties(FolkloreTrack(), None)) ++ x
+          else x
         }
       )
     )

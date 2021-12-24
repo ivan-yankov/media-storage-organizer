@@ -3,6 +3,7 @@ package org.yankov.mso.application.ui.toolbars
 import org.yankov.mso.application._
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
+import org.yankov.mso.application.media.decode.FlacDecoder
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.ui.UiUtils._
@@ -13,6 +14,7 @@ import scalafx.scene.input.{Clipboard, DataFormat}
 import org.yankov.mso.application.search.TextAnalyzer._
 
 import java.io.File
+import java.nio.file.Files
 import java.util.regex.Pattern
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
@@ -154,9 +156,19 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def play(targetInputTab: Boolean): Unit = {
+    def fileAudioData(track: FolkloreTrack): Option[Array[Byte]] = {
+      if (track.file.isDefined) {
+        FlacDecoder.decode(Files.readAllBytes(track.file.get.toPath))
+      }
+      else if (isValidId(track.id)) {
+        FlacDecoder.decode(Files.readAllBytes(dataManager.databasePaths.mediaFile(track.id).toPath))
+      }
+      else None
+    }
+
     Commands.play[TrackTableProperties](
       targetTable(targetInputTab),
-      x => Player.play(x.track, dataManager.databasePaths.mediaFile)
+      x => Player.play(fileAudioData(x.track).getOrElse(Array()), x.track.title)
     )
   }
 

@@ -24,7 +24,6 @@ class AudioSearchTable() extends UiTable[TrackTableProperties] {
       stringTableColumn(Resources.TableColumns.accompanimentPerformer, _.accompanimentPerformer, 175.0),
       stringTableColumn(Resources.TableColumns.arrangementAuthor, _.arrangementAuthor, 175.0),
       stringTableColumn(Resources.TableColumns.conductor, _.conductor, 175.0),
-      stringTableColumn(Resources.TableColumns.duration, _.duration, 50.0),
       stringTableColumn(Resources.TableColumns.source, _.source, 150.0),
       stringTableColumn(Resources.TableColumns.id, _.id, 150.0),
       stringTableColumn(Resources.TableColumns.correlation, _.correlation, 100.0),

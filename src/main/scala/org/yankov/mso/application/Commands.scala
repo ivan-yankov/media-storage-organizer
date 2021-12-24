@@ -140,7 +140,8 @@ object Commands {
 
   def play[T](table: TableView[T], play: T => Unit): Unit = {
     val index = getTableSelectedIndex(table)
-    if (index.isDefined) play(table.getItems.get(index.get))
+    if (index.isDefined)
+      play(table.getItems.get(index.get))
   }
 
   def editTrack(table: TableView[_], edit: Int => Unit): Unit = {

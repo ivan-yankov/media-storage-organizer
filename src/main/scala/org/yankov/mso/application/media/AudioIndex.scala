@@ -14,7 +14,8 @@ import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.model.DatabasePaths
 import org.yankov.mso.application.ui.console.ApplicationConsole
 
-import java.io.{ByteArrayInputStream, FileInputStream, InputStream}
+import java.io.ByteArrayInputStream
+import java.nio.file.Files
 
 case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
   private val log = LoggerFactory.getLogger(getClass)
@@ -33,19 +34,19 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     FileUtils
       .getFiles(databasePaths.media)
       .filter(x => FileUtils.fileNameExtension(x).equals(ext))
-      .map(x => AudioSearchSample(FileUtils.fileNameWithoutExtension(x), new FileInputStream(x.toFile)))
+      .map(x => AudioSearchSample(FileUtils.fileNameWithoutExtension(x), Files.readAllBytes(x)))
   }
 
   def build(inputs: List[AudioSearchSample] = fileInputs): Unit = {
     log.info("Build audio index")
     inputs
-      .map(x => x.id -> calculateAndInsertItem(x.id, x.input))
+      .map(x => x.id -> calculateAndInsertItem(x.id, x.audioData))
       .filterNot(x => x._2)
       .map(x => x._1)
       .foreach(x => log.error(s"Input with id [$x] is not indexed in audio index"))
   }
 
-  def add(id: Id): Boolean = calculateAndInsertItem(id, new FileInputStream(databasePaths.mediaFile(id)))
+  def add(id: Id): Boolean = calculateAndInsertItem(id, Files.readAllBytes(databasePaths.mediaFile(id).toPath))
 
   def remove(id: Id): Boolean = {
     database.delete[DbAudioIndexItem](List(id), databasePaths.audioIndex) match {
@@ -59,19 +60,19 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
 
   def search(samples: List[AudioSearchSample],
              correlationThreshold: Double,
-             crossCorrelationShift: Int): List[List[AudioSearchResult]] = {
+             crossCorrelationShift: Int): Map[AudioSearchSample, List[AudioSearchResult]] = {
     def audioMatchData: (AudioSearchSample, Id, AudioSearchData, AudioSearchData) => AudioSearchResult =
       audioMatch(correlationThreshold, crossCorrelationShift)(_, _, _, _)
 
     def searchSample(sample: AudioSearchSample, indexItems: List[DbAudioIndexItem]): List[AudioSearchResult] = {
-      calculateFingerprint(sample.id, sample.input) match {
+      calculateFingerprint(sample.id, sample.audioData) match {
         case Some(fp) =>
           indexItems
             .par
             .map(item => audioMatchData(sample, item.id, fp.asSearchData, item.asSearchData))
-            .filterNot(x => x.matchType == NonMatch)
+            .filter(x => x.matchDetails.isDefined)
             .toList
-            .sortBy(x => scala.math.abs(x.correlation)).reverse
+            .sortBy(x => scala.math.abs(x.matchDetails.get.correlation)).reverse
             .take(maxResultCountPerSample)
         case None =>
           ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.errorFingerprintCalculation(sample.id))
@@ -82,35 +83,35 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     database.read[DbAudioIndexItem](List(), databasePaths.audioIndex) match {
       case Left(e) =>
         log.error(s"Unable to read audio index [$e]")
-        List()
+        Map()
       case Right(items) =>
-        samples.map(x => searchSample(x, items))
+        samples.map(x => x -> searchSample(x, items)).toMap
     }
   }
 
   private def audioMatch(correlationThreshold: Double, crossCorrelationShift: Int)
                         (sample: AudioSearchSample, matchId: Id, a: AudioSearchData, b: AudioSearchData): AudioSearchResult = {
     if (a.hash.equals(b.hash)) {
-      AudioSearchResult(sample, matchId, ExactMatch, 1.0)
+      AudioSearchResult(sample, Some(MatchDetails(matchId, ExactMatch, 1.0)))
     }
     else {
       crossCorrelation(a.data.asNumbers, b.data.asNumbers, crossCorrelationShift) match {
         case Some(correlation) =>
           if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) {
-            AudioSearchResult(sample, matchId, SimilarMatch, correlation.value)
+            AudioSearchResult(sample, Some(MatchDetails(matchId, SimilarMatch, correlation.value)))
           }
           else {
-            AudioSearchResult(sample, matchId, NonMatch, 0.0)
+            AudioSearchResult(sample, None)
           }
         case None =>
           ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioSearchError)
-          AudioSearchResult(sample, matchId, NonMatch, 0.0)
+          AudioSearchResult(sample, None)
       }
     }
   }
 
-  private def calculateFingerprint(id: Id, input: InputStream): Option[Fingerprint] = {
-    FlacDecoder.decode(input.readAllBytes()) match {
+  private def calculateFingerprint(id: Id, audioData: Array[Byte]): Option[Fingerprint] = {
+    FlacDecoder.decode(audioData) match {
       case Some(bytes) =>
         log.info(s"Calculate audio fingerprint for [$id]")
         Some(Fingerprinter(new ByteArrayInputStream(bytes)).unsafeRunSync())
@@ -119,8 +120,8 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     }
   }
 
-  private def calculateAndInsertItem(id: Id, input: InputStream): Boolean = {
-    calculateFingerprint(id, input) match {
+  private def calculateAndInsertItem(id: Id, audioData: Array[Byte]): Boolean = {
+    calculateFingerprint(id, audioData) match {
       case Some(fp) =>
         val item = DbAudioIndexItem(
           id = id,

@@ -86,14 +86,14 @@ object Main extends JFXApp {
   )
   lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
     (files, correlation, crossCorrelationShift) => Search.audioSearch(
-      files.map(y => AudioSearchSample(y.getName, new FileInputStream(y))),
+      files.map(y => AudioSearchSample(y.getName, Files.readAllBytes(y.toPath))),
       dataManager.getTracks,
       dataManager.audioIndex,
       audioSearchTable,
       correlation,
       crossCorrelationShift
     ),
-    () => audioSearchTable.clear()
+    audioSearchTable
   )
   lazy val extractTitleFromFileNameCheckBox: CheckBox = new CheckBox {
     text = Resources.MainForm.extractTitleFromFileName
