@@ -2,7 +2,7 @@ package org.yankov.mso.application.model
 
 import org.yankov.mso.application.Id
 
-import java.io.File
+import java.io.{File, InputStream}
 import java.time.Duration
 
 object DataModel {
@@ -170,9 +170,11 @@ object DataModel {
     )
   }
 
+  case class AudioSearchSample(id: Id, input: InputStream)
+
   case class AudioSearchData(hash: String, data: Vector[Double])
 
-  case class AudioSearchResult(sampleId: Id, matchId: Id, matchType: AudioMatchType, correlation: Double)
+  case class AudioSearchResult(sample: AudioSearchSample, matchId: Id, matchType: AudioMatchType, correlation: Double)
 
   trait AudioMatchType
 

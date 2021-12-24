@@ -2,7 +2,7 @@ package org.yankov.mso.application.media
 
 import org.scalatest.{FreeSpec, Matchers}
 import org.yankov.mso.application.database.FakeDatabase
-import org.yankov.mso.application.model.DataModel.{AudioSearchResult, ExactMatch, SimilarMatch}
+import org.yankov.mso.application.model.DataModel.{AudioSearchResult, AudioSearchSample, ExactMatch, SimilarMatch}
 import org.yankov.mso.application.model.DatabaseModel.DbAudioIndexItem
 import org.yankov.mso.application.model.DatabasePaths
 
@@ -16,8 +16,7 @@ class AudioIndexTest extends FreeSpec with Matchers {
     db.setInsertResult(Right(()))
     val audioIndex = AudioIndex(db, dbPaths)
     val inputs = List(1, 2, 3, 4, 5)
-      .map(x => s"0$x" -> getClass.getResourceAsStream(s"/audio-search/0$x.flac"))
-      .toMap
+      .map(x => AudioSearchSample(s"0$x", getClass.getResourceAsStream(s"/audio-search/0$x.flac")))
     audioIndex.build(inputs)
 
     "build" in {
@@ -27,31 +26,31 @@ class AudioIndexTest extends FreeSpec with Matchers {
     "search" - {
       "exact match" in {
         db.setReadResult(Right(db.getInsertEntries.map(x => x.asInstanceOf[DbAudioIndexItem])))
-        audioIndex.search(
-          Map("identical-sample" -> getClass.getResourceAsStream(s"/audio-search/identical-sample.flac")),
+        val result = audioIndex.search(
+          List(AudioSearchSample("identical-sample", getClass.getResourceAsStream(s"/audio-search/identical-sample.flac"))),
           0.9,
           50
-        ) shouldBe List(
-          AudioSearchResult(
-            sampleId = "identical-sample",
-            matchId = "01",
-            matchType = ExactMatch,
-            correlation = 1.0
-          )
         )
+        result.size shouldBe 1
+        result.head.size shouldBe 1
+        result.head.head.sample.id shouldBe "identical-sample"
+        result.head.head.matchId shouldBe "01"
+        result.head.head.matchType shouldBe ExactMatch
+        result.head.head.correlation shouldBe 1.0
       }
 
       "similar match" in {
         db.setReadResult(Right(db.getInsertEntries.map(x => x.asInstanceOf[DbAudioIndexItem])))
         val result = audioIndex.search(
-          Map("similar-sample" -> getClass.getResourceAsStream(s"/audio-search/similar-sample.flac")),
+          List(AudioSearchSample("similar-sample", getClass.getResourceAsStream(s"/audio-search/similar-sample.flac"))),
           0.9,
           50
         )
         result.size shouldBe 1
-        result.head.sampleId shouldBe "similar-sample"
-        result.head.matchId shouldBe "03"
-        result.head.matchType shouldBe SimilarMatch
+        result.head.size shouldBe 1
+        result.head.head.sample.id shouldBe "similar-sample"
+        result.head.head.matchId shouldBe "03"
+        result.head.head.matchType shouldBe SimilarMatch
       }
     }
   }

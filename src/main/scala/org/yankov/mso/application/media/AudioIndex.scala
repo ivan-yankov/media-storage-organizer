@@ -28,21 +28,20 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     def asSearchData: AudioSearchData = AudioSearchData(hash = fp.compressed, data = fp.data.map(x => x.toDouble).toVector)
   }
 
-  private def fileInputs: Map[Id, InputStream] = {
+  private def fileInputs: List[AudioSearchSample] = {
     val ext = Resources.Media.flacExtension
     FileUtils
       .getFiles(databasePaths.media)
       .filter(x => FileUtils.fileNameExtension(x).equals(ext))
-      .map(x => FileUtils.fileNameWithoutExtension(x) -> new FileInputStream(x.toFile))
-      .toMap
+      .map(x => AudioSearchSample(FileUtils.fileNameWithoutExtension(x), new FileInputStream(x.toFile)))
   }
 
-  def build(inputs: Map[Id, InputStream] = fileInputs): Unit = {
+  def build(inputs: List[AudioSearchSample] = fileInputs): Unit = {
     log.info("Build audio index")
     inputs
-      .map(x => x._1 -> calculateAndInsertItem(x._1, x._2))
+      .map(x => x.id -> calculateAndInsertItem(x.id, x.input))
       .filterNot(x => x._2)
-      .keys
+      .map(x => x._1)
       .foreach(x => log.error(s"Input with id [$x] is not indexed in audio index"))
   }
 
@@ -58,49 +57,54 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     }
   }
 
-  def search(samples: Map[Id, InputStream],
+  def search(samples: List[AudioSearchSample],
              correlationThreshold: Double,
-             crossCorrelationShift: Int): List[AudioSearchResult] = {
-    def audioMatchData: (Id, Id, AudioSearchData, AudioSearchData) => AudioSearchResult =
+             crossCorrelationShift: Int): List[List[AudioSearchResult]] = {
+    def audioMatchData: (AudioSearchSample, Id, AudioSearchData, AudioSearchData) => AudioSearchResult =
       audioMatch(correlationThreshold, crossCorrelationShift)(_, _, _, _)
+
+    def searchSample(sample: AudioSearchSample, indexItems: List[DbAudioIndexItem]): List[AudioSearchResult] = {
+      calculateFingerprint(sample.id, sample.input) match {
+        case Some(fp) =>
+          indexItems
+            .par
+            .map(item => audioMatchData(sample, item.id, fp.asSearchData, item.asSearchData))
+            .filterNot(x => x.matchType == NonMatch)
+            .toList
+            .sortBy(x => scala.math.abs(x.correlation)).reverse
+            .take(maxResultCountPerSample)
+        case None =>
+          ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.errorFingerprintCalculation(sample.id))
+          List()
+      }
+    }
 
     database.read[DbAudioIndexItem](List(), databasePaths.audioIndex) match {
       case Left(e) =>
         log.error(s"Unable to read audio index [$e]")
         List()
       case Right(items) =>
-        samples.par.map {
-          sample =>
-            calculateFingerprint(sample._1, sample._2) match {
-              case Some(fp) =>
-                Some(
-                  items
-                    .map(item => audioMatchData(sample._1, item.id, fp.asSearchData, item.asSearchData))
-                    .filterNot(x => x.matchType == NonMatch)
-                    .sortBy(x => scala.math.abs(x.correlation)).reverse
-                    .take(maxResultCountPerSample)
-                )
-              case None =>
-                ApplicationConsole.writeMessageWithTimestamp(Resources.ConsoleMessages.errorFingerprintCalculation(sample._1))
-                None
-            }
-        }.filter(x => x.isDefined).flatMap(x => x.get).toList
+        samples.map(x => searchSample(x, items))
     }
   }
 
   private def audioMatch(correlationThreshold: Double, crossCorrelationShift: Int)
-                        (aId: Id, bId: Id, a: AudioSearchData, b: AudioSearchData): AudioSearchResult = {
+                        (sample: AudioSearchSample, matchId: Id, a: AudioSearchData, b: AudioSearchData): AudioSearchResult = {
     if (a.hash.equals(b.hash)) {
-      AudioSearchResult(aId, bId, ExactMatch, 1.0)
+      AudioSearchResult(sample, matchId, ExactMatch, 1.0)
     }
     else {
       crossCorrelation(a.data.asNumbers, b.data.asNumbers, crossCorrelationShift) match {
         case Some(correlation) =>
-          if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) AudioSearchResult(aId, bId, SimilarMatch, correlation.value)
-          else AudioSearchResult(aId, bId, NonMatch, 0.0)
+          if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) {
+            AudioSearchResult(sample, matchId, SimilarMatch, correlation.value)
+          }
+          else {
+            AudioSearchResult(sample, matchId, NonMatch, 0.0)
+          }
         case None =>
           ApplicationConsole.writeMessageWithTimestamp(Resources.Search.audioSearchError)
-          AudioSearchResult(aId, bId, NonMatch, 0.0)
+          AudioSearchResult(sample, matchId, NonMatch, 0.0)
       }
     }
   }

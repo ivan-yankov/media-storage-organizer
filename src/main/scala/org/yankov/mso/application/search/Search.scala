@@ -34,7 +34,7 @@ object Search {
     ApplicationConsole.writeMessageWithTimestamp(message)
   }
 
-  def audioSearch(inputs: Map[Id, InputStream],
+  def audioSearch(inputs: List[AudioSearchSample],
                   allTracks: List[FolkloreTrack],
                   audioIndex: Option[AudioIndex],
                   resultTable: UiTable[TrackTableProperties],
@@ -42,16 +42,26 @@ object Search {
                   crossCorrelationShift: Int): Unit = {
     if (inputs.isEmpty || audioIndex.isEmpty) return
 
-    val searchResults = audioIndex.get.search(inputs, correlationThreshold, crossCorrelationShift)
-      .map(
-        x => {
-          TrackTableProperties(
-            allTracks.find(y => x.matchId.equals(y.id)).getOrElse(FolkloreTrack()),
-            Some(AudioSearchMatch(x.sampleId, identical = x.matchType == ExactMatch, x.correlation))
-          )
+    val searchResults = audioIndex.get.search(inputs, correlationThreshold, crossCorrelationShift).map(
+      x => {
+        x.map(
+          y => {
+            TrackTableProperties(
+              allTracks.find(z => y.matchId.equals(z.id)).getOrElse(FolkloreTrack()),
+              Some(y)
+            )
+          }
+        )
+      }
+    )
+
+    resultTable.setItems(
+      searchResults.foldLeft(List[TrackTableProperties]())(
+        (acc, x) => {
+          if (acc.nonEmpty) acc ++ List(TrackTableProperties(FolkloreTrack())) ++ x
+          else acc ++ x
         }
       )
-
-    resultTable.setItems(searchResults)
+    )
   }
 }

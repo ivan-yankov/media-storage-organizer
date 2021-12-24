@@ -30,9 +30,7 @@ object UiModel {
     def getY: Double = Screen.primary.visualBounds.minY
   }
 
-  case class AudioSearchMatch(id: Id, identical: Boolean, correlation: Double)
-
-  case class TrackTableProperties(track: FolkloreTrack, audioSearchMatch: Option[AudioSearchMatch] = None) {
+  case class TrackTableProperties(track: FolkloreTrack, audioSearchResult: Option[AudioSearchResult] = None) {
     def id: StringProperty = StringProperty(track.id)
 
     def title: StringProperty = StringProperty(track.title)
@@ -60,17 +58,17 @@ object UiModel {
     def file: StringProperty = StringProperty(if (track.file.isDefined) track.file.get.getName else "")
 
     def sampleId: StringProperty = {
-      audioSearchMatch match {
-        case Some(x) => StringProperty(x.id)
+      audioSearchResult match {
+        case Some(x) => StringProperty(x.sample.id)
         case None => StringProperty("")
       }
     }
 
     def matchType: StringProperty = {
-      audioSearchMatch match {
+      audioSearchResult match {
         case Some(x) =>
           StringProperty(
-            if (x.identical) Resources.Search.audioSearchIdentical
+            if (x.matchType == ExactMatch) Resources.Search.audioSearchIdentical
             else Resources.Search.audioSearchSimilar
           )
         case None => StringProperty("")
@@ -78,7 +76,7 @@ object UiModel {
     }
 
     def correlation: StringProperty = {
-      audioSearchMatch match {
+      audioSearchResult match {
         case Some(x) => StringProperty("%.4f".format(x.correlation))
         case None => StringProperty("")
       }
