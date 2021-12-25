@@ -22,7 +22,7 @@ trait Database {
                           (implicit encoder: Encoder[T], decoder: Decoder[T]): Either[String, List[Id]]
 
   def delete[T <: DbEntry](keys: List[Id], path: Path)
-                          (implicit decoder: Decoder[T]): Either[String, Int]
+                          (implicit decoder: Decoder[T]): Either[String, Unit]
 
   def inputStreamFromPath(path: Path): InputStream = new FileInputStream(path.toString)
 }
@@ -94,8 +94,7 @@ case class RealDatabase() extends Database {
   }
 
   override def delete[T <: DbEntry](keys: List[Id], path: Path)
-                                   (implicit decoder: Decoder[T]): Either[String, Int] = {
-    val originalLinesNumber = FileUtils.readTextFile(new FileInputStream(path.toString)).getOrElse(List()).size
+                                   (implicit decoder: Decoder[T]): Either[String, Unit] = {
     FileUtils.readTextFile(new FileInputStream(path.toString), x => !acceptLine(x, keys)) match {
       case Left(e) => Left(e)
       case Right(lines) =>
@@ -107,7 +106,7 @@ case class RealDatabase() extends Database {
               case Some(f) => f()
               case None => ()
             }
-            Right(originalLinesNumber - lines.size)
+            Right(())
         }
     }
   }
