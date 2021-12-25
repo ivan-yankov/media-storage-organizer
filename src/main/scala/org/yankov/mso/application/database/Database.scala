@@ -95,6 +95,7 @@ case class RealDatabase() extends Database {
 
   override def delete[T <: DbEntry](keys: List[Id], path: Path)
                                    (implicit decoder: Decoder[T]): Either[String, Int] = {
+    val originalLinesNumber = FileUtils.readTextFile(new FileInputStream(path.toString)).getOrElse(List()).size
     FileUtils.readTextFile(new FileInputStream(path.toString), x => !acceptLine(x, keys)) match {
       case Left(e) => Left(e)
       case Right(lines) =>
@@ -106,7 +107,7 @@ case class RealDatabase() extends Database {
               case Some(f) => f()
               case None => ()
             }
-            Right(keys.size - lines.size)
+            Right(originalLinesNumber - lines.size)
         }
     }
   }
