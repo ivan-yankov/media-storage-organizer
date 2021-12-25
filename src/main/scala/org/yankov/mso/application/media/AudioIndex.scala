@@ -53,8 +53,7 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
       case Left(e) =>
         log.error(s"Unable to delete audio index item [$e]")
         false
-      case Right(deleted) =>
-        deleted == 1
+      case Right(_) => true
     }
   }
 
