@@ -14,7 +14,7 @@ import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.model.DatabasePaths
 import org.yankov.mso.application.ui.console.ApplicationConsole
 
-import java.io.ByteArrayInputStream
+import java.io.{ByteArrayInputStream, FileInputStream, InputStream}
 import java.nio.file.Files
 
 case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
@@ -29,18 +29,18 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     def asSearchData: AudioSearchData = AudioSearchData(hash = fp.compressed, data = fp.data.map(x => x.toDouble).toVector)
   }
 
-  private def fileInputs: List[AudioSearchSample] = {
+  private def fileInputs: List[(Id, InputStream)] = {
     val ext = Resources.Media.flacExtension
     FileUtils
       .getFiles(databasePaths.media)
       .filter(x => FileUtils.fileNameExtension(x).equals(ext))
-      .map(x => AudioSearchSample(FileUtils.fileNameWithoutExtension(x), Files.readAllBytes(x)))
+      .map(x => FileUtils.fileNameWithoutExtension(x) -> new FileInputStream(x.toFile))
   }
 
-  def build(inputs: List[AudioSearchSample] = fileInputs): Unit = {
+  def build(inputs: List[(Id, InputStream)] = fileInputs): Unit = {
     log.info("Build audio index")
     inputs
-      .map(x => x.id -> calculateAndInsertItem(x.id, x.audioData))
+      .map(x => x._1 -> calculateAndInsertItem(x._1, x._2))
       .filterNot(x => x._2)
       .map(x => x._1)
       .foreach(x => log.error(s"Input with id [$x] is not indexed in audio index"))
@@ -138,4 +138,7 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
         false
     }
   }
+
+  private def calculateAndInsertItem(id: Id, inputStream: InputStream): Boolean =
+    calculateAndInsertItem(id, inputStream.readAllBytes())
 }
