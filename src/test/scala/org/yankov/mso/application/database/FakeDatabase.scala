@@ -22,7 +22,7 @@ case class FakeDatabase() extends Database {
 
   private var deleteKeys: List[Id] = _
   private var deletePath: Path = _
-  private var deleteResult: Either[String, Int] = _
+  private var deleteResult: Either[String, Unit] = _
 
   def getInsertEntries: List[_] = insertEntries
 
@@ -46,7 +46,7 @@ case class FakeDatabase() extends Database {
 
   def getDeletePath: Path = deletePath
 
-  def setDeleteResult(result: Either[String, Int]): Unit = deleteResult = result
+  def setDeleteResult(result: Either[String, Unit]): Unit = deleteResult = result
 
   override def setOnChange(f: () => Unit): Unit = ()
 
@@ -75,7 +75,7 @@ case class FakeDatabase() extends Database {
   }
 
   override def delete[T <: DbEntry](keys: List[Id], path: Path)
-                                   (implicit decoder: Decoder[T]): Either[String, Int] = {
+                                   (implicit decoder: Decoder[T]): Either[String, Unit] = {
     deleteKeys = keys
     deletePath = path
     deleteResult

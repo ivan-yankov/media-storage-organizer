@@ -70,7 +70,6 @@ class DatabaseTest extends FreeSpec with Matchers {
       file.toPath
     )
     result.isRight shouldBe true
-    result.right.get shouldBe 2
     TestHelpers.assertFilesEqual(file.toPath, path(fileName).toString)
   }
 }

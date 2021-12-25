@@ -142,8 +142,7 @@ case class DataManager(database: Database,
       case Left(e) =>
         log.error(e)
         false
-      case Right(number) =>
-        number == 1 && removeTrackFile(track.id)
+      case Right(_) => removeTrackFile(track.id)
     }
   }
 
