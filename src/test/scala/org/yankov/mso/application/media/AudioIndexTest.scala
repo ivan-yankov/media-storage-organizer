@@ -2,7 +2,7 @@ package org.yankov.mso.application.media
 
 import org.scalatest.{FreeSpec, Matchers}
 import org.yankov.mso.application.database.FakeDatabase
-import org.yankov.mso.application.model.DataModel.{AudioSearchResult, AudioSearchSample, ExactMatch, SimilarMatch}
+import org.yankov.mso.application.model.DataModel.{AudioSearchSample, ExactMatch, SimilarMatch}
 import org.yankov.mso.application.model.DatabaseModel.DbAudioIndexItem
 import org.yankov.mso.application.model.DatabasePaths
 
@@ -16,7 +16,7 @@ class AudioIndexTest extends FreeSpec with Matchers {
     db.setInsertResult(Right(()))
     val audioIndex = AudioIndex(db, dbPaths)
     val inputs = List(1, 2, 3, 4, 5)
-      .map(x => AudioSearchSample(s"0$x", getClass.getResourceAsStream(s"/audio-search/0$x.flac").readAllBytes()))
+      .map(x => s"0$x" -> getClass.getResourceAsStream(s"/audio-search/0$x.flac"))
     audioIndex.build(inputs)
 
     "build" in {
