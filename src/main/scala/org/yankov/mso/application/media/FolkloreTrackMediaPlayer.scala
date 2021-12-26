@@ -33,6 +33,7 @@ case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
 
   private val btnClose = new Button {
     text = Resources.Media.close
+    cancelButton = true
     prefWidth = buttonWidth
     onAction = _ => close()
   }

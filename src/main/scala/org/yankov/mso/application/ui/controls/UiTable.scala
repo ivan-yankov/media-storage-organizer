@@ -29,8 +29,20 @@ abstract class UiTable[T] {
       onMouseClicked = event => if (event.getClickCount == 2) onRowDoubleClick()
     }
 
-    val keyCodeCopy = new KeyCodeCombination(KeyCode.C, KeyCombination.ControlAny)
-    onKeyPressed = event => if (keyCodeCopy.`match`(event)) copySelectionToClipboard()
+    val keyCtrlCopy = new KeyCodeCombination(KeyCode.C, KeyCombination.ControlAny)
+    onKeyPressed = event => if (keyCtrlCopy.`match`(event)) copySelectionToClipboard()
+
+    val keySpace = new KeyCodeCombination(KeyCode.Space)
+    val keyF2 = new KeyCodeCombination(KeyCode.F2)
+    val keyCtrlShiftCopy = new KeyCodeCombination(KeyCode.C, KeyCombination.ControlAny, KeyCombination.ShiftAny)
+    val keyCtrlShiftPaste = new KeyCodeCombination(KeyCode.V, KeyCombination.ControlAny, KeyCombination.ShiftAny)
+    onKeyReleased = event => {
+      if (keySpace.`match`(event)) onSpaceKey()
+      else if (keyF2.`match`(event)) onF2Key()
+      else if (keyCtrlShiftCopy.`match`(event)) onCtrlShiftCopy()
+      else if (keyCtrlShiftPaste.`match`(event)) onCtrlShiftPaste()
+      else ()
+    }
 
     userData = tableUserData
   }
@@ -75,6 +87,14 @@ abstract class UiTable[T] {
       width
     )
   }
+
+  def onSpaceKey(): Unit = {}
+
+  def onF2Key(): Unit = {}
+
+  def onCtrlShiftCopy(): Unit = {}
+
+  def onCtrlShiftPaste(): Unit = {}
 
   def isEditable: Boolean
 
