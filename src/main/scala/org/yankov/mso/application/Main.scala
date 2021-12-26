@@ -75,10 +75,11 @@ object Main extends JFXApp {
   lazy val dataManager: DataManager = createDataManager(
     getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
   )
-  lazy val inputTable: FolkloreTrackTable = new FolkloreTrackTable(true)
-  lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false)
+  lazy val buttonHandlers: FolkloreToolbarButtonHandlers = FolkloreToolbarButtonHandlers()
+  lazy val inputTable: FolkloreTrackTable = new FolkloreTrackTable(true, buttonHandlers)
+  lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false, buttonHandlers)
   lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
-  lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(FolkloreToolbarButtonHandlers())
+  lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(buttonHandlers)
   lazy val metadataSearchControls: SearchControls[FolkloreTrack] = new MetadataSearchControls[FolkloreTrack](
     x => Search.metadataSearch(x, dataManager.getTracks, searchTable),
     () => FolkloreControlsFactory.createSearchVariable(),

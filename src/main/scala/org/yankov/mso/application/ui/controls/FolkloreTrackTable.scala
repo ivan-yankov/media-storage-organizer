@@ -2,17 +2,18 @@ package org.yankov.mso.application.ui.controls
 
 import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.ui.FolkloreTrackEditor
+import org.yankov.mso.application.ui.toolbars.FolkloreToolbarButtonHandlers
 import org.yankov.mso.application.{MergeTrack, Resources}
 import scalafx.scene.control._
 
-class FolkloreTrackTable(inputTable: Boolean) extends UiTable[TrackTableProperties] {
+class FolkloreTrackTable(inputTable: Boolean, buttonHandlers: FolkloreToolbarButtonHandlers) extends UiTable[TrackTableProperties] {
   override def isEditable: Boolean = false
 
   override def selectionMode: SelectionMode = SelectionMode.Multiple
 
   override def cellSelectionEnabled: Boolean = true
 
-  override def onRowDoubleClick(): Unit = FolkloreTrackEditor(pure, pure.getSelectionModel.getSelectedIndex).open()
+  override def onRowDoubleClick(): Unit = openEditor()
 
   override def tableUserData: AnyRef = {
     Map[Int, MergeTrack](
@@ -47,4 +48,14 @@ class FolkloreTrackTable(inputTable: Boolean) extends UiTable[TrackTableProperti
     if (inputTable) columns ++ List(stringTableColumn(Resources.TableColumns.file, _.file, 150.0))
     else columns ++ List(stringTableColumn(Resources.TableColumns.id, _.id, 150.0))
   }
+
+  override def onSpaceKey(): Unit = buttonHandlers.play(inputTable)
+
+  override def onF2Key(): Unit = openEditor()
+
+  override def onCtrlShiftCopy(): Unit = buttonHandlers.copyProperties(inputTable)
+
+  override def onCtrlShiftPaste(): Unit = buttonHandlers.applyProperties(inputTable)
+
+  private def openEditor(): Unit = FolkloreTrackEditor(pure, pure.getSelectionModel.getSelectedIndex).open()
 }
