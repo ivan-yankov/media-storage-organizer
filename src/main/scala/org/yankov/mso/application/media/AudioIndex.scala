@@ -59,7 +59,7 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
 
   def search(samples: List[AudioSearchSample],
              correlationThreshold: Double,
-             crossCorrelationShift: Int): Map[AudioSearchSample, List[AudioSearchResult]] = {
+             crossCorrelationShift: Int): List[(AudioSearchSample, List[AudioSearchResult])] = {
     def audioMatchData: (AudioSearchSample, Id, AudioSearchData, AudioSearchData) => AudioSearchResult =
       audioMatch(correlationThreshold, crossCorrelationShift)(_, _, _, _)
 
@@ -82,9 +82,9 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
     database.read[DbAudioIndexItem](List(), databasePaths.audioIndex) match {
       case Left(e) =>
         log.error(s"Unable to read audio index [$e]")
-        Map()
+        List()
       case Right(items) =>
-        samples.map(x => x -> searchSample(x, items)).toMap
+        samples.par.map(x => x -> searchSample(x, items)).toList
     }
   }
 
