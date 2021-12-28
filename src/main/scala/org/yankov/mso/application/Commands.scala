@@ -77,7 +77,6 @@ object Commands {
       case Some(index) =>
         val copiedProperties = Option(table.items.getValue.get(index))
         applyPropertiesButton.setDisable(false)
-        table.getSelectionModel.clearSelection()
         copiedProperties
       case None =>
         Option.empty
