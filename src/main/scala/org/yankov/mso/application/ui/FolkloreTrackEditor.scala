@@ -1,16 +1,17 @@
 package org.yankov.mso.application.ui
 
-import java.time.Duration
-import org.yankov.mso.application.{Main, Resources}
 import org.yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.ui.controls.FolkloreControlsFactory._
 import org.yankov.mso.application.ui.controls.{FileSelector, LabeledTextField}
+import org.yankov.mso.application.{Main, Resources}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.layout.{GridPane, HBox, StackPane, VBox}
 import scalafx.stage.{Modality, Stage}
+
+import java.time.Duration
 
 case class FolkloreTrackEditor(table: TableView[TrackTableProperties], trackIndex: Int) {
   private val title = LabeledTextField(Resources.TableColumns.title, track.title)
@@ -129,13 +130,22 @@ case class FolkloreTrackEditor(table: TableView[TrackTableProperties], trackInde
     )
 
     table.getItems.set(trackIndex, TrackTableProperties(newTrack))
+    onClose()
     stage.close()
   }
 
-  private def handleCancel(): Unit = stage.close()
+  private def handleCancel(): Unit = {
+    onClose()
+    stage.close()
+  }
 
   private def getDuration: Duration = {
     if (fileSelector.getFile.isDefined) UiUtils.calculateDuration(Option(fileSelector.getFile.get))
     else track.duration
+  }
+
+  private def onClose(): Unit = {
+    table.getSelectionModel.clearSelection()
+    table.getFocusModel.focus(trackIndex, table.getColumns.get(0))
   }
 }
