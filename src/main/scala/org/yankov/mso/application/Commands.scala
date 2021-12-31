@@ -69,6 +69,8 @@ object Commands {
     if (copiedProperties.isDefined && selectedRows.nonEmpty && selectedCell.isDefined) {
       selectedRows.foreach(x => table.getItems.set(x, createProperties(x, selectedCell.get)))
       applyPropertiesButton.setDisable(true)
+      table.getSelectionModel.clearSelection()
+      table.getFocusModel.focus(selectedRows.max, table.getColumns.get(selectedCell.getOrElse(0)))
     }
   }
 
