@@ -87,8 +87,7 @@ case class LabeledComboBox[T](labelText: String,
     popup.hide()
   }
 
-  private def compareItems(x: T, y: T): Boolean =
-    itemToString(x).compareToIgnoreCase(itemToString(y)) < 0
+  private def compareItems(x: T, y: T): Boolean = itemToString(x).compareToIgnoreCase(itemToString(y)) < 0
 
   private def getItems: List[T] = if (sortItems) cbItems.sortWith((x, y) => compareItems(x, y)) else cbItems
 
@@ -119,7 +118,9 @@ case class LabeledComboBox[T](labelText: String,
   }
 
   private def handleKeyTyped(event: KeyEvent): Unit = {
-    if (event.getCharacter.toLowerCase.trim.nonEmpty) {
+    def accept(char: Char): Boolean = char.isLetterOrDigit || char.isSpaceChar
+
+    if (accept(event.getCharacter.toLowerCase.head)) {
       filterText.append(event.getCharacter.toLowerCase)
       filterTextField.setText(filterText.toString)
       showPopup()
