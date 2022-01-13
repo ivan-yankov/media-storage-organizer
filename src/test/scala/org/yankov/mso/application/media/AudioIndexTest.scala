@@ -28,6 +28,7 @@ class AudioIndexTest extends FreeSpec with Matchers {
         db.setReadResult(Right(db.getInsertEntries.map(x => x.asInstanceOf[DbAudioIndexItem])))
         val result = audioIndex.search(
           List(AudioSearchSample("identical-sample", getClass.getResourceAsStream(s"/audio-search/identical-sample.flac").readAllBytes())),
+          List(),
           0.9,
           50
         )
@@ -43,6 +44,7 @@ class AudioIndexTest extends FreeSpec with Matchers {
         db.setReadResult(Right(db.getInsertEntries.map(x => x.asInstanceOf[DbAudioIndexItem])))
         val result = audioIndex.search(
           List(AudioSearchSample("similar-sample", getClass.getResourceAsStream(s"/audio-search/similar-sample.flac").readAllBytes())),
+          List(),
           0.9,
           50
         )

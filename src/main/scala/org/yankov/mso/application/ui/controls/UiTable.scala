@@ -7,7 +7,7 @@ import scalafx.scene.control.{SelectionMode, TableColumn, TableRow, TableView}
 import scalafx.scene.input._
 import scalafx.scene.layout.{Pane, StackPane}
 
-import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConverters.{asScalaBufferConverter, asScalaIteratorConverter}
 
 abstract class UiTable[T] {
   private val table: TableView[T] = new TableView[T]() {
@@ -87,6 +87,12 @@ abstract class UiTable[T] {
       width
     )
   }
+
+  def isEmpty: Boolean = table.getItems.isEmpty
+
+  def nonEmpty: Boolean = !isEmpty
+
+  def getItems: List[T] = table.getItems.iterator().asScala.toList
 
   def onSpaceKey(): Unit = {}
 
