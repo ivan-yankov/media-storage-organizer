@@ -35,7 +35,7 @@ object Search {
   }
 
   def audioSearch(inputs: List[AudioSearchSample],
-                  allTracks: List[FolkloreTrack],
+                  tracks: List[FolkloreTrack],
                   audioIndex: Option[AudioIndex],
                   resultTable: UiTable[TrackTableProperties],
                   correlationThreshold: Double,
@@ -43,13 +43,13 @@ object Search {
     if (inputs.isEmpty || audioIndex.isEmpty) return
 
     val searchResults: List[List[TrackTableProperties]] = audioIndex.get
-      .search(inputs, correlationThreshold, crossCorrelationShift)
+      .search(inputs, tracks.map(x => x.id), correlationThreshold, crossCorrelationShift)
       .map(
         x => {
           if (x._2.isEmpty) List(TrackTableProperties(FolkloreTrack(), Some(AudioSearchResult(x._1, None))))
-          else x._2.map(y => TrackTableProperties(allTracks.find(z => z.id.equals(y.matchDetails.get.matchId)).get, Some(y)))
+          else x._2.map(y => TrackTableProperties(tracks.find(z => z.id.equals(y.matchDetails.get.matchId)).get, Some(y)))
         }
-      ).toList
+      )
 
     resultTable.setItems(
       searchResults.foldLeft(List[TrackTableProperties]())(

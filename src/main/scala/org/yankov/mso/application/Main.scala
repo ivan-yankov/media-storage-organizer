@@ -18,7 +18,6 @@ import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, Priority, VBox}
 
-import java.io.FileInputStream
 import java.nio.file.{Files, Paths}
 
 object Main extends JFXApp {
@@ -88,7 +87,7 @@ object Main extends JFXApp {
   lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
     (files, correlation, crossCorrelationShift) => Search.audioSearch(
       files.map(y => AudioSearchSample(y.getName, Files.readAllBytes(y.toPath))),
-      dataManager.getTracks,
+      if (searchTable.nonEmpty) searchTable.getItems.map(x => x.track) else dataManager.getTracks,
       dataManager.audioIndex,
       audioSearchTable,
       correlation,
