@@ -1,12 +1,16 @@
 package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
+import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
+import org.yankov.mso.application.ui.controls.InputTextHandler
 import scalafx.geometry.Insets
 import scalafx.scene.control.cell.TextFieldListCell
 import scalafx.scene.control.{Button, Label, ListView, SelectionMode}
 import scalafx.scene.layout.{HBox, Pane, VBox}
 import scalafx.util.StringConverter
+
+import scala.collection.JavaConverters.asScalaBufferConverter
 
 case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], containerId: String) {
   private val console: ConsoleService = ApplicationConsole
@@ -27,6 +31,20 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
       cell
     }
   }
+
+  InputTextHandler(
+    parent = existingArtifacts,
+    onInput = x => UiUtils.filterItems[T](
+      existingArtifacts.items.getValue.asScala.toList,
+      y => artifactControls.artifactToString(y),
+      x,
+      y => {
+        existingArtifacts.getSelectionModel.select(y)
+        existingArtifacts.scrollTo(y)
+      }
+    ),
+    onDelete = None
+  )
 
   private val btnAddArtifact = new Button {
     text = Resources.Artifacts.btnAddArtifact

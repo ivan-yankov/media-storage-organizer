@@ -100,4 +100,18 @@ object UiUtils {
       }
     ) {}
   }
+
+  def filterItems[T](items: List[T], itemToString: T => String, sample: String, onMatch: T => Unit): Unit = {
+    val search = sample.toLowerCase()
+
+    val filteredItems = {
+      val startsWith = items.filter(x => itemToString(x).toLowerCase.startsWith(search))
+      if (startsWith.nonEmpty) startsWith
+      else items.filter(x => itemToString(x).toLowerCase.contains(search))
+    }
+
+    if (filteredItems.nonEmpty) {
+      onMatch(filteredItems.head)
+    }
+  }
 }
