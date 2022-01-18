@@ -24,10 +24,12 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     (Choir, new CheckBox(Resources.Artists.choir)),
     (Ensemble, new CheckBox(Resources.Artists.ensemble)),
     (ChamberGroup, new CheckBox(Resources.Artists.chamberGroup))
-  ).map(x => {
-    x._2.setOnAction(_ => enableInstrument())
-    (x._1, x._2)
-  })
+  ).map(
+    x => {
+      x._2.setOnAction(_ => enableInstrument())
+      (x._1, x._2)
+    }
+  )
 
   init()
 
