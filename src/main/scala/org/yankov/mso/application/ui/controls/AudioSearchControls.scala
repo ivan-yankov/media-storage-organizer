@@ -64,7 +64,7 @@ class AudioSearchControls(search: (List[File], Double, Int) => Unit,
     val item = audioSearchTable.pure.getSelectionModel.getSelectedItem
     if (item != null && item.audioSearchResult.isDefined) {
       val data = FlacDecoder.decode(item.audioSearchResult.get.sample.audioData).getOrElse(Array())
-      Player.play(data, item.audioSearchResult.get.sample.id)
+      Player.play(List(item.audioSearchResult.get.sample.id.replace(" ", "_") -> data))
     }
   }
 
@@ -73,7 +73,7 @@ class AudioSearchControls(search: (List[File], Double, Int) => Unit,
     if (item != null && item.audioSearchResult.isDefined) {
       val path = dataManager.databasePaths.mediaFile(item.track.id).toPath
       val data = FlacDecoder.decode(Files.readAllBytes(path)).getOrElse(Array())
-      Player.play(data, item.track.title)
+      Player.play(List(item.track.id -> data))
     }
   }
 }

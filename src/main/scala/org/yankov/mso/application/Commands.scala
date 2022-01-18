@@ -139,10 +139,9 @@ object Commands {
     else console.writeMessageWithTimestamp(Resources.ConsoleMessages.uploadFailed)
   }
 
-  def play[T](table: TableView[T], play: T => Unit): Unit = {
-    val index = getTableSelectedIndex(table)
-    if (index.isDefined)
-      play(table.getItems.get(index.get))
+  def play[T](table: TableView[T], play: List[T] => Unit): Unit = {
+    val selected = table.getSelectionModel.getSelectedItems.asScala.toList
+    if (selected.nonEmpty) play(selected)
   }
 
   def editTrack(table: TableView[_], edit: Int => Unit): Unit = {

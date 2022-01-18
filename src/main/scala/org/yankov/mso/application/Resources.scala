@@ -18,9 +18,11 @@ object Resources {
 
   object Media {
     val flacExtension: String = ".flac"
-    val playPause: String = "Възпроизвеждане / Пауза"
-    val stop: String = "Стоп"
-    val close: String = "Затваряне"
+    val playPause: String = "> ||"
+    val next: String = ">>"
+    val previous: String = "<<"
+    val stop: String = "|=|"
+    val close: String = "X"
     val host: String = "localhost"
     val audioHttpApi: String = "wav-audio-bytes"
   }
@@ -114,8 +116,8 @@ object Resources {
     val audioSearchPane = "Търсене на запис по звуков файл"
     val audioSearchButton: String = "Избор на файлове и търсене"
     val audioSearchClearButton: String = "Изчистване"
-    val audioSearchPlayLeftButton: String = "Ляв |>"
-    val audioSearchPlayRightButton: String = "Десен |>"
+    val audioSearchPlayLeftButton: String = "Ляв >"
+    val audioSearchPlayRightButton: String = "Десен >"
     val audioSearchError: String = "Грешка при аудио търсене"
     val audioSearchIdentical: String = "Идентично"
     val audioSearchSimilar: String = "Подобно"

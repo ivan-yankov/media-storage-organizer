@@ -156,19 +156,25 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   override def play(targetInputTab: Boolean): Unit = {
-    def fileAudioData(track: FolkloreTrack): Option[Array[Byte]] = {
+    def fileAudioData(track: FolkloreTrack): (Id, Array[Byte]) = {
       if (track.file.isDefined) {
-        FlacDecoder.decode(Files.readAllBytes(track.file.get.toPath))
+        (
+          track.file.get.getName.replace(" ", "_"),
+          FlacDecoder.decode(Files.readAllBytes(track.file.get.toPath)).getOrElse(Array())
+        )
       }
       else if (isValidId(track.id)) {
-        FlacDecoder.decode(Files.readAllBytes(dataManager.databasePaths.mediaFile(track.id).toPath))
+        (
+          track.id,
+          FlacDecoder.decode(Files.readAllBytes(dataManager.databasePaths.mediaFile(track.id).toPath)).getOrElse(Array())
+        )
       }
-      else None
+      else ("", Array())
     }
 
     Commands.play[TrackTableProperties](
       targetTable(targetInputTab),
-      x => Player.play(fileAudioData(x.track).getOrElse(Array()), x.track.title)
+      items => Player.play(items.map(x => fileAudioData(x.track)))
     )
   }
 
