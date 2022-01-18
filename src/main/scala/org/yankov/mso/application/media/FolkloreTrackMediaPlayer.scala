@@ -17,6 +17,7 @@ case class FolkloreTrackMediaPlayer(sources: Vector[String]) {
     val mp = new MediaPlayer(new Media(sources(currentSourceIndex)))
     mp.setAutoPlay(true)
     mp.setVolume(1.0)
+    mp.setOnEndOfMedia(() => next())
     mp
   }
 
