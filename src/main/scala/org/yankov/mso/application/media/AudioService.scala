@@ -6,13 +6,13 @@ import org.http4s.dsl.Http4sDsl
 import org.yankov.mso.application.Resources
 
 object AudioService extends Http4sDsl[IO] {
-  private var audioData: Array[Byte] = Array()
+  private var audioData: Map[String, Array[Byte]] = Map()
 
-  def setAudioData(audioData: Array[Byte]): Unit = this.audioData = audioData
+  def setAudioData(audioData: Map[String, Array[Byte]]): Unit = this.audioData = audioData
 
   def createRoutes(): HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root => Ok("Media server")
 
-    case GET -> Root / Resources.Media.audioHttpApi => Ok(audioData)
+    case GET -> Root / Resources.Media.audioHttpApi / id => Ok(audioData(id))
   }
 }

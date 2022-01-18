@@ -8,16 +8,21 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.scene.media.{Media, MediaPlayer, MediaView}
 import scalafx.stage.{Modality, Stage}
 
-case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
-  private val buttonWidth = 250.0
+case class FolkloreTrackMediaPlayer(sources: Vector[String]) {
+  private var currentSourceIndex: Int = 0
 
-  private val media = new Media(source)
+  private val buttonWidth = 75.0
 
-  private val mediaPlayer = new MediaPlayer(media)
-  mediaPlayer.setAutoPlay(true)
-  mediaPlayer.setVolume(1.0)
+  private def createMediaPlayer: MediaPlayer = {
+    val mp = new MediaPlayer(new Media(sources(currentSourceIndex)))
+    mp.setAutoPlay(true)
+    mp.setVolume(1.0)
+    mp
+  }
 
-  private val mediaView = new MediaView(mediaPlayer)
+  private def mediaPlayer: javafx.scene.media.MediaPlayer = mediaView.getMediaPlayer
+
+  private val mediaView = new MediaView(createMediaPlayer)
 
   private val btnPlayPause = new Button {
     text = Resources.Media.playPause
@@ -38,11 +43,25 @@ case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
     onAction = _ => close()
   }
 
+  private val btnNext = new Button {
+    text = Resources.Media.next
+    prefWidth = buttonWidth
+    onAction = _ => next()
+  }
+
+  private val btnPrevious = new Button {
+    text = Resources.Media.previous
+    prefWidth = buttonWidth
+    onAction = _ => previous()
+  }
+
   private val buttons = new HBox {
     spacing = 20.0
     padding = Insets(25.0)
     children = List(
       btnPlayPause,
+      btnNext,
+      btnPrevious,
       btnStop,
       btnClose
     )
@@ -51,7 +70,6 @@ case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
 
   private val stage = {
     val st = new Stage {
-      title = trackTitle
       scene = new Scene {
         root = new VBox {
           children.add(mediaView)
@@ -67,10 +85,13 @@ case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
     st
   }
 
-  def open(): Unit = stage.showAndWait()
+  def open(): Unit = {
+    stage.initModality(Modality.None)
+    stage.show()
+  }
 
   def close(): Unit = {
-    mediaPlayer.stop()
+    stop()
     stage.close()
   }
 
@@ -81,5 +102,32 @@ case class FolkloreTrackMediaPlayer(source: String, trackTitle: String) {
     else if (mediaPlayer.getStatus.equals(javafx.scene.media.MediaPlayer.Status.PLAYING)) {
       mediaPlayer.pause()
     }
+  }
+
+  private def next(): Unit = {
+    currentSourceIndex = nextIndex
+    stop()
+    mediaView.setMediaPlayer(createMediaPlayer)
+  }
+
+  private def nextIndex: Int = {
+    if (currentSourceIndex == sources.size - 1) currentSourceIndex
+    else currentSourceIndex + 1
+  }
+
+  private def previous(): Unit = {
+    currentSourceIndex = previousIndex
+    stop()
+    mediaView.setMediaPlayer(createMediaPlayer)
+  }
+
+  private def previousIndex: Int = {
+    if (currentSourceIndex == 0) currentSourceIndex
+    else currentSourceIndex - 1
+  }
+
+  private def stop(): Unit = {
+    mediaPlayer.stop()
+    mediaPlayer.dispose()
   }
 }
