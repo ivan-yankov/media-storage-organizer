@@ -99,27 +99,16 @@ object Commands {
     }
   }
 
-  def removeItem(table: TableView[_]): Unit = {
-    val index = getTableSelectedIndex(table)
-    if (index.isDefined) {
-      table
-        .items
-        .getValue
-        .remove(index.get)
-    }
+  def removeItems[T](table: TableView[T]): Unit = {
+    val items = table.getSelectionModel.getSelectedItems
+    if (!items.isEmpty) table.getItems.removeAll(items)
   }
 
-  def deleteItem[T](table: TableView[T], confirm: () => Boolean, deleteFromDatabase: T => Unit): Unit = {
-    val index = getTableSelectedIndex(table)
-    if (index.isDefined) {
-      val item = table
-        .items
-        .getValue
-        .get(index.get)
-      if (confirm()) {
-        deleteFromDatabase(item)
-        table.getItems.remove(item)
-      }
+  def deleteItems[T](table: TableView[T], confirm: () => Boolean, deleteFromDatabase: List[T] => Unit): Unit = {
+    val items = table.getSelectionModel.getSelectedItems
+    if (!items.isEmpty && confirm()) {
+      table.getItems.removeAll(items)
+      deleteFromDatabase(items.asScala.toList)
     }
   }
 

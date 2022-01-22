@@ -49,7 +49,7 @@ object Resources {
     val areYouSure: String = "Сигурни ли сте?"
     val yes: String = "Да"
     val no: String = "Не"
-    val deleteTrackFromDatabase: String = "Избраният запис ще бъде изтрит от базата данни."
+    val deleteTrackFromDatabase: String = "Избраните записи ще бъдат изтрити от базата данни."
   }
 
   object ToolbarButtons {

@@ -17,9 +17,9 @@ trait ToolbarButtonHandlers {
 
   def cloneItem(targetInputTab: Boolean): Unit
 
-  def removeItem(targetInputTab: Boolean): Unit
+  def removeItems(targetInputTab: Boolean): Unit
 
-  def deleteItem(targetInputTab: Boolean): Unit
+  def deleteItems(targetInputTab: Boolean): Unit
 
   def addItem(targetInputTab: Boolean): Unit
 
