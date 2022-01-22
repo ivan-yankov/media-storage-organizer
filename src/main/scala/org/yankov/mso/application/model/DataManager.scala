@@ -137,12 +137,12 @@ case class DataManager(database: Database,
 
   def getTracks: List[FolkloreTrack] = dbCache.tracks
 
-  def deleteTrack(track: FolkloreTrack, removeTrackFile: Id => Boolean = deleteTrackFile): Boolean = {
-    database.delete[DbFolkloreTrack](List(track.id), tracksPath) match {
+  def deleteTracks(trackIds: List[Id], removeTrackFile: Id => Boolean = deleteTrackFile): Boolean = {
+    database.delete[DbFolkloreTrack](trackIds, tracksPath) match {
       case Left(e) =>
         log.error(e)
         false
-      case Right(_) => removeTrackFile(track.id)
+      case Right(_) => trackIds.map(x => removeTrackFile(x)).forall(x => x)
     }
   }
 

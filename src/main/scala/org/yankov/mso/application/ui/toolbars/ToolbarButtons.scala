@@ -88,7 +88,7 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     id = ButtonIds.btnRemove
     tooltip = new Tooltip(Resources.ToolbarButtons.remove)
     graphic = getIcon("remove")
-    onAction = _ => handlers.removeItem(data.atInputTab)
+    onAction = _ => handlers.removeItems(data.atInputTab)
     userData = data
   }
 
@@ -96,7 +96,7 @@ case class ToolbarButtons(handlers: ToolbarButtonHandlers) {
     id = ButtonIds.btnDelete
     tooltip = new Tooltip(Resources.ToolbarButtons.delete)
     graphic = getIcon("remove")
-    onAction = _ => handlers.deleteItem(data.atInputTab)
+    onAction = _ => handlers.deleteItems(data.atInputTab)
     userData = data
   }
 

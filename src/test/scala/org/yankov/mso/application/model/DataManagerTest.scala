@@ -281,7 +281,7 @@ class DataManagerTest extends FreeSpec with Matchers {
     val recordCheck = RecordCheck()
     recordCheck.putRecord(new File("id"))
 
-    dataManager(db).deleteTrack(FolkloreTrack("id"), x => recordCheck.deleteRecord(x)) shouldBe true
+    dataManager(db).deleteTracks(List("id"), x => recordCheck.deleteRecord(x)) shouldBe true
 
     db.getDeleteKeys.size shouldBe 1
     db.getDeleteKeys.head shouldBe "id"
