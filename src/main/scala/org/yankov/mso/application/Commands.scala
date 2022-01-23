@@ -100,15 +100,19 @@ object Commands {
   }
 
   def removeItems[T](table: TableView[T]): Unit = {
-    val items = table.getSelectionModel.getSelectedItems
-    if (!items.isEmpty) table.getItems.removeAll(items)
+    val items = table.getSelectionModel.getSelectedItems.asScala.toList
+    if (items.nonEmpty) {
+      table.getItems.removeAll(items.asJava)
+      table.getSelectionModel.clearSelection()
+    }
   }
 
   def deleteItems[T](table: TableView[T], confirm: () => Boolean, deleteFromDatabase: List[T] => Unit): Unit = {
-    val items = table.getSelectionModel.getSelectedItems
-    if (!items.isEmpty && confirm()) {
-      table.getItems.removeAll(items)
-      deleteFromDatabase(items.asScala.toList)
+    val items = table.getSelectionModel.getSelectedItems.asScala.toList
+    if (items.nonEmpty && confirm()) {
+      table.getItems.removeAll(items.asJava)
+      table.getSelectionModel.clearSelection()
+      deleteFromDatabase(items)
     }
   }
 
