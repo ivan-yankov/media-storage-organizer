@@ -93,8 +93,8 @@ object Resources {
     val uploadSuccessful: String = "Успешно обновяване на база данни"
     val uploadFailed: String = "Неуспешно обновяване на база данни"
     val exportCompleted: String = "Успешен експорт на файлове"
-    val deleteTrackSuccessful: String = "Успешно изтрит запис"
-    val deleteTrackFailed: String = "Грешка при изтриване на запис"
+    val deleteTrackSuccessful: String = "Успешно изтриване"
+    val deleteTrackFailed: String = "Грешка при изтриване"
 
     def unableToWriteFile(path: String): String = s"Не може да се запише файл $path"
 
