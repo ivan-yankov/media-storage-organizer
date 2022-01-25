@@ -8,7 +8,7 @@ import scalafx.scene.layout.{HBox, VBox}
 import scalafx.scene.media.{Media, MediaPlayer, MediaView}
 import scalafx.stage.{Modality, Stage}
 
-case class FolkloreTrackMediaPlayer(sources: Vector[String]) {
+case class FolkloreTrackMediaPlayer(sources: Vector[String], onClose: () => Unit) {
   private var currentSourceIndex: Int = 0
 
   private val buttonWidth = 75.0
@@ -86,13 +86,14 @@ case class FolkloreTrackMediaPlayer(sources: Vector[String]) {
     st
   }
 
-  def open(): Unit = {
+  def start(): Unit = {
     stage.initModality(Modality.None)
     stage.show()
   }
 
   def close(): Unit = {
     stop()
+    onClose()
     stage.close()
   }
 

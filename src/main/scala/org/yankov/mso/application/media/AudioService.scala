@@ -10,6 +10,11 @@ object AudioService extends Http4sDsl[IO] {
 
   def setAudioData(audioData: Map[String, Array[Byte]]): Unit = this.audioData = audioData
 
+  def clearAudioData(): Unit = {
+    audioData = Map()
+    System.gc()
+  }
+
   def createRoutes(): HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root => Ok("Media server")
 

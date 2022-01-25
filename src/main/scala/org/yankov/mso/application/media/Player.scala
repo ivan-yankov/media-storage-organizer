@@ -17,9 +17,7 @@ object Player {
 
     AudioService.setAudioData(data.toMap)
 
-    player = FolkloreTrackMediaPlayer(urls)
-    player.open()
+    player = FolkloreTrackMediaPlayer(urls, AudioService.clearAudioData)
+    player.start()
   }
-
-  def close(): Unit = if (player != null) player.close()
 }
