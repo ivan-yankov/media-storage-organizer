@@ -1,6 +1,7 @@
 package org.yankov.mso.application.search
 
 
+import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.AudioIndex
 import org.yankov.mso.application.model.DataModel._
@@ -8,9 +9,7 @@ import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.search.SearchModel._
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls.UiTable
-import org.yankov.mso.application.{Id, Resources}
 
-import java.io.InputStream
 import java.time.Duration
 
 object Search {
@@ -23,7 +22,7 @@ object Search {
         SearchEngine.metadataSearch[FolkloreTrack](
           allTracks,
           searchParameters
-        ).sortBy(x => (StringConverters.sourceToString(x.source), x.note, x.title))
+        ).zipWithIndex.sortBy(x => (StringConverters.sourceToString(x._1.source), x._2)).map(x => x._1)
       }
     }
 
