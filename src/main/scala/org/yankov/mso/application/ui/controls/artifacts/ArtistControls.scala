@@ -19,7 +19,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   private val artists = {
     LabeledComboBox[Artist](
       labelText = Resources.ArtifactsTab.artist,
-      cbItems = dataManager.getArtists,
+      cbItems = getExistingArtifacts,
       value = Artist(),
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -103,8 +103,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   override def artifactToString(artifact: Artist): String =
     StringConverters.artistToString(artifact)
 
-  override def getExistingArtifacts: List[Artist] =
-    dataManager.getArtists
+  override def getExistingArtifacts: List[Artist] = dataManager.getArtists
 
   override def onArtifactSelect(artifact: Artist): Unit = {
     if (artifact != null) {
