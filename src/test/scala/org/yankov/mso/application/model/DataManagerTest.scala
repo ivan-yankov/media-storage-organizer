@@ -76,7 +76,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.getInsertEntries.head.asInstanceOf[DbArtist].id.nonEmpty shouldBe true
         db.getInsertEntries.head.asInstanceOf[DbArtist].name shouldBe None
         db.getInsertEntries.head.asInstanceOf[DbArtist].note shouldBe None
-        db.getInsertEntries.head.asInstanceOf[DbArtist].instrumentId shouldBe None
+        db.getInsertEntries.head.asInstanceOf[DbArtist].instruments shouldBe None
         db.getInsertEntries.head.asInstanceOf[DbArtist].missions shouldBe None
         db.getInsertPath shouldBe artistsPath
       }
@@ -89,7 +89,7 @@ class DataManagerTest extends FreeSpec with Matchers {
           Artist(
             id = "id",
             name = "name",
-            instrument = Instrument("instrument-id"),
+            instruments = List(Instrument("instrument-id")),
             note = "note",
             missions = missions
           )
@@ -99,7 +99,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         db.getInsertEntries.head.asInstanceOf[DbArtist].id shouldBe "id"
         db.getInsertEntries.head.asInstanceOf[DbArtist].name shouldBe Some("name")
         db.getInsertEntries.head.asInstanceOf[DbArtist].note shouldBe Some("note")
-        db.getInsertEntries.head.asInstanceOf[DbArtist].instrumentId shouldBe Some("instrument-id")
+        db.getInsertEntries.head.asInstanceOf[DbArtist].instruments shouldBe Some(List("instrument-id"))
         db.getInsertEntries.head.asInstanceOf[DbArtist].missions shouldBe Some(missions.map(x => artistMissionToString(x)))
         db.getInsertPath shouldBe artistsPath
       }
@@ -341,7 +341,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         Artist(
           id = "id",
           name = "name",
-          instrument = Instrument("instrument-id"),
+          instruments = List(Instrument("instrument-id")),
           note = "note",
           missions = missions
         )
@@ -351,7 +351,7 @@ class DataManagerTest extends FreeSpec with Matchers {
       db.getUpdateEntries.head.asInstanceOf[DbArtist].id shouldBe "id"
       db.getUpdateEntries.head.asInstanceOf[DbArtist].name shouldBe Some("name")
       db.getUpdateEntries.head.asInstanceOf[DbArtist].note shouldBe Some("note")
-      db.getUpdateEntries.head.asInstanceOf[DbArtist].instrumentId shouldBe Some("instrument-id")
+      db.getUpdateEntries.head.asInstanceOf[DbArtist].instruments shouldBe Some(List("instrument-id"))
       db.getUpdateEntries.head.asInstanceOf[DbArtist].missions shouldBe Some(missions.map(x => artistMissionToString(x)))
       db.getUpdatePath shouldBe artistsPath
     }

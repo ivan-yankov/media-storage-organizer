@@ -2,7 +2,7 @@ package org.yankov.mso.application.model
 
 import org.yankov.mso.application.Id
 
-import java.io.{File, InputStream}
+import java.io.File
 import java.time.Duration
 
 object DataModel {
@@ -78,7 +78,7 @@ object DataModel {
 
   case class Artist(id: Id = invalidId,
                     name: String = "",
-                    instrument: Instrument = Instrument(),
+                    instruments: List[Instrument] = List(),
                     note: String = "",
                     missions: List[ArtistMission] = List(),
                     members: List[Artist] = List()) {
@@ -86,7 +86,7 @@ object DataModel {
     def withId(newId: Id): Artist = Artist(
       id = newId,
       name = name,
-      instrument = instrument,
+      instruments = instruments,
       note = note,
       missions = missions,
       members = members

@@ -124,16 +124,6 @@ object FolkloreControlsFactory {
     )
   }
 
-  def createInstrument(): LabeledComboBox[Instrument] = {
-    LabeledComboBox[Instrument](
-      labelText = Resources.Controls.instrument,
-      cbItems = dataManager.getInstruments,
-      value = Instrument(),
-      itemToString = instrumentToString,
-      emptyValue = Option(Instrument())
-    )
-  }
-
   private def filterArtists(missions: List[ArtistMission]): List[Artist] = {
     dataManager
       .getArtists

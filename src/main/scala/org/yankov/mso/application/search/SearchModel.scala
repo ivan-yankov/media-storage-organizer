@@ -57,8 +57,8 @@ object SearchModel {
     )
 
     private def getInstruments(artist: Artist): List[String] = {
-      if (artist.members.nonEmpty) artist.members.map(x => x.instrument.name)
-      else List(artist.instrument.name)
+      if (artist.members.nonEmpty) artist.members.flatMap(x => x.instruments.map(_.name))
+      else artist.instruments.map(_.name)
     }
   }
 

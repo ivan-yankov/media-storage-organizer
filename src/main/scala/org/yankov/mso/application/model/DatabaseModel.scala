@@ -12,7 +12,7 @@ object DatabaseModel {
   case class DbArtist(id: Id,
                       name: Option[String],
                       note: Option[String],
-                      instrumentId: Option[Id],
+                      instruments: Option[List[Id]],
                       missions: Option[List[String]],
                       members: Option[List[Id]]) extends DbEntry
   implicit val dbArtistEncoder: Encoder[DbArtist] = deriveEncoder[DbArtist]

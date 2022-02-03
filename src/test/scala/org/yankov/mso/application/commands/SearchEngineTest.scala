@@ -43,7 +43,7 @@ class SearchEngineTest extends FreeSpec with Matchers {
     )
     val t5 = FolkloreTrack(
       title = "Ръченица",
-      performer = Artist(name = "Никола Ганчев", instrument = Instrument(name = "Кавал")),
+      performer = Artist(name = "Никола Ганчев", instruments = List(Instrument(name = "Кавал"))),
       accompanimentPerformer = Artist(name = "Група"),
       arrangementAuthor = Artist(name = "Красимир Кюркчийски"),
       source = Source(sourceType = SourceType(name = "Лента"), signature = "3506")
