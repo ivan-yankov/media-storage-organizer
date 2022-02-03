@@ -28,7 +28,8 @@ object Main extends JFXApp {
       val dataManager = createDataManager(
         getApplicationArgument(
           argument = Resources.ApplicationArgumentKeys.databaseDirectory,
-          arguments = args.toSeq)
+          arguments = args.toSeq
+        )
       )
       Files.deleteIfExists(dataManager.databasePaths.audioIndex)
       Files.createFile(dataManager.databasePaths.audioIndex)
