@@ -17,13 +17,9 @@ object Search {
                      allTracks: List[FolkloreTrack],
                      resultTable: UiTable[TrackTableProperties]): Unit = {
     val tracks = {
-      if (searchParameters.forall(x => x.value.isBlank)) allTracks
-      else {
-        SearchEngine.metadataSearch[FolkloreTrack](
-          allTracks,
-          searchParameters
-        ).zipWithIndex.sortBy(x => (StringConverters.sourceToString(x._1.source), x._2)).map(x => x._1)
-      }
+      val searchResults = SearchEngine.metadataSearch[FolkloreTrack](allTracks, searchParameters)
+      if (searchResults.size == allTracks.size) searchResults
+      else searchResults.zipWithIndex.sortBy(x => (StringConverters.sourceToString(x._1.source), x._2)).map(x => x._1)
     }
 
     resultTable.setItems(tracks.map(x => TrackTableProperties(x)))
