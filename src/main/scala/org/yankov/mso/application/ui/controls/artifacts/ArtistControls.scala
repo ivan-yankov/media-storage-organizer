@@ -100,8 +100,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     enableInstrument()
   }
 
-  override def artifactToString(artifact: Artist): String =
-    StringConverters.artistToString(artifact)
+  override def artifactToString(artifact: Artist): String = StringConverters.artistToString(artifact)
 
   override def getExistingArtifacts: List[Artist] = dataManager.getArtists
 
