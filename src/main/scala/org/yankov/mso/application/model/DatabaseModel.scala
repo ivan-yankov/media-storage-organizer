@@ -13,7 +13,8 @@ object DatabaseModel {
                       name: Option[String],
                       note: Option[String],
                       instrumentId: Option[Id],
-                      missions: Option[List[String]]) extends DbEntry
+                      missions: Option[List[String]],
+                      members: Option[List[Id]]) extends DbEntry
   implicit val dbArtistEncoder: Encoder[DbArtist] = deriveEncoder[DbArtist]
   implicit val dbArtistDecoder: Decoder[DbArtist] = deriveDecoder[DbArtist]
 

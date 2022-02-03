@@ -80,15 +80,22 @@ object DataModel {
                     name: String = "",
                     instrument: Instrument = Instrument(),
                     note: String = "",
-                    missions: List[ArtistMission] = List()) {
+                    missions: List[ArtistMission] = List(),
+                    members: List[Artist] = List()) {
 
     def withId(newId: Id): Artist = Artist(
       id = newId,
       name = name,
       instrument = instrument,
       note = note,
-      missions = missions
+      missions = missions,
+      members = members
     )
+
+    def displayName: String = {
+      if (members.nonEmpty) members.map(y => y.name).mkString(", ")
+      else name
+    }
   }
 
   case class FolkloreTrack(id: Id = invalidId,

@@ -4,7 +4,7 @@ import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.search.SearchModel.{Filter, Variable}
 
 object StringConverters {
-  def artistToString(x: Artist): String = x.name
+  def artistToString(x: Artist): String = x.displayName
 
   def ethnographicRegionToString(x: EthnographicRegion): String = x.name
 
