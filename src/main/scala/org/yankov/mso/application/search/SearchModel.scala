@@ -3,27 +3,41 @@ package org.yankov.mso.application.search
 import org.yankov.mso.application.Id
 import org.yankov.mso.application.Resources.Filters._
 import org.yankov.mso.application.Resources.Variables._
-import org.yankov.mso.application.model.DataModel.FolkloreTrack
+import org.yankov.mso.application.model.DataModel.{Artist, FolkloreTrack}
 import org.yankov.mso.application.search.TextAnalyzer._
 
 object SearchModel {
   case class Variable[T](label: String, valueProvider: T => String)
 
   object Variables {
-    val varTitle: Variable[FolkloreTrack] = Variable[FolkloreTrack](title, x => x.title)
-    val varPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](performer, x => x.performer.name)
-    val varAccompanimentPerformer: Variable[FolkloreTrack] = Variable[FolkloreTrack](accompanimentPerformer, x => x.accompanimentPerformer.name)
-    val varArrangementAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](arrangementAuthor, x => x.arrangementAuthor.name)
-    val varConductor: Variable[FolkloreTrack] = Variable[FolkloreTrack](conductor, x => x.conductor.name)
-    val varInstrumentPerformance: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentPerformance, x => x.performer.instrument.name)
-    val varInstrumentAccompaniment: Variable[FolkloreTrack] = Variable[FolkloreTrack](instrumentAccompaniment, x => x.accompanimentPerformer.instrument.name)
-    val varSoloist: Variable[FolkloreTrack] = Variable[FolkloreTrack](soloist, x => x.soloist.name)
-    val varAuthor: Variable[FolkloreTrack] = Variable[FolkloreTrack](author, x => x.author.name)
-    val varEthnographicRegion: Variable[FolkloreTrack] = Variable[FolkloreTrack](ethnographicRegion, x => x.ethnographicRegion.name)
-    val varTrackNote: Variable[FolkloreTrack] = Variable[FolkloreTrack](trackNote, x => x.note)
-    val varSourceType: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name)
-    val varSourceSignature: Variable[FolkloreTrack] = Variable[FolkloreTrack](sourceSignature, x => x.source.signature)
-    val varId: Variable[FolkloreTrack] = Variable[FolkloreTrack](id, x => x.id)
+    val varTitle: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](title, x => x.title)
+    val varPerformer: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](performer, x => x.performer.displayName)
+    val varAccompanimentPerformer: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](accompanimentPerformer, x => x.accompanimentPerformer.displayName)
+    val varArrangementAuthor: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](arrangementAuthor, x => x.arrangementAuthor.displayName)
+    val varConductor: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](conductor, x => x.conductor.displayName)
+    val varInstrumentPerformance: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](instrumentPerformance, x => getInstruments(x.performer).mkString(","))
+    val varInstrumentAccompaniment: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](instrumentAccompaniment, x => getInstruments(x.accompanimentPerformer).mkString(","))
+    val varSoloist: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](soloist, x => x.soloist.displayName)
+    val varAuthor: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](author, x => x.author.displayName)
+    val varEthnographicRegion: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](ethnographicRegion, x => x.ethnographicRegion.name)
+    val varTrackNote: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](trackNote, x => x.note)
+    val varSourceType: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](sourceType, x => x.source.sourceType.name)
+    val varSourceSignature: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](sourceSignature, x => x.source.signature)
+    val varId: Variable[FolkloreTrack] =
+      Variable[FolkloreTrack](id, x => x.id)
 
     def asList: List[Variable[FolkloreTrack]] = List(
       varTitle,
@@ -41,6 +55,11 @@ object SearchModel {
       varAuthor,
       varEthnographicRegion
     )
+
+    private def getInstruments(artist: Artist): List[String] = {
+      if (artist.members.nonEmpty) artist.members.map(x => x.instrument.name)
+      else List(artist.instrument.name)
+    }
   }
 
   case class Filter[T](label: String, execute: (Variable[T], String, List[T]) => List[T])

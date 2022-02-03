@@ -114,7 +114,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   }
 
   override def artifactExists: Boolean =
-    getExistingArtifacts.exists(x => x.name.equalsIgnoreCase(name.getValue))
+    getExistingArtifacts.exists(x => x.displayName.equalsIgnoreCase(name.getValue))
 
   private def init(): Unit = {
     enableInstrument()

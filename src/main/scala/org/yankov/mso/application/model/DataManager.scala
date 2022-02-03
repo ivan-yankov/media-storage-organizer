@@ -82,12 +82,14 @@ case class DataManager(database: Database,
   implicit class ArtistAsDbArtist(artist: Artist) {
     def asDbEntry: DbArtist = {
       val missions = artist.missions.map(x => DataModel.artistMissionToString(x))
+      val members = artist.members.map(x => x.id)
       DbArtist(
         id = artist.id,
         name = artist.name.asOption,
         note = artist.note.asOption,
         instrumentId = artist.instrument.id.asOption,
-        missions = if (missions.nonEmpty) Option(missions) else Option.empty
+        missions = if (missions.nonEmpty) Option(missions) else Option.empty,
+        members = if (members.nonEmpty) Option(members) else Option.empty
       )
     }
   }
