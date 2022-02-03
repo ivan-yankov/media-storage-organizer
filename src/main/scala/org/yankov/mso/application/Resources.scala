@@ -210,5 +210,6 @@ object Resources {
     val notEqualsLabel: String = "Различно"
     val containsLabel: String = "Съдържа"
     val notContainsLabel: String = "Не съдържа"
+    val emptyLabel: String = "Празно"
   }
 }

@@ -6,8 +6,6 @@ import org.yankov.mso.application.Resources.Variables._
 import org.yankov.mso.application.model.DataModel.FolkloreTrack
 import org.yankov.mso.application.search.TextAnalyzer._
 
-import java.io.File
-
 object SearchModel {
   case class Variable[T](label: String, valueProvider: T => String)
 
@@ -67,8 +65,7 @@ object SearchModel {
     val filterContains: Filter[FolkloreTrack] = Filter(
       containsLabel,
       (variable, value, tracks) => {
-        if (value.nonEmpty)
-          tracks.filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
+        if (value.nonEmpty) tracks.filter(x => analyze(variable.valueProvider(x)).contains(analyze(value)))
         else tracks
       }
     )
@@ -81,11 +78,17 @@ object SearchModel {
       }
     )
 
+    val filterEmpty: Filter[FolkloreTrack] = Filter(
+      emptyLabel,
+      (variable, _, tracks) => tracks.filter(x => variable.valueProvider(x).isBlank)
+    )
+
     def asList: List[Filter[FolkloreTrack]] = List(
       filterContains,
       filterNotContains,
       filterEquals,
-      filterNotEquals
+      filterNotEquals,
+      filterEmpty
     )
   }
 
