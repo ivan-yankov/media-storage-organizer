@@ -41,7 +41,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     (ChamberGroup, new CheckBox(Resources.Artists.chamberGroup))
   ).map(
     x => {
-      x._2.setOnAction(_ => enableInstrument())
+      x._2.setOnAction(_ => enableInstruments())
       (x._1, x._2)
     }
   )
@@ -97,7 +97,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     note.setValue("")
     missions.foreach(x => x._2.setSelected(false))
     instruments.foreach(x => x._2.setSelected(false))
-    enableInstrument()
+    enableInstruments()
   }
 
   override def artifactToString(artifact: Artist): String = StringConverters.artistToString(artifact)
@@ -111,7 +111,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
       note.setValue(artifact.note)
       missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
       instruments.foreach(x => x._2.setSelected(artifact.instruments.map(_.id).contains(x._1)))
-      enableInstrument()
+      enableInstruments()
     }
   }
 
@@ -143,13 +143,13 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     getExistingArtifacts.exists(x => x.displayName.equalsIgnoreCase(name.getValue))
 
   private def init(): Unit = {
-    enableInstrument()
+    enableInstruments()
   }
 
   private def selectedMissions: List[ArtistMission] =
     missions.filter(x => x._2.isSelected).map(x => x._1)
 
-  private def enableInstrument(): Unit =
+  private def enableInstruments(): Unit =
     instruments.foreach(x => x._2.setDisable(!selectedMissions.contains(InstrumentPlayer)))
 
   private def btnAddMember: Button = {
