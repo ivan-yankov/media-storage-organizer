@@ -79,7 +79,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     )
   }
 
-  override def updateArtifact(artifact: Artist): Boolean =
+  override def updateArtifact(artifact: Artist): Boolean = {
     dataManager.updateArtist(
       Artist(
         id = artifact.id,
@@ -90,6 +90,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
         members = members
       )
     )
+  }
 
   override def cleanup(): Unit = {
     name.setValue("")
