@@ -6,10 +6,10 @@ import org.yankov.mso.application.converters.StringConverters.artistToString
 import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.ui.controls.{LabeledComboBox, LabeledTextField}
-import scalafx.geometry.{Insets, Pos}
+import scalafx.geometry.Insets
 import scalafx.scene.Node
 import scalafx.scene.control.{Button, CheckBox, TitledPane}
-import scalafx.scene.layout.{GridPane, HBox, Pane, VBox}
+import scalafx.scene.layout.{GridPane, Pane, VBox}
 
 case class ArtistControls() extends ArtifactControls[Artist] {
   private val name = LabeledTextField(Resources.Artists.artistName, "")
