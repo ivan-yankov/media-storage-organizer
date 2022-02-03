@@ -164,7 +164,10 @@ object Resources {
   }
 
   object Artists {
-    val artistName: String = "Име на артист"
+    val artistName: String = "Име"
+    val artistDisplayName: String = "Съставно име"
+    val addMember: String = "Добавяне"
+    val members: String = "Състав"
     val note: String = "Забележка"
     val missions: String = "Роли"
     val singer: String = "Певец"

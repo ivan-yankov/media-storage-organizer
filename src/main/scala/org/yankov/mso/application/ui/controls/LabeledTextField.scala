@@ -8,9 +8,10 @@ import scalafx.scene.layout.{Pane, VBox}
 
 case class LabeledTextField(labelText: String,
                             value: String,
-                            validator: Option[String => Boolean] = Option.empty) {
+                            validator: Option[String => Boolean] = Option.empty,
+                            readOnly: Boolean = false) {
   private val textField: TextField = new TextField {
-    editable = true
+    editable = !readOnly
     text = value
   }
 

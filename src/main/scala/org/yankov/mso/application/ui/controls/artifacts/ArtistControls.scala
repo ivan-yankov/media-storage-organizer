@@ -2,14 +2,27 @@ package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
 import org.yankov.mso.application.converters.StringConverters
+import org.yankov.mso.application.converters.StringConverters.artistToString
 import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel._
-import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledTextField}
-import scalafx.scene.control.{CheckBox, TitledPane}
+import org.yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledComboBox, LabeledTextField}
+import scalafx.scene.control.{Button, CheckBox, TitledPane}
 import scalafx.scene.layout.{HBox, Pane, VBox}
 
 case class ArtistControls() extends ArtifactControls[Artist] {
   private val name = LabeledTextField(Resources.Artists.artistName, "")
+
+  private val displayName = LabeledTextField(Resources.Artists.artistDisplayName, "", readOnly = true)
+
+  private val artists = {
+    LabeledComboBox[Artist](
+      labelText = Resources.ArtifactsTab.artist,
+      cbItems = dataManager.getArtists,
+      value = Artist(),
+      itemToString = artistToString,
+      emptyValue = Option(Artist())
+    )
+  }
 
   private val note = LabeledTextField(Resources.Artists.note, "")
 
@@ -30,6 +43,8 @@ case class ArtistControls() extends ArtifactControls[Artist] {
       (x._1, x._2)
     }
   )
+
+  private var members: List[Artist] = List()
 
   init()
 
@@ -56,7 +71,8 @@ case class ArtistControls() extends ArtifactControls[Artist] {
         name = name.getValue,
         instrument = instrument.getValue,
         note = note.getValue,
-        missions = selectedMissions
+        missions = selectedMissions,
+        members = members
       )
     )
   }
@@ -68,12 +84,14 @@ case class ArtistControls() extends ArtifactControls[Artist] {
         name = name.getValue,
         instrument = instrument.getValue,
         note = note.getValue,
-        missions = selectedMissions
+        missions = selectedMissions,
+        members = members
       )
     )
 
   override def cleanup(): Unit = {
     name.setValue("")
+    displayName.setValue("")
     note.setValue("")
     missions.foreach(x => x._2.setSelected(false))
     instrument.clear()
@@ -89,6 +107,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   override def onArtifactSelect(artifact: Artist): Unit = {
     if (artifact != null) {
       name.setValue(artifact.name)
+      displayName.setValue(artifact.displayName)
       note.setValue(artifact.note)
       missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
       instrument.setValue(artifact.instrument)
@@ -100,6 +119,16 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     spacing = whiteSpace
     children = List(
       name.getContainer,
+      displayName.getContainer,
+      new TitledPane {
+        text = Resources.Artists.members
+        content = new HBox {
+          spacing = whiteSpace
+          children.add(artists.getContainer)
+          children.add(btnAddMember)
+        }
+        collapsible = false
+      },
       note.getContainer,
       new TitledPane {
         text = Resources.Artists.missions
@@ -125,4 +154,16 @@ case class ArtistControls() extends ArtifactControls[Artist] {
 
   private def enableInstrument(): Unit =
     instrument.setDisable(!selectedMissions.contains(InstrumentPlayer))
+
+  private def btnAddMember: Button = {
+    new Button {
+      text = Resources.Artists.addMember
+      onAction = _ => {
+        addMember(artists.getValue)
+        displayName.setValue(Artist(members = members).displayName)
+      }
+    }
+  }
+
+  private def addMember(artist: Artist): Unit = members = artist :: members
 }
