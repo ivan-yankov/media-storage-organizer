@@ -6,8 +6,10 @@ import org.yankov.mso.application.converters.StringConverters.artistToString
 import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.ui.controls.{LabeledComboBox, LabeledTextField}
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.Node
 import scalafx.scene.control.{Button, CheckBox, TitledPane}
-import scalafx.scene.layout.{HBox, Pane, VBox}
+import scalafx.scene.layout.{GridPane, HBox, Pane, VBox}
 
 case class ArtistControls() extends ArtifactControls[Artist] {
   private val name = LabeledTextField(Resources.Artists.artistName, "")
@@ -27,16 +29,6 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   private val note = LabeledTextField(Resources.Artists.note, "")
 
   private val instruments = dataManager.getInstruments.map(x => x.id -> new CheckBox(x.name))
-
-//  def createInstrument(): LabeledComboBox[Instrument] = {
-//    LabeledComboBox[Instrument](
-//      labelText = Resources.Controls.instrument,
-//      cbItems = dataManager.getInstruments,
-//      value = Instrument(),
-//      itemToString = instrumentToString,
-//      emptyValue = Option(Instrument())
-//    )
-//  }
 
   private val missions: List[(ArtistMission, CheckBox)] = List(
     (Singer, new CheckBox(Resources.Artists.singer)),
@@ -132,29 +124,19 @@ case class ArtistControls() extends ArtifactControls[Artist] {
       displayName.getContainer,
       new TitledPane {
         text = Resources.Artists.members
-        content = new HBox {
-          spacing = whiteSpace
-          children.add(artists.getContainer)
-          children.add(btnAddMember)
-        }
+        content = gridPane(List(artists.getContainer, btnAddMember), 2)
         collapsible = false
       },
       note.getContainer,
       new TitledPane {
         text = Resources.Artists.missions
-        content = new HBox {
-          spacing = whiteSpace
-          missions.map(x => x._2).foreach(x => children.add(x))
-        }
+        content = gridPane(missions.map(x => x._2), missions.size)
         collapsible = false
       },
       new TitledPane {
         text = Resources.Artists.instruments
-        content = new HBox {
-          spacing = whiteSpace
-          instruments.map(x => x._2).foreach(x => children.add(x))
-        }
-        collapsible = false
+        content = gridPane(instruments.map(x => x._2).sortBy(_.text.value), 10)
+        collapsible = true
       }
     )
   }
@@ -188,5 +170,19 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     dataManager
       .getInstruments
       .filter(x => instruments.filter(y => y._2.isSelected).map(y => y._1).contains(x.id))
+  }
+
+  private def gridPane(items: List[Node], numberOfColumns: Int): Pane = {
+    val gp = new GridPane()
+    items
+      .sliding(numberOfColumns, numberOfColumns)
+      .zipWithIndex
+      .foreach(x => x._1.zipWithIndex.foreach(y => gp.add(y._1, y._2, x._2)))
+
+    gp.setPadding(Insets(whiteSpace))
+    gp.setHgap(whiteSpace)
+    gp.setVgap(whiteSpace)
+
+    gp
   }
 }
