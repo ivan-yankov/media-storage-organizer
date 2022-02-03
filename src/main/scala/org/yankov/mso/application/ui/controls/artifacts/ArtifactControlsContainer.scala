@@ -7,7 +7,7 @@ import org.yankov.mso.application.ui.controls.InputTextHandler
 import scalafx.geometry.Insets
 import scalafx.scene.control.cell.TextFieldListCell
 import scalafx.scene.control.{Button, Label, ListView, SelectionMode}
-import scalafx.scene.layout.{HBox, Pane, VBox}
+import scalafx.scene.layout.{HBox, Pane, Priority, VBox}
 import scalafx.util.StringConverter
 
 import scala.collection.JavaConverters.asScalaBufferConverter
@@ -105,6 +105,8 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
       .selectionModel
       .value
       .setSelectionMode(SelectionMode.Single)
+
+    VBox.setVgrow(existingArtifactsContainer, Priority.Always)
 
     refreshExistingArtifacts()
   }
