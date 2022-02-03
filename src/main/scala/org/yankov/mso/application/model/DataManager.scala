@@ -19,10 +19,15 @@ case class DataManager(database: Database,
   private val log = LoggerFactory.getLogger(getClass)
 
   private def artistsPath: Path = databasePaths.artists
+
   private def instrumentsPath: Path = databasePaths.instruments
+
   private def sourceTypesPath: Path = databasePaths.sourceTypes
+
   private def sourcesPath: Path = databasePaths.sources
+
   private def ethnographicRegionsPath: Path = databasePaths.ethnographicRegions
+
   private def tracksPath: Path = databasePaths.tracks
 
   private var dbCache: DatabaseCache = _
@@ -81,13 +86,14 @@ case class DataManager(database: Database,
 
   implicit class ArtistAsDbArtist(artist: Artist) {
     def asDbEntry: DbArtist = {
+      val instruments = artist.instruments.map(_.id)
       val missions = artist.missions.map(x => DataModel.artistMissionToString(x))
       val members = artist.members.map(x => x.id)
       DbArtist(
         id = artist.id,
         name = artist.name.asOption,
         note = artist.note.asOption,
-        instrumentId = artist.instrument.id.asOption,
+        instruments = if (instruments.nonEmpty) Option(instruments) else Option.empty,
         missions = if (missions.nonEmpty) Option(missions) else Option.empty,
         members = if (members.nonEmpty) Option(members) else Option.empty
       )
@@ -98,7 +104,10 @@ case class DataManager(database: Database,
     def asArtist: Artist = Artist(
       id = dbArtist.id,
       name = dbArtist.name.getOrElse(""),
-      instrument = dbCache.instruments.getByOptionOrElse(dbArtist.instrumentId, Instrument()),
+      instruments = dbArtist.instruments match {
+        case Some(ids) => ids.map(x => dbCache.instruments.getOrElse(x, Instrument()))
+        case None => List()
+      },
       note = dbArtist.note.getOrElse(""),
       missions = dbArtist.missions.getOrElse(List[String]()).map(x => DataModel.artistMissionFromString(x))
     )

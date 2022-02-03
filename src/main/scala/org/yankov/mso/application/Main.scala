@@ -34,14 +34,6 @@ object Main extends JFXApp {
       Files.createFile(dataManager.databasePaths.audioIndex)
       dataManager.audioIndex.get.build()
     }
-    else if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.importDatabase, args.toSeq)) {
-      ImportDatabase.run(
-        getApplicationArgument(
-          Resources.ApplicationArgumentKeys.databaseDirectory,
-          arguments = args.toSeq
-        )
-      )
-    }
     else {
       super.main(args)
     }

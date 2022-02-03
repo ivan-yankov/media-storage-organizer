@@ -8,7 +8,6 @@ object Resources {
   object ApplicationArgumentKeys {
     val databaseDirectory: String = "--db-dir"
     val mediaServerPort: String = "--media-server-port"
-    val importDatabase: String = "--import-database"
     val buildAudioIndex: String = "--build-audio-index"
   }
 
@@ -168,6 +167,7 @@ object Resources {
     val artistDisplayName: String = "Съставно име"
     val addMember: String = "Добавяне"
     val members: String = "Състав"
+    val instruments: String = "Инструменти"
     val note: String = "Забележка"
     val missions: String = "Роли"
     val singer: String = "Певец"
