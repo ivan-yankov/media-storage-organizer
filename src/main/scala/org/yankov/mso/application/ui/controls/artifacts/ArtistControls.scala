@@ -37,7 +37,8 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     (Orchestra, new CheckBox(Resources.Artists.orchestra)),
     (Choir, new CheckBox(Resources.Artists.choir)),
     (Ensemble, new CheckBox(Resources.Artists.ensemble)),
-    (ChamberGroup, new CheckBox(Resources.Artists.chamberGroup))
+    (ChamberGroup, new CheckBox(Resources.Artists.chamberGroup)),
+    (ConcertHost, new CheckBox(Resources.Artists.concertHost))
   ).map(
     x => {
       x._2.setOnAction(_ => enableInstruments())
@@ -45,7 +46,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     }
   )
 
-  private var members: List[Artist] = List()
+    private var members: List[Artist] = List()
 
   init()
 
@@ -109,10 +110,10 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     if (artifact != null) {
       name.setValue(artifact.name)
       displayName.setValue(artifact.composedName)
-      members = artifact.members
       note.setValue(artifact.note)
       missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
       instruments.foreach(x => x._2.setSelected(artifact.instruments.map(_.id).contains(x._1)))
+      setMembers(artifact.members)
       enableInstruments()
     }
   }
@@ -124,7 +125,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
       displayName.getContainer,
       new TitledPane {
         text = Resources.Artists.members
-        content = gridPane(List(artists.getContainer, btnAddMember), 2)
+        content = gridPane(List(artists.getContainer, btnAddMember, btnClearMembers), 3)
         collapsible = false
       },
       note.getContainer,
@@ -159,14 +160,16 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   private def btnAddMember: Button = {
     new Button {
       text = Resources.Artists.addMember
-      onAction = _ => {
-        addMember(artists.getValue)
-        displayName.setValue(Artist(members = members).composedName)
-      }
+      onAction = _ => setMembers(members ++ List(artists.getValue))
     }
   }
 
-  private def addMember(artist: Artist): Unit = members = members ++ List(artist)
+  private def btnClearMembers: Button = {
+    new Button {
+      text = Resources.Artists.clearMembers
+      onAction = _ => setMembers(List())
+    }
+  }
 
   private def selectedInstruments: List[Instrument] = {
     dataManager
@@ -186,5 +189,10 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     gp.setVgap(whiteSpace)
 
     gp
+  }
+
+  private def setMembers(members: List[Artist]): Unit = {
+    this.members = members
+    displayName.setValue(Artist(members = this.members).composedName)
   }
 }
