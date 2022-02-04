@@ -1,7 +1,6 @@
 package org.yankov.mso.application.ui.controls.artifacts
 
 import org.yankov.mso.application.Resources
-import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.converters.StringConverters.artistToString
 import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel._
@@ -19,7 +18,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   private val artists = {
     LabeledComboBox[Artist](
       labelText = Resources.ArtifactsTab.artist,
-      cbItems = getExistingArtifacts,
+      cbItems = () => getExistingArtifacts,
       value = Artist(),
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -98,6 +97,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     note.setValue("")
     missions.foreach(x => x._2.setSelected(false))
     instruments.foreach(x => x._2.setSelected(false))
+    members = List()
     enableInstruments()
   }
 
@@ -109,6 +109,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     if (artifact != null) {
       name.setValue(artifact.name)
       displayName.setValue(artifact.displayName)
+      members = artifact.members
       note.setValue(artifact.note)
       missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
       instruments.foreach(x => x._2.setSelected(artifact.instruments.map(_.id).contains(x._1)))
@@ -142,6 +143,8 @@ case class ArtistControls() extends ArtifactControls[Artist] {
 
   override def artifactExists: Boolean =
     getExistingArtifacts.exists(x => x.displayName.equalsIgnoreCase(name.getValue))
+
+  override def refresh(): Unit = artists.refresh()
 
   private def init(): Unit = {
     enableInstruments()

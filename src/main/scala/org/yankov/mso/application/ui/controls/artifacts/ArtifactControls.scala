@@ -27,4 +27,6 @@ trait ArtifactControls[T] {
   def createControls(): Pane
 
   def artifactExists: Boolean
+
+  def refresh(): Unit = {}
 }

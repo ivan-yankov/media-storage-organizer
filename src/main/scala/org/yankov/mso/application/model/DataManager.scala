@@ -109,7 +109,11 @@ case class DataManager(database: Database,
         case None => List()
       },
       note = dbArtist.note.getOrElse(""),
-      missions = dbArtist.missions.getOrElse(List[String]()).map(x => DataModel.artistMissionFromString(x))
+      missions = dbArtist.missions.getOrElse(List[String]()).map(x => DataModel.artistMissionFromString(x)),
+      members = dbArtist.members match {
+        case Some(ids) => ids.map(x => dbCache.artists.getOrElse(x, Artist()))
+        case None => List()
+      }
     )
   }
 

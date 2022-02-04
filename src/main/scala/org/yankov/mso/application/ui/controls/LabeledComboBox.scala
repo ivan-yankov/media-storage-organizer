@@ -9,7 +9,7 @@ import scalafx.util.StringConverter
 import scala.collection.JavaConverters._
 
 case class LabeledComboBox[T](labelText: String,
-                              cbItems: List[T],
+                              cbItems: () => List[T],
                               value: T,
                               itemToString: T => String,
                               sortItems: Boolean = true,
@@ -22,7 +22,7 @@ case class LabeledComboBox[T](labelText: String,
       override def toString(x: T): String = itemToString(x)
     }
     prefWidth = 250.0
-    getItems.foreach(x => items.getValue.add(x))
+    sortedItems.foreach(x => items.getValue.add(x))
   }
 
   private val label = new Label {
@@ -68,7 +68,13 @@ case class LabeledComboBox[T](labelText: String,
 
   private def init(): Unit = setValue(value)
 
+  def refresh(): Unit = {
+    clear()
+    comboBox.items.getValue.clear()
+    sortedItems.foreach(x => comboBox.items.getValue.add(x))
+  }
+
   private def compareItems(x: T, y: T): Boolean = itemToString(x).compareToIgnoreCase(itemToString(y)) < 0
 
-  private def getItems: List[T] = if (sortItems) cbItems.sortWith((x, y) => compareItems(x, y)) else cbItems
+  private def sortedItems: List[T] = if (sortItems) cbItems().sortWith((x, y) => compareItems(x, y)) else cbItems()
 }
