@@ -30,6 +30,8 @@ object DataModel {
 
   case object ChamberGroup extends ArtistMission
 
+  case object ConcertHost extends ArtistMission
+
   object ArtistMissions {
     val singer: String = "Singer"
     val instrumentPlayer: String = "InstrumentPlayer"
@@ -39,6 +41,7 @@ object DataModel {
     val choir: String = "Choir"
     val ensemble: String = "Ensemble"
     val chamberGroup: String = "ChamberGroup"
+    val concertHost: String = "ConcertHost"
   }
 
   def artistMissionToString(mission: ArtistMission): String = mission match {
@@ -50,6 +53,7 @@ object DataModel {
     case Choir => ArtistMissions.choir
     case Ensemble => ArtistMissions.ensemble
     case ChamberGroup => ArtistMissions.chamberGroup
+    case ConcertHost => ArtistMissions.concertHost
   }
 
   def artistMissionFromString(mission: String): ArtistMission = mission match {
@@ -61,6 +65,7 @@ object DataModel {
     case ArtistMissions.choir => Choir
     case ArtistMissions.ensemble => Ensemble
     case ArtistMissions.chamberGroup => ChamberGroup
+    case ArtistMissions.concertHost => ConcertHost
   }
 
   case class Instrument(id: Id = invalidId,
