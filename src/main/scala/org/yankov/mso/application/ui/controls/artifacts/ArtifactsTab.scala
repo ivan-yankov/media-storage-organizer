@@ -29,7 +29,7 @@ case class ArtifactsTab() {
 
   private val artifactType = LabeledComboBox[String](
     labelText = Resources.ArtifactsTab.artifactType,
-    cbItems = artifacts,
+    cbItems = () => artifacts,
     value = defaultArtifact,
     itemToString = x => x,
     sortItems = false,

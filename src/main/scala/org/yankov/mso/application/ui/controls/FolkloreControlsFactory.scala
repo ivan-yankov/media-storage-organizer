@@ -13,7 +13,7 @@ object FolkloreControlsFactory {
     val sourceTypes = dataManager.getSourceTypes
     LabeledComboBox[SourceType](
       labelText = Resources.Controls.sourceType,
-      cbItems = sourceTypes,
+      cbItems = () => sourceTypes,
       value = sourceTypes.head,
       itemToString = sourceTypeToString,
       emptyValue = Option.empty
@@ -23,7 +23,7 @@ object FolkloreControlsFactory {
   def createPerformer(value: Artist): LabeledComboBox[Artist] = {
     LabeledComboBox[Artist](
       labelText = Resources.TableColumns.performer,
-      cbItems = filterArtists(List(Singer, Orchestra, InstrumentPlayer, Ensemble, Choir, ChamberGroup)),
+      cbItems = () => filterArtists(List(Singer, Orchestra, InstrumentPlayer, Ensemble, Choir, ChamberGroup)),
       value = value,
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -33,7 +33,7 @@ object FolkloreControlsFactory {
   def createAccompanimentPerformer(value: Artist): LabeledComboBox[Artist] = {
     LabeledComboBox[Artist](
       labelText = Resources.TableColumns.accompanimentPerformer,
-      cbItems = filterArtists(List(Orchestra, InstrumentPlayer, Ensemble, ChamberGroup)),
+      cbItems = () => filterArtists(List(Orchestra, InstrumentPlayer, Ensemble, ChamberGroup)),
       value = value,
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -43,7 +43,7 @@ object FolkloreControlsFactory {
   def createArrangementAuthor(value: Artist): LabeledComboBox[Artist] = {
     LabeledComboBox[Artist](
       labelText = Resources.TableColumns.arrangementAuthor,
-      cbItems = filterArtists(List(Composer)),
+      cbItems = () => filterArtists(List(Composer)),
       value = value,
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -53,7 +53,7 @@ object FolkloreControlsFactory {
   def createConductor(value: Artist): LabeledComboBox[Artist] = {
     LabeledComboBox[Artist](
       labelText = Resources.TableColumns.conductor,
-      cbItems = filterArtists(List(Conductor)),
+      cbItems = () => filterArtists(List(Conductor)),
       value = value,
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -63,7 +63,7 @@ object FolkloreControlsFactory {
   def createAuthor(value: Artist): LabeledComboBox[Artist] = {
     LabeledComboBox[Artist](
       labelText = Resources.TableColumns.author,
-      cbItems = filterArtists(List(Composer)),
+      cbItems = () => filterArtists(List(Composer)),
       value = value,
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -73,7 +73,7 @@ object FolkloreControlsFactory {
   def createSoloist(value: Artist): LabeledComboBox[Artist] = {
     LabeledComboBox[Artist](
       labelText = Resources.TableColumns.soloist,
-      cbItems = filterArtists(List(Singer, InstrumentPlayer)),
+      cbItems = () => filterArtists(List(Singer, InstrumentPlayer)),
       value = value,
       itemToString = artistToString,
       emptyValue = Option(Artist())
@@ -83,7 +83,7 @@ object FolkloreControlsFactory {
   def createEthnographicRegion(value: EthnographicRegion): LabeledComboBox[EthnographicRegion] = {
     LabeledComboBox[EthnographicRegion](
       labelText = Resources.TableColumns.ethnographicRegion,
-      cbItems = dataManager.getEthnographicRegions,
+      cbItems = () => dataManager.getEthnographicRegions,
       value = value,
       itemToString = ethnographicRegionToString,
       emptyValue = Option(EthnographicRegion())
@@ -93,7 +93,7 @@ object FolkloreControlsFactory {
   def createSource(value: Source): LabeledComboBox[Source] = {
     LabeledComboBox[Source](
       labelText = Resources.TableColumns.source,
-      cbItems = dataManager.getSources,
+      cbItems = () => dataManager.getSources,
       value = value,
       itemToString = sourceToString,
       emptyValue = Option(Source())
@@ -104,7 +104,7 @@ object FolkloreControlsFactory {
     val variables = SearchModel.Variables.asList
     LabeledComboBox[Variable[FolkloreTrack]](
       labelText = Resources.Search.variable,
-      cbItems = variables,
+      cbItems = () => variables,
       value = variables.head,
       itemToString = variableToString,
       sortItems = false,
@@ -116,7 +116,7 @@ object FolkloreControlsFactory {
     val operators = SearchModel.Filters.asList
     LabeledComboBox[Filter[FolkloreTrack]](
       labelText = Resources.Search.filter,
-      cbItems = operators,
+      cbItems = () => operators,
       value = operators.head,
       itemToString = filterToString,
       sortItems = false,

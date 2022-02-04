@@ -130,7 +130,10 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
       }
       else {
         val r = artifactControls.updateArtifact(existingArtifacts.getItems.get(selectedIndex))
-        if (r) console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdated)
+        if (r) {
+          console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdated)
+          artifactControls.cleanup()
+        }
         else console.writeMessageWithTimestamp(Resources.Artifacts.artifactUpdateFailed)
       }
     }
@@ -142,5 +145,6 @@ case class ArtifactControlsContainer[T](artifactControls: ArtifactControls[T], c
     artifactControls.getExistingArtifacts
       .sortWith((x, y) => artifactControls.artifactToString(x).compareToIgnoreCase(artifactControls.artifactToString(y)) < 0)
       .foreach(x => existingArtifacts.getItems.add(x))
+    artifactControls.refresh()
   }
 }
