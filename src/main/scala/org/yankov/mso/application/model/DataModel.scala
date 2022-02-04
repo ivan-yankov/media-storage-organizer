@@ -92,7 +92,7 @@ object DataModel {
       members = members
     )
 
-    def displayName: String = {
+    def composedName: String = {
       if (members.nonEmpty) members.map(y => y.name).mkString(", ")
       else name
     }

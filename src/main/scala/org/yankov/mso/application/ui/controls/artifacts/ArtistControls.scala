@@ -108,7 +108,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   override def onArtifactSelect(artifact: Artist): Unit = {
     if (artifact != null) {
       name.setValue(artifact.name)
-      displayName.setValue(artifact.displayName)
+      displayName.setValue(artifact.composedName)
       members = artifact.members
       note.setValue(artifact.note)
       missions.foreach(x => x._2.setSelected(artifact.missions.contains(x._1)))
@@ -142,7 +142,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   }
 
   override def artifactExists: Boolean =
-    getExistingArtifacts.exists(x => x.displayName.equalsIgnoreCase(name.getValue))
+    getExistingArtifacts.exists(x => x.name.equalsIgnoreCase(name.getValue))
 
   override def refresh(): Unit = artists.refresh()
 
@@ -161,7 +161,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
       text = Resources.Artists.addMember
       onAction = _ => {
         addMember(artists.getValue)
-        displayName.setValue(Artist(members = members).displayName)
+        displayName.setValue(Artist(members = members).composedName)
       }
     }
   }
