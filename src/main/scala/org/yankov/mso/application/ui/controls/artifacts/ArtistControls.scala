@@ -172,9 +172,12 @@ case class ArtistControls() extends ArtifactControls[Artist] {
   }
 
   private def selectedInstruments: List[Instrument] = {
-    dataManager
-      .getInstruments
-      .filter(x => instruments.filter(y => y._2.isSelected).map(y => y._1).contains(x.id))
+    if (missions.find(x => x._1 == InstrumentPlayer).get._2.isSelected) {
+      dataManager
+        .getInstruments
+        .filter(x => instruments.filter(y => y._2.isSelected).map(y => y._1).contains(x.id))
+    }
+    else List()
   }
 
   private def gridPane(items: List[Node], numberOfColumns: Int): Pane = {
