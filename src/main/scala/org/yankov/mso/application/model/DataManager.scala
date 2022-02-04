@@ -101,7 +101,7 @@ case class DataManager(database: Database,
   }
 
   implicit class DbArtisAsArtist(dbArtist: DbArtist) {
-    def asArtist: Artist = Artist(
+    def asArtist(dbArtists: List[DbArtist]): Artist = Artist(
       id = dbArtist.id,
       name = dbArtist.name.getOrElse(""),
       instruments = dbArtist.instruments match {
@@ -111,7 +111,7 @@ case class DataManager(database: Database,
       note = dbArtist.note.getOrElse(""),
       missions = dbArtist.missions.getOrElse(List[String]()).map(x => DataModel.artistMissionFromString(x)),
       members = dbArtist.members match {
-        case Some(ids) => ids.map(x => dbCache.artists.getOrElse(x, Artist()))
+        case Some(ids) => ids.map(x => dbArtists.find(y => y.id.equals(x)).get.asArtist(dbArtists))
         case None => List()
       }
     )
