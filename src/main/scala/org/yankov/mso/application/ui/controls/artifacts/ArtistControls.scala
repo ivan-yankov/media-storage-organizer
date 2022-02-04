@@ -166,7 +166,7 @@ case class ArtistControls() extends ArtifactControls[Artist] {
     }
   }
 
-  private def addMember(artist: Artist): Unit = members = artist :: members
+  private def addMember(artist: Artist): Unit = members = members ++ List(artist)
 
   private def selectedInstruments: List[Instrument] = {
     dataManager

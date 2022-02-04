@@ -15,8 +15,8 @@ case class DatabaseCache(database: Database, databasePaths: DatabasePaths) {
       case Left(e) =>
         log.error(e)
         Map()
-      case Right(result) =>
-        result.map(x => (x.id, x.asArtist)).toMap
+      case Right(dbArtists) =>
+        dbArtists.map(x => (x.id, x.asArtist(dbArtists))).toMap
     }
   }
 
