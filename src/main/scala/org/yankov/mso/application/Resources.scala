@@ -149,7 +149,6 @@ object Resources {
 
   object Sources {
     val signature: String = "Сигнатура"
-    val signatureUndefined: String = "Не е въведена сигнатура"
   }
 
   object EthnographicRegions {
