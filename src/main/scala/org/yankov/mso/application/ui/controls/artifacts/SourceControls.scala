@@ -12,13 +12,7 @@ case class SourceControls() extends ArtifactControls[Source] {
 
   private val sourceSignature = LabeledTextField(Resources.Sources.signature, "")
 
-  override def validateUserInput(): Boolean = {
-    if (sourceSignature.getValue.isEmpty) {
-      console.writeMessageWithTimestamp(Resources.Sources.signatureUndefined)
-      false
-    }
-    else true
-  }
+  override def validateUserInput(): Boolean = true
 
   override def createArtifact(): Boolean = {
     dataManager.insertSource(
