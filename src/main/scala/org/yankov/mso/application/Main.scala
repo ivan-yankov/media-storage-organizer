@@ -79,7 +79,7 @@ object Main extends JFXApp {
   )
   lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
     (files, correlation, crossCorrelationShift) => Search.audioSearch(
-      files.map(y => AudioSearchSample(y.getName, Files.readAllBytes(y.toPath))),
+      files.map(y => AudioSearchSample(y.getName, AudioInput(y))),
       if (searchTable.nonEmpty) searchTable.getItems.map(x => x.track) else dataManager.getTracks,
       dataManager.audioIndex,
       audioSearchTable,
