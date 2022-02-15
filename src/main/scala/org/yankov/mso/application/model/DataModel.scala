@@ -2,7 +2,8 @@ package org.yankov.mso.application.model
 
 import org.yankov.mso.application.Id
 
-import java.io.File
+import java.io.{File, InputStream}
+import java.nio.file.Files
 import java.time.Duration
 
 object DataModel {
@@ -182,7 +183,22 @@ object DataModel {
     )
   }
 
-  case class AudioSearchSample(id: Id, audioData: Array[Byte])
+  case class AudioInput(input: Either[File, InputStream]) {
+    def getBytes: Array[Byte] = {
+      input match {
+        case Left(file) => Files.readAllBytes(file.toPath)
+        case Right(inputStream) => inputStream.readAllBytes()
+      }
+    }
+  }
+
+  object AudioInput {
+    def apply(file: File): AudioInput = AudioInput(Left(file))
+
+    def apply(inputStream: InputStream): AudioInput = AudioInput(Right(inputStream))
+  }
+
+  case class AudioSearchSample(id: Id, audioInput: AudioInput)
 
   case class AudioSearchData(hash: String, data: Vector[Double])
 
