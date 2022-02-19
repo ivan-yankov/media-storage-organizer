@@ -100,9 +100,9 @@ object FolkloreControlsFactory {
     )
   }
 
-  def createSearchVariable(): LabeledComboBox[Variable[FolkloreTrack]] = {
+  def createSearchVariable(): LabeledComboBox[Variable] = {
     val variables = SearchModel.Variables.asList
-    LabeledComboBox[Variable[FolkloreTrack]](
+    LabeledComboBox[Variable](
       labelText = Resources.Search.variable,
       cbItems = () => variables,
       value = variables.head,
