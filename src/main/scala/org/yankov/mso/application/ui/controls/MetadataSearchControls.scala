@@ -7,10 +7,10 @@ import scalafx.scene.control.TitledPane
 import scalafx.scene.layout.{HBox, Priority}
 
 class MetadataSearchControls[T](search: List[SearchParameters[T]] => Unit,
-                                createVariables: () => LabeledComboBox[Variable[T]],
+                                createVariables: () => LabeledComboBox[Variable],
                                 createFilters: () => LabeledComboBox[Filter[T]]) extends SearchControls[T] {
 
-  case class Controls(variable: LabeledComboBox[Variable[T]],
+  case class Controls(variable: LabeledComboBox[Variable],
                       filter: LabeledComboBox[Filter[T]],
                       value: LabeledTextField,
                       panel: TitledPane)

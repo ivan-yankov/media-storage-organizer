@@ -19,5 +19,5 @@ object StringConverters {
 
   def filterToString(x: Filter[_]): String = x.label
 
-  def variableToString(x: Variable[_]): String = x.label
+  def variableToString(x: Variable): String = x.label
 }
