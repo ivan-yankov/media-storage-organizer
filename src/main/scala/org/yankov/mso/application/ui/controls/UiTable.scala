@@ -76,13 +76,17 @@ abstract class UiTable[T] {
 
   def clear(): Unit = table.getItems.clear()
 
-  def stringTableColumn(textValue: String, valueFactory: T => StringProperty, width: Double): (TableColumn[T, String], Double) = {
+  def stringTableColumn(textValue: String,
+                        valueFactory: T => StringProperty,
+                        width: Double,
+                        isVisible: Boolean = true): (TableColumn[T, String], Double) = {
     (
       new TableColumn[T, String]() {
         text = textValue
         cellValueFactory = {
           x => valueFactory(x.value)
         }
+        visible = isVisible
       },
       width
     )
