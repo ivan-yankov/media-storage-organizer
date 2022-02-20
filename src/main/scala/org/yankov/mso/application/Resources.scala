@@ -70,6 +70,7 @@ object Resources {
   }
 
   object TableColumns {
+    val tableColumnSelector: String = "Избор на колони"
     val id: String = "Идентификатор"
     val title: String = "Заглавие"
     val performer: String = "Изпълнител"

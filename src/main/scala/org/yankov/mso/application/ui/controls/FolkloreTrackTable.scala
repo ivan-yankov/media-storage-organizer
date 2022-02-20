@@ -26,12 +26,12 @@ class FolkloreTrackTable(inputTable: Boolean, buttonHandlers: FolkloreToolbarBut
       8 -> ((src, dest) => dest.copy(source = src.source)),
       9 -> ((src, dest) => dest.copy(ethnographicRegion = src.ethnographicRegion)),
       10 -> ((src, dest) => dest.copy(note = src.note)),
-      11 -> ((src, dest) => dest.copy(source = src.source)),
+      11 -> ((src, dest) => dest.copy(source = src.source))
     )
   }
 
   override def createTableColumns: List[(TableColumn[TrackTableProperties, String], Double)] = {
-    val columns = List(
+    List(
       stringTableColumn(Resources.TableColumns.title, _.title, 200.0),
       stringTableColumn(Resources.TableColumns.performer, _.performer, 175.0),
       stringTableColumn(Resources.TableColumns.accompanimentPerformer, _.accompanimentPerformer, 175.0),
@@ -42,11 +42,10 @@ class FolkloreTrackTable(inputTable: Boolean, buttonHandlers: FolkloreToolbarBut
       stringTableColumn(Resources.TableColumns.duration, _.duration, 50.0),
       stringTableColumn(Resources.TableColumns.source, _.source, 150.0),
       stringTableColumn(Resources.TableColumns.ethnographicRegion, _.ethnographicRegion, 200.0),
-      stringTableColumn(Resources.TableColumns.note, _.note, 150.0)
+      stringTableColumn(Resources.TableColumns.note, _.note, 150.0),
+      stringTableColumn(Resources.TableColumns.file, _.file, 150.0, isVisible = inputTable),
+      stringTableColumn(Resources.TableColumns.id, _.id, 150.0, isVisible = !inputTable)
     )
-
-    if (inputTable) columns ++ List(stringTableColumn(Resources.TableColumns.file, _.file, 150.0))
-    else columns ++ List(stringTableColumn(Resources.TableColumns.id, _.id, 150.0))
   }
 
   override def onSpaceKey(): Unit = buttonHandlers.play(inputTable)

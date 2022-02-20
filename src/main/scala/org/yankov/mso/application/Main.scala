@@ -14,9 +14,10 @@ import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
-import scalafx.scene.Scene
+import scalafx.geometry.Insets
+import scalafx.scene.{Node, Scene}
 import scalafx.scene.control._
-import scalafx.scene.layout.{BorderPane, Priority, VBox}
+import scalafx.scene.layout.{BorderPane, GridPane, Priority, VBox}
 
 import java.nio.file.{Files, Paths}
 
@@ -146,6 +147,7 @@ object Main extends JFXApp {
         new ToolBar {
           items = toolbarButtons.inputTabButtons ++ additionalInputControls
         },
+        columnSelector(inputTable),
         inputTable.getContainer
       )
     }
@@ -156,6 +158,7 @@ object Main extends JFXApp {
         new ToolBar {
           items = toolbarButtons.searchTabButtons
         },
+        columnSelector(searchTable),
         searchPanels.head,
         searchPanels.tail.head,
         searchPanels.tail.tail.head,
@@ -193,6 +196,36 @@ object Main extends JFXApp {
           content = audioSearchTab
         }
       )
+    }
+  }
+
+  private def columnSelector(table: UiTable[_]): TitledPane = {
+    val numberOfColumns = 10
+    val gp = new GridPane()
+    val items: List[Node] = table.pure.columns.map(
+      x => {
+        new CheckBox {
+          text = x.getText
+          selected = x.isVisible
+          userData = x
+          onAction = _ => x.setVisible(!x.isVisible)
+        }
+      }
+    ).toList
+    items
+      .sliding(numberOfColumns, numberOfColumns)
+      .zipWithIndex
+      .foreach(x => x._1.zipWithIndex.foreach(y => gp.add(y._1, y._2, x._2)))
+
+    val whiteSpace = 20.0
+    gp.setPadding(Insets(whiteSpace))
+    gp.setHgap(whiteSpace)
+    gp.setVgap(whiteSpace)
+
+    new TitledPane {
+      text = Resources.TableColumns.tableColumnSelector
+      expanded = false
+      content = gp
     }
   }
 }
