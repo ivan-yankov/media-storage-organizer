@@ -24,7 +24,7 @@ case class SourceControls() extends ArtifactControls[Source] {
         label = sourceLabel.getValue,
         signature = sourceSignature.getValue
       )
-    )
+    ).isDefined
   }
 
   override def updateArtifact(artifact: Source): Boolean =

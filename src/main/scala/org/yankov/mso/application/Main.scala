@@ -3,21 +3,18 @@ package org.yankov.mso.application
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application.database.RealDatabase
 import org.yankov.mso.application.media.{AudioIndex, MediaServer}
-import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel._
 import org.yankov.mso.application.model.{DataManager, DatabasePaths}
-import org.yankov.mso.application.search._
 import org.yankov.mso.application.ui.UiUtils
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.controls._
 import org.yankov.mso.application.ui.controls.artifacts.ArtifactsTab
-import org.yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.geometry.Insets
-import scalafx.scene.{Node, Scene}
 import scalafx.scene.control._
-import scalafx.scene.layout.{BorderPane, GridPane, Priority, VBox}
+import scalafx.scene.layout._
+import scalafx.scene.{Node, Scene}
 
 import java.nio.file.{Files, Paths}
 
@@ -68,35 +65,9 @@ object Main extends JFXApp {
   lazy val dataManager: DataManager = createDataManager(
     getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
   )
-  lazy val buttonHandlers: FolkloreToolbarButtonHandlers = FolkloreToolbarButtonHandlers()
-  lazy val inputTable: FolkloreTrackTable = new FolkloreTrackTable(true, buttonHandlers)
-  lazy val searchTable: FolkloreTrackTable = new FolkloreTrackTable(false, buttonHandlers)
-  lazy val audioSearchTable: AudioSearchTable = new AudioSearchTable()
-  lazy val toolbarButtons: ToolbarButtons = ToolbarButtons(buttonHandlers)
-  lazy val metadataSearchControls: SearchControls[FolkloreTrack] = new MetadataSearchControls[FolkloreTrack](
-    x => Search.metadataSearch(x, dataManager.getTracks, searchTable),
-    () => FolkloreControlsFactory.createSearchVariable(),
-    () => FolkloreControlsFactory.createSearchFilter()
-  )
-  lazy val audioSearchControls: SearchControls[FolkloreTrack] = new AudioSearchControls(
-    (files, correlation, crossCorrelationShift) => Search.audioSearch(
-      files.map(y => AudioSearchSample(y.getName, AudioInput(y))),
-      if (searchTable.nonEmpty) searchTable.getItems.map(x => x.track) else dataManager.getTracks,
-      dataManager.audioIndex,
-      audioSearchTable,
-      correlation,
-      crossCorrelationShift
-    ),
-    audioSearchTable
-  )
-  lazy val extractTitleFromFileNameCheckBox: CheckBox = new CheckBox {
-    text = Resources.MainForm.extractTitleFromFileName
-    selected = false
-  }
-  lazy val extractTitleFromFileNameRegex: LabeledTextField = LabeledTextField(
-    labelText = Resources.MainForm.extractTitleFromFileNameRegex,
-    value = "(?<= - ).*"
-  )
+
+  lazy val mainControls: MainControls = MainControls(dataManager)
+  import mainControls._
 
   onStart()
 
@@ -137,16 +108,12 @@ object Main extends JFXApp {
     VBox.setVgrow(searchTable.getContainer, Priority.Always)
     VBox.setVgrow(audioSearchTable.getContainer, Priority.Always)
 
-    val additionalInputControls = List(
-      new SplitPane(),
-      extractTitleFromFileNameRegex.getContainer,
-      extractTitleFromFileNameCheckBox
-    )
     val inputTab = new VBox {
       children = Seq(
         new ToolBar {
-          items = toolbarButtons.inputTabButtons ++ additionalInputControls
+          items = toolbarButtons.inputTabButtons
         },
+        settings,
         columnSelector(inputTable),
         inputTable.getContainer
       )
@@ -196,6 +163,28 @@ object Main extends JFXApp {
           content = audioSearchTab
         }
       )
+    }
+  }
+
+  private def settings: TitledPane = {
+    new TitledPane {
+      text = Resources.MainForm.settings
+      expanded = false
+      content = new VBox {
+        children = List(
+          extractDataFromFileNameRegex.getContainer,
+          extractTitleFromFileNameCheckBox,
+          extractSourceSignatureFromFileNameCheckBox,
+          new HBox {
+            children = List(
+              sourceType.getContainer,
+              sourceLabel.getContainer,
+            )
+            spacing = 20.0
+          }
+        )
+        spacing = 20.0
+      }
     }
   }
 
