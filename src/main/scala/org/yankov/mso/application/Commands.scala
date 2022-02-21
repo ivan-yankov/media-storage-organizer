@@ -62,15 +62,16 @@ object Commands {
   def applyProperties[T](table: TableView[T],
                          applyPropertiesButton: Button,
                          copiedProperties: Option[T],
-                         createProperties: (Int, Int) => T): Unit = {
+                         createProperties: (Int, String) => T): Unit = {
     val selectedRows = table.getSelectionModel.getSelectedIndices.asScala.toList
-    val selectedCell = getTableSelectedCell(table)
+    val selectedCellIndex = getTableSelectedColumnIndex(table)
+    val selectedCellKey = getTableSelectedColumnKey(table)
 
-    if (copiedProperties.isDefined && selectedRows.nonEmpty && selectedCell.isDefined) {
-      selectedRows.foreach(x => table.getItems.set(x, createProperties(x, selectedCell.get)))
+    if (copiedProperties.isDefined && selectedRows.nonEmpty && selectedCellKey.isDefined) {
+      selectedRows.foreach(x => table.getItems.set(x, createProperties(x, selectedCellKey.get)))
       applyPropertiesButton.setDisable(true)
       table.getSelectionModel.clearSelection()
-      table.getFocusModel.focus(selectedRows.max, table.getColumns.get(selectedCell.getOrElse(0)))
+      table.getFocusModel.focus(selectedRows.max, table.getColumns.get(selectedCellIndex.getOrElse(0)))
     }
   }
 
@@ -148,9 +149,18 @@ object Commands {
     else Option(index)
   }
 
-  private def getTableSelectedCell(table: TableView[_]): Option[Int] = {
+  private def getTableSelectedColumnIndex(table: TableView[_]): Option[Int] = {
     val index = table.getFocusModel.getFocusedCell.getColumn
     if (index < 0) Option.empty
     else Option(index)
+  }
+
+  private def getTableSelectedColumnKey(table: TableView[_]): Option[String] = {
+    try {
+      val key = table.getFocusModel.getFocusedCell.getTableColumn.getUserData.asInstanceOf[String]
+      Some(key)
+    } catch {
+      case _: Exception => None
+    }
   }
 }
