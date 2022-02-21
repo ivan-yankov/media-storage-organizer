@@ -30,7 +30,7 @@ object DatabaseModel {
   implicit val dbSourceTypeEncoder: Encoder[DbSourceType] = deriveEncoder[DbSourceType]
   implicit val dbSourceTypeDecoder: Decoder[DbSourceType] = deriveDecoder[DbSourceType]
 
-  case class DbSource(id: Id, signature: Option[String], typeId: Option[Id]) extends DbEntry
+  case class DbSource(id: Id, label: Option[String], signature: Option[String], typeId: Option[Id]) extends DbEntry
   implicit val dbSourceEncoder: Encoder[DbSource] = deriveEncoder[DbSource]
   implicit val dbSourceDecoder: Decoder[DbSource] = deriveDecoder[DbSource]
 

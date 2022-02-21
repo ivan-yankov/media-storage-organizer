@@ -190,7 +190,7 @@ case class DataManager(database: Database,
 
   def insertSource(source: Source): Boolean = {
     val id = if (isValidId(source.id)) source.id else generateId
-    val dbEntry = DbSource(id, source.signature.asOption, asIdOption(source.sourceType.id))
+    val dbEntry = DbSource(id, source.label.asOption, source.signature.asOption, asIdOption(source.sourceType.id))
     database.insert(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
@@ -201,7 +201,7 @@ case class DataManager(database: Database,
   }
 
   def updateSource(source: Source): Boolean = {
-    val dbEntry = DbSource(source.id, source.signature.asOption, asIdOption(source.sourceType.id))
+    val dbEntry = DbSource(source.id, source.label.asOption, source.signature.asOption, asIdOption(source.sourceType.id))
     database.update(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
