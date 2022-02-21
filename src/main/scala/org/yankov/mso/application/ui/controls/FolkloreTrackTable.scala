@@ -40,10 +40,10 @@ class FolkloreTrackTable(inputTable: Boolean, buttonHandlers: FolkloreToolbarBut
       stringTableColumn(Resources.TableColumns.author, _.author, 150.0, isVisible = false),
       stringTableColumn(Resources.TableColumns.soloist, _.soloist, 150.0, isVisible = false),
       stringTableColumn(Resources.TableColumns.duration, _.duration, 50.0),
-      stringTableColumn(Resources.TableColumns.source, _.source, 150.0),
+      stringTableColumn(Resources.TableColumns.source, _.source, 250.0),
       stringTableColumn(Resources.TableColumns.ethnographicRegion, _.ethnographicRegion, 200.0),
-      stringTableColumn(Resources.TableColumns.note, _.note, 150.0),
-      stringTableColumn(Resources.TableColumns.file, _.file, 150.0, isVisible = inputTable),
+      stringTableColumn(Resources.TableColumns.note, _.note, 200.0),
+      stringTableColumn(Resources.TableColumns.file, _.file, 200.0, isVisible = inputTable),
       stringTableColumn(Resources.TableColumns.id, _.id, 150.0, isVisible = !inputTable)
     )
   }

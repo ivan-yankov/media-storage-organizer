@@ -10,10 +10,7 @@ object StringConverters {
 
   def instrumentToString(x: Instrument): String = x.name
 
-  def sourceToString(x: Source): String = {
-    if (x.signature.nonEmpty) x.sourceType.name + "/" + x.signature
-    else x.sourceType.name
-  }
+  def sourceToString(x: Source): String = List(x.sourceType.name, x.label, x.signature).filter(_.nonEmpty).mkString("/")
 
   def sourceTypeToString(x: SourceType): String = x.name
 
