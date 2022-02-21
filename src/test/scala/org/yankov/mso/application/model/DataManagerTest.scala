@@ -110,7 +110,7 @@ class DataManagerTest extends FreeSpec with Matchers {
         val db = FakeDatabase()
         db.setInsertResult(Right(()))
 
-        dataManager(db).insertSource(Source()) shouldBe true
+        dataManager(db).insertSource(Source()).nonEmpty shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbSource].id.nonEmpty shouldBe true
@@ -129,7 +129,7 @@ class DataManagerTest extends FreeSpec with Matchers {
             signature = "signature",
             sourceType = SourceType("source-type-id")
           )
-        ) shouldBe true
+        ).nonEmpty shouldBe true
 
         db.getInsertEntries.size shouldBe 1
         db.getInsertEntries.head.asInstanceOf[DbSource].id shouldBe "id"
