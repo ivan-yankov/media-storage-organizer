@@ -149,6 +149,7 @@ object Resources {
   }
 
   object Sources {
+    val label: String = "Компания"
     val signature: String = "Сигнатура"
   }
 

@@ -52,6 +52,7 @@ case class DatabaseCache(database: Database, databasePaths: DatabasePaths) {
             Source(
               id = x.id,
               sourceType = sourceTypes.getByOptionOrElse(x.typeId, SourceType()),
+              label = x.label.getOrElse(""),
               signature = x.signature.getOrElse("")
             )
           )

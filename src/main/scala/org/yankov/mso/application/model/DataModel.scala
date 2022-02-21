@@ -80,6 +80,7 @@ object DataModel {
 
   case class Source(id: Id = invalidId,
                     sourceType: SourceType = SourceType(),
+                    label: String = "",
                     signature: String = "")
 
   case class Artist(id: Id = invalidId,
