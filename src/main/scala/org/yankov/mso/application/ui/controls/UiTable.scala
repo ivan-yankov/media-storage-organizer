@@ -79,17 +79,17 @@ abstract class UiTable[T] {
   def stringTableColumn(textValue: String,
                         valueFactory: T => StringProperty,
                         width: Double,
+                        key: String = "",
                         isVisible: Boolean = true): (TableColumn[T, String], Double) = {
-    (
-      new TableColumn[T, String]() {
-        text = textValue
-        cellValueFactory = {
-          x => valueFactory(x.value)
-        }
-        visible = isVisible
-      },
-      width
-    )
+    val column = new TableColumn[T, String]() {
+      text = textValue
+      cellValueFactory = {
+        x => valueFactory(x.value)
+      }
+      visible = isVisible
+    }
+    if (key.nonEmpty) column.setUserData(key)
+    (column, width)
   }
 
   def isEmpty: Boolean = table.getItems.isEmpty

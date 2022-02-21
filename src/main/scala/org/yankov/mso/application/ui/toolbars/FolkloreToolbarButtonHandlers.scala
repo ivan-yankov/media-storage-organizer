@@ -125,13 +125,13 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def applyProperties(targetInputTab: Boolean): Unit = {
     val table = targetTable(targetInputTab)
 
-    def createProperties(row: Int, col: Int): TrackTableProperties = {
+    def createProperties(row: Int, colKey: String): TrackTableProperties = {
       val sourceTrack = copiedProperties.get.track
       val destinationTrack = table.items.getValue.get(row).track
 
       val mergeTrackMap = table.getUserData.asInstanceOf[MergeTrackMap]
 
-      val newTrack = mergeTrackMap.getOrElse[MergeTrack](col, (_, x) => x)(sourceTrack, destinationTrack)
+      val newTrack = mergeTrackMap.getOrElse[MergeTrack](colKey, (_, x) => x)(sourceTrack, destinationTrack)
       TrackTableProperties(newTrack)
     }
 
