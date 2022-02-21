@@ -188,15 +188,15 @@ case class DataManager(database: Database,
 
   def getEthnographicRegions: List[EthnographicRegion] = dbCache.ethnographicRegions.values.toList
 
-  def insertSource(source: Source): Boolean = {
+  def insertSource(source: Source): Option[Id] = {
     val id = if (isValidId(source.id)) source.id else generateId
     val dbEntry = DbSource(id, source.label.asOption, source.signature.asOption, asIdOption(source.sourceType.id))
     database.insert(List(dbEntry), sourcesPath) match {
       case Left(e) =>
         log.error(e)
-        false
+        None
       case Right(_) =>
-        true
+        Some(id)
     }
   }
 

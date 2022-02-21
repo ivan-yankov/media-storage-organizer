@@ -3,18 +3,17 @@ package org.yankov.mso.application.ui.toolbars
 import org.yankov.mso.application._
 import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.media.Player
-import org.yankov.mso.application.media.decode.FlacDecoder
+import org.yankov.mso.application.model.DataModel
 import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.UiModel._
+import org.yankov.mso.application.search.TextAnalyzer._
 import org.yankov.mso.application.ui.UiUtils._
 import org.yankov.mso.application.ui.console.ApplicationConsole
 import org.yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.input.{Clipboard, DataFormat}
-import org.yankov.mso.application.search.TextAnalyzer._
 
 import java.io.File
-import java.nio.file.Files
 import java.util.regex.Pattern
 
 case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
@@ -41,7 +40,7 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   override def loadTracks(targetInputTab: Boolean): Unit = {
     def extractTitle(file: File): String = {
       try {
-        val pattern = Pattern.compile(Main.extractTitleFromFileNameRegex.getValue)
+        val pattern = Pattern.compile(Main.mainControls.extractDataFromFileNameRegex.getValue)
         val matcher = pattern.matcher(file.getName.replace(Resources.Media.flacExtension, ""))
         if (matcher.find()) {
           val s = matcher.group().trim.refineMultipleSpaces.toLowerCase
@@ -55,13 +54,46 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
       }
     }
 
+    def extractSourceSignature(file: File): String = {
+      try {
+        val pattern = Pattern.compile(Main.mainControls.extractDataFromFileNameRegex.getValue)
+        val matcher = pattern.matcher(file.getName.replace(Resources.Media.flacExtension, ""))
+        if (matcher.find()) matcher.group().trim.refineMultipleSpaces.toLowerCase
+        else ""
+      } catch {
+        case _: Exception =>
+          ApplicationConsole.writeMessageWithTimestamp(Resources.MainForm.invalidRegex)
+          ""
+      }
+    }
+
     Commands.loadItems(
       targetTable(targetInputTab),
       x => {
-        if (Main.extractTitleFromFileNameCheckBox.isSelected) {
+        if (Main.mainControls.extractTitleFromFileNameCheckBox.isSelected) {
           TrackTableProperties(
             FolkloreTrack()
               .withTitle(extractTitle(x))
+              .withFile(Option(x))
+              .withDuration(UiUtils.calculateDuration(Option(x)))
+          )
+        }
+        else if (Main.mainControls.extractSourceSignatureFromFileNameCheckBox.isSelected) {
+          val source = dataManager.insertSource(
+            Source(
+              id = DataModel.invalidId,
+              sourceType = Main.mainControls.sourceType.getValue,
+              label = Main.mainControls.sourceLabel.getValue,
+              signature = extractSourceSignature(x)
+            )
+          ) match {
+            case Some(sourceId) => dataManager.getSources.find(_.id.equals(sourceId)).get
+            case None => Source()
+          }
+
+          TrackTableProperties(
+            FolkloreTrack()
+              .copy(source = source)
               .withFile(Option(x))
               .withDuration(UiUtils.calculateDuration(Option(x)))
           )
@@ -177,13 +209,13 @@ case class FolkloreToolbarButtonHandlers() extends ToolbarButtonHandlers {
   }
 
   private def targetTable(targetInputTab: Boolean): TableView[TrackTableProperties] = {
-    if (targetInputTab) Main.inputTable.pure
-    else Main.searchTable.pure
+    if (targetInputTab) Main.mainControls.inputTable.pure
+    else Main.mainControls.searchTable.pure
   }
 
   private def targetButtons(targetInputTab: Boolean): List[Button] = {
-    if (targetInputTab) Main.toolbarButtons.inputTabButtons
-    else Main.toolbarButtons.searchTabButtons
+    if (targetInputTab) Main.mainControls.toolbarButtons.inputTabButtons
+    else Main.mainControls.toolbarButtons.searchTabButtons
   }
 
   private def createOutputFileName(dir: File, track: FolkloreTrack): String = {

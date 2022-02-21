@@ -32,8 +32,10 @@ object Resources {
     val inputArtifactsTab: String = "Артефакти"
     val searchTab: String = "Търсене"
     val audioSearchTab: String = "Аудио търсене"
+    val settings: String = "Настройки"
     val extractTitleFromFileName: String = "Заглавие от име на файл"
-    val extractTitleFromFileNameRegex: String = "Регулярен израз"
+    val extractSourceSignatureFromFileName: String = "Сигнатура от име на файл"
+    val extractDataFromFileNameRegex: String = "Регулярен израз"
     val invalidRegex: String = "Невалиден регулярен израз"
   }
 
