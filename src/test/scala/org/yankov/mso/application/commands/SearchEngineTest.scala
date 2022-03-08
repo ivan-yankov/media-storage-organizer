@@ -99,13 +99,13 @@ class SearchEngineTest extends FreeSpec with Matchers {
     }
 
     "contains source type" in {
-      val parameters = List(SearchParameters(SourceTypeVariable, filterContains, "лента"))
+      val parameters = List(SearchParameters(SourceVariable, filterContains, "лента"))
       val found = SearchEngine.metadataSearch[FolkloreTrack](tracks, parameters)
       found shouldBe List(t1, t5)
     }
 
     "contains source signature" in {
-      val parameters = List(SearchParameters(SourceSignatureVariable, filterContains, "07"))
+      val parameters = List(SearchParameters(SourceVariable, filterContains, "07"))
       val found = SearchEngine.metadataSearch[FolkloreTrack](tracks, parameters)
       found shouldBe List(t3)
     }

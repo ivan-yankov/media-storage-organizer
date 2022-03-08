@@ -208,8 +208,7 @@ object Resources {
     val author: String = "Автор"
     val ethnographicRegion: String = "Етнографска област"
     val trackNote: String = "Забележка"
-    val sourceType: String = "Тип на източник"
-    val sourceSignature: String = "Сигнатура на източник"
+    val source: String = "Източник"
     val id: String = "Идентификатор"
   }
 

@@ -3,6 +3,7 @@ package org.yankov.mso.application.search
 import org.yankov.mso.application.Id
 import org.yankov.mso.application.Resources.Filters._
 import org.yankov.mso.application.Resources.Variables._
+import org.yankov.mso.application.converters.StringConverters
 import org.yankov.mso.application.model.DataModel.{Artist, FolkloreTrack}
 import org.yankov.mso.application.search.TextAnalyzer._
 
@@ -56,12 +57,8 @@ object SearchModel {
       override def label: String = trackNote
     }
 
-    case object SourceTypeVariable extends Variable {
-      override def label: String = sourceType
-    }
-
-    case object SourceSignatureVariable extends Variable {
-      override def label: String = sourceSignature
+    case object SourceVariable extends Variable {
+      override def label: String = source
     }
 
     case object IdVariable extends Variable {
@@ -74,8 +71,7 @@ object SearchModel {
       AccompanimentPerformerVariable,
       ArrangementAuthorVariable,
       ConductorVariable,
-      SourceTypeVariable,
-      SourceSignatureVariable,
+      SourceVariable,
       IdVariable,
       TrackNoteVariable,
       InstrumentPerformanceVariable,
@@ -103,8 +99,7 @@ object SearchModel {
         case AuthorVariable => searchName(track.author)
         case EthnographicRegionVariable => track.ethnographicRegion.name
         case TrackNoteVariable => track.note
-        case SourceTypeVariable => track.source.sourceType.name
-        case SourceSignatureVariable => track.source.signature
+        case SourceVariable => StringConverters.sourceToString(track.source)
         case IdVariable => track.id
       }
     }
