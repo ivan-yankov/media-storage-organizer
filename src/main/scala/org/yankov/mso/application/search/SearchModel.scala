@@ -38,7 +38,7 @@ object SearchModel {
     }
 
     case object InstrumentAccompanimentVariable extends Variable {
-      override def label: String = instrumentPerformance
+      override def label: String = instrumentAccompaniment
     }
 
     case object SoloistVariable extends Variable {
