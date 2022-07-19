@@ -3,7 +3,6 @@ package org.yankov.mso.application.media
 import chromaprint.Fingerprint
 import chromaprint.quick.Fingerprinter
 import com.yankov.math.MathUtils
-import com.yankov.math.Model.{DoubleNumber, _}
 import com.yankov.math.xcorr.Correlation.crossCorrelation
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application._
@@ -94,10 +93,10 @@ case class AudioIndex(database: Database, databasePaths: DatabasePaths) {
       AudioSearchResult(sample, Some(MatchDetails(matchId, ExactMatch, 1.0)))
     }
     else {
-      crossCorrelation(a.data.asNumbers, b.data.asNumbers, crossCorrelationShift) match {
+      crossCorrelation(a.data, b.data, crossCorrelationShift) match {
         case Some(correlation) =>
-          if (MathUtils.abs(correlation) > DoubleNumber(correlationThreshold)) {
-            AudioSearchResult(sample, Some(MatchDetails(matchId, SimilarMatch, correlation.value)))
+          if (MathUtils.abs(correlation) > correlationThreshold) {
+            AudioSearchResult(sample, Some(MatchDetails(matchId, SimilarMatch, correlation)))
           }
           else {
             AudioSearchResult(sample, None)
