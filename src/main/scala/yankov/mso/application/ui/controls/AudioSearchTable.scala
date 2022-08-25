@@ -1,8 +1,7 @@
 package yankov.mso.application.ui.controls
 
-import yankov.mso.application.Resources
-import yankov.mso.application.model.UiModel._
 import scalafx.scene.control.{SelectionMode, TableColumn}
+import yankov.mso.application.Resources
 import yankov.mso.application.model.UiModel.TrackTableProperties
 
 class AudioSearchTable() extends UiTable[TrackTableProperties] {

@@ -1,7 +1,7 @@
 package yankov.mso.application.model
 
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
+import io.circe.{Decoder, Encoder}
 import yankov.mso.application.Id
 
 object DatabaseModel {

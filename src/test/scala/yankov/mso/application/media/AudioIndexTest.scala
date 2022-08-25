@@ -5,8 +5,6 @@ import yankov.mso.application.database.FakeDatabase
 import yankov.mso.application.model.DataModel.{AudioInput, AudioSearchSample, ExactMatch, SimilarMatch}
 import yankov.mso.application.model.DatabaseModel.DbAudioIndexItem
 import yankov.mso.application.model.DatabasePaths
-import yankov.mso.application.model.DataModel.{ExactMatch, SimilarMatch}
-import yankov.mso.application.model.DatabaseModel.DbAudioIndexItem
 
 import java.nio.file.Paths
 

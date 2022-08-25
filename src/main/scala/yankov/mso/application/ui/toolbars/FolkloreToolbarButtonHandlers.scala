@@ -1,21 +1,17 @@
 package yankov.mso.application.ui.toolbars
 
+import scalafx.scene.control.{Button, TableView}
+import scalafx.scene.input.{Clipboard, DataFormat}
 import yankov.mso.application._
 import yankov.mso.application.converters.StringConverters
 import yankov.mso.application.media.Player
 import yankov.mso.application.model.DataModel
 import yankov.mso.application.model.DataModel._
-import yankov.mso.application.model.UiModel._
+import yankov.mso.application.model.UiModel.TrackTableProperties
 import yankov.mso.application.search.TextAnalyzer._
 import yankov.mso.application.ui.UiUtils._
 import yankov.mso.application.ui.console.ApplicationConsole
 import yankov.mso.application.ui.{FolkloreTrackEditor, UiUtils}
-import scalafx.scene.control.{Button, TableView}
-import scalafx.scene.input.{Clipboard, DataFormat}
-import yankov.mso.application.media.Player
-import yankov.mso.application.model.DataModel
-import yankov.mso.application.model.DataModel.FolkloreTrack
-import yankov.mso.application.model.UiModel.TrackTableProperties
 
 import java.io.File
 import java.util.regex.Pattern

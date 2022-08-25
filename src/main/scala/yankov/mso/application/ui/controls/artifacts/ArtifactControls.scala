@@ -1,10 +1,9 @@
 package yankov.mso.application.ui.controls.artifacts
 
+import scalafx.scene.layout.Pane
 import yankov.mso.application.Main
 import yankov.mso.application.model.DataManager
 import yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
-import scalafx.scene.layout.Pane
-import yankov.mso.application.model.DataManager
 
 trait ArtifactControls[T] {
   protected val whiteSpace: Double = 20.0

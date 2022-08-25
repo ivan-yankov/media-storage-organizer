@@ -2,7 +2,6 @@ package yankov.mso.application.converters
 
 import yankov.mso.application.model.DataModel._
 import yankov.mso.application.search.SearchModel.{Filter, Variable}
-import yankov.mso.application.model.DataModel.{Artist, EthnographicRegion, Instrument, Source, SourceType}
 
 object StringConverters {
   def artistToString(x: Artist): String = x.name

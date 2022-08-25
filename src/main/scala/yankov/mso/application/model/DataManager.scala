@@ -1,11 +1,11 @@
 package yankov.mso.application.model
 
+import DataModel._
+import DatabaseModel._
 import org.slf4j.LoggerFactory
 import yankov.mso.application.converters.DurationConverter
 import yankov.mso.application.database.{Database, DatabaseCache}
 import yankov.mso.application.media.AudioIndex
-import DataModel._
-import DatabaseModel._
 import yankov.mso.application.ui.console.ApplicationConsole
 import yankov.mso.application.{FileUtils, Id, Resources}
 

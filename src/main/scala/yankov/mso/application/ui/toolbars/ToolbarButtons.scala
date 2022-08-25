@@ -1,8 +1,8 @@
 package yankov.mso.application.ui.toolbars
 
-import yankov.mso.application.Resources
 import scalafx.scene.control.{Button, Tooltip}
 import scalafx.scene.image.{Image, ImageView}
+import yankov.mso.application.Resources
 
 object ButtonIds {
   val btnAdd: String = "atn-add"

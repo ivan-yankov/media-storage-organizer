@@ -6,8 +6,6 @@ import yankov.mso.application.Resources.Variables._
 import yankov.mso.application.converters.StringConverters
 import yankov.mso.application.model.DataModel.{Artist, FolkloreTrack}
 import yankov.mso.application.search.TextAnalyzer._
-import yankov.mso.application.converters.StringConverters
-import yankov.mso.application.model.DataModel.{Artist, FolkloreTrack}
 
 object SearchModel {
   trait Variable {

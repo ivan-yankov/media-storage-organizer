@@ -1,16 +1,16 @@
 package yankov.mso.application.ui
 
-import java.io.File
-import java.time.Duration
 import org.jaudiotagger.audio.AudioFileIO
 import org.slf4j.LoggerFactory
-import yankov.mso.application.{Main, Resources}
 import scalafx.application.Platform
 import scalafx.concurrent.Task
 import scalafx.scene.Cursor
 import scalafx.scene.control.{Alert, ButtonType}
 import scalafx.stage.{DirectoryChooser, FileChooser}
+import yankov.mso.application.{Main, Resources}
 
+import java.io.File
+import java.time.Duration
 import scala.collection.JavaConverters._
 
 object UiUtils {

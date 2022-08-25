@@ -1,13 +1,11 @@
 package yankov.mso.application.ui.controls.artifacts
 
+import scalafx.scene.layout.{Pane, VBox}
 import yankov.mso.application.Resources
 import yankov.mso.application.converters.StringConverters
 import yankov.mso.application.model.DataModel
 import yankov.mso.application.model.DataModel.Source
 import yankov.mso.application.ui.controls.{FolkloreControlsFactory, LabeledTextField}
-import scalafx.scene.layout.{Pane, VBox}
-import yankov.mso.application.model.DataModel
-import yankov.mso.application.model.DataModel.Source
 
 case class SourceControls() extends ArtifactControls[Source] {
   private val sourceType = FolkloreControlsFactory.createSourceTypeInput()

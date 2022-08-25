@@ -1,11 +1,10 @@
 package yankov.mso.application.ui.controls
 
 import javafx.scene.input.KeyCode
-import yankov.mso.application.Resources
-import yankov.mso.application.search.SearchModel._
 import scalafx.scene.control.TitledPane
 import scalafx.scene.layout.{HBox, Priority}
 import yankov.mso.application.Resources.Search
+import yankov.mso.application.search.SearchModel._
 
 class MetadataSearchControls[T](search: List[SearchParameters[T]] => Unit,
                                 createVariables: () => LabeledComboBox[Variable],

@@ -1,18 +1,13 @@
 package yankov.mso.application.ui.controls
 
-import yankov.mso.application.Main.dataManager
-import yankov.mso.application.Resources
-import yankov.mso.application.media.Player
-import yankov.mso.application.media.decode.FlacDecoder
-import yankov.mso.application.model.DataModel._
-import yankov.mso.application.ui.UiUtils._
 import scalafx.scene.control.{Button, TitledPane}
+import yankov.mso.application.Main.dataManager
 import yankov.mso.application.Resources.Search
 import yankov.mso.application.media.Player
 import yankov.mso.application.model.DataModel.FolkloreTrack
+import yankov.mso.application.ui.UiUtils._
 
 import java.io.File
-import java.nio.file.Files
 
 class AudioSearchControls(search: (List[File], Double, Int) => Unit,
                           audioSearchTable: AudioSearchTable) extends SearchControls[FolkloreTrack] {

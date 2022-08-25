@@ -1,16 +1,14 @@
 package yankov.mso.application.ui.controls.artifacts
 
+import scalafx.geometry.Insets
+import scalafx.scene.Node
+import scalafx.scene.control.{Button, CheckBox, TitledPane}
+import scalafx.scene.layout.{GridPane, Pane, VBox}
 import yankov.mso.application.Resources
 import yankov.mso.application.converters.StringConverters.artistToString
 import yankov.mso.application.model.DataModel
 import yankov.mso.application.model.DataModel._
 import yankov.mso.application.ui.controls.{LabeledComboBox, LabeledTextField}
-import scalafx.geometry.Insets
-import scalafx.scene.Node
-import scalafx.scene.control.{Button, CheckBox, TitledPane}
-import scalafx.scene.layout.{GridPane, Pane, VBox}
-import yankov.mso.application.model.DataModel
-import yankov.mso.application.model.DataModel.{Artist, ArtistMission, ChamberGroup, Choir, Composer, ConcertHost, Conductor, Ensemble, Instrument, InstrumentPlayer, Orchestra, Singer}
 
 case class ArtistControls() extends ArtifactControls[Artist] {
   private val name = LabeledTextField(Resources.Artists.artistName, "")

@@ -1,8 +1,8 @@
 package yankov.mso.application.converters
 
-import java.time.Duration
-
 import org.scalatest.{FreeSpec, Matchers}
+
+import java.time.Duration
 
 class DurationConverterTest extends FreeSpec with Matchers {
   "to hour min sec string" - {

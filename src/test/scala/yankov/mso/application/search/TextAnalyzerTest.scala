@@ -1,7 +1,7 @@
 package yankov.mso.application.search
 
-import org.scalatest.{FreeSpec, Matchers}
 import TextAnalyzer._
+import org.scalatest.{FreeSpec, Matchers}
 
 class TextAnalyzerTest extends FreeSpec with Matchers {
   "analyze text should succeed" in {

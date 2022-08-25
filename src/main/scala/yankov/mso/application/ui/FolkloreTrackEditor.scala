@@ -1,17 +1,15 @@
 package yankov.mso.application.ui
 
-import yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
-import yankov.mso.application.model.UiModel._
-import yankov.mso.application.ui.controls.FolkloreControlsFactory._
-import yankov.mso.application.ui.controls.{FileSelector, LabeledTextField}
-import yankov.mso.application.{Main, Resources}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, TableView}
 import scalafx.scene.layout.{GridPane, HBox, StackPane, VBox}
 import scalafx.stage.{Modality, Stage}
-import yankov.mso.application.model.DataModel.FolkloreTrack
+import yankov.mso.application.model.DataModel.{FolkloreTrack, isValidId}
 import yankov.mso.application.model.UiModel.TrackTableProperties
+import yankov.mso.application.ui.controls.FolkloreControlsFactory._
+import yankov.mso.application.ui.controls.{FileSelector, LabeledTextField}
+import yankov.mso.application.{Main, Resources}
 
 import java.time.Duration
 

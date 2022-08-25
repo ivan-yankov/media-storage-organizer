@@ -5,7 +5,6 @@ import yankov.mso.application.model.DataModel._
 import yankov.mso.application.search.SearchModel
 import yankov.mso.application.search.SearchModel.{Filter, Variable}
 import yankov.mso.application.{Main, Resources}
-import yankov.mso.application.model.DataModel.{Artist, ArtistMission, ChamberGroup, Choir, Composer, Conductor, Ensemble, EthnographicRegion, FolkloreTrack, InstrumentPlayer, Orchestra, Singer, Source, SourceType}
 
 object FolkloreControlsFactory {
   private val dataManager = Main.dataManager

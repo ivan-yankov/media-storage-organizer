@@ -1,13 +1,11 @@
 package yankov.mso.application.commands
 
-import java.time.Duration
 import org.scalatest.{FreeSpec, Matchers}
 import yankov.mso.application.model.DataModel._
 import yankov.mso.application.search.SearchEngine
 import yankov.mso.application.search.SearchModel.Filters._
 import yankov.mso.application.search.SearchModel.Variables._
 import yankov.mso.application.search.SearchModel._
-import yankov.mso.application.model.DataModel.FolkloreTrack
 
 import java.util.UUID
 

@@ -1,10 +1,10 @@
 package yankov.mso.application.ui.controls
 
-import java.io.File
-
-import yankov.mso.application.ui.UiUtils
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.layout.{HBox, Pane, Priority, VBox}
+import yankov.mso.application.ui.UiUtils
+
+import java.io.File
 
 case class FileSelector(labelText: String) {
   private var file: Option[File] = Option.empty
