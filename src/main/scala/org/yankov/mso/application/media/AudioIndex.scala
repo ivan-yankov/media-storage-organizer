@@ -2,8 +2,6 @@ package org.yankov.mso.application.media
 
 import chromaprint.Fingerprint
 import chromaprint.quick.Fingerprinter
-import com.yankov.math.MathUtils
-import com.yankov.math.xcorr.Correlation.crossCorrelation
 import org.slf4j.LoggerFactory
 import org.yankov.mso.application._
 import org.yankov.mso.application.database.Database
@@ -12,6 +10,8 @@ import org.yankov.mso.application.model.DataModel._
 import org.yankov.mso.application.model.DatabaseModel._
 import org.yankov.mso.application.model.DatabasePaths
 import org.yankov.mso.application.ui.console.ApplicationConsole
+import yankov.math.MathUtils
+import yankov.math.xcorr.Correlation.crossCorrelation
 
 import java.io.ByteArrayInputStream
 
