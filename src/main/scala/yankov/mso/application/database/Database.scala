@@ -2,10 +2,8 @@ package yankov.mso.application.database
 
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, Encoder, parser}
+import yankov.mso.application.{FileUtils, Id}
 import yankov.mso.application.model.DataModel.invalidId
-import yankov.mso.application.model.DatabaseModel.DbEntry
-import yankov.mso.application.Id
-import yankov.mso.application.FileUtils
 import yankov.mso.application.model.DatabaseModel.DbEntry
 
 import java.io.{FileInputStream, InputStream}

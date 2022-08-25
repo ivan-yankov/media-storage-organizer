@@ -3,7 +3,6 @@ package yankov.mso.application.database
 import io.circe.{Decoder, Encoder}
 import yankov.mso.application.Id
 import yankov.mso.application.model.DatabaseModel.DbEntry
-import yankov.mso.application.model.DatabaseModel.DbEntry
 
 import java.io.InputStream
 import java.nio.file.Path

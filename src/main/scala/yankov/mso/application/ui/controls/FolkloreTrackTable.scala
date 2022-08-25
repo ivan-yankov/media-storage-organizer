@@ -1,12 +1,10 @@
 package yankov.mso.application.ui.controls
 
-import yankov.mso.application.model.UiModel._
+import scalafx.scene.control._
+import yankov.mso.application.model.UiModel.TrackTableProperties
 import yankov.mso.application.ui.FolkloreTrackEditor
 import yankov.mso.application.ui.toolbars.FolkloreToolbarButtonHandlers
 import yankov.mso.application.{MergeTrack, Resources}
-import scalafx.scene.control._
-import yankov.mso.application.model.UiModel.TrackTableProperties
-import yankov.mso.application.ui.toolbars.FolkloreToolbarButtonHandlers
 
 class FolkloreTrackTable(inputTable: Boolean, buttonHandlers: FolkloreToolbarButtonHandlers) extends UiTable[TrackTableProperties] {
   object ColumnKeys {

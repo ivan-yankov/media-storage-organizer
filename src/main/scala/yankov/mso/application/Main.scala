@@ -9,8 +9,8 @@ import scalafx.scene.layout._
 import scalafx.scene.{Node, Scene}
 import yankov.mso.application.database.RealDatabase
 import yankov.mso.application.media.{AudioIndex, MediaServer}
-import yankov.mso.application.model.{DataManager, DatabasePaths}
 import yankov.mso.application.model.UiModel.ApplicationSettings
+import yankov.mso.application.model.{DataManager, DatabasePaths}
 import yankov.mso.application.ui.UiUtils
 import yankov.mso.application.ui.console.ApplicationConsole
 import yankov.mso.application.ui.controls.UiTable

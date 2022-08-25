@@ -1,16 +1,11 @@
 package yankov.mso.application.model
 
-import yankov.mso.application.Id
-import yankov.mso.application.converters.DurationConverter
-import DataModel._
 import scalafx.beans.property.StringProperty
 import scalafx.scene.image.Image
 import scalafx.stage.Screen
 import yankov.mso.application.Resources
 import yankov.mso.application.converters.{DurationConverter, StringConverters}
 import yankov.mso.application.model.DataModel.{AudioSearchResult, ExactMatch, FolkloreTrack}
-
-import java.io.File
 
 object UiModel {
 

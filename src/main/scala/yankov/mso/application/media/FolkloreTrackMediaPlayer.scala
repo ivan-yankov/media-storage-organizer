@@ -1,6 +1,5 @@
 package yankov.mso.application.media
 
-import yankov.mso.application._
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Button

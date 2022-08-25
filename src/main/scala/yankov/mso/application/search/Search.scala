@@ -4,13 +4,8 @@ import yankov.mso.application.Resources
 import yankov.mso.application.converters.StringConverters
 import yankov.mso.application.media.AudioIndex
 import yankov.mso.application.model.DataModel._
-import yankov.mso.application.model.UiModel._
-import yankov.mso.application.search.SearchModel._
-import yankov.mso.application.ui.console.ApplicationConsole
-import yankov.mso.application.ui.controls.UiTable
-import yankov.mso.application.media.AudioIndex
-import yankov.mso.application.model.DataModel.{AudioSearchSample, FolkloreTrack}
 import yankov.mso.application.model.UiModel.TrackTableProperties
+import yankov.mso.application.search.SearchModel._
 import yankov.mso.application.ui.console.ApplicationConsole
 import yankov.mso.application.ui.controls.UiTable
 

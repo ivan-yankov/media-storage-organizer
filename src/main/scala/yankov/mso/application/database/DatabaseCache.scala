@@ -5,8 +5,6 @@ import yankov.mso.application.Id
 import yankov.mso.application.Main.dataManager._
 import yankov.mso.application.model.DataModel._
 import yankov.mso.application.model.DatabaseModel._
-import yankov.mso.application.model.DataModel.{Artist, EthnographicRegion, FolkloreTrack, Instrument, Source, SourceType}
-import yankov.mso.application.model.DatabaseModel.{DbArtist, DbEthnographicRegion, DbFolkloreTrack, DbInstrument, DbSource, DbSourceType}
 import yankov.mso.application.model.DatabasePaths
 
 case class DatabaseCache(database: Database, databasePaths: DatabasePaths) {

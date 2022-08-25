@@ -1,11 +1,8 @@
 package yankov.mso.application.ui.controls.artifacts
 
+import scalafx.scene.layout.{Pane, VBox}
 import yankov.mso.application.Resources
 import yankov.mso.application.converters.StringConverters
-import yankov.mso.application.model.DataModel
-import yankov.mso.application.model.DataModel.EthnographicRegion
-import yankov.mso.application.ui.controls.LabeledTextField
-import scalafx.scene.layout.{Pane, VBox}
 import yankov.mso.application.model.DataModel
 import yankov.mso.application.model.DataModel.EthnographicRegion
 import yankov.mso.application.ui.controls.LabeledTextField

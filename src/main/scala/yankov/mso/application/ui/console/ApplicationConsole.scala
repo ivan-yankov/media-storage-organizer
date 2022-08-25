@@ -1,9 +1,9 @@
 package yankov.mso.application.ui.console
 
-import java.time.LocalDateTime
-
 import scalafx.scene.control.TextArea
 import scalafx.scene.layout.StackPane
+
+import java.time.LocalDateTime
 
 object ApplicationConsole extends ConsoleService {
   private val textArea = new TextArea {

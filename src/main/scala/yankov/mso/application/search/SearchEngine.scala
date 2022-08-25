@@ -1,6 +1,5 @@
 package yankov.mso.application.search
 
-import yankov.mso.application.search.SearchModel._
 import yankov.mso.application.search.SearchModel.SearchParameters
 
 import scala.annotation.tailrec

@@ -1,11 +1,11 @@
 package yankov.mso.application.ui.controls
 
-import yankov.mso.application.ui.controls.FontModel._
 import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.{SelectionMode, TableColumn, TableRow, TableView}
 import scalafx.scene.input._
 import scalafx.scene.layout.{Pane, StackPane}
+import yankov.mso.application.ui.controls.FontModel._
 
 import scala.collection.JavaConverters.{asScalaBufferConverter, asScalaIteratorConverter}
 

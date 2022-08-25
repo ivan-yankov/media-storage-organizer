@@ -1,14 +1,10 @@
 package yankov.mso.application
 
-import Main.{createDataManager, getApplicationArgument}
-import yankov.mso.application.model.DataModel.{AudioInput, AudioSearchSample, FolkloreTrack, SourceType}
-import yankov.mso.application.ui.controls.AudioSearchControls
-import yankov.mso.application.ui.toolbars.FolkloreToolbarButtonHandlers
 import scalafx.scene.control.CheckBox
 import yankov.mso.application.model.DataManager
-import yankov.mso.application.model.DataModel.{FolkloreTrack, SourceType}
+import yankov.mso.application.model.DataModel.{AudioInput, AudioSearchSample, FolkloreTrack, SourceType}
 import yankov.mso.application.search.Search
-import yankov.mso.application.ui.controls.{AudioSearchControls, AudioSearchTable, FolkloreControlsFactory, FolkloreTrackTable, LabeledComboBox, LabeledTextField, MetadataSearchControls, SearchControls}
+import yankov.mso.application.ui.controls._
 import yankov.mso.application.ui.toolbars.{FolkloreToolbarButtonHandlers, ToolbarButtons}
 
 case class MainControls(dataManager: DataManager) {

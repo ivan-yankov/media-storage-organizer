@@ -4,9 +4,6 @@ import org.scalatest.{FreeSpec, Matchers}
 import yankov.mso.application.Id
 import yankov.mso.application.database.{Database, FakeDatabase}
 import yankov.mso.application.model.DataModel._
-import yankov.mso.application.model.DatabaseModel._
-import yankov.mso.application.database.Database
-import yankov.mso.application.model.DataModel.{ChamberGroup, Choir, Composer, Conductor, Ensemble, InstrumentPlayer, Orchestra, Singer}
 import yankov.mso.application.model.DatabaseModel.{DbArtist, DbEthnographicRegion, DbFolkloreTrack, DbInstrument, DbSource, DbSourceType}
 
 import java.io.File

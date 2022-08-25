@@ -1,9 +1,9 @@
 package yankov.mso.application.ui.controls.artifacts
 
-import yankov.mso.application.Resources
-import yankov.mso.application.ui.controls.LabeledComboBox
 import scalafx.geometry.Insets
 import scalafx.scene.layout.{Pane, StackPane, VBox}
+import yankov.mso.application.Resources
+import yankov.mso.application.ui.controls.LabeledComboBox
 
 case class ArtifactsTab() {
   private val artifacts = List(

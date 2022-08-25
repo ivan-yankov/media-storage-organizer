@@ -1,10 +1,10 @@
 package yankov.mso.application.ui.controls
 
 import javafx.beans.value.{ChangeListener, ObservableValue}
-import yankov.mso.application.ui.UiUtils
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.util.StringConverter
+import yankov.mso.application.ui.UiUtils
 
 import scala.collection.JavaConverters._
 

@@ -3,10 +3,8 @@ package yankov.mso.application.database
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
 import org.scalatest._
+import yankov.mso.application.model.DatabaseModel.DbEntry
 import yankov.mso.application.{Id, TestHelpers}
-import yankov.mso.application.model.DatabaseModel.DbEntry
-import yankov.mso.application.TestHelpers
-import yankov.mso.application.model.DatabaseModel.DbEntry
 
 import java.nio.file.{Path, Paths}
 

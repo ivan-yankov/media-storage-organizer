@@ -1,7 +1,6 @@
 package yankov.mso.application.model
 
-import yankov.mso.application.Id
-import yankov.mso.application.Resources
+import yankov.mso.application.{Id, Resources}
 
 import java.io.File
 import java.nio.file.{Path, Paths}

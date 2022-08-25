@@ -1,14 +1,14 @@
 package yankov.mso.application.ui.controls.artifacts
 
-import yankov.mso.application.Resources
-import yankov.mso.application.ui.UiUtils
-import yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
-import yankov.mso.application.ui.controls.InputTextHandler
 import scalafx.geometry.Insets
 import scalafx.scene.control.cell.TextFieldListCell
 import scalafx.scene.control.{Button, Label, ListView, SelectionMode}
 import scalafx.scene.layout.{HBox, Pane, Priority, VBox}
 import scalafx.util.StringConverter
+import yankov.mso.application.Resources
+import yankov.mso.application.ui.UiUtils
+import yankov.mso.application.ui.console.{ApplicationConsole, ConsoleService}
+import yankov.mso.application.ui.controls.InputTextHandler
 
 import scala.collection.JavaConverters.asScalaBufferConverter
 
