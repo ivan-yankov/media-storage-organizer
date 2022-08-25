@@ -18,7 +18,7 @@ val chromaprintVersion = "0.3.1"
 val scalaTestVersion = "3.0.8"
 val scalaMockVersion = "4.4.0"
 
-mainClass in assembly := Some("org.yankov.mso.application.Main")
+mainClass in assembly := Some("yankov.mso.application.Main")
 
 resolvers += Resolver.jcenterRepo
 
