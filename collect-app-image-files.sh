@@ -1,9 +1,16 @@
 DEST=AppDir
-JRE=~/data/install/java/jre-11
 
 rm -rf $DEST
 mkdir $DEST
+
 cp -r app-image/* $DEST
-mkdir $DEST/jre
-cp -r $JRE/* $DEST/jre
 cp -r jar $DEST
+
+source ~/data/repos/bash/load.sh
+
+java-download jre 11
+
+f=$(ls *.tar.gz)
+untargz $f
+mv $(targz-root $f) $DEST/jre
+rm $f
