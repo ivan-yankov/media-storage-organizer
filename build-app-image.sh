@@ -1,7 +1,7 @@
 # https://www.booleanworld.com/creating-linux-apps-run-anywhere-appimage/
 
 # preparation
-./build.sh
+./release.sh
 ./collect-app-image-files.sh
 
 # detect machine's architecture
