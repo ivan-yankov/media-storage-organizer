@@ -1,3 +1,5 @@
+rm -rf jar
+
 ./build.sh
 
 sbt incrementVersion
