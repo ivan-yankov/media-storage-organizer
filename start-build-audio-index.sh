@@ -1,1 +1,1 @@
-./media-storage-organizer-x86_64.AppImage --db-dir=$PWD/database --build-audio-index
+./media-storage-organizer.AppImage --db-dir=$PWD/database --build-audio-index
