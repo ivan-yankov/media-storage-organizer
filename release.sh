@@ -1,3 +1,5 @@
+set -e
+
 rm -rf jar
 
 ./build.sh
