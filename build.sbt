@@ -8,6 +8,7 @@ val circeVersion = "0.14.1"
 val chromaprintVersion = "0.3.1"
 val scalaTestVersion = "3.0.8"
 val scalaMockVersion = "4.4.0"
+val mathVersion = "3"
 
 lazy val osName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux") => "linux"
@@ -35,6 +36,9 @@ lazy val root = (project in file("."))
     connectInput := true,
 
     libraryDependencies ++= Seq(
+      // math
+      "yankov" %% "math" % mathVersion,
+
       // ui
       "org.scalafx" %% "scalafx" % scalaFxVersion,
 
