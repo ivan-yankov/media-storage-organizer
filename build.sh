@@ -1,1 +1,3 @@
-sbt clean compile test
+set -e
+rm -rf jar
+sbt clean compile test package collectDependencies

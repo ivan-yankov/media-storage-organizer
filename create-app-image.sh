@@ -2,7 +2,7 @@ set -e
 
 dir=$PWD
 
-./release.sh
+./build.sh
 
 cd ../app-image-builder
 ./build-jvm-based-app-image.sh $dir
