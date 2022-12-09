@@ -16,7 +16,7 @@ object MediaServer {
 
   private var fiber: Fiber[IO, Nothing] = _
 
-  private val port = Main.appArguments.getMediaServerPort.toInt
+  private val port = Main.programArguments.getMediaServerPort
 
   private val serverBuilder = BlazeServerBuilder[IO]
     .withoutBanner

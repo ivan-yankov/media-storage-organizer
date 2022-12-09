@@ -6,7 +6,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.scene.{Node, Scene}
-import yankov.args.ArgumentParser
+import yankov.args.ProgramArgumentsParser
 import yankov.mso.application.database.RealDatabase
 import yankov.mso.application.media.{AudioIndex, MediaServer}
 import yankov.mso.application.model.UiModel.ApplicationSettings
@@ -20,9 +20,9 @@ import java.nio.file.{Files, Paths}
 
 object Main extends JFXApp {
   override def main(args: Array[String]): Unit = {
-    ArgumentParser.parse(args, appArguments)
-    if (appArguments.isBuildAudioIndex) {
-      val dataManager = createDataManager(appArguments.getDbDir)
+    ProgramArgumentsParser.parse(args, programArguments)
+    if (programArguments.isBuildAudioIndex) {
+      val dataManager = createDataManager(programArguments.getDbDir)
       Files.deleteIfExists(dataManager.databasePaths.audioIndex)
       Files.createFile(dataManager.databasePaths.audioIndex)
       dataManager.audioIndex.get.build()
@@ -56,9 +56,9 @@ object Main extends JFXApp {
     }
   }
 
-  lazy val appArguments: AppArguments = new AppArguments()
+  lazy val programArguments: ProgramArguments = new ProgramArguments()
 
-  lazy val dataManager: DataManager = createDataManager(appArguments.getDbDir)
+  lazy val dataManager: DataManager = createDataManager(programArguments.getDbDir)
 
   lazy val mainControls: MainControls = MainControls(dataManager)
 

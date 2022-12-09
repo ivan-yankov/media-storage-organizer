@@ -2,7 +2,7 @@ package yankov.mso.application
 
 import yankov.args.annotations.{ProgramArgument, ProgramFlag, ProgramOption}
 
-class AppArguments {
+class ProgramArguments {
   @ProgramArgument(order = 0, defaultValue = "")
   private var dbDir: String = _
 
@@ -16,5 +16,5 @@ class AppArguments {
 
   def isBuildAudioIndex: Boolean = buildAudioIndex
 
-  def getMediaServerPort: String = mediaServerPort
+  def getMediaServerPort: Int = mediaServerPort.toInt
 }
