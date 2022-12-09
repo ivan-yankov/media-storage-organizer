@@ -5,16 +5,6 @@ import yankov.mso.application.converters.DurationConverter
 import java.time.Duration
 
 object Resources {
-  object ApplicationArgumentKeys {
-    val databaseDirectory: String = "--db-dir"
-    val mediaServerPort: String = "--media-server-port"
-    val buildAudioIndex: String = "--build-audio-index"
-  }
-
-  object ApplicationArgumentValues {
-    val mediaServerPort: String = "5432"
-  }
-
   object Media {
     val flacExtension: String = ".flac"
     val playPause: String = "> ||"

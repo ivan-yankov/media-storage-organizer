@@ -1,12 +1,12 @@
 package yankov.mso.application
 
-import org.slf4j.LoggerFactory
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.geometry.Insets
 import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.scene.{Node, Scene}
+import yankov.args.ArgumentParser
 import yankov.mso.application.database.RealDatabase
 import yankov.mso.application.media.{AudioIndex, MediaServer}
 import yankov.mso.application.model.UiModel.ApplicationSettings
@@ -19,16 +19,10 @@ import yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 import java.nio.file.{Files, Paths}
 
 object Main extends JFXApp {
-  private lazy val log = LoggerFactory.getLogger(getClass)
-
   override def main(args: Array[String]): Unit = {
-    if (getApplicationArgumentFlag(Resources.ApplicationArgumentKeys.buildAudioIndex, args.toSeq)) {
-      val dataManager = createDataManager(
-        getApplicationArgument(
-          argument = Resources.ApplicationArgumentKeys.databaseDirectory,
-          arguments = args.toSeq
-        )
-      )
+    ArgumentParser.parse(args, appArguments)
+    if (appArguments.isBuildAudioIndex) {
+      val dataManager = createDataManager(appArguments.getDbDir)
       Files.deleteIfExists(dataManager.databasePaths.audioIndex)
       Files.createFile(dataManager.databasePaths.audioIndex)
       dataManager.audioIndex.get.build()
@@ -62,35 +56,15 @@ object Main extends JFXApp {
     }
   }
 
-  lazy val dataManager: DataManager = createDataManager(
-    getApplicationArgument(Resources.ApplicationArgumentKeys.databaseDirectory)
-  )
+  lazy val appArguments: AppArguments = new AppArguments()
+
+  lazy val dataManager: DataManager = createDataManager(appArguments.getDbDir)
 
   lazy val mainControls: MainControls = MainControls(dataManager)
+
   import mainControls._
 
   onStart()
-
-  def getApplicationArgumentFlag(argument: String, arguments: Seq[String] = parameters.raw): Boolean =
-    arguments.exists(x => x.equals(argument))
-
-  def getApplicationArgument(argument: String,
-                             defaultValue: String = "",
-                             required: Boolean = true,
-                             arguments: Seq[String] = parameters.raw): String = {
-    arguments.find(x => x.startsWith(argument)) match {
-      case Some(value) =>
-        val items = value.split("=")
-        if (items.length == 2) items(1)
-        else {
-          log.error(s"Value for application argument [$argument] not found.")
-          defaultValue
-        }
-      case None =>
-        if (required) log.error(s"Missing application argument [$argument].")
-        defaultValue
-    }
-  }
 
   private def onStart(): Unit = {
     new Thread(() => MediaServer.start()).start()

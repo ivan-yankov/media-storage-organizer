@@ -1,3 +1,5 @@
+val mathVersion = "latest"
+val argParserVersion = "latest"
 val scalaFxVersion = "8.0.144-R12"
 val slfVersion = "1.7.30"
 val derbyVersion = "10.14.2.0"
@@ -8,7 +10,6 @@ val circeVersion = "0.14.1"
 val chromaprintVersion = "0.3.1"
 val scalaTestVersion = "3.0.8"
 val scalaMockVersion = "4.4.0"
-val mathVersion = "latest"
 
 lazy val osName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux") => "linux"
@@ -28,6 +29,7 @@ lazy val root = (project in file("."))
     version := readVersion.value(),
     isSnapshot := true,
 
+    resolvers += Resolver.mavenLocal,
     resolvers += Resolver.jcenterRepo,
 
     Test / parallelExecution := false,
@@ -37,6 +39,9 @@ lazy val root = (project in file("."))
     connectInput := true,
 
     libraryDependencies ++= Seq(
+      // arguments
+      "yankov" % "arg-parser" % argParserVersion,
+
       // math
       "yankov" %% "math" % mathVersion,
 
