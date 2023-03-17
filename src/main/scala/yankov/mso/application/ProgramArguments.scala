@@ -1,6 +1,6 @@
 package yankov.mso.application
 
-import yankov.args.annotations.{ProgramArgument, ProgramFlag, ProgramOption}
+import yankov.args.annotations.{ProgramFlag, ProgramOption}
 
 import java.nio.file.{Path, Paths}
 
