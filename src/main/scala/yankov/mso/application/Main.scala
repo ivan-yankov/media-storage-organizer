@@ -16,7 +16,7 @@ import yankov.mso.application.ui.console.ApplicationConsole
 import yankov.mso.application.ui.controls.UiTable
 import yankov.mso.application.ui.controls.artifacts.ArtifactsTab
 
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path}
 
 object Main extends JFXApp {
   override def main(args: Array[String]): Unit = {
@@ -70,8 +70,8 @@ object Main extends JFXApp {
     new Thread(() => MediaServer.start()).start()
   }
 
-  private def createDataManager(dbDir: String): DataManager = {
-    val dbPaths = DatabasePaths(Paths.get(dbDir))
+  private def createDataManager(dbDir: Path): DataManager = {
+    val dbPaths = DatabasePaths(dbDir)
     val db = RealDatabase()
     val audioIndex = AudioIndex(db, dbPaths)
     yankov.mso.application.model.DataManager(db, dbPaths, Some(audioIndex))
