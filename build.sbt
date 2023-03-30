@@ -1,6 +1,6 @@
 val mathVersion = "latest"
 val argParserVersion = "latest"
-val scalaFxVersion = "8.0.144-R12"
+val scalaFxVersion = "17.0.1-R26"
 val slfVersion = "1.7.30"
 val derbyVersion = "10.14.2.0"
 val jaudioTaggerVersion = "2.0.3"
