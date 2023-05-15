@@ -124,7 +124,7 @@ case class FolkloreTrackMediaPlayer(sources: Vector[String], onClose: () => Unit
   }
 
   private def previousIndex: Int = {
-    if (currentSourceIndex == 0) currentSourceIndex
+    if (currentSourceIndex == 0) 0
     else currentSourceIndex - 1
   }
 

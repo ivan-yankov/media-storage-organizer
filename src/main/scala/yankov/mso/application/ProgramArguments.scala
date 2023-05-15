@@ -14,6 +14,9 @@ class ProgramArguments {
   @ProgramOption(shortName = "", longName = "media-server-port", defaultValue = "5432")
   private var mediaServerPort: String = _
 
+  @ProgramOption(shortName = "", longName = "external-player", defaultValue = "vlc")
+  private var externalPlayer: String = _
+
   def getDbDir: Path = {
     if (dbDir.equals(".")) Paths.get(System.getenv("APPIMAGE")).getParent.toAbsolutePath
     else Paths.get(dbDir).toAbsolutePath
@@ -22,4 +25,6 @@ class ProgramArguments {
   def isBuildAudioIndex: Boolean = buildAudioIndex
 
   def getMediaServerPort: Int = mediaServerPort.toInt
+
+  def getExternalPlayer: String = externalPlayer
 }

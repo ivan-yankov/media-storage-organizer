@@ -43,7 +43,7 @@ object Main extends JFXApp {
 
     onCloseRequest = event => {
       if (UiUtils.confirmCloseApplication) {
-        MediaServer.stop()
+        mediaServer.foreach(x => x.stop())
       }
       else event.consume()
     }
@@ -67,7 +67,12 @@ object Main extends JFXApp {
   onStart()
 
   private def onStart(): Unit = {
-    new Thread(() => MediaServer.start()).start()
+    mediaServer.foreach(x => new Thread(() => x.start()).start())
+  }
+
+  private def mediaServer: Option[MediaServer] = {
+    if (programArguments.getExternalPlayer.isEmpty) Some(new MediaServer)
+    else None
   }
 
   private def createDataManager(dbDir: Path): DataManager = {

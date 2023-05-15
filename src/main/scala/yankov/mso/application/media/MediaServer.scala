@@ -9,7 +9,7 @@ import yankov.mso.application.{Main, Resources}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object MediaServer {
+class MediaServer {
   implicit val executionContext: ExecutionContext = global
   implicit val cs: ContextShift[IO] = IO.contextShift(executionContext)
   implicit val timer: Timer[IO] = IO.timer(executionContext)
