@@ -1,8 +1,2 @@
-this=$PWD
-cd ../sbt-version-support && ./build && cd $this &&
-cd ../sbt-collect-dependencies && ./build && cd $this &&
-cd ../arg-parser && ./build && cd $this &&
-cd ../math && ./build && cd $this &&
-
 rm -rf jar
 sbt clean compile test package collectDependencies
